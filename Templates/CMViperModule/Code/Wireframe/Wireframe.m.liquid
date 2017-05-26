@@ -1,0 +1,70 @@
+//
+//  {{ prefix }}{{ module_info.name }}{{ module_info.file_name }}
+//  {{ module_info.project_name }}
+//
+//  Created by {{ developer.name }} on {{ date }}.
+//  Copyright {{ year }} {{ developer.company }}. All rights reserved.
+//
+
+#import "{{ prefix }}{{ module_info.name }}Wireframe.h"
+
+
+@implementation {{ prefix }}{{ module_info.name }}Wireframe
+
+- (void)presentInWindow:(UIWindow *)window; {
+    {{ prefix }}{{ module_info.name }}ViewController *view = [{{ prefix }}{{ module_info.name }}ViewController new];
+    {{ prefix }}{{ module_info.name }}Presenter *presenter = [{{ prefix }}{{ module_info.name }}Presenter new];
+    {{ prefix }}{{ module_info.name }}Interactor *interactor = [{{ prefix }}{{ module_info.name }}Interactor new];
+
+    view.presenter = presenter;
+    presenter.interactor = interactor;
+    presenter.output = view;
+    presenter.wireframe = self;
+    interactor.output = presenter;
+
+    self.view = view;
+    self.presenter = presenter;
+    self.interactor = interactor;
+
+    [window setRootViewController:view];
+}
+
+- (void)presentInViewController:(UIViewController *)viewController {
+    self.parentViewController = viewController;
+    {{ prefix }}{{ module_info.name }}ViewController *view = [{{ prefix }}{{ module_info.name }}ViewController new];
+    {{ prefix }}{{ module_info.name }}Presenter *presenter = [{{ prefix }}{{ module_info.name }}Presenter new];
+    {{ prefix }}{{ module_info.name }}Interactor *interactor = [{{ prefix }}{{ module_info.name }}Interactor new];
+
+    view.presenter = presenter;
+    presenter.interactor = interactor;
+    presenter.output = view;
+    presenter.wireframe = self;
+    interactor.output = presenter;
+
+    self.view = view;
+    self.presenter = presenter;
+    self.interactor = interactor;
+
+    [viewController presentViewController:view animated:YES completion:nil];
+}
+
+- (void)pushInNavigationController:(UINavigationController *)navigationController {
+    self.parentNavigationController = navigationController;
+    {{ prefix }}{{ module_info.name }}ViewController *view = [{{ prefix }}{{ module_info.name }}ViewController new];
+    {{ prefix }}{{ module_info.name }}Presenter *presenter = [{{ prefix }}{{ module_info.name }}Presenter new];
+    {{ prefix }}{{ module_info.name }}Interactor *interactor = [{{ prefix }}{{ module_info.name }}Interactor new];
+
+    view.presenter = presenter;
+    presenter.interactor = interactor;
+    presenter.output = view;
+    presenter.wireframe = self;
+    interactor.output = presenter;
+
+    self.view = view;
+    self.presenter = presenter;
+    self.interactor = interactor;
+
+    [navigationController pushViewController:view animated:YES];
+}
+
+@end

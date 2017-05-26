@@ -1,0 +1,29 @@
+### Headers settings
+company: Camment
+
+### Xcode project settings
+project_name: CammentSDK
+xcodeproj_path: CammentSDK.xcodeproj
+prefix: CM
+
+### Code generation settings section
+# The main project target name
+project_target: CammentSDK
+
+# The file path for new modules
+project_file_path: CammentSDK/Modules
+
+# The Xcode group path to new modules
+project_group_path: CammentSDK/Modules
+
+### Dependencies settings section
+
+cartfile_path: Cartfile
+
+### Templates
+templates:
+templates:
+- {name: CMViperModule, local: 'RambaTemplates/CMViperModule'}
+#- {name: local_template_name, local: 'absolute/file/path'}
+#- {name: remote_template_name, git: 'https://github.com/igrekde/remote_template'}
+#- {name: catalog_template_name}

@@ -1,0 +1,23 @@
+//
+//  {{ prefix }}{{ module_info.name }}{{ module_info.file_name }}
+//  {{ module_info.project_name }}
+//
+//  Created by {{ developer.name }} on {{ date }}.
+//  Copyright {{ year }} {{ developer.company }}. All rights reserved.
+//
+
+#import <Foundation/Foundation.h>
+#import "{{ prefix }}{{ module_info.name }}PresenterInput.h"
+#import "{{ prefix }}{{ module_info.name }}PresenterOutput.h"
+#import "{{ prefix }}{{ module_info.name }}InteractorInput.h"
+#import "{{ prefix }}{{ module_info.name }}InteractorOutput.h"
+
+@class {{ prefix }}{{ module_info.name }}Wireframe;
+
+@interface {{ prefix }}{{ module_info.name }}Presenter : NSObject<{{ prefix }}{{ module_info.name }}PresenterInput, {{ prefix }}{{ module_info.name }}InteractorOutput>
+
+@property (nonatomic, weak) id<{{ prefix }}{{ module_info.name }}PresenterOutput> output;
+@property (nonatomic) id<{{ prefix }}{{ module_info.name }}InteractorInput> interactor;
+@property (nonatomic) {{ prefix }}{{ module_info.name }}Wireframe *wireframe;
+
+@end

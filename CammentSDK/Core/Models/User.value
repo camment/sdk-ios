@@ -1,0 +1,8 @@
+User {
+  NSInteger userId
+  NSString *username
+  NSString *firstname
+  NSString *lastname
+  NSString *email
+  NSString *visibility
+}

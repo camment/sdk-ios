@@ -1,0 +1,7 @@
+%type name="AVAsset" library="AVFoundation" file="AVAsset"
+Camment {
+  NSInteger cammentId
+  NSString* remoteURL
+  NSString* localURL
+  AVAsset* localAsset
+}

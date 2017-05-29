@@ -12,7 +12,6 @@
 #import "CMCognitoAuthService.h"
 #import "CMCognitoFacebookAuthProvider.h"
 #import "CMCamment.h"
-#import "CMCammentIdentity.h"
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
 #import "CMCammentFacebookIdentity.h"

@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class CMCammentIdentity;
+#import "CMCammentIdentity.h"
 
 
 @interface CammentSDK: NSObject

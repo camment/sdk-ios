@@ -19,6 +19,6 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 #import "CMCammentIdentity.h"
 #import "CMCammentFacebookIdentity.h"
 #import "CammentSDK.h"
-#import "CMCammentsInStreamPlayerWireframe.h"
-#import "CMShowsListWireframe.h"
 #import "CammentSDKHeader.h"
+#import "CMShowsListModule.h"
+#import "CMPublicModuleInterface.h"

@@ -73,16 +73,16 @@
 		95CD2D551ED8494600DB7660 /* CMAutoFrameFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D0D1ED8494600DB7660 /* CMAutoFrameFilter.m */; };
 		95CD2D561ED8494600DB7660 /* CMCammentRecorderInteractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D0E1ED8494600DB7660 /* CMCammentRecorderInteractor.h */; };
 		95CD2D571ED8494600DB7660 /* CMCammentRecorderInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D0F1ED8494600DB7660 /* CMCammentRecorderInteractor.m */; };
-		95CD2D581ED8494600DB7660 /* CMCammentRecorderInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D101ED8494600DB7660 /* CMCammentRecorderInteractorInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		95CD2D591ED8494600DB7660 /* CMCammentRecorderInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D111ED8494600DB7660 /* CMCammentRecorderInteractorOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D581ED8494600DB7660 /* CMCammentRecorderInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D101ED8494600DB7660 /* CMCammentRecorderInteractorInput.h */; };
+		95CD2D591ED8494600DB7660 /* CMCammentRecorderInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D111ED8494600DB7660 /* CMCammentRecorderInteractorOutput.h */; };
 		95CD2D5A1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D121ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.h */; };
 		95CD2D5B1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D131ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.m */; };
-		95CD2D5C1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D141ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		95CD2D5D1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D151ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D5C1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D141ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorInput.h */; };
+		95CD2D5D1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D151ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorOutput.h */; };
 		95CD2D5E1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D171ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.h */; };
 		95CD2D5F1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D181ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.m */; };
-		95CD2D601ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D191ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		95CD2D611ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D1A1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D601ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D191ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterInput.h */; };
+		95CD2D611ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D1A1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterOutput.h */; };
 		95CD2D621ED8494600DB7660 /* CMCammentsBlockPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D1C1ED8494600DB7660 /* CMCammentsBlockPresenter.h */; };
 		95CD2D631ED8494600DB7660 /* CMCammentsBlockPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D1D1ED8494600DB7660 /* CMCammentsBlockPresenter.m */; };
 		95CD2D641ED8494600DB7660 /* CMHalfOpacityAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D201ED8494600DB7660 /* CMHalfOpacityAnimation.h */; };
@@ -107,26 +107,26 @@
 		95CD2D771ED8494600DB7660 /* CMLeftAlignedLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D341ED8494600DB7660 /* CMLeftAlignedLayout.m */; };
 		95CD2D781ED8494600DB7660 /* CMStreamPlayerNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D351ED8494600DB7660 /* CMStreamPlayerNode.h */; };
 		95CD2D791ED8494600DB7660 /* CMStreamPlayerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D361ED8494600DB7660 /* CMStreamPlayerNode.m */; };
-		95CD2D7A1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D381ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D7A1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D381ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.h */; };
 		95CD2D7B1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D391ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.m */; };
 		95CD2D7C1ED8494600DB7660 /* CMShowsListInteractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D3C1ED8494600DB7660 /* CMShowsListInteractor.h */; };
 		95CD2D7D1ED8494600DB7660 /* CMShowsListInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D3D1ED8494600DB7660 /* CMShowsListInteractor.m */; };
-		95CD2D7E1ED8494600DB7660 /* CMShowsListInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D3E1ED8494600DB7660 /* CMShowsListInteractorInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		95CD2D7F1ED8494600DB7660 /* CMShowsListInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D3F1ED8494600DB7660 /* CMShowsListInteractorOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D7E1ED8494600DB7660 /* CMShowsListInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D3E1ED8494600DB7660 /* CMShowsListInteractorInput.h */; };
+		95CD2D7F1ED8494600DB7660 /* CMShowsListInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D3F1ED8494600DB7660 /* CMShowsListInteractorOutput.h */; };
 		95CD2D801ED8494600DB7660 /* CMShowsListPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D411ED8494600DB7660 /* CMShowsListPresenter.h */; };
 		95CD2D811ED8494600DB7660 /* CMShowsListPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D421ED8494600DB7660 /* CMShowsListPresenter.m */; };
-		95CD2D821ED8494600DB7660 /* CMShowsListPresenterInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D431ED8494600DB7660 /* CMShowsListPresenterInput.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		95CD2D831ED8494600DB7660 /* CMShowsListPresenterOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D441ED8494600DB7660 /* CMShowsListPresenterOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D821ED8494600DB7660 /* CMShowsListPresenterInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D431ED8494600DB7660 /* CMShowsListPresenterInput.h */; };
+		95CD2D831ED8494600DB7660 /* CMShowsListPresenterOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D441ED8494600DB7660 /* CMShowsListPresenterOutput.h */; };
 		95CD2D841ED8494600DB7660 /* CMShowsListCollectionPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D461ED8494600DB7660 /* CMShowsListCollectionPresenter.h */; };
 		95CD2D851ED8494600DB7660 /* CMShowsListCollectionPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D471ED8494600DB7660 /* CMShowsListCollectionPresenter.m */; };
-		95CD2D861ED8494600DB7660 /* CMShowsListCollectionPresenterOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D481ED8494600DB7660 /* CMShowsListCollectionPresenterOutput.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D861ED8494600DB7660 /* CMShowsListCollectionPresenterOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D481ED8494600DB7660 /* CMShowsListCollectionPresenterOutput.h */; };
 		95CD2D871ED8494600DB7660 /* CMShowsListViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D4A1ED8494600DB7660 /* CMShowsListViewController.h */; };
 		95CD2D881ED8494600DB7660 /* CMShowsListViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D4B1ED8494600DB7660 /* CMShowsListViewController.m */; };
 		95CD2D891ED8494600DB7660 /* CMShowCellNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D4D1ED8494600DB7660 /* CMShowCellNode.h */; };
 		95CD2D8A1ED8494600DB7660 /* CMShowCellNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D4E1ED8494600DB7660 /* CMShowCellNode.m */; };
 		95CD2D8B1ED8494600DB7660 /* CMShowsListNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D4F1ED8494600DB7660 /* CMShowsListNode.h */; };
 		95CD2D8C1ED8494600DB7660 /* CMShowsListNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D501ED8494600DB7660 /* CMShowsListNode.m */; };
-		95CD2D8D1ED8494600DB7660 /* CMShowsListWireframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D521ED8494600DB7660 /* CMShowsListWireframe.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2D8D1ED8494600DB7660 /* CMShowsListWireframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D521ED8494600DB7660 /* CMShowsListWireframe.h */; };
 		95CD2D8E1ED8494600DB7660 /* CMShowsListWireframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D531ED8494600DB7660 /* CMShowsListWireframe.m */; };
 		95CD2D8F1ED8499500DB7660 /* SCRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C7C1ED843C200DB7660 /* SCRecorder.framework */; };
 		95CD2DD51ED84C8300DB7660 /* AccountKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DCA1ED84C8300DB7660 /* AccountKit.framework */; };
@@ -143,6 +143,9 @@
 		95CD2DE41ED84D0A00DB7660 /* awsiot-identity.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */; };
 		95CD2DE51ED84D0A00DB7660 /* backgroundStream.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE21ED84D0A00DB7660 /* backgroundStream.mp4 */; };
 		95CD2DE61ED84D0A00DB7660 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE31ED84D0A00DB7660 /* Config.plist */; };
+		95CD2E1B1EDC0E0C00DB7660 /* CMShowsListModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */; };
+		95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -315,6 +318,9 @@
 		95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "awsiot-identity.p12"; sourceTree = "<group>"; };
 		95CD2DE21ED84D0A00DB7660 /* backgroundStream.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = backgroundStream.mp4; sourceTree = "<group>"; };
 		95CD2DE31ED84D0A00DB7660 /* Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
+		95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowsListModule.h; sourceTree = "<group>"; };
+		95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListModule.m; sourceTree = "<group>"; };
+		95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMPublicModuleInterface.h; path = PublicModule/CMPublicModuleInterface.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -592,6 +598,7 @@
 		95CD2D091ED8494600DB7660 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				95CD2E211EDC0F3A00DB7660 /* PublicModule */,
 				95CD2D0A1ED8494600DB7660 /* CammentsInStreamPlayer */,
 				95CD2D3A1ED8494600DB7660 /* ShowsList */,
 				6FFABB7C48C0955956A52984 /* CammentSDK.m */,
@@ -710,6 +717,8 @@
 				95CD2D401ED8494600DB7660 /* Presenter */,
 				95CD2D491ED8494600DB7660 /* View */,
 				95CD2D511ED8494600DB7660 /* Wireframe */,
+				95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */,
+				95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */,
 			);
 			path = ShowsList;
 			sourceTree = "<group>";
@@ -787,6 +796,14 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
+		95CD2E211EDC0F3A00DB7660 /* PublicModule */ = {
+			isa = PBXGroup;
+			children = (
+				95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */,
+			);
+			name = PublicModule;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -794,6 +811,12 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */,
+				95CD2CE71ED848ED00DB7660 /* CMCamment.h in Headers */,
+				6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */,
+				6FFAB409083C441438B2BF0E /* CammentSDK.h in Headers */,
+				95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */,
+				95CD2E1B1EDC0E0C00DB7660 /* CMShowsListModule.h in Headers */,
 				95CD2D7F1ED8494600DB7660 /* CMShowsListInteractorOutput.h in Headers */,
 				95CD2D601ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterInput.h in Headers */,
 				95CD2D611ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterOutput.h in Headers */,
@@ -803,11 +826,7 @@
 				95CD2D821ED8494600DB7660 /* CMShowsListPresenterInput.h in Headers */,
 				95CD2D861ED8494600DB7660 /* CMShowsListCollectionPresenterOutput.h in Headers */,
 				95CD2D831ED8494600DB7660 /* CMShowsListPresenterOutput.h in Headers */,
-				95CD2CE71ED848ED00DB7660 /* CMCamment.h in Headers */,
-				6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */,
 				95CD2D7E1ED8494600DB7660 /* CMShowsListInteractorInput.h in Headers */,
-				6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */,
-				6FFAB409083C441438B2BF0E /* CammentSDK.h in Headers */,
 				95CD2D7A1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.h in Headers */,
 				95CD2D5D1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorOutput.h in Headers */,
 				95CD2D8D1ED8494600DB7660 /* CMShowsListWireframe.h in Headers */,
@@ -1019,6 +1038,7 @@
 				95CD2CE41ED848ED00DB7660 /* CMCognitoAuthService.m in Sources */,
 				95CD2CEE1ED848ED00DB7660 /* CMDevcammentClient.m in Sources */,
 				95CD2D8E1ED8494600DB7660 /* CMShowsListWireframe.m in Sources */,
+				95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */,
 				95CD2D011ED848ED00DB7660 /* Post.m in Sources */,
 				95CD2CFC1ED848ED00DB7660 /* CMAppConfig.m in Sources */,
 				95CD2D6F1ED8494600DB7660 /* CMCammentNode.m in Sources */,

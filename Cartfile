@@ -1,5 +1,0 @@
-github "facebook/AsyncDisplayKit" "master"
-github "ReactiveCocoa/ReactiveObjC"
-github "facebook/pop"
-github "jdg/MBProgressHUD" ~> 1.0.0
-github "aws/aws-sdk-ios"

@@ -1,7 +1,0 @@
-github "ReactiveCocoa/ReactiveObjC" "3.0.0"
-github "aws/aws-sdk-ios" "2.5.7"
-github "facebook/AsyncDisplayKit" "5df7456c56e3fd579783b8816aacb82cc6c1abd1"
-github "facebook/pop" "1.0.9"
-github "jdg/MBProgressHUD" "1.0.0"
-github "pinterest/PINCache" "3.0.1-beta.2"
-github "pinterest/PINRemoteImage" "3.0.0-beta.6"

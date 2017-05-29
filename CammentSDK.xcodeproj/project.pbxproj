@@ -237,7 +237,7 @@
 		959E08B31EDC3FBF00C1F0F9 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
-			dstPath = ../..;
+			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
 				959E08DE1EDC401800C1F0F9 /* AccountKit.framework in CopyFiles */,

@@ -3,7 +3,7 @@
 // Copyright (c) 2017 Sportacam. All rights reserved.
 //
 
-#import <SCRecorder/SCRecorder.h>
+#import "SCRecorder.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentRecorderInteractor.h"
 #import "CMCammentRecorderInteractorOutput.h"

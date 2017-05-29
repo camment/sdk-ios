@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
-#import "CMCammentIdentity.h"
+#import <CammentSDK/CMCammentIdentity.h>
 
 
 @interface CMCammentFacebookIdentity: CMCammentIdentity

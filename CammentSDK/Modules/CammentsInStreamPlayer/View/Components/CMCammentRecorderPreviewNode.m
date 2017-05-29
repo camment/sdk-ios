@@ -2,7 +2,7 @@
 // Created by Alexander Fedosov on 16.05.17.
 // Copyright (c) 2017 Sportacam. All rights reserved.
 //
-#import <SCRecorder/SCFilterImageView.h>
+#import "SCFilterImageView.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <pop/POP.h>
 #import "CMCammentRecorderPreviewNode.h"

@@ -13,21 +13,121 @@
 		6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FFABF523CEEF44F620EC732 /* CMCammentIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */; };
-		95CD2C411ED836C900DB7660 /* CammentSDKHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2C3F1ED836C900DB7660 /* CammentSDKHeader.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		95CD2C571ED83F7100DB7660 /* AsyncDisplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C501ED83F7100DB7660 /* AsyncDisplayKit.framework */; };
-		95CD2C581ED83F7100DB7660 /* AWSAPIGateway.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C511ED83F7100DB7660 /* AWSAPIGateway.framework */; };
-		95CD2C591ED83F7100DB7660 /* AWSCognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C521ED83F7100DB7660 /* AWSCognito.framework */; };
-		95CD2C5A1ED83F7100DB7660 /* AWSCognitoIdentityProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C531ED83F7100DB7660 /* AWSCognitoIdentityProvider.framework */; };
-		95CD2C5B1ED83F7100DB7660 /* AWSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C541ED83F7100DB7660 /* AWSCore.framework */; };
-		95CD2C5C1ED83F7100DB7660 /* AWSIoT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C551ED83F7100DB7660 /* AWSIoT.framework */; };
-		95CD2C5D1ED83F7100DB7660 /* AWSMobileAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C561ED83F7100DB7660 /* AWSMobileAnalytics.framework */; };
-		95CD2C641ED83FE400DB7660 /* MBProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C5F1ED83FE400DB7660 /* MBProgressHUD.framework */; };
-		95CD2C651ED83FE400DB7660 /* PINCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C601ED83FE400DB7660 /* PINCache.framework */; };
-		95CD2C661ED83FE400DB7660 /* PINRemoteImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C611ED83FE400DB7660 /* PINRemoteImage.framework */; };
-		95CD2C671ED83FE400DB7660 /* pop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C621ED83FE400DB7660 /* pop.framework */; };
-		95CD2C681ED83FE400DB7660 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C631ED83FE400DB7660 /* ReactiveObjC.framework */; };
+		959E089A1EDC3F2000C1F0F9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C821ED843F600DB7660 /* AVFoundation.framework */; };
+		959E089B1EDC3F3000C1F0F9 /* AccountKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F391EDC39500024C4F6 /* AccountKit.framework */; };
+		959E089C1EDC3F3000C1F0F9 /* AsyncDisplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */; };
+		959E089D1EDC3F3000C1F0F9 /* AWSAPIGateway.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */; };
+		959E089E1EDC3F3000C1F0F9 /* AWSCognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */; };
+		959E089F1EDC3F3000C1F0F9 /* AWSCognitoIdentityProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */; };
+		959E08A01EDC3F3000C1F0F9 /* AWSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F411EDC39500024C4F6 /* AWSCore.framework */; };
+		959E08A11EDC3F3000C1F0F9 /* AWSDynamoDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */; };
+		959E08A21EDC3F3000C1F0F9 /* AWSIoT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F451EDC39500024C4F6 /* AWSIoT.framework */; };
+		959E08A31EDC3F3000C1F0F9 /* AWSLogs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */; };
+		959E08A41EDC3F3000C1F0F9 /* AWSMobileAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */; };
+		959E08A51EDC3F3000C1F0F9 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F501EDC39500024C4F6 /* AWSS3.framework */; };
+		959E08A61EDC3F3000C1F0F9 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F551EDC39500024C4F6 /* Bolts.framework */; };
+		959E08A71EDC3F3000C1F0F9 /* FBAudienceNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */; };
+		959E08A81EDC3F3000C1F0F9 /* FBNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F581EDC39500024C4F6 /* FBNotifications.framework */; };
+		959E08A91EDC3F3000C1F0F9 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */; };
+		959E08AA1EDC3F3000C1F0F9 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */; };
+		959E08AB1EDC3F3000C1F0F9 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */; };
+		959E08AC1EDC3F3000C1F0F9 /* FBSDKPlacesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */; };
+		959E08AD1EDC3F3000C1F0F9 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */; };
+		959E08AE1EDC3F3000C1F0F9 /* MBProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */; };
+		959E08AF1EDC3F3000C1F0F9 /* PINCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5F1EDC39500024C4F6 /* PINCache.framework */; };
+		959E08B01EDC3F3000C1F0F9 /* PINRemoteImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */; };
+		959E08B11EDC3F3000C1F0F9 /* pop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F611EDC39500024C4F6 /* pop.framework */; };
+		959E08B21EDC3F3000C1F0F9 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */; };
+		959E08DE1EDC401800C1F0F9 /* AccountKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F391EDC39500024C4F6 /* AccountKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08DF1EDC401800C1F0F9 /* AsyncDisplayKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E01EDC401800C1F0F9 /* AWSAPIGateway.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E11EDC401800C1F0F9 /* AWSCognito.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E21EDC401800C1F0F9 /* AWSCognitoIdentityProvider.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E31EDC401800C1F0F9 /* AWSCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F411EDC39500024C4F6 /* AWSCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E41EDC401800C1F0F9 /* AWSDynamoDB.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E51EDC401800C1F0F9 /* AWSIoT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F451EDC39500024C4F6 /* AWSIoT.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E61EDC401800C1F0F9 /* AWSLogs.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E71EDC401800C1F0F9 /* AWSMobileAnalytics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E81EDC401800C1F0F9 /* AWSS3.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F501EDC39500024C4F6 /* AWSS3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08E91EDC401800C1F0F9 /* Bolts.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F551EDC39500024C4F6 /* Bolts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08EA1EDC401800C1F0F9 /* FBAudienceNetwork.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08EB1EDC401800C1F0F9 /* FBNotifications.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F581EDC39500024C4F6 /* FBNotifications.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08EC1EDC401800C1F0F9 /* FBSDKCoreKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08ED1EDC401800C1F0F9 /* FBSDKLoginKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08EE1EDC401800C1F0F9 /* FBSDKMessengerShareKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08EF1EDC401800C1F0F9 /* FBSDKPlacesKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F01EDC401800C1F0F9 /* FBSDKShareKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F11EDC401800C1F0F9 /* MBProgressHUD.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F21EDC401800C1F0F9 /* PINCache.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5F1EDC39500024C4F6 /* PINCache.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F31EDC401800C1F0F9 /* PINRemoteImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F41EDC401800C1F0F9 /* pop.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F611EDC39500024C4F6 /* pop.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F51EDC401800C1F0F9 /* ReactiveObjC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		959E08F81EDC403C00C1F0F9 /* AccountKitStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 959E08F61EDC403C00C1F0F9 /* AccountKitStrings.bundle */; };
+		959E08F91EDC403C00C1F0F9 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 959E08F71EDC403C00C1F0F9 /* FacebookSDKStrings.bundle */; };
+		95CA1EFA1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */; };
+		95CA1EFB1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */; };
+		95CA1EFC1EDC38D50024C4F6 /* SCAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */; };
+		95CA1EFD1EDC38D50024C4F6 /* SCAssetExportSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EBF1EDC38D50024C4F6 /* SCAssetExportSession.m */; };
+		95CA1EFE1EDC38D50024C4F6 /* SCAudioConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EC01EDC38D50024C4F6 /* SCAudioConfiguration.h */; };
+		95CA1EFF1EDC38D50024C4F6 /* SCAudioConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EC11EDC38D50024C4F6 /* SCAudioConfiguration.m */; };
+		95CA1F001EDC38D50024C4F6 /* SCAudioTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EC21EDC38D50024C4F6 /* SCAudioTools.h */; };
+		95CA1F011EDC38D50024C4F6 /* SCAudioTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EC31EDC38D50024C4F6 /* SCAudioTools.m */; };
+		95CA1F021EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EC41EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch */; };
+		95CA1F031EDC38D50024C4F6 /* SCContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EC51EDC38D50024C4F6 /* SCContext.h */; };
+		95CA1F041EDC38D50024C4F6 /* SCContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EC61EDC38D50024C4F6 /* SCContext.m */; };
+		95CA1F051EDC38D50024C4F6 /* SCFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EC71EDC38D50024C4F6 /* SCFilter.h */; };
+		95CA1F061EDC38D50024C4F6 /* SCFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EC81EDC38D50024C4F6 /* SCFilter.m */; };
+		95CA1F071EDC38D50024C4F6 /* SCFilter+UIImage.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EC91EDC38D50024C4F6 /* SCFilter+UIImage.h */; };
+		95CA1F081EDC38D50024C4F6 /* SCFilter+UIImage.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ECA1EDC38D50024C4F6 /* SCFilter+UIImage.m */; };
+		95CA1F091EDC38D50024C4F6 /* SCFilter+VideoComposition.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ECB1EDC38D50024C4F6 /* SCFilter+VideoComposition.h */; };
+		95CA1F0A1EDC38D50024C4F6 /* SCFilter+VideoComposition.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ECC1EDC38D50024C4F6 /* SCFilter+VideoComposition.m */; };
+		95CA1F0B1EDC38D50024C4F6 /* SCFilterAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ECD1EDC38D50024C4F6 /* SCFilterAnimation.h */; };
+		95CA1F0C1EDC38D50024C4F6 /* SCFilterAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ECE1EDC38D50024C4F6 /* SCFilterAnimation.m */; };
+		95CA1F0D1EDC38D50024C4F6 /* SCFilterImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ECF1EDC38D50024C4F6 /* SCFilterImageView.h */; };
+		95CA1F0E1EDC38D50024C4F6 /* SCFilterImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ED01EDC38D50024C4F6 /* SCFilterImageView.m */; };
+		95CA1F0F1EDC38D50024C4F6 /* SCImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ED11EDC38D50024C4F6 /* SCImageView.h */; };
+		95CA1F101EDC38D50024C4F6 /* SCImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ED21EDC38D50024C4F6 /* SCImageView.m */; };
+		95CA1F111EDC38D50024C4F6 /* SCIOPixelBuffers.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ED31EDC38D50024C4F6 /* SCIOPixelBuffers.h */; };
+		95CA1F121EDC38D50024C4F6 /* SCIOPixelBuffers.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ED41EDC38D50024C4F6 /* SCIOPixelBuffers.m */; };
+		95CA1F131EDC38D50024C4F6 /* SCMediaTypeConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ED51EDC38D50024C4F6 /* SCMediaTypeConfiguration.h */; };
+		95CA1F141EDC38D50024C4F6 /* SCMediaTypeConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ED61EDC38D50024C4F6 /* SCMediaTypeConfiguration.m */; };
+		95CA1F151EDC38D50024C4F6 /* SCPhotoConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ED71EDC38D50024C4F6 /* SCPhotoConfiguration.h */; };
+		95CA1F161EDC38D50024C4F6 /* SCPhotoConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1ED81EDC38D50024C4F6 /* SCPhotoConfiguration.m */; };
+		95CA1F171EDC38D50024C4F6 /* SCPlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1ED91EDC38D50024C4F6 /* SCPlayer.h */; };
+		95CA1F181EDC38D50024C4F6 /* SCPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EDA1EDC38D50024C4F6 /* SCPlayer.m */; };
+		95CA1F191EDC38D50024C4F6 /* SCProcessingQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EDB1EDC38D50024C4F6 /* SCProcessingQueue.h */; };
+		95CA1F1A1EDC38D50024C4F6 /* SCProcessingQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EDC1EDC38D50024C4F6 /* SCProcessingQueue.m */; };
+		95CA1F1B1EDC38D50024C4F6 /* SCRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EDD1EDC38D50024C4F6 /* SCRecorder.h */; };
+		95CA1F1C1EDC38D50024C4F6 /* SCRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EDE1EDC38D50024C4F6 /* SCRecorder.m */; };
+		95CA1F1D1EDC38D50024C4F6 /* SCRecorderDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EDF1EDC38D50024C4F6 /* SCRecorderDelegate.h */; };
+		95CA1F1E1EDC38D50024C4F6 /* SCRecorderFocusTargetView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EE01EDC38D50024C4F6 /* SCRecorderFocusTargetView.h */; };
+		95CA1F1F1EDC38D50024C4F6 /* SCRecorderFocusTargetView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EE11EDC38D50024C4F6 /* SCRecorderFocusTargetView.m */; };
+		95CA1F201EDC38D50024C4F6 /* SCRecorderHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EE21EDC38D50024C4F6 /* SCRecorderHeader.h */; };
+		95CA1F211EDC38D50024C4F6 /* SCRecorderTools.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EE31EDC38D50024C4F6 /* SCRecorderTools.h */; };
+		95CA1F221EDC38D50024C4F6 /* SCRecorderTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EE41EDC38D50024C4F6 /* SCRecorderTools.m */; };
+		95CA1F231EDC38D50024C4F6 /* SCRecorderToolsView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EE51EDC38D50024C4F6 /* SCRecorderToolsView.h */; };
+		95CA1F241EDC38D50024C4F6 /* SCRecorderToolsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EE61EDC38D50024C4F6 /* SCRecorderToolsView.m */; };
+		95CA1F251EDC38D50024C4F6 /* SCRecordSession_Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EE71EDC38D50024C4F6 /* SCRecordSession_Internal.h */; };
+		95CA1F261EDC38D50024C4F6 /* SCRecordSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EE81EDC38D50024C4F6 /* SCRecordSession.h */; };
+		95CA1F271EDC38D50024C4F6 /* SCRecordSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EE91EDC38D50024C4F6 /* SCRecordSession.m */; };
+		95CA1F281EDC38D50024C4F6 /* SCRecordSessionSegment.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EEA1EDC38D50024C4F6 /* SCRecordSessionSegment.h */; };
+		95CA1F291EDC38D50024C4F6 /* SCRecordSessionSegment.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EEB1EDC38D50024C4F6 /* SCRecordSessionSegment.m */; };
+		95CA1F2A1EDC38D50024C4F6 /* SCSampleBufferHolder.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EEC1EDC38D50024C4F6 /* SCSampleBufferHolder.h */; };
+		95CA1F2B1EDC38D50024C4F6 /* SCSampleBufferHolder.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EED1EDC38D50024C4F6 /* SCSampleBufferHolder.m */; };
+		95CA1F2C1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EEE1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.h */; };
+		95CA1F2D1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EEF1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m */; };
+		95CA1F2E1EDC38D50024C4F6 /* SCSwipeableFilterView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EF01EDC38D50024C4F6 /* SCSwipeableFilterView.h */; };
+		95CA1F2F1EDC38D50024C4F6 /* SCSwipeableFilterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EF11EDC38D50024C4F6 /* SCSwipeableFilterView.m */; };
+		95CA1F301EDC38D50024C4F6 /* SCVideoConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EF21EDC38D50024C4F6 /* SCVideoConfiguration.h */; };
+		95CA1F311EDC38D50024C4F6 /* SCVideoConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EF31EDC38D50024C4F6 /* SCVideoConfiguration.m */; };
+		95CA1F321EDC38D50024C4F6 /* SCVideoPlayerView.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EF41EDC38D50024C4F6 /* SCVideoPlayerView.h */; };
+		95CA1F331EDC38D50024C4F6 /* SCVideoPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EF51EDC38D50024C4F6 /* SCVideoPlayerView.m */; };
+		95CA1F341EDC38D50024C4F6 /* SCWeakSelectorTarget.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EF61EDC38D50024C4F6 /* SCWeakSelectorTarget.h */; };
+		95CA1F351EDC38D50024C4F6 /* SCWeakSelectorTarget.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EF71EDC38D50024C4F6 /* SCWeakSelectorTarget.m */; };
+		95CA1F361EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EF81EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.h */; };
+		95CA1F371EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EF91EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m */; };
+		95CA1FBE1EDC3B220024C4F6 /* CammentSDKFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1FBD1EDC3B220024C4F6 /* CammentSDKFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		95CD2C811ED843EF00DB7660 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C801ED843EF00DB7660 /* ImageIO.framework */; };
-		95CD2C831ED843F600DB7660 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C821ED843F600DB7660 /* AVFoundation.framework */; };
 		95CD2C851ED843FC00DB7660 /* VideoToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C841ED843FC00DB7660 /* VideoToolbox.framework */; };
 		95CD2CE11ED848ED00DB7660 /* CMAnalytics.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CAE1ED848ED00DB7660 /* CMAnalytics.h */; };
 		95CD2CE21ED848ED00DB7660 /* CMAnalytics.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CAF1ED848ED00DB7660 /* CMAnalytics.m */; };
@@ -59,13 +159,10 @@
 		95CD2CFC1ED848ED00DB7660 /* CMAppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CD11ED848ED00DB7660 /* CMAppConfig.m */; };
 		95CD2CFD1ED848ED00DB7660 /* Camment.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CD31ED848ED00DB7660 /* Camment.h */; };
 		95CD2CFE1ED848ED00DB7660 /* Camment.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CD41ED848ED00DB7660 /* Camment.m */; };
-		95CD2CFF1ED848ED00DB7660 /* Camment.value in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2CD51ED848ED00DB7660 /* Camment.value */; };
 		95CD2D001ED848ED00DB7660 /* Post.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CD61ED848ED00DB7660 /* Post.h */; };
 		95CD2D011ED848ED00DB7660 /* Post.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CD71ED848ED00DB7660 /* Post.m */; };
-		95CD2D021ED848ED00DB7660 /* Post.value in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2CD81ED848ED00DB7660 /* Post.value */; };
 		95CD2D031ED848ED00DB7660 /* User.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CD91ED848ED00DB7660 /* User.h */; };
 		95CD2D041ED848ED00DB7660 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CDA1ED848ED00DB7660 /* User.m */; };
-		95CD2D051ED848ED00DB7660 /* User.value in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2CDB1ED848ED00DB7660 /* User.value */; };
 		95CD2D061ED848ED00DB7660 /* CMStore.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CDD1ED848ED00DB7660 /* CMStore.h */; };
 		95CD2D071ED848ED00DB7660 /* CMStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CDE1ED848ED00DB7660 /* CMStore.m */; };
 		95CD2D081ED848ED00DB7660 /* UIColorMacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CE01ED848ED00DB7660 /* UIColorMacros.h */; };
@@ -128,18 +225,6 @@
 		95CD2D8C1ED8494600DB7660 /* CMShowsListNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D501ED8494600DB7660 /* CMShowsListNode.m */; };
 		95CD2D8D1ED8494600DB7660 /* CMShowsListWireframe.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2D521ED8494600DB7660 /* CMShowsListWireframe.h */; };
 		95CD2D8E1ED8494600DB7660 /* CMShowsListWireframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2D531ED8494600DB7660 /* CMShowsListWireframe.m */; };
-		95CD2D8F1ED8499500DB7660 /* SCRecorder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C7C1ED843C200DB7660 /* SCRecorder.framework */; };
-		95CD2DD51ED84C8300DB7660 /* AccountKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DCA1ED84C8300DB7660 /* AccountKit.framework */; };
-		95CD2DD61ED84C8300DB7660 /* AccountKitStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DCB1ED84C8300DB7660 /* AccountKitStrings.bundle */; };
-		95CD2DD71ED84C8300DB7660 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DCC1ED84C8300DB7660 /* Bolts.framework */; };
-		95CD2DD81ED84C8300DB7660 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DCD1ED84C8300DB7660 /* FacebookSDKStrings.bundle */; };
-		95CD2DD91ED84C8300DB7660 /* FBAudienceNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DCE1ED84C8300DB7660 /* FBAudienceNetwork.framework */; };
-		95CD2DDA1ED84C8300DB7660 /* FBNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DCF1ED84C8300DB7660 /* FBNotifications.framework */; };
-		95CD2DDB1ED84C8300DB7660 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DD01ED84C8300DB7660 /* FBSDKCoreKit.framework */; };
-		95CD2DDC1ED84C8300DB7660 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DD11ED84C8300DB7660 /* FBSDKLoginKit.framework */; };
-		95CD2DDD1ED84C8300DB7660 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DD21ED84C8300DB7660 /* FBSDKMessengerShareKit.framework */; };
-		95CD2DDE1ED84C8300DB7660 /* FBSDKPlacesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DD31ED84C8300DB7660 /* FBSDKPlacesKit.framework */; };
-		95CD2DDF1ED84C8300DB7660 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2DD41ED84C8300DB7660 /* FBSDKShareKit.framework */; };
 		95CD2DE41ED84D0A00DB7660 /* awsiot-identity.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */; };
 		95CD2DE51ED84D0A00DB7660 /* backgroundStream.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE21ED84D0A00DB7660 /* backgroundStream.mp4 */; };
 		95CD2DE61ED84D0A00DB7660 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE31ED84D0A00DB7660 /* Config.plist */; };
@@ -148,36 +233,41 @@
 		95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		95CD2C771ED843C200DB7660 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DC23FE1117B4200700389EDA;
-			remoteInfo = SCRecorder;
+/* Begin PBXCopyFilesBuildPhase section */
+		959E08B31EDC3FBF00C1F0F9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = ../..;
+			dstSubfolderSpec = 10;
+			files = (
+				959E08DE1EDC401800C1F0F9 /* AccountKit.framework in CopyFiles */,
+				959E08DF1EDC401800C1F0F9 /* AsyncDisplayKit.framework in CopyFiles */,
+				959E08E01EDC401800C1F0F9 /* AWSAPIGateway.framework in CopyFiles */,
+				959E08E11EDC401800C1F0F9 /* AWSCognito.framework in CopyFiles */,
+				959E08E21EDC401800C1F0F9 /* AWSCognitoIdentityProvider.framework in CopyFiles */,
+				959E08E31EDC401800C1F0F9 /* AWSCore.framework in CopyFiles */,
+				959E08E41EDC401800C1F0F9 /* AWSDynamoDB.framework in CopyFiles */,
+				959E08E51EDC401800C1F0F9 /* AWSIoT.framework in CopyFiles */,
+				959E08E61EDC401800C1F0F9 /* AWSLogs.framework in CopyFiles */,
+				959E08E71EDC401800C1F0F9 /* AWSMobileAnalytics.framework in CopyFiles */,
+				959E08E81EDC401800C1F0F9 /* AWSS3.framework in CopyFiles */,
+				959E08E91EDC401800C1F0F9 /* Bolts.framework in CopyFiles */,
+				959E08EA1EDC401800C1F0F9 /* FBAudienceNetwork.framework in CopyFiles */,
+				959E08EB1EDC401800C1F0F9 /* FBNotifications.framework in CopyFiles */,
+				959E08EC1EDC401800C1F0F9 /* FBSDKCoreKit.framework in CopyFiles */,
+				959E08ED1EDC401800C1F0F9 /* FBSDKLoginKit.framework in CopyFiles */,
+				959E08EE1EDC401800C1F0F9 /* FBSDKMessengerShareKit.framework in CopyFiles */,
+				959E08EF1EDC401800C1F0F9 /* FBSDKPlacesKit.framework in CopyFiles */,
+				959E08F01EDC401800C1F0F9 /* FBSDKShareKit.framework in CopyFiles */,
+				959E08F11EDC401800C1F0F9 /* MBProgressHUD.framework in CopyFiles */,
+				959E08F21EDC401800C1F0F9 /* PINCache.framework in CopyFiles */,
+				959E08F31EDC401800C1F0F9 /* PINRemoteImage.framework in CopyFiles */,
+				959E08F41EDC401800C1F0F9 /* pop.framework in CopyFiles */,
+				959E08F51EDC401800C1F0F9 /* ReactiveObjC.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
 		};
-		95CD2C791ED843C200DB7660 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DCA8EF50192BD1C200839BE2;
-			remoteInfo = SCRecorderMac;
-		};
-		95CD2C7B1ED843C200DB7660 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DCDC1DF31AC79592001DC3D9;
-			remoteInfo = SCRecorderFramework;
-		};
-		95CD2C881ED8452200DB7660 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = DCDC1DF21AC79592001DC3D9;
-			remoteInfo = SCRecorderFramework;
-		};
-/* End PBXContainerItemProxy section */
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		6FFAB75DEC81AE0BFCF0D91E /* CammentSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentSDK.h; sourceTree = "<group>"; };
@@ -186,22 +276,121 @@
 		6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentIdentity.m; sourceTree = "<group>"; };
 		6FFABD97717BB19E39E29DBE /* CMCammentFacebookIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentFacebookIdentity.m; sourceTree = "<group>"; };
 		6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentIdentity.h; sourceTree = "<group>"; };
+		959E08F61EDC403C00C1F0F9 /* AccountKitStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AccountKitStrings.bundle; sourceTree = "<group>"; };
+		959E08F71EDC403C00C1F0F9 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
+		95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+SCSaveToCameraRoll.h"; path = "SCRecorder-2.7.0/Library/Sources/NSURL+SCSaveToCameraRoll.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+SCSaveToCameraRoll.m"; path = "SCRecorder-2.7.0/Library/Sources/NSURL+SCSaveToCameraRoll.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCAssetExportSession.h; path = "SCRecorder-2.7.0/Library/Sources/SCAssetExportSession.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EBF1EDC38D50024C4F6 /* SCAssetExportSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCAssetExportSession.m; path = "SCRecorder-2.7.0/Library/Sources/SCAssetExportSession.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EC01EDC38D50024C4F6 /* SCAudioConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCAudioConfiguration.h; path = "SCRecorder-2.7.0/Library/Sources/SCAudioConfiguration.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EC11EDC38D50024C4F6 /* SCAudioConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCAudioConfiguration.m; path = "SCRecorder-2.7.0/Library/Sources/SCAudioConfiguration.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EC21EDC38D50024C4F6 /* SCAudioTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCAudioTools.h; path = "SCRecorder-2.7.0/Library/Sources/SCAudioTools.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EC31EDC38D50024C4F6 /* SCAudioTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCAudioTools.m; path = "SCRecorder-2.7.0/Library/Sources/SCAudioTools.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EC41EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SCAudioVideoRecorder-Prefix.pch"; path = "SCRecorder-2.7.0/Library/Sources/SCAudioVideoRecorder-Prefix.pch"; sourceTree = SOURCE_ROOT; };
+		95CA1EC51EDC38D50024C4F6 /* SCContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCContext.h; path = "SCRecorder-2.7.0/Library/Sources/SCContext.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EC61EDC38D50024C4F6 /* SCContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCContext.m; path = "SCRecorder-2.7.0/Library/Sources/SCContext.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EC71EDC38D50024C4F6 /* SCFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCFilter.h; path = "SCRecorder-2.7.0/Library/Sources/SCFilter.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EC81EDC38D50024C4F6 /* SCFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCFilter.m; path = "SCRecorder-2.7.0/Library/Sources/SCFilter.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EC91EDC38D50024C4F6 /* SCFilter+UIImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SCFilter+UIImage.h"; path = "SCRecorder-2.7.0/Library/Sources/SCFilter+UIImage.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ECA1EDC38D50024C4F6 /* SCFilter+UIImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SCFilter+UIImage.m"; path = "SCRecorder-2.7.0/Library/Sources/SCFilter+UIImage.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ECB1EDC38D50024C4F6 /* SCFilter+VideoComposition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SCFilter+VideoComposition.h"; path = "SCRecorder-2.7.0/Library/Sources/SCFilter+VideoComposition.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ECC1EDC38D50024C4F6 /* SCFilter+VideoComposition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "SCFilter+VideoComposition.m"; path = "SCRecorder-2.7.0/Library/Sources/SCFilter+VideoComposition.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ECD1EDC38D50024C4F6 /* SCFilterAnimation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCFilterAnimation.h; path = "SCRecorder-2.7.0/Library/Sources/SCFilterAnimation.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ECE1EDC38D50024C4F6 /* SCFilterAnimation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCFilterAnimation.m; path = "SCRecorder-2.7.0/Library/Sources/SCFilterAnimation.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ECF1EDC38D50024C4F6 /* SCFilterImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCFilterImageView.h; path = "SCRecorder-2.7.0/Library/Sources/SCFilterImageView.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ED01EDC38D50024C4F6 /* SCFilterImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCFilterImageView.m; path = "SCRecorder-2.7.0/Library/Sources/SCFilterImageView.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ED11EDC38D50024C4F6 /* SCImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCImageView.h; path = "SCRecorder-2.7.0/Library/Sources/SCImageView.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ED21EDC38D50024C4F6 /* SCImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCImageView.m; path = "SCRecorder-2.7.0/Library/Sources/SCImageView.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ED31EDC38D50024C4F6 /* SCIOPixelBuffers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCIOPixelBuffers.h; path = "SCRecorder-2.7.0/Library/Sources/SCIOPixelBuffers.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ED41EDC38D50024C4F6 /* SCIOPixelBuffers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCIOPixelBuffers.m; path = "SCRecorder-2.7.0/Library/Sources/SCIOPixelBuffers.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ED51EDC38D50024C4F6 /* SCMediaTypeConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCMediaTypeConfiguration.h; path = "SCRecorder-2.7.0/Library/Sources/SCMediaTypeConfiguration.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ED61EDC38D50024C4F6 /* SCMediaTypeConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCMediaTypeConfiguration.m; path = "SCRecorder-2.7.0/Library/Sources/SCMediaTypeConfiguration.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ED71EDC38D50024C4F6 /* SCPhotoConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCPhotoConfiguration.h; path = "SCRecorder-2.7.0/Library/Sources/SCPhotoConfiguration.h"; sourceTree = SOURCE_ROOT; };
+		95CA1ED81EDC38D50024C4F6 /* SCPhotoConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCPhotoConfiguration.m; path = "SCRecorder-2.7.0/Library/Sources/SCPhotoConfiguration.m"; sourceTree = SOURCE_ROOT; };
+		95CA1ED91EDC38D50024C4F6 /* SCPlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCPlayer.h; path = "SCRecorder-2.7.0/Library/Sources/SCPlayer.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EDA1EDC38D50024C4F6 /* SCPlayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCPlayer.m; path = "SCRecorder-2.7.0/Library/Sources/SCPlayer.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EDB1EDC38D50024C4F6 /* SCProcessingQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCProcessingQueue.h; path = "SCRecorder-2.7.0/Library/Sources/SCProcessingQueue.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EDC1EDC38D50024C4F6 /* SCProcessingQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCProcessingQueue.m; path = "SCRecorder-2.7.0/Library/Sources/SCProcessingQueue.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EDD1EDC38D50024C4F6 /* SCRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecorder.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecorder.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EDE1EDC38D50024C4F6 /* SCRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCRecorder.m; path = "SCRecorder-2.7.0/Library/Sources/SCRecorder.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EDF1EDC38D50024C4F6 /* SCRecorderDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecorderDelegate.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderDelegate.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE01EDC38D50024C4F6 /* SCRecorderFocusTargetView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecorderFocusTargetView.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderFocusTargetView.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE11EDC38D50024C4F6 /* SCRecorderFocusTargetView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCRecorderFocusTargetView.m; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderFocusTargetView.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EE21EDC38D50024C4F6 /* SCRecorderHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecorderHeader.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderHeader.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE31EDC38D50024C4F6 /* SCRecorderTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecorderTools.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderTools.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE41EDC38D50024C4F6 /* SCRecorderTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCRecorderTools.m; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderTools.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EE51EDC38D50024C4F6 /* SCRecorderToolsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecorderToolsView.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderToolsView.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE61EDC38D50024C4F6 /* SCRecorderToolsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCRecorderToolsView.m; path = "SCRecorder-2.7.0/Library/Sources/SCRecorderToolsView.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EE71EDC38D50024C4F6 /* SCRecordSession_Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecordSession_Internal.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecordSession_Internal.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE81EDC38D50024C4F6 /* SCRecordSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecordSession.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecordSession.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EE91EDC38D50024C4F6 /* SCRecordSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCRecordSession.m; path = "SCRecorder-2.7.0/Library/Sources/SCRecordSession.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EEA1EDC38D50024C4F6 /* SCRecordSessionSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCRecordSessionSegment.h; path = "SCRecorder-2.7.0/Library/Sources/SCRecordSessionSegment.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EEB1EDC38D50024C4F6 /* SCRecordSessionSegment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCRecordSessionSegment.m; path = "SCRecorder-2.7.0/Library/Sources/SCRecordSessionSegment.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EEC1EDC38D50024C4F6 /* SCSampleBufferHolder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCSampleBufferHolder.h; path = "SCRecorder-2.7.0/Library/Sources/SCSampleBufferHolder.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EED1EDC38D50024C4F6 /* SCSampleBufferHolder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCSampleBufferHolder.m; path = "SCRecorder-2.7.0/Library/Sources/SCSampleBufferHolder.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EEE1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCSaveToCameraRollOperation.h; path = "SCRecorder-2.7.0/Library/Sources/SCSaveToCameraRollOperation.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EEF1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCSaveToCameraRollOperation.m; path = "SCRecorder-2.7.0/Library/Sources/SCSaveToCameraRollOperation.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EF01EDC38D50024C4F6 /* SCSwipeableFilterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCSwipeableFilterView.h; path = "SCRecorder-2.7.0/Library/Sources/SCSwipeableFilterView.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EF11EDC38D50024C4F6 /* SCSwipeableFilterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCSwipeableFilterView.m; path = "SCRecorder-2.7.0/Library/Sources/SCSwipeableFilterView.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EF21EDC38D50024C4F6 /* SCVideoConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCVideoConfiguration.h; path = "SCRecorder-2.7.0/Library/Sources/SCVideoConfiguration.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EF31EDC38D50024C4F6 /* SCVideoConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCVideoConfiguration.m; path = "SCRecorder-2.7.0/Library/Sources/SCVideoConfiguration.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EF41EDC38D50024C4F6 /* SCVideoPlayerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCVideoPlayerView.h; path = "SCRecorder-2.7.0/Library/Sources/SCVideoPlayerView.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EF51EDC38D50024C4F6 /* SCVideoPlayerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCVideoPlayerView.m; path = "SCRecorder-2.7.0/Library/Sources/SCVideoPlayerView.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EF61EDC38D50024C4F6 /* SCWeakSelectorTarget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCWeakSelectorTarget.h; path = "SCRecorder-2.7.0/Library/Sources/SCWeakSelectorTarget.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EF71EDC38D50024C4F6 /* SCWeakSelectorTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCWeakSelectorTarget.m; path = "SCRecorder-2.7.0/Library/Sources/SCWeakSelectorTarget.m"; sourceTree = SOURCE_ROOT; };
+		95CA1EF81EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+SCSaveToCameraRoll.h"; path = "SCRecorder-2.7.0/Library/Sources/UIImage+SCSaveToCameraRoll.h"; sourceTree = SOURCE_ROOT; };
+		95CA1EF91EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+SCSaveToCameraRoll.m"; path = "SCRecorder-2.7.0/Library/Sources/UIImage+SCSaveToCameraRoll.m"; sourceTree = SOURCE_ROOT; };
+		95CA1F391EDC39500024C4F6 /* AccountKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AccountKit.framework; path = Frameworks/AccountKit.framework; sourceTree = "<group>"; };
+		95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AsyncDisplayKit.framework; path = Frameworks/AsyncDisplayKit.framework; sourceTree = "<group>"; };
+		95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSAPIGateway.framework; path = Frameworks/AWSAPIGateway.framework; sourceTree = "<group>"; };
+		95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognito.framework; path = Frameworks/AWSCognito.framework; sourceTree = "<group>"; };
+		95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognitoIdentityProvider.framework; path = Frameworks/AWSCognitoIdentityProvider.framework; sourceTree = "<group>"; };
+		95CA1F411EDC39500024C4F6 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = Frameworks/AWSCore.framework; sourceTree = "<group>"; };
+		95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSDynamoDB.framework; path = Frameworks/AWSDynamoDB.framework; sourceTree = "<group>"; };
+		95CA1F451EDC39500024C4F6 /* AWSIoT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSIoT.framework; path = Frameworks/AWSIoT.framework; sourceTree = "<group>"; };
+		95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSLogs.framework; path = Frameworks/AWSLogs.framework; sourceTree = "<group>"; };
+		95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSMobileAnalytics.framework; path = Frameworks/AWSMobileAnalytics.framework; sourceTree = "<group>"; };
+		95CA1F501EDC39500024C4F6 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSS3.framework; path = Frameworks/AWSS3.framework; sourceTree = "<group>"; };
+		95CA1F551EDC39500024C4F6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Frameworks/Bolts.framework; sourceTree = "<group>"; };
+		95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = Frameworks/FBAudienceNetwork.framework; sourceTree = "<group>"; };
+		95CA1F581EDC39500024C4F6 /* FBNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBNotifications.framework; path = Frameworks/FBNotifications.framework; sourceTree = "<group>"; };
+		95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Frameworks/FBSDKCoreKit.framework; sourceTree = "<group>"; };
+		95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
+		95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = Frameworks/FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
+		95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKPlacesKit.framework; path = Frameworks/FBSDKPlacesKit.framework; sourceTree = "<group>"; };
+		95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Frameworks/FBSDKShareKit.framework; sourceTree = "<group>"; };
+		95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MBProgressHUD.framework; path = Frameworks/MBProgressHUD.framework; sourceTree = "<group>"; };
+		95CA1F5F1EDC39500024C4F6 /* PINCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINCache.framework; path = Frameworks/PINCache.framework; sourceTree = "<group>"; };
+		95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINRemoteImage.framework; path = Frameworks/PINRemoteImage.framework; sourceTree = "<group>"; };
+		95CA1F611EDC39500024C4F6 /* pop.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = pop.framework; path = Frameworks/pop.framework; sourceTree = "<group>"; };
+		95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Frameworks/ReactiveObjC.framework; sourceTree = "<group>"; };
+		95CA1F8D1EDC39920024C4F6 /* AccountKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AccountKit.framework; path = Frameworks/AccountKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F8E1EDC39920024C4F6 /* AsyncDisplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AsyncDisplayKit.framework; path = Frameworks/AsyncDisplayKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F8F1EDC39920024C4F6 /* AWSAPIGateway.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSAPIGateway.framework; path = Frameworks/AWSAPIGateway.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F901EDC39920024C4F6 /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognito.framework; path = Frameworks/AWSCognito.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F911EDC39920024C4F6 /* AWSCognitoIdentityProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognitoIdentityProvider.framework; path = Frameworks/AWSCognitoIdentityProvider.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F921EDC39920024C4F6 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = Frameworks/AWSCore.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F931EDC39920024C4F6 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSDynamoDB.framework; path = Frameworks/AWSDynamoDB.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F941EDC39920024C4F6 /* AWSIoT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSIoT.framework; path = Frameworks/AWSIoT.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F951EDC39920024C4F6 /* AWSLogs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSLogs.framework; path = Frameworks/AWSLogs.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F961EDC39920024C4F6 /* AWSMobileAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSMobileAnalytics.framework; path = Frameworks/AWSMobileAnalytics.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F971EDC39920024C4F6 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSS3.framework; path = Frameworks/AWSS3.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F981EDC39920024C4F6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Frameworks/Bolts.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F991EDC39920024C4F6 /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = Frameworks/FBAudienceNetwork.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F9A1EDC39930024C4F6 /* FBNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBNotifications.framework; path = Frameworks/FBNotifications.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F9B1EDC39930024C4F6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Frameworks/FBSDKCoreKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F9C1EDC39930024C4F6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Frameworks/FBSDKLoginKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F9D1EDC39930024C4F6 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = Frameworks/FBSDKMessengerShareKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F9E1EDC39930024C4F6 /* FBSDKPlacesKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKPlacesKit.framework; path = Frameworks/FBSDKPlacesKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1F9F1EDC39930024C4F6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Frameworks/FBSDKShareKit.framework; sourceTree = SOURCE_ROOT; };
+		95CA1FA01EDC39930024C4F6 /* MBProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MBProgressHUD.framework; path = Frameworks/MBProgressHUD.framework; sourceTree = SOURCE_ROOT; };
+		95CA1FA11EDC39930024C4F6 /* PINCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINCache.framework; path = Frameworks/PINCache.framework; sourceTree = SOURCE_ROOT; };
+		95CA1FA21EDC39930024C4F6 /* PINRemoteImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINRemoteImage.framework; path = Frameworks/PINRemoteImage.framework; sourceTree = SOURCE_ROOT; };
+		95CA1FA31EDC39930024C4F6 /* pop.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = pop.framework; path = Frameworks/pop.framework; sourceTree = SOURCE_ROOT; };
+		95CA1FA41EDC39930024C4F6 /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Frameworks/ReactiveObjC.framework; sourceTree = SOURCE_ROOT; };
+		95CA1FBD1EDC3B220024C4F6 /* CammentSDKFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentSDKFramework.h; sourceTree = "<group>"; };
 		95CD2C3C1ED836C900DB7660 /* CammentSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CammentSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		95CD2C3F1ED836C900DB7660 /* CammentSDKHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CammentSDKHeader.h; sourceTree = "<group>"; };
 		95CD2C401ED836C900DB7660 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		95CD2C501ED83F7100DB7660 /* AsyncDisplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AsyncDisplayKit.framework; path = Carthage/Build/iOS/AsyncDisplayKit.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C511ED83F7100DB7660 /* AWSAPIGateway.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSAPIGateway.framework; path = Carthage/Build/iOS/AWSAPIGateway.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C521ED83F7100DB7660 /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognito.framework; path = Carthage/Build/iOS/AWSCognito.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C531ED83F7100DB7660 /* AWSCognitoIdentityProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognitoIdentityProvider.framework; path = Carthage/Build/iOS/AWSCognitoIdentityProvider.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C541ED83F7100DB7660 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = Carthage/Build/iOS/AWSCore.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C551ED83F7100DB7660 /* AWSIoT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSIoT.framework; path = Carthage/Build/iOS/AWSIoT.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C561ED83F7100DB7660 /* AWSMobileAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSMobileAnalytics.framework; path = Carthage/Build/iOS/AWSMobileAnalytics.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C5F1ED83FE400DB7660 /* MBProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MBProgressHUD.framework; path = Carthage/Build/iOS/MBProgressHUD.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C601ED83FE400DB7660 /* PINCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINCache.framework; path = Carthage/Build/iOS/PINCache.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C611ED83FE400DB7660 /* PINRemoteImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINRemoteImage.framework; path = Carthage/Build/iOS/PINRemoteImage.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C621ED83FE400DB7660 /* pop.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = pop.framework; path = Carthage/Build/iOS/pop.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C631ED83FE400DB7660 /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Carthage/Build/iOS/ReactiveObjC.framework; sourceTree = SOURCE_ROOT; };
-		95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SCRecorder.xcodeproj; path = "SCRecorder-2.7.0/Library/SCRecorder.xcodeproj"; sourceTree = SOURCE_ROOT; };
 		95CD2C801ED843EF00DB7660 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		95CD2C821ED843F600DB7660 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		95CD2C841ED843FC00DB7660 /* VideoToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VideoToolbox.framework; path = System/Library/Frameworks/VideoToolbox.framework; sourceTree = SDKROOT; };
@@ -304,17 +493,6 @@
 		95CD2D501ED8494600DB7660 /* CMShowsListNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListNode.m; sourceTree = "<group>"; };
 		95CD2D521ED8494600DB7660 /* CMShowsListWireframe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowsListWireframe.h; sourceTree = "<group>"; };
 		95CD2D531ED8494600DB7660 /* CMShowsListWireframe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListWireframe.m; sourceTree = "<group>"; };
-		95CD2DCA1ED84C8300DB7660 /* AccountKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AccountKit.framework; path = Frameworks/AccountKit.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DCB1ED84C8300DB7660 /* AccountKitStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = AccountKitStrings.bundle; path = Frameworks/AccountKitStrings.bundle; sourceTree = SOURCE_ROOT; };
-		95CD2DCC1ED84C8300DB7660 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Frameworks/Bolts.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DCD1ED84C8300DB7660 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = FacebookSDKStrings.bundle; path = Frameworks/FacebookSDKStrings.bundle; sourceTree = SOURCE_ROOT; };
-		95CD2DCE1ED84C8300DB7660 /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = Frameworks/FBAudienceNetwork.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DCF1ED84C8300DB7660 /* FBNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBNotifications.framework; path = Frameworks/FBNotifications.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DD01ED84C8300DB7660 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Frameworks/FBSDKCoreKit.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DD11ED84C8300DB7660 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Frameworks/FBSDKLoginKit.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DD21ED84C8300DB7660 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = Frameworks/FBSDKMessengerShareKit.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DD31ED84C8300DB7660 /* FBSDKPlacesKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKPlacesKit.framework; path = Frameworks/FBSDKPlacesKit.framework; sourceTree = SOURCE_ROOT; };
-		95CD2DD41ED84C8300DB7660 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Frameworks/FBSDKShareKit.framework; sourceTree = SOURCE_ROOT; };
 		95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "awsiot-identity.p12"; sourceTree = "<group>"; };
 		95CD2DE21ED84D0A00DB7660 /* backgroundStream.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = backgroundStream.mp4; sourceTree = "<group>"; };
 		95CD2DE31ED84D0A00DB7660 /* Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
@@ -328,31 +506,33 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95CD2D8F1ED8499500DB7660 /* SCRecorder.framework in Frameworks */,
+				959E089B1EDC3F3000C1F0F9 /* AccountKit.framework in Frameworks */,
+				959E089C1EDC3F3000C1F0F9 /* AsyncDisplayKit.framework in Frameworks */,
+				959E089D1EDC3F3000C1F0F9 /* AWSAPIGateway.framework in Frameworks */,
+				959E089E1EDC3F3000C1F0F9 /* AWSCognito.framework in Frameworks */,
+				959E089F1EDC3F3000C1F0F9 /* AWSCognitoIdentityProvider.framework in Frameworks */,
+				959E08A01EDC3F3000C1F0F9 /* AWSCore.framework in Frameworks */,
+				959E08A11EDC3F3000C1F0F9 /* AWSDynamoDB.framework in Frameworks */,
+				959E08A21EDC3F3000C1F0F9 /* AWSIoT.framework in Frameworks */,
+				959E08A31EDC3F3000C1F0F9 /* AWSLogs.framework in Frameworks */,
+				959E08A41EDC3F3000C1F0F9 /* AWSMobileAnalytics.framework in Frameworks */,
+				959E08A51EDC3F3000C1F0F9 /* AWSS3.framework in Frameworks */,
+				959E08A61EDC3F3000C1F0F9 /* Bolts.framework in Frameworks */,
+				959E08A71EDC3F3000C1F0F9 /* FBAudienceNetwork.framework in Frameworks */,
+				959E08A81EDC3F3000C1F0F9 /* FBNotifications.framework in Frameworks */,
+				959E08A91EDC3F3000C1F0F9 /* FBSDKCoreKit.framework in Frameworks */,
+				959E08AA1EDC3F3000C1F0F9 /* FBSDKLoginKit.framework in Frameworks */,
+				959E08AB1EDC3F3000C1F0F9 /* FBSDKMessengerShareKit.framework in Frameworks */,
+				959E08AC1EDC3F3000C1F0F9 /* FBSDKPlacesKit.framework in Frameworks */,
+				959E08AD1EDC3F3000C1F0F9 /* FBSDKShareKit.framework in Frameworks */,
+				959E08AE1EDC3F3000C1F0F9 /* MBProgressHUD.framework in Frameworks */,
+				959E08AF1EDC3F3000C1F0F9 /* PINCache.framework in Frameworks */,
+				959E08B01EDC3F3000C1F0F9 /* PINRemoteImage.framework in Frameworks */,
+				959E08B11EDC3F3000C1F0F9 /* pop.framework in Frameworks */,
+				959E08B21EDC3F3000C1F0F9 /* ReactiveObjC.framework in Frameworks */,
+				959E089A1EDC3F2000C1F0F9 /* AVFoundation.framework in Frameworks */,
 				95CD2C851ED843FC00DB7660 /* VideoToolbox.framework in Frameworks */,
-				95CD2C831ED843F600DB7660 /* AVFoundation.framework in Frameworks */,
 				95CD2C811ED843EF00DB7660 /* ImageIO.framework in Frameworks */,
-				95CD2C661ED83FE400DB7660 /* PINRemoteImage.framework in Frameworks */,
-				95CD2DDF1ED84C8300DB7660 /* FBSDKShareKit.framework in Frameworks */,
-				95CD2C641ED83FE400DB7660 /* MBProgressHUD.framework in Frameworks */,
-				95CD2C5D1ED83F7100DB7660 /* AWSMobileAnalytics.framework in Frameworks */,
-				95CD2C591ED83F7100DB7660 /* AWSCognito.framework in Frameworks */,
-				95CD2C5B1ED83F7100DB7660 /* AWSCore.framework in Frameworks */,
-				95CD2DD51ED84C8300DB7660 /* AccountKit.framework in Frameworks */,
-				95CD2C581ED83F7100DB7660 /* AWSAPIGateway.framework in Frameworks */,
-				95CD2C571ED83F7100DB7660 /* AsyncDisplayKit.framework in Frameworks */,
-				95CD2DDD1ED84C8300DB7660 /* FBSDKMessengerShareKit.framework in Frameworks */,
-				95CD2DD91ED84C8300DB7660 /* FBAudienceNetwork.framework in Frameworks */,
-				95CD2DDE1ED84C8300DB7660 /* FBSDKPlacesKit.framework in Frameworks */,
-				95CD2C681ED83FE400DB7660 /* ReactiveObjC.framework in Frameworks */,
-				95CD2DDC1ED84C8300DB7660 /* FBSDKLoginKit.framework in Frameworks */,
-				95CD2C5A1ED83F7100DB7660 /* AWSCognitoIdentityProvider.framework in Frameworks */,
-				95CD2C5C1ED83F7100DB7660 /* AWSIoT.framework in Frameworks */,
-				95CD2DD71ED84C8300DB7660 /* Bolts.framework in Frameworks */,
-				95CD2C671ED83FE400DB7660 /* pop.framework in Frameworks */,
-				95CD2DDA1ED84C8300DB7660 /* FBNotifications.framework in Frameworks */,
-				95CD2DDB1ED84C8300DB7660 /* FBSDKCoreKit.framework in Frameworks */,
-				95CD2C651ED83FE400DB7660 /* PINCache.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -370,10 +550,78 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
+		95CA1F381EDC38DC0024C4F6 /* Recorder */ = {
+			isa = PBXGroup;
+			children = (
+				95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */,
+				95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */,
+				95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */,
+				95CA1EBF1EDC38D50024C4F6 /* SCAssetExportSession.m */,
+				95CA1EC01EDC38D50024C4F6 /* SCAudioConfiguration.h */,
+				95CA1EC11EDC38D50024C4F6 /* SCAudioConfiguration.m */,
+				95CA1EC21EDC38D50024C4F6 /* SCAudioTools.h */,
+				95CA1EC31EDC38D50024C4F6 /* SCAudioTools.m */,
+				95CA1EC41EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch */,
+				95CA1EC51EDC38D50024C4F6 /* SCContext.h */,
+				95CA1EC61EDC38D50024C4F6 /* SCContext.m */,
+				95CA1EC71EDC38D50024C4F6 /* SCFilter.h */,
+				95CA1EC81EDC38D50024C4F6 /* SCFilter.m */,
+				95CA1EC91EDC38D50024C4F6 /* SCFilter+UIImage.h */,
+				95CA1ECA1EDC38D50024C4F6 /* SCFilter+UIImage.m */,
+				95CA1ECB1EDC38D50024C4F6 /* SCFilter+VideoComposition.h */,
+				95CA1ECC1EDC38D50024C4F6 /* SCFilter+VideoComposition.m */,
+				95CA1ECD1EDC38D50024C4F6 /* SCFilterAnimation.h */,
+				95CA1ECE1EDC38D50024C4F6 /* SCFilterAnimation.m */,
+				95CA1ECF1EDC38D50024C4F6 /* SCFilterImageView.h */,
+				95CA1ED01EDC38D50024C4F6 /* SCFilterImageView.m */,
+				95CA1ED11EDC38D50024C4F6 /* SCImageView.h */,
+				95CA1ED21EDC38D50024C4F6 /* SCImageView.m */,
+				95CA1ED31EDC38D50024C4F6 /* SCIOPixelBuffers.h */,
+				95CA1ED41EDC38D50024C4F6 /* SCIOPixelBuffers.m */,
+				95CA1ED51EDC38D50024C4F6 /* SCMediaTypeConfiguration.h */,
+				95CA1ED61EDC38D50024C4F6 /* SCMediaTypeConfiguration.m */,
+				95CA1ED71EDC38D50024C4F6 /* SCPhotoConfiguration.h */,
+				95CA1ED81EDC38D50024C4F6 /* SCPhotoConfiguration.m */,
+				95CA1ED91EDC38D50024C4F6 /* SCPlayer.h */,
+				95CA1EDA1EDC38D50024C4F6 /* SCPlayer.m */,
+				95CA1EDB1EDC38D50024C4F6 /* SCProcessingQueue.h */,
+				95CA1EDC1EDC38D50024C4F6 /* SCProcessingQueue.m */,
+				95CA1EDD1EDC38D50024C4F6 /* SCRecorder.h */,
+				95CA1EDE1EDC38D50024C4F6 /* SCRecorder.m */,
+				95CA1EDF1EDC38D50024C4F6 /* SCRecorderDelegate.h */,
+				95CA1EE01EDC38D50024C4F6 /* SCRecorderFocusTargetView.h */,
+				95CA1EE11EDC38D50024C4F6 /* SCRecorderFocusTargetView.m */,
+				95CA1EE21EDC38D50024C4F6 /* SCRecorderHeader.h */,
+				95CA1EE31EDC38D50024C4F6 /* SCRecorderTools.h */,
+				95CA1EE41EDC38D50024C4F6 /* SCRecorderTools.m */,
+				95CA1EE51EDC38D50024C4F6 /* SCRecorderToolsView.h */,
+				95CA1EE61EDC38D50024C4F6 /* SCRecorderToolsView.m */,
+				95CA1EE71EDC38D50024C4F6 /* SCRecordSession_Internal.h */,
+				95CA1EE81EDC38D50024C4F6 /* SCRecordSession.h */,
+				95CA1EE91EDC38D50024C4F6 /* SCRecordSession.m */,
+				95CA1EEA1EDC38D50024C4F6 /* SCRecordSessionSegment.h */,
+				95CA1EEB1EDC38D50024C4F6 /* SCRecordSessionSegment.m */,
+				95CA1EEC1EDC38D50024C4F6 /* SCSampleBufferHolder.h */,
+				95CA1EED1EDC38D50024C4F6 /* SCSampleBufferHolder.m */,
+				95CA1EEE1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.h */,
+				95CA1EEF1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m */,
+				95CA1EF01EDC38D50024C4F6 /* SCSwipeableFilterView.h */,
+				95CA1EF11EDC38D50024C4F6 /* SCSwipeableFilterView.m */,
+				95CA1EF21EDC38D50024C4F6 /* SCVideoConfiguration.h */,
+				95CA1EF31EDC38D50024C4F6 /* SCVideoConfiguration.m */,
+				95CA1EF41EDC38D50024C4F6 /* SCVideoPlayerView.h */,
+				95CA1EF51EDC38D50024C4F6 /* SCVideoPlayerView.m */,
+				95CA1EF61EDC38D50024C4F6 /* SCWeakSelectorTarget.h */,
+				95CA1EF71EDC38D50024C4F6 /* SCWeakSelectorTarget.m */,
+				95CA1EF81EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.h */,
+				95CA1EF91EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m */,
+			);
+			name = Recorder;
+			sourceTree = "<group>";
+		};
 		95CD2C321ED836C900DB7660 = {
 			isa = PBXGroup;
 			children = (
-				95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */,
 				95CD2C3E1ED836C900DB7660 /* CammentSDK */,
 				95CD2C3D1ED836C900DB7660 /* Products */,
 				95CD2C7F1ED843EF00DB7660 /* Frameworks */,
@@ -391,13 +639,14 @@
 		95CD2C3E1ED836C900DB7660 /* CammentSDK */ = {
 			isa = PBXGroup;
 			children = (
+				95CA1F381EDC38DC0024C4F6 /* Recorder */,
 				95CD2DE01ED84D0A00DB7660 /* Assets */,
 				95CD2D091ED8494600DB7660 /* Modules */,
 				95CD2CAC1ED848ED00DB7660 /* Core */,
 				95CD2CDF1ED848ED00DB7660 /* Helpers */,
 				95CD2C4F1ED83F5F00DB7660 /* Frameworks */,
-				95CD2C3F1ED836C900DB7660 /* CammentSDKHeader.h */,
 				95CD2C401ED836C900DB7660 /* Info.plist */,
+				95CA1FBD1EDC3B220024C4F6 /* CammentSDKFramework.h */,
 			);
 			path = CammentSDK;
 			sourceTree = "<group>";
@@ -405,46 +654,61 @@
 		95CD2C4F1ED83F5F00DB7660 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				95CD2DCA1ED84C8300DB7660 /* AccountKit.framework */,
-				95CD2DCB1ED84C8300DB7660 /* AccountKitStrings.bundle */,
-				95CD2DCC1ED84C8300DB7660 /* Bolts.framework */,
-				95CD2DCD1ED84C8300DB7660 /* FacebookSDKStrings.bundle */,
-				95CD2DCE1ED84C8300DB7660 /* FBAudienceNetwork.framework */,
-				95CD2DCF1ED84C8300DB7660 /* FBNotifications.framework */,
-				95CD2DD01ED84C8300DB7660 /* FBSDKCoreKit.framework */,
-				95CD2DD11ED84C8300DB7660 /* FBSDKLoginKit.framework */,
-				95CD2DD21ED84C8300DB7660 /* FBSDKMessengerShareKit.framework */,
-				95CD2DD31ED84C8300DB7660 /* FBSDKPlacesKit.framework */,
-				95CD2DD41ED84C8300DB7660 /* FBSDKShareKit.framework */,
-				95CD2C5F1ED83FE400DB7660 /* MBProgressHUD.framework */,
-				95CD2C601ED83FE400DB7660 /* PINCache.framework */,
-				95CD2C611ED83FE400DB7660 /* PINRemoteImage.framework */,
-				95CD2C621ED83FE400DB7660 /* pop.framework */,
-				95CD2C631ED83FE400DB7660 /* ReactiveObjC.framework */,
-				95CD2C501ED83F7100DB7660 /* AsyncDisplayKit.framework */,
-				95CD2C511ED83F7100DB7660 /* AWSAPIGateway.framework */,
-				95CD2C521ED83F7100DB7660 /* AWSCognito.framework */,
-				95CD2C531ED83F7100DB7660 /* AWSCognitoIdentityProvider.framework */,
-				95CD2C541ED83F7100DB7660 /* AWSCore.framework */,
-				95CD2C551ED83F7100DB7660 /* AWSIoT.framework */,
-				95CD2C561ED83F7100DB7660 /* AWSMobileAnalytics.framework */,
+				95CA1F8D1EDC39920024C4F6 /* AccountKit.framework */,
+				95CA1F8E1EDC39920024C4F6 /* AsyncDisplayKit.framework */,
+				95CA1F8F1EDC39920024C4F6 /* AWSAPIGateway.framework */,
+				95CA1F901EDC39920024C4F6 /* AWSCognito.framework */,
+				95CA1F911EDC39920024C4F6 /* AWSCognitoIdentityProvider.framework */,
+				95CA1F921EDC39920024C4F6 /* AWSCore.framework */,
+				95CA1F931EDC39920024C4F6 /* AWSDynamoDB.framework */,
+				95CA1F941EDC39920024C4F6 /* AWSIoT.framework */,
+				95CA1F951EDC39920024C4F6 /* AWSLogs.framework */,
+				95CA1F961EDC39920024C4F6 /* AWSMobileAnalytics.framework */,
+				95CA1F971EDC39920024C4F6 /* AWSS3.framework */,
+				95CA1F981EDC39920024C4F6 /* Bolts.framework */,
+				95CA1F991EDC39920024C4F6 /* FBAudienceNetwork.framework */,
+				95CA1F9A1EDC39930024C4F6 /* FBNotifications.framework */,
+				95CA1F9B1EDC39930024C4F6 /* FBSDKCoreKit.framework */,
+				95CA1F9C1EDC39930024C4F6 /* FBSDKLoginKit.framework */,
+				95CA1F9D1EDC39930024C4F6 /* FBSDKMessengerShareKit.framework */,
+				95CA1F9E1EDC39930024C4F6 /* FBSDKPlacesKit.framework */,
+				95CA1F9F1EDC39930024C4F6 /* FBSDKShareKit.framework */,
+				95CA1FA01EDC39930024C4F6 /* MBProgressHUD.framework */,
+				95CA1FA11EDC39930024C4F6 /* PINCache.framework */,
+				95CA1FA21EDC39930024C4F6 /* PINRemoteImage.framework */,
+				95CA1FA31EDC39930024C4F6 /* pop.framework */,
+				95CA1FA41EDC39930024C4F6 /* ReactiveObjC.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		95CD2C721ED843C200DB7660 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				95CD2C781ED843C200DB7660 /* libSCRecorder.a */,
-				95CD2C7A1ED843C200DB7660 /* SCRecorderMac.framework */,
-				95CD2C7C1ED843C200DB7660 /* SCRecorder.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		95CD2C7F1ED843EF00DB7660 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				95CA1F391EDC39500024C4F6 /* AccountKit.framework */,
+				95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */,
+				95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */,
+				95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */,
+				95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */,
+				95CA1F411EDC39500024C4F6 /* AWSCore.framework */,
+				95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */,
+				95CA1F451EDC39500024C4F6 /* AWSIoT.framework */,
+				95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */,
+				95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */,
+				95CA1F501EDC39500024C4F6 /* AWSS3.framework */,
+				95CA1F551EDC39500024C4F6 /* Bolts.framework */,
+				95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */,
+				95CA1F581EDC39500024C4F6 /* FBNotifications.framework */,
+				95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */,
+				95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */,
+				95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */,
+				95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */,
+				95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */,
+				95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */,
+				95CA1F5F1EDC39500024C4F6 /* PINCache.framework */,
+				95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */,
+				95CA1F611EDC39500024C4F6 /* pop.framework */,
+				95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */,
 				95CD2C841ED843FC00DB7660 /* VideoToolbox.framework */,
 				95CD2C821ED843F600DB7660 /* AVFoundation.framework */,
 				95CD2C801ED843EF00DB7660 /* ImageIO.framework */,
@@ -789,6 +1053,8 @@
 		95CD2DE01ED84D0A00DB7660 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				959E08F61EDC403C00C1F0F9 /* AccountKitStrings.bundle */,
+				959E08F71EDC403C00C1F0F9 /* FacebookSDKStrings.bundle */,
 				95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */,
 				95CD2DE21ED84D0A00DB7660 /* backgroundStream.mp4 */,
 				95CD2DE31ED84D0A00DB7660 /* Config.plist */,
@@ -811,16 +1077,22 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95CA1FBE1EDC3B220024C4F6 /* CammentSDKFramework.h in Headers */,
 				6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */,
+				95CA1F1D1EDC38D50024C4F6 /* SCRecorderDelegate.h in Headers */,
 				95CD2CE71ED848ED00DB7660 /* CMCamment.h in Headers */,
+				95CA1F301EDC38D50024C4F6 /* SCVideoConfiguration.h in Headers */,
 				6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */,
 				6FFAB409083C441438B2BF0E /* CammentSDK.h in Headers */,
 				95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */,
 				95CD2E1B1EDC0E0C00DB7660 /* CMShowsListModule.h in Headers */,
 				95CD2D7F1ED8494600DB7660 /* CMShowsListInteractorOutput.h in Headers */,
+				95CA1F2E1EDC38D50024C4F6 /* SCSwipeableFilterView.h in Headers */,
 				95CD2D601ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterInput.h in Headers */,
 				95CD2D611ED8494600DB7660 /* CMCammentsInStreamPlayerPresenterOutput.h in Headers */,
+				95CA1F131EDC38D50024C4F6 /* SCMediaTypeConfiguration.h in Headers */,
 				95CD2D581ED8494600DB7660 /* CMCammentRecorderInteractorInput.h in Headers */,
+				95CA1F051EDC38D50024C4F6 /* SCFilter.h in Headers */,
 				95CD2D5C1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorInput.h in Headers */,
 				95CD2D591ED8494600DB7660 /* CMCammentRecorderInteractorOutput.h in Headers */,
 				95CD2D821ED8494600DB7660 /* CMShowsListPresenterInput.h in Headers */,
@@ -830,45 +1102,72 @@
 				95CD2D7A1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.h in Headers */,
 				95CD2D5D1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractorOutput.h in Headers */,
 				95CD2D8D1ED8494600DB7660 /* CMShowsListWireframe.h in Headers */,
+				95CA1F171EDC38D50024C4F6 /* SCPlayer.h in Headers */,
 				95CD2D781ED8494600DB7660 /* CMStreamPlayerNode.h in Headers */,
 				95CD2D5E1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.h in Headers */,
+				95CA1F211EDC38D50024C4F6 /* SCRecorderTools.h in Headers */,
+				95CA1F1B1EDC38D50024C4F6 /* SCRecorder.h in Headers */,
 				95CD2D031ED848ED00DB7660 /* User.h in Headers */,
+				95CA1F0D1EDC38D50024C4F6 /* SCFilterImageView.h in Headers */,
+				95CA1F231EDC38D50024C4F6 /* SCRecorderToolsView.h in Headers */,
+				95CA1F361EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.h in Headers */,
 				95CD2CF31ED848ED00DB7660 /* CMCammentUploader.h in Headers */,
 				95CD2D761ED8494600DB7660 /* CMLeftAlignedLayout.h in Headers */,
+				95CA1F2C1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.h in Headers */,
+				95CA1F021EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch in Headers */,
 				95CD2D841ED8494600DB7660 /* CMShowsListCollectionPresenter.h in Headers */,
+				95CA1F2A1EDC38D50024C4F6 /* SCSampleBufferHolder.h in Headers */,
 				95CD2D081ED848ED00DB7660 /* UIColorMacros.h in Headers */,
+				95CA1EFE1EDC38D50024C4F6 /* SCAudioConfiguration.h in Headers */,
 				95CD2D891ED8494600DB7660 /* CMShowCellNode.h in Headers */,
+				95CA1F341EDC38D50024C4F6 /* SCWeakSelectorTarget.h in Headers */,
+				95CA1F031EDC38D50024C4F6 /* SCContext.h in Headers */,
+				95CA1F0B1EDC38D50024C4F6 /* SCFilterAnimation.h in Headers */,
+				95CA1F001EDC38D50024C4F6 /* SCAudioTools.h in Headers */,
 				95CD2D801ED8494600DB7660 /* CMShowsListPresenter.h in Headers */,
 				95CD2D681ED8494600DB7660 /* CMCammentsInStreamPlayerViewController.h in Headers */,
 				95CD2D7C1ED8494600DB7660 /* CMShowsListInteractor.h in Headers */,
 				95CD2D6C1ED8494600DB7660 /* CMCammentCell.h in Headers */,
+				95CA1F261EDC38D50024C4F6 /* SCRecordSession.h in Headers */,
 				95CD2D8B1ED8494600DB7660 /* CMShowsListNode.h in Headers */,
+				95CA1F151EDC38D50024C4F6 /* SCPhotoConfiguration.h in Headers */,
 				95CD2D661ED8494600DB7660 /* CMOneThirdScaleAnimation.h in Headers */,
-				95CD2C411ED836C900DB7660 /* CammentSDKHeader.h in Headers */,
+				95CA1F201EDC38D50024C4F6 /* SCRecorderHeader.h in Headers */,
+				95CA1F0F1EDC38D50024C4F6 /* SCImageView.h in Headers */,
 				95CD2D6E1ED8494600DB7660 /* CMCammentNode.h in Headers */,
+				95CA1F091EDC38D50024C4F6 /* SCFilter+VideoComposition.h in Headers */,
 				95CD2D541ED8494600DB7660 /* CMAutoFrameFilter.h in Headers */,
 				95CD2CF71ED848ED00DB7660 /* CMServerListenerCredentials.h in Headers */,
 				95CD2D6A1ED8494600DB7660 /* CMCammentButton.h in Headers */,
+				95CA1F191EDC38D50024C4F6 /* SCProcessingQueue.h in Headers */,
 				95CD2D721ED8494600DB7660 /* CMCammentsBlockNode.h in Headers */,
 				95CD2CFD1ED848ED00DB7660 /* Camment.h in Headers */,
+				95CA1F1E1EDC38D50024C4F6 /* SCRecorderFocusTargetView.h in Headers */,
 				95CD2CFB1ED848ED00DB7660 /* CMAppConfig.h in Headers */,
 				95CD2CE11ED848ED00DB7660 /* CMAnalytics.h in Headers */,
 				95CD2D741ED8494600DB7660 /* CMCammentsInStreamPlayerNode.h in Headers */,
 				95CD2D5A1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.h in Headers */,
 				95CD2D621ED8494600DB7660 /* CMCammentsBlockPresenter.h in Headers */,
 				95CD2CE91ED848ED00DB7660 /* CMCammentInRequest.h in Headers */,
+				95CA1F071EDC38D50024C4F6 /* SCFilter+UIImage.h in Headers */,
 				95CD2D871ED8494600DB7660 /* CMShowsListViewController.h in Headers */,
 				95CD2D001ED848ED00DB7660 /* Post.h in Headers */,
 				95CD2D641ED8494600DB7660 /* CMHalfOpacityAnimation.h in Headers */,
+				95CA1EFC1EDC38D50024C4F6 /* SCAssetExportSession.h in Headers */,
 				95CD2D701ED8494600DB7660 /* CMCammentRecorderPreviewNode.h in Headers */,
 				95CD2CF51ED848ED00DB7660 /* CMServerListener.h in Headers */,
+				95CA1F111EDC38D50024C4F6 /* SCIOPixelBuffers.h in Headers */,
+				95CA1F251EDC38D50024C4F6 /* SCRecordSession_Internal.h in Headers */,
+				95CA1F321EDC38D50024C4F6 /* SCVideoPlayerView.h in Headers */,
 				95CD2CF91ED848ED00DB7660 /* CMServerMessage.h in Headers */,
 				95CD2CEB1ED848ED00DB7660 /* CMCammentList.h in Headers */,
+				95CA1F281EDC38D50024C4F6 /* SCRecordSessionSegment.h in Headers */,
 				95CD2CF11ED848ED00DB7660 /* CMShowList.h in Headers */,
 				95CD2CED1ED848ED00DB7660 /* CMDevcammentClient.h in Headers */,
 				95CD2CE31ED848ED00DB7660 /* CMCognitoAuthService.h in Headers */,
 				95CD2D061ED848ED00DB7660 /* CMStore.h in Headers */,
 				95CD2D561ED8494600DB7660 /* CMCammentRecorderInteractor.h in Headers */,
+				95CA1EFA1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h in Headers */,
 				95CD2CE51ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.h in Headers */,
 				95CD2CEF1ED848ED00DB7660 /* CMShow.h in Headers */,
 			);
@@ -885,12 +1184,11 @@
 				95CD2C381ED836C900DB7660 /* Frameworks */,
 				95CD2C391ED836C900DB7660 /* Headers */,
 				95CD2C3A1ED836C900DB7660 /* Resources */,
-				95CD2C5E1ED83F9900DB7660 /* Copy Carthage frameworks */,
+				959E08B31EDC3FBF00C1F0F9 /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				95CD2C891ED8452200DB7660 /* PBXTargetDependency */,
 			);
 			name = CammentSDK;
 			productName = CammentSDK;
@@ -923,12 +1221,6 @@
 			mainGroup = 95CD2C321ED836C900DB7660;
 			productRefGroup = 95CD2C3D1ED836C900DB7660 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 95CD2C721ED843C200DB7660 /* Products */;
-					ProjectRef = 95CD2C711ED843C200DB7660 /* SCRecorder.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				95CD2C3B1ED836C900DB7660 /* CammentSDK */,
@@ -936,76 +1228,20 @@
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		95CD2C781ED843C200DB7660 /* libSCRecorder.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSCRecorder.a;
-			remoteRef = 95CD2C771ED843C200DB7660 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		95CD2C7A1ED843C200DB7660 /* SCRecorderMac.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SCRecorderMac.framework;
-			remoteRef = 95CD2C791ED843C200DB7660 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		95CD2C7C1ED843C200DB7660 /* SCRecorder.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SCRecorder.framework;
-			remoteRef = 95CD2C7B1ED843C200DB7660 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		95CD2C3A1ED836C900DB7660 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				95CD2CFF1ED848ED00DB7660 /* Camment.value in Resources */,
-				95CD2D051ED848ED00DB7660 /* User.value in Resources */,
 				95CD2DE41ED84D0A00DB7660 /* awsiot-identity.p12 in Resources */,
-				95CD2DD61ED84C8300DB7660 /* AccountKitStrings.bundle in Resources */,
+				959E08F91EDC403C00C1F0F9 /* FacebookSDKStrings.bundle in Resources */,
 				95CD2DE61ED84D0A00DB7660 /* Config.plist in Resources */,
 				95CD2DE51ED84D0A00DB7660 /* backgroundStream.mp4 in Resources */,
-				95CD2DD81ED84C8300DB7660 /* FacebookSDKStrings.bundle in Resources */,
-				95CD2D021ED848ED00DB7660 /* Post.value in Resources */,
+				959E08F81EDC403C00C1F0F9 /* AccountKitStrings.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		95CD2C5E1ED83F9900DB7660 /* Copy Carthage frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Carthage/Build/iOS/MBProgressHUD.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/PINCache.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/PINRemoteImage.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/pop.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/ReactiveObjC.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AsyncDisplayKit.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AWSAPIGateway.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AWSCognito.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AWSCognitoIdentityProvider.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AWSCore.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AWSIoT.framework",
-				"$(SRCROOT)/Carthage/Build/iOS/AWSMobileAnalytics.framework",
-			);
-			name = "Copy Carthage frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95CD2C371ED836C900DB7660 /* Sources */ = {
@@ -1016,60 +1252,81 @@
 				95CD2D671ED8494600DB7660 /* CMOneThirdScaleAnimation.m in Sources */,
 				95CD2CF21ED848ED00DB7660 /* CMShowList.m in Sources */,
 				95CD2D7B1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.m in Sources */,
+				95CA1F1F1EDC38D50024C4F6 /* SCRecorderFocusTargetView.m in Sources */,
 				95CD2CF41ED848ED00DB7660 /* CMCammentUploader.m in Sources */,
 				95CD2D571ED8494600DB7660 /* CMCammentRecorderInteractor.m in Sources */,
 				95CD2D691ED8494600DB7660 /* CMCammentsInStreamPlayerViewController.m in Sources */,
 				95CD2D6B1ED8494600DB7660 /* CMCammentButton.m in Sources */,
+				95CA1EFB1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m in Sources */,
 				95CD2CFA1ED848ED00DB7660 /* CMServerMessage.m in Sources */,
+				95CA1F351EDC38D50024C4F6 /* SCWeakSelectorTarget.m in Sources */,
 				95CD2CEA1ED848ED00DB7660 /* CMCammentInRequest.m in Sources */,
+				95CA1F371EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m in Sources */,
 				95CD2D8A1ED8494600DB7660 /* CMShowCellNode.m in Sources */,
+				95CA1F2F1EDC38D50024C4F6 /* SCSwipeableFilterView.m in Sources */,
+				95CA1F0A1EDC38D50024C4F6 /* SCFilter+VideoComposition.m in Sources */,
+				95CA1F271EDC38D50024C4F6 /* SCRecordSession.m in Sources */,
 				95CD2D811ED8494600DB7660 /* CMShowsListPresenter.m in Sources */,
 				95CD2D631ED8494600DB7660 /* CMCammentsBlockPresenter.m in Sources */,
 				95CD2D881ED8494600DB7660 /* CMShowsListViewController.m in Sources */,
+				95CA1F221EDC38D50024C4F6 /* SCRecorderTools.m in Sources */,
+				95CA1F081EDC38D50024C4F6 /* SCFilter+UIImage.m in Sources */,
+				95CA1F0C1EDC38D50024C4F6 /* SCFilterAnimation.m in Sources */,
 				95CD2D041ED848ED00DB7660 /* User.m in Sources */,
+				95CA1F011EDC38D50024C4F6 /* SCAudioTools.m in Sources */,
 				95CD2D651ED8494600DB7660 /* CMHalfOpacityAnimation.m in Sources */,
 				95CD2D551ED8494600DB7660 /* CMAutoFrameFilter.m in Sources */,
 				95CD2D711ED8494600DB7660 /* CMCammentRecorderPreviewNode.m in Sources */,
 				95CD2D731ED8494600DB7660 /* CMCammentsBlockNode.m in Sources */,
+				95CA1F0E1EDC38D50024C4F6 /* SCFilterImageView.m in Sources */,
+				95CA1F161EDC38D50024C4F6 /* SCPhotoConfiguration.m in Sources */,
 				95CD2D071ED848ED00DB7660 /* CMStore.m in Sources */,
 				95CD2CE21ED848ED00DB7660 /* CMAnalytics.m in Sources */,
+				95CA1F041EDC38D50024C4F6 /* SCContext.m in Sources */,
+				95CA1F121EDC38D50024C4F6 /* SCIOPixelBuffers.m in Sources */,
+				95CA1F241EDC38D50024C4F6 /* SCRecorderToolsView.m in Sources */,
 				95CD2D791ED8494600DB7660 /* CMStreamPlayerNode.m in Sources */,
+				95CA1F291EDC38D50024C4F6 /* SCRecordSessionSegment.m in Sources */,
+				95CA1F101EDC38D50024C4F6 /* SCImageView.m in Sources */,
 				95CD2D5B1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.m in Sources */,
 				95CD2CE41ED848ED00DB7660 /* CMCognitoAuthService.m in Sources */,
+				95CA1F1C1EDC38D50024C4F6 /* SCRecorder.m in Sources */,
 				95CD2CEE1ED848ED00DB7660 /* CMDevcammentClient.m in Sources */,
 				95CD2D8E1ED8494600DB7660 /* CMShowsListWireframe.m in Sources */,
+				95CA1F141EDC38D50024C4F6 /* SCMediaTypeConfiguration.m in Sources */,
 				95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */,
 				95CD2D011ED848ED00DB7660 /* Post.m in Sources */,
 				95CD2CFC1ED848ED00DB7660 /* CMAppConfig.m in Sources */,
 				95CD2D6F1ED8494600DB7660 /* CMCammentNode.m in Sources */,
+				95CA1F2D1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m in Sources */,
+				95CA1F061EDC38D50024C4F6 /* SCFilter.m in Sources */,
 				95CD2CF01ED848ED00DB7660 /* CMShow.m in Sources */,
 				95CD2D751ED8494600DB7660 /* CMCammentsInStreamPlayerNode.m in Sources */,
 				95CD2D771ED8494600DB7660 /* CMLeftAlignedLayout.m in Sources */,
+				95CA1EFF1EDC38D50024C4F6 /* SCAudioConfiguration.m in Sources */,
+				95CA1F331EDC38D50024C4F6 /* SCVideoPlayerView.m in Sources */,
+				95CA1F1A1EDC38D50024C4F6 /* SCProcessingQueue.m in Sources */,
 				95CD2CF61ED848ED00DB7660 /* CMServerListener.m in Sources */,
+				95CA1F2B1EDC38D50024C4F6 /* SCSampleBufferHolder.m in Sources */,
 				95CD2CEC1ED848ED00DB7660 /* CMCammentList.m in Sources */,
 				95CD2D7D1ED8494600DB7660 /* CMShowsListInteractor.m in Sources */,
 				95CD2CE61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m in Sources */,
 				95CD2CE81ED848ED00DB7660 /* CMCamment.m in Sources */,
 				95CD2CF81ED848ED00DB7660 /* CMServerListenerCredentials.m in Sources */,
+				95CA1F311EDC38D50024C4F6 /* SCVideoConfiguration.m in Sources */,
 				95CD2D5F1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.m in Sources */,
 				95CD2D8C1ED8494600DB7660 /* CMShowsListNode.m in Sources */,
+				95CA1F181EDC38D50024C4F6 /* SCPlayer.m in Sources */,
 				95CD2CFE1ED848ED00DB7660 /* Camment.m in Sources */,
 				95CD2D6D1ED8494600DB7660 /* CMCammentCell.m in Sources */,
 				6FFAB149581D4462427B8F2B /* CammentSDK.m in Sources */,
+				95CA1EFD1EDC38D50024C4F6 /* SCAssetExportSession.m in Sources */,
 				6FFABF523CEEF44F620EC732 /* CMCammentIdentity.m in Sources */,
 				6FFAB4F8269D3D665DFDA32B /* CMCammentFacebookIdentity.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		95CD2C891ED8452200DB7660 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = SCRecorderFramework;
-			targetProxy = 95CD2C881ED8452200DB7660 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		95CD2C421ED836C900DB7660 /* Debug */ = {
@@ -1114,7 +1371,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -1160,7 +1417,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1173,7 +1430,6 @@
 		95CD2C451ED836C900DB7660 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1197,7 +1453,6 @@
 		95CD2C461ED836C900DB7660 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
 				DYLIB_COMPATIBILITY_VERSION = 1;

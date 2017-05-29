@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SCRecorder/SCFilter.h>
+#import "SCFilter.h"
 
 
 @interface CMAutoFrameFilter : SCFilter

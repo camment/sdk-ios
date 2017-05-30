@@ -34,12 +34,16 @@
             typeof(__weakSelf) strongSelf = __weakSelf;
             if (!strongSelf) { return; }
             BOOL isRecording = [(NSNumber *)tuple.first boolValue];
-            BOOL isPlaying = [(NSNumber *)tuple.second integerValue] != kCMStoreCammentIdIfNotPlaying;
+            BOOL isPlaying = ![(NSString *)tuple.second isEqualToString:kCMStoreCammentIdIfNotPlaying] ;
             [strongSelf.videoPlayerNode setMuted:isRecording || isPlaying];
         }];
     }
 
     return self;
+}
+
+- (void)playVideoAtURL:(NSURL *)url {
+    self.videoPlayerNode.assetURL = url;
 }
 
 - (void)dealloc {
@@ -48,10 +52,6 @@
 
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
-    NSString * path = [[NSBundle mainBundle] pathForResource:@"backgroundStream" ofType:@"mp4"];
-    NSURL *fileURL = [NSURL fileURLWithPath:path];
-    AVAsset *asset = [AVAsset assetWithURL:fileURL];
-    _videoPlayerNode.asset = asset;
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

@@ -24,6 +24,7 @@
 #import "CMShow.h"
 #import "CMCammentList.h"
 #import "CMCammentInRequest.h"
+#import "CMCamment.h"
 
 @interface AWSAPIGatewayClient()
 
@@ -228,6 +229,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       };
     NSDictionary *pathParameters = @{
                                      @"uuid": uuid,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"POST"
@@ -236,7 +238,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:body
-                     responseClass:nil];
+                     responseClass:[CMCamment class]];
 }
 
 

@@ -7,7 +7,7 @@
 
 @protocol CMCammentRecorderInteractorOutput <NSObject>
 
-- (void)recorderDidFinishAVAsset:(AVAsset *)asset;
+- (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid;
 
-- (void)recorderDidFinishExportingToURL:(NSURL *)url;
+- (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid;
 @end

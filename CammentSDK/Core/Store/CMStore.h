@@ -5,13 +5,13 @@
 
 #import <Foundation/Foundation.h>
 
-extern const NSInteger kCMStoreCammentIdIfNotPlaying;
+extern NSString *kCMStoreCammentIdIfNotPlaying;
 
 @interface CMStore: NSObject
 
 @property (nonatomic, assign) BOOL isSignedIn;
 
-@property (nonatomic, assign) NSInteger playingCammentId;
+@property (nonatomic, copy) NSString *playingCammentId;
 @property (nonatomic, assign) BOOL isRecordingCamment;
 
 + (CMStore *)instance;

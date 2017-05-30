@@ -4,6 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ReactiveObjC/ReactiveObjC.h>
 
 //! Project version number for CammentSDK.
 FOUNDATION_EXPORT double CammentSDKVersionNumber;
@@ -22,5 +23,5 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 + (CammentSDK *)instance;
 
 - (void)configureWithApiKey:(NSString *)apiKey;
-- (void)connectUserWithIdentity:(CMCammentIdentity *)identity;
+- (RACSignal *)connectUserWithIdentity:(CMCammentIdentity *)identity;
 @end

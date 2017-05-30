@@ -12,6 +12,8 @@
 #import "CMCammentButton.h"
 #import "CMStore.h"
 #import "CMCammentRecorderPreviewNode.h"
+#import "CMStreamPlayerNode.h"
+#import "CMShow.h"
 
 @interface CMCammentsInStreamPlayerViewController () <CMCammentButtonDelegate>
 @end
@@ -21,6 +23,7 @@
 - (instancetype)init {
     self = [super initWithNode:[CMCammentsInStreamPlayerNode new]];
     if (self) {
+
     }
 
     return self;
@@ -36,6 +39,12 @@
     UISwipeGestureRecognizer *showCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showCamments)];
     showCammentsBlockRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     [self.node.view addGestureRecognizer:showCammentsBlockRecognizer];
+
+    UISwipeGestureRecognizer *goBack = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController)];
+    goBack.direction = UISwipeGestureRecognizerDirectionDown;
+    goBack.numberOfTouchesRequired = 2;
+    [self.node.view addGestureRecognizer:goBack];
+
     self.node.cammentButton.delegate = self;
 
     [self setupBindings];
@@ -50,6 +59,10 @@
         strongSelf.node.showCammentRecorderNode = isRecording.boolValue;
         [strongSelf.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
     }];
+}
+
+- (void)dismissViewController {
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)setCammentsBlockNodeDelegate:(id <CMCammentsBlockDelegate>)delegate {
@@ -89,6 +102,10 @@
 
 - (void)presenterDidRequestViewPreviewView {
     [_presenter connectPreviewViewToRecorder:(SCImageView *) [self.node.cammentRecorderNode scImageView]];
+}
+
+- (void)startShow:(CMShow *)show {
+    [self.node.streamPlayerNode playVideoAtURL:[[NSURL alloc] initWithString:show.url]];
 }
 
 @end

@@ -20,6 +20,7 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
+             @"userCognitoIdentityId": @"userCognitoIdentityId",
              @"showUuid": @"showUuid",
              @"uuid": @"uuid",
              @"url": @"url"

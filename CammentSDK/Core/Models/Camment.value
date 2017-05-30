@@ -1,7 +1,9 @@
 %type name="AVAsset" library="AVFoundation" file="AVAsset"
 Camment {
-  NSInteger cammentId
+  NSString* showUUID
+  NSString* cammentUUID
   NSString* remoteURL
   NSString* localURL
   AVAsset* localAsset
+  NSString* temporaryUUID
 }

@@ -9,5 +9,5 @@
 @interface CMCammentUploader : NSObject
 + (CMCammentUploader *)instance;
 
-- (RACSignal *)uploadVideoAsset:(NSURL *)url;
+- (RACSignal *)uploadVideoAsset:(NSURL *)url uuid:(NSString *)uuid;
 @end

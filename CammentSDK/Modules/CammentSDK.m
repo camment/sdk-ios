@@ -40,15 +40,29 @@
     [self launch];
 }
 
-- (void)connectUserWithIdentity:(CMCammentIdentity *)identity {
+- (RACSignal *)connectUserWithIdentity:(CMCammentIdentity *)identity {
 
-    if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
-        CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
-        [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
-        [[self.authService signIn] subscribeCompleted:^{
+    return [RACSubject createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
 
-        }];
-    }
+        if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
+            CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
+            [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
+            [[self.authService signIn] subscribeError:^(NSError *error) {
+                [[CMStore instance] setIsSignedIn:NO];
+                [subscriber sendError:error];
+            } completed:^{
+                [[CMStore instance] setIsSignedIn:YES];
+                [subscriber sendCompleted];
+            }];
+        } else {
+            [subscriber sendError:[NSError
+                    errorWithDomain:@"tv.camment.ios"
+                               code:0
+                           userInfo:@{}]];
+        }
+
+        return nil;
+    }];
 }
 
 

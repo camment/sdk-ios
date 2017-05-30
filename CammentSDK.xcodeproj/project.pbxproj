@@ -6,64 +6,54 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		959E09231EDC4D4600C1F0F9 /* CammentSDK-Universal */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 959E09241EDC4D4600C1F0F9 /* Build configuration list for PBXAggregateTarget "CammentSDK-Universal" */;
+			buildPhases = (
+				959E09271EDC4D4B00C1F0F9 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "CammentSDK-Universal";
+			productName = "CammentSDK-Universal";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
+		6FFAB1380B8B4EF638D8FA2B /* ads.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB9479692BE245A168DB2 /* ads.gif */; };
 		6FFAB149581D4462427B8F2B /* CammentSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABB7C48C0955956A52984 /* CammentSDK.m */; };
+		6FFAB1B8F544C56FD7BE52D0 /* CMAdsCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB87B5658EDAA6E4AF991 /* CMAdsCell.h */; };
 		6FFAB409083C441438B2BF0E /* CammentSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB75DEC81AE0BFCF0D91E /* CammentSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FFAB4F8269D3D665DFDA32B /* CMCammentFacebookIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABD97717BB19E39E29DBE /* CMCammentFacebookIdentity.m */; };
+		6FFAB619691D976D7FF7525A /* CMAdsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABA73F497C5670EF3F5FC /* CMAdsCell.m */; };
 		6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6FFAB765E376A696208A2AAA /* CammentsBlockItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABE5404C9E2873EAB55C4 /* CammentsBlockItem.m */; };
+		6FFAB7982040743C50B0B647 /* CammentsBlockItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABC228BDB221E9D7161C1 /* CammentsBlockItem.h */; };
 		6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6FFABB58C39AE6733F2391CB /* Ads.value in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB6C4C432CEC263BCF82A /* Ads.value */; };
+		6FFABBCBBBBD83171755FF28 /* CMAdsNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB6CDC43FF5E019D4A259 /* CMAdsNode.h */; };
+		6FFABC15DB6A22708540D76D /* Ads.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB5B303A905542B61AABB /* Ads.m */; };
+		6FFABDAFED5A8BC388EA3358 /* Ads.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABD979ADFBE83BAF4E76B /* Ads.h */; };
+		6FFABE025F7CF81CEDC27421 /* CammentsBlockItem.adtValue in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */; };
+		6FFABEC83D5FA4A66035BB8F /* CMAdsNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB845EEFA38EEE20D6E7A /* CMAdsNode.m */; };
 		6FFABF523CEEF44F620EC732 /* CMCammentIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */; };
+		8909004C9DFAD83FA9818979 /* libPods-CammentSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9606F22539C0141BA1A57DC3 /* libPods-CammentSDK.a */; };
+		954D1B331EDDA2B100F93BEC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 954D1B321EDDA2B100F93BEC /* UIKit.framework */; };
+		954D1B351EDDA3E100F93BEC /* Prefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 954D1B341EDDA3DE00F93BEC /* Prefix.h */; };
 		959E089A1EDC3F2000C1F0F9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C821ED843F600DB7660 /* AVFoundation.framework */; };
-		959E089B1EDC3F3000C1F0F9 /* AccountKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F391EDC39500024C4F6 /* AccountKit.framework */; };
-		959E089C1EDC3F3000C1F0F9 /* AsyncDisplayKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */; };
-		959E089D1EDC3F3000C1F0F9 /* AWSAPIGateway.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */; };
-		959E089E1EDC3F3000C1F0F9 /* AWSCognito.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */; };
-		959E089F1EDC3F3000C1F0F9 /* AWSCognitoIdentityProvider.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */; };
-		959E08A01EDC3F3000C1F0F9 /* AWSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F411EDC39500024C4F6 /* AWSCore.framework */; };
-		959E08A11EDC3F3000C1F0F9 /* AWSDynamoDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */; };
-		959E08A21EDC3F3000C1F0F9 /* AWSIoT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F451EDC39500024C4F6 /* AWSIoT.framework */; };
-		959E08A31EDC3F3000C1F0F9 /* AWSLogs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */; };
-		959E08A41EDC3F3000C1F0F9 /* AWSMobileAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */; };
-		959E08A51EDC3F3000C1F0F9 /* AWSS3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F501EDC39500024C4F6 /* AWSS3.framework */; };
-		959E08A61EDC3F3000C1F0F9 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F551EDC39500024C4F6 /* Bolts.framework */; };
-		959E08A71EDC3F3000C1F0F9 /* FBAudienceNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */; };
-		959E08A81EDC3F3000C1F0F9 /* FBNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F581EDC39500024C4F6 /* FBNotifications.framework */; };
-		959E08A91EDC3F3000C1F0F9 /* FBSDKCoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */; };
-		959E08AA1EDC3F3000C1F0F9 /* FBSDKLoginKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */; };
-		959E08AB1EDC3F3000C1F0F9 /* FBSDKMessengerShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */; };
-		959E08AC1EDC3F3000C1F0F9 /* FBSDKPlacesKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */; };
-		959E08AD1EDC3F3000C1F0F9 /* FBSDKShareKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */; };
-		959E08AE1EDC3F3000C1F0F9 /* MBProgressHUD.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */; };
-		959E08AF1EDC3F3000C1F0F9 /* PINCache.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F5F1EDC39500024C4F6 /* PINCache.framework */; };
-		959E08B01EDC3F3000C1F0F9 /* PINRemoteImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */; };
-		959E08B11EDC3F3000C1F0F9 /* pop.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F611EDC39500024C4F6 /* pop.framework */; };
-		959E08B21EDC3F3000C1F0F9 /* ReactiveObjC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */; };
-		959E08DE1EDC401800C1F0F9 /* AccountKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F391EDC39500024C4F6 /* AccountKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08DF1EDC401800C1F0F9 /* AsyncDisplayKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E01EDC401800C1F0F9 /* AWSAPIGateway.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E11EDC401800C1F0F9 /* AWSCognito.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E21EDC401800C1F0F9 /* AWSCognitoIdentityProvider.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E31EDC401800C1F0F9 /* AWSCore.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F411EDC39500024C4F6 /* AWSCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E41EDC401800C1F0F9 /* AWSDynamoDB.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E51EDC401800C1F0F9 /* AWSIoT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F451EDC39500024C4F6 /* AWSIoT.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E61EDC401800C1F0F9 /* AWSLogs.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E71EDC401800C1F0F9 /* AWSMobileAnalytics.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E81EDC401800C1F0F9 /* AWSS3.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F501EDC39500024C4F6 /* AWSS3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08E91EDC401800C1F0F9 /* Bolts.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F551EDC39500024C4F6 /* Bolts.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08EA1EDC401800C1F0F9 /* FBAudienceNetwork.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08EB1EDC401800C1F0F9 /* FBNotifications.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F581EDC39500024C4F6 /* FBNotifications.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08EC1EDC401800C1F0F9 /* FBSDKCoreKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08ED1EDC401800C1F0F9 /* FBSDKLoginKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08EE1EDC401800C1F0F9 /* FBSDKMessengerShareKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08EF1EDC401800C1F0F9 /* FBSDKPlacesKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F01EDC401800C1F0F9 /* FBSDKShareKit.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F11EDC401800C1F0F9 /* MBProgressHUD.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F21EDC401800C1F0F9 /* PINCache.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F5F1EDC39500024C4F6 /* PINCache.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F31EDC401800C1F0F9 /* PINRemoteImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F41EDC401800C1F0F9 /* pop.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F611EDC39500024C4F6 /* pop.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F51EDC401800C1F0F9 /* ReactiveObjC.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		959E08F81EDC403C00C1F0F9 /* AccountKitStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 959E08F61EDC403C00C1F0F9 /* AccountKitStrings.bundle */; };
-		959E08F91EDC403C00C1F0F9 /* FacebookSDKStrings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 959E08F71EDC403C00C1F0F9 /* FacebookSDKStrings.bundle */; };
+		959E09601EDC539700C1F0F9 /* CMCamment.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E09541EDC539700C1F0F9 /* CMCamment.h */; };
+		959E09611EDC539700C1F0F9 /* CMCamment.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E09551EDC539700C1F0F9 /* CMCamment.m */; };
+		959E09621EDC539700C1F0F9 /* CMCammentInRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E09561EDC539700C1F0F9 /* CMCammentInRequest.h */; };
+		959E09631EDC539700C1F0F9 /* CMCammentInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E09571EDC539700C1F0F9 /* CMCammentInRequest.m */; };
+		959E09641EDC539700C1F0F9 /* CMCammentList.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E09581EDC539700C1F0F9 /* CMCammentList.h */; };
+		959E09651EDC539700C1F0F9 /* CMCammentList.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E09591EDC539700C1F0F9 /* CMCammentList.m */; };
+		959E09661EDC539700C1F0F9 /* CMDevcammentClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E095A1EDC539700C1F0F9 /* CMDevcammentClient.h */; };
+		959E09671EDC539700C1F0F9 /* CMDevcammentClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E095B1EDC539700C1F0F9 /* CMDevcammentClient.m */; };
+		959E09681EDC539700C1F0F9 /* CMShow.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E095C1EDC539700C1F0F9 /* CMShow.h */; };
+		959E09691EDC539700C1F0F9 /* CMShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E095D1EDC539700C1F0F9 /* CMShow.m */; };
+		959E096A1EDC539700C1F0F9 /* CMShowList.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E095E1EDC539700C1F0F9 /* CMShowList.h */; };
+		959E096B1EDC539700C1F0F9 /* CMShowList.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E095F1EDC539700C1F0F9 /* CMShowList.m */; };
 		95CA1EFA1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */; };
 		95CA1EFB1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */; };
 		95CA1EFC1EDC38D50024C4F6 /* SCAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */; };
@@ -135,18 +125,6 @@
 		95CD2CE41ED848ED00DB7660 /* CMCognitoAuthService.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CB31ED848ED00DB7660 /* CMCognitoAuthService.m */; };
 		95CD2CE51ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CB61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.h */; };
 		95CD2CE61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CB71ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m */; };
-		95CD2CE71ED848ED00DB7660 /* CMCamment.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CB91ED848ED00DB7660 /* CMCamment.h */; };
-		95CD2CE81ED848ED00DB7660 /* CMCamment.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CBA1ED848ED00DB7660 /* CMCamment.m */; };
-		95CD2CE91ED848ED00DB7660 /* CMCammentInRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CBB1ED848ED00DB7660 /* CMCammentInRequest.h */; };
-		95CD2CEA1ED848ED00DB7660 /* CMCammentInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CBC1ED848ED00DB7660 /* CMCammentInRequest.m */; };
-		95CD2CEB1ED848ED00DB7660 /* CMCammentList.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CBD1ED848ED00DB7660 /* CMCammentList.h */; };
-		95CD2CEC1ED848ED00DB7660 /* CMCammentList.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CBE1ED848ED00DB7660 /* CMCammentList.m */; };
-		95CD2CED1ED848ED00DB7660 /* CMDevcammentClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CBF1ED848ED00DB7660 /* CMDevcammentClient.h */; };
-		95CD2CEE1ED848ED00DB7660 /* CMDevcammentClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CC01ED848ED00DB7660 /* CMDevcammentClient.m */; };
-		95CD2CEF1ED848ED00DB7660 /* CMShow.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CC11ED848ED00DB7660 /* CMShow.h */; };
-		95CD2CF01ED848ED00DB7660 /* CMShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CC21ED848ED00DB7660 /* CMShow.m */; };
-		95CD2CF11ED848ED00DB7660 /* CMShowList.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CC31ED848ED00DB7660 /* CMShowList.h */; };
-		95CD2CF21ED848ED00DB7660 /* CMShowList.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CC41ED848ED00DB7660 /* CMShowList.m */; };
 		95CD2CF31ED848ED00DB7660 /* CMCammentUploader.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CC61ED848ED00DB7660 /* CMCammentUploader.h */; };
 		95CD2CF41ED848ED00DB7660 /* CMCammentUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2CC71ED848ED00DB7660 /* CMCammentUploader.m */; };
 		95CD2CF51ED848ED00DB7660 /* CMServerListener.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2CC91ED848ED00DB7660 /* CMServerListener.h */; };
@@ -233,51 +211,39 @@
 		95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		959E08B31EDC3FBF00C1F0F9 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 12;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				959E08DE1EDC401800C1F0F9 /* AccountKit.framework in CopyFiles */,
-				959E08DF1EDC401800C1F0F9 /* AsyncDisplayKit.framework in CopyFiles */,
-				959E08E01EDC401800C1F0F9 /* AWSAPIGateway.framework in CopyFiles */,
-				959E08E11EDC401800C1F0F9 /* AWSCognito.framework in CopyFiles */,
-				959E08E21EDC401800C1F0F9 /* AWSCognitoIdentityProvider.framework in CopyFiles */,
-				959E08E31EDC401800C1F0F9 /* AWSCore.framework in CopyFiles */,
-				959E08E41EDC401800C1F0F9 /* AWSDynamoDB.framework in CopyFiles */,
-				959E08E51EDC401800C1F0F9 /* AWSIoT.framework in CopyFiles */,
-				959E08E61EDC401800C1F0F9 /* AWSLogs.framework in CopyFiles */,
-				959E08E71EDC401800C1F0F9 /* AWSMobileAnalytics.framework in CopyFiles */,
-				959E08E81EDC401800C1F0F9 /* AWSS3.framework in CopyFiles */,
-				959E08E91EDC401800C1F0F9 /* Bolts.framework in CopyFiles */,
-				959E08EA1EDC401800C1F0F9 /* FBAudienceNetwork.framework in CopyFiles */,
-				959E08EB1EDC401800C1F0F9 /* FBNotifications.framework in CopyFiles */,
-				959E08EC1EDC401800C1F0F9 /* FBSDKCoreKit.framework in CopyFiles */,
-				959E08ED1EDC401800C1F0F9 /* FBSDKLoginKit.framework in CopyFiles */,
-				959E08EE1EDC401800C1F0F9 /* FBSDKMessengerShareKit.framework in CopyFiles */,
-				959E08EF1EDC401800C1F0F9 /* FBSDKPlacesKit.framework in CopyFiles */,
-				959E08F01EDC401800C1F0F9 /* FBSDKShareKit.framework in CopyFiles */,
-				959E08F11EDC401800C1F0F9 /* MBProgressHUD.framework in CopyFiles */,
-				959E08F21EDC401800C1F0F9 /* PINCache.framework in CopyFiles */,
-				959E08F31EDC401800C1F0F9 /* PINRemoteImage.framework in CopyFiles */,
-				959E08F41EDC401800C1F0F9 /* pop.framework in CopyFiles */,
-				959E08F51EDC401800C1F0F9 /* ReactiveObjC.framework in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
+		65E6129DC1B5BCFEBA797A01 /* Pods-CammentSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.debug.xcconfig"; sourceTree = "<group>"; };
+		6FFAB5B303A905542B61AABB /* Ads.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ads.m; sourceTree = "<group>"; };
+		6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.adtValue; path = CammentsBlockItem.adtValue; sourceTree = "<group>"; };
+		6FFAB6C4C432CEC263BCF82A /* Ads.value */ = {isa = PBXFileReference; lastKnownFileType = file.value; path = Ads.value; sourceTree = "<group>"; };
+		6FFAB6CDC43FF5E019D4A259 /* CMAdsNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAdsNode.h; sourceTree = "<group>"; };
 		6FFAB75DEC81AE0BFCF0D91E /* CammentSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentSDK.h; sourceTree = "<group>"; };
+		6FFAB845EEFA38EEE20D6E7A /* CMAdsNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAdsNode.m; sourceTree = "<group>"; };
+		6FFAB87B5658EDAA6E4AF991 /* CMAdsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAdsCell.h; sourceTree = "<group>"; };
+		6FFAB9479692BE245A168DB2 /* ads.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = ads.gif; sourceTree = "<group>"; };
+		6FFABA73F497C5670EF3F5FC /* CMAdsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAdsCell.m; sourceTree = "<group>"; };
 		6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentFacebookIdentity.h; sourceTree = "<group>"; };
 		6FFABB7C48C0955956A52984 /* CammentSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CammentSDK.m; sourceTree = "<group>"; };
 		6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentIdentity.m; sourceTree = "<group>"; };
+		6FFABC228BDB221E9D7161C1 /* CammentsBlockItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentsBlockItem.h; sourceTree = "<group>"; };
 		6FFABD97717BB19E39E29DBE /* CMCammentFacebookIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentFacebookIdentity.m; sourceTree = "<group>"; };
+		6FFABD979ADFBE83BAF4E76B /* Ads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ads.h; sourceTree = "<group>"; };
+		6FFABE5404C9E2873EAB55C4 /* CammentsBlockItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CammentsBlockItem.m; sourceTree = "<group>"; };
 		6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentIdentity.h; sourceTree = "<group>"; };
-		959E08F61EDC403C00C1F0F9 /* AccountKitStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = AccountKitStrings.bundle; sourceTree = "<group>"; };
-		959E08F71EDC403C00C1F0F9 /* FacebookSDKStrings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = FacebookSDKStrings.bundle; sourceTree = "<group>"; };
+		954D1B321EDDA2B100F93BEC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		954D1B341EDDA3DE00F93BEC /* Prefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.h; sourceTree = "<group>"; };
+		959E09541EDC539700C1F0F9 /* CMCamment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCamment.h; sourceTree = "<group>"; };
+		959E09551EDC539700C1F0F9 /* CMCamment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCamment.m; sourceTree = "<group>"; };
+		959E09561EDC539700C1F0F9 /* CMCammentInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentInRequest.h; sourceTree = "<group>"; };
+		959E09571EDC539700C1F0F9 /* CMCammentInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentInRequest.m; sourceTree = "<group>"; };
+		959E09581EDC539700C1F0F9 /* CMCammentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentList.h; sourceTree = "<group>"; };
+		959E09591EDC539700C1F0F9 /* CMCammentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentList.m; sourceTree = "<group>"; };
+		959E095A1EDC539700C1F0F9 /* CMDevcammentClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMDevcammentClient.h; sourceTree = "<group>"; };
+		959E095B1EDC539700C1F0F9 /* CMDevcammentClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMDevcammentClient.m; sourceTree = "<group>"; };
+		959E095C1EDC539700C1F0F9 /* CMShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShow.h; sourceTree = "<group>"; };
+		959E095D1EDC539700C1F0F9 /* CMShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShow.m; sourceTree = "<group>"; };
+		959E095E1EDC539700C1F0F9 /* CMShowList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowList.h; sourceTree = "<group>"; };
+		959E095F1EDC539700C1F0F9 /* CMShowList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowList.m; sourceTree = "<group>"; };
 		95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+SCSaveToCameraRoll.h"; path = "SCRecorder-2.7.0/Library/Sources/NSURL+SCSaveToCameraRoll.h"; sourceTree = SOURCE_ROOT; };
 		95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+SCSaveToCameraRoll.m"; path = "SCRecorder-2.7.0/Library/Sources/NSURL+SCSaveToCameraRoll.m"; sourceTree = SOURCE_ROOT; };
 		95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCAssetExportSession.h; path = "SCRecorder-2.7.0/Library/Sources/SCAssetExportSession.h"; sourceTree = SOURCE_ROOT; };
@@ -340,54 +306,6 @@
 		95CA1EF71EDC38D50024C4F6 /* SCWeakSelectorTarget.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SCWeakSelectorTarget.m; path = "SCRecorder-2.7.0/Library/Sources/SCWeakSelectorTarget.m"; sourceTree = SOURCE_ROOT; };
 		95CA1EF81EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+SCSaveToCameraRoll.h"; path = "SCRecorder-2.7.0/Library/Sources/UIImage+SCSaveToCameraRoll.h"; sourceTree = SOURCE_ROOT; };
 		95CA1EF91EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIImage+SCSaveToCameraRoll.m"; path = "SCRecorder-2.7.0/Library/Sources/UIImage+SCSaveToCameraRoll.m"; sourceTree = SOURCE_ROOT; };
-		95CA1F391EDC39500024C4F6 /* AccountKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AccountKit.framework; path = Frameworks/AccountKit.framework; sourceTree = "<group>"; };
-		95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AsyncDisplayKit.framework; path = Frameworks/AsyncDisplayKit.framework; sourceTree = "<group>"; };
-		95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSAPIGateway.framework; path = Frameworks/AWSAPIGateway.framework; sourceTree = "<group>"; };
-		95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognito.framework; path = Frameworks/AWSCognito.framework; sourceTree = "<group>"; };
-		95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognitoIdentityProvider.framework; path = Frameworks/AWSCognitoIdentityProvider.framework; sourceTree = "<group>"; };
-		95CA1F411EDC39500024C4F6 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = Frameworks/AWSCore.framework; sourceTree = "<group>"; };
-		95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSDynamoDB.framework; path = Frameworks/AWSDynamoDB.framework; sourceTree = "<group>"; };
-		95CA1F451EDC39500024C4F6 /* AWSIoT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSIoT.framework; path = Frameworks/AWSIoT.framework; sourceTree = "<group>"; };
-		95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSLogs.framework; path = Frameworks/AWSLogs.framework; sourceTree = "<group>"; };
-		95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSMobileAnalytics.framework; path = Frameworks/AWSMobileAnalytics.framework; sourceTree = "<group>"; };
-		95CA1F501EDC39500024C4F6 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSS3.framework; path = Frameworks/AWSS3.framework; sourceTree = "<group>"; };
-		95CA1F551EDC39500024C4F6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Frameworks/Bolts.framework; sourceTree = "<group>"; };
-		95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = Frameworks/FBAudienceNetwork.framework; sourceTree = "<group>"; };
-		95CA1F581EDC39500024C4F6 /* FBNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBNotifications.framework; path = Frameworks/FBNotifications.framework; sourceTree = "<group>"; };
-		95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Frameworks/FBSDKCoreKit.framework; sourceTree = "<group>"; };
-		95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Frameworks/FBSDKLoginKit.framework; sourceTree = "<group>"; };
-		95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = Frameworks/FBSDKMessengerShareKit.framework; sourceTree = "<group>"; };
-		95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKPlacesKit.framework; path = Frameworks/FBSDKPlacesKit.framework; sourceTree = "<group>"; };
-		95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Frameworks/FBSDKShareKit.framework; sourceTree = "<group>"; };
-		95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MBProgressHUD.framework; path = Frameworks/MBProgressHUD.framework; sourceTree = "<group>"; };
-		95CA1F5F1EDC39500024C4F6 /* PINCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINCache.framework; path = Frameworks/PINCache.framework; sourceTree = "<group>"; };
-		95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINRemoteImage.framework; path = Frameworks/PINRemoteImage.framework; sourceTree = "<group>"; };
-		95CA1F611EDC39500024C4F6 /* pop.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = pop.framework; path = Frameworks/pop.framework; sourceTree = "<group>"; };
-		95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Frameworks/ReactiveObjC.framework; sourceTree = "<group>"; };
-		95CA1F8D1EDC39920024C4F6 /* AccountKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AccountKit.framework; path = Frameworks/AccountKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F8E1EDC39920024C4F6 /* AsyncDisplayKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AsyncDisplayKit.framework; path = Frameworks/AsyncDisplayKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F8F1EDC39920024C4F6 /* AWSAPIGateway.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSAPIGateway.framework; path = Frameworks/AWSAPIGateway.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F901EDC39920024C4F6 /* AWSCognito.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognito.framework; path = Frameworks/AWSCognito.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F911EDC39920024C4F6 /* AWSCognitoIdentityProvider.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCognitoIdentityProvider.framework; path = Frameworks/AWSCognitoIdentityProvider.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F921EDC39920024C4F6 /* AWSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSCore.framework; path = Frameworks/AWSCore.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F931EDC39920024C4F6 /* AWSDynamoDB.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSDynamoDB.framework; path = Frameworks/AWSDynamoDB.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F941EDC39920024C4F6 /* AWSIoT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSIoT.framework; path = Frameworks/AWSIoT.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F951EDC39920024C4F6 /* AWSLogs.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSLogs.framework; path = Frameworks/AWSLogs.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F961EDC39920024C4F6 /* AWSMobileAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSMobileAnalytics.framework; path = Frameworks/AWSMobileAnalytics.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F971EDC39920024C4F6 /* AWSS3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AWSS3.framework; path = Frameworks/AWSS3.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F981EDC39920024C4F6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Bolts.framework; path = Frameworks/Bolts.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F991EDC39920024C4F6 /* FBAudienceNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBAudienceNetwork.framework; path = Frameworks/FBAudienceNetwork.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F9A1EDC39930024C4F6 /* FBNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBNotifications.framework; path = Frameworks/FBNotifications.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F9B1EDC39930024C4F6 /* FBSDKCoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKCoreKit.framework; path = Frameworks/FBSDKCoreKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F9C1EDC39930024C4F6 /* FBSDKLoginKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKLoginKit.framework; path = Frameworks/FBSDKLoginKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F9D1EDC39930024C4F6 /* FBSDKMessengerShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKMessengerShareKit.framework; path = Frameworks/FBSDKMessengerShareKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F9E1EDC39930024C4F6 /* FBSDKPlacesKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKPlacesKit.framework; path = Frameworks/FBSDKPlacesKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1F9F1EDC39930024C4F6 /* FBSDKShareKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FBSDKShareKit.framework; path = Frameworks/FBSDKShareKit.framework; sourceTree = SOURCE_ROOT; };
-		95CA1FA01EDC39930024C4F6 /* MBProgressHUD.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MBProgressHUD.framework; path = Frameworks/MBProgressHUD.framework; sourceTree = SOURCE_ROOT; };
-		95CA1FA11EDC39930024C4F6 /* PINCache.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINCache.framework; path = Frameworks/PINCache.framework; sourceTree = SOURCE_ROOT; };
-		95CA1FA21EDC39930024C4F6 /* PINRemoteImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PINRemoteImage.framework; path = Frameworks/PINRemoteImage.framework; sourceTree = SOURCE_ROOT; };
-		95CA1FA31EDC39930024C4F6 /* pop.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = pop.framework; path = Frameworks/pop.framework; sourceTree = SOURCE_ROOT; };
-		95CA1FA41EDC39930024C4F6 /* ReactiveObjC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ReactiveObjC.framework; path = Frameworks/ReactiveObjC.framework; sourceTree = SOURCE_ROOT; };
 		95CA1FBD1EDC3B220024C4F6 /* CammentSDKFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentSDKFramework.h; sourceTree = "<group>"; };
 		95CD2C3C1ED836C900DB7660 /* CammentSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CammentSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		95CD2C401ED836C900DB7660 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -400,18 +318,6 @@
 		95CD2CB31ED848ED00DB7660 /* CMCognitoAuthService.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCognitoAuthService.m; sourceTree = "<group>"; };
 		95CD2CB61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCognitoFacebookAuthProvider.h; sourceTree = "<group>"; };
 		95CD2CB71ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCognitoFacebookAuthProvider.m; sourceTree = "<group>"; };
-		95CD2CB91ED848ED00DB7660 /* CMCamment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCamment.h; sourceTree = "<group>"; };
-		95CD2CBA1ED848ED00DB7660 /* CMCamment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCamment.m; sourceTree = "<group>"; };
-		95CD2CBB1ED848ED00DB7660 /* CMCammentInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentInRequest.h; sourceTree = "<group>"; };
-		95CD2CBC1ED848ED00DB7660 /* CMCammentInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentInRequest.m; sourceTree = "<group>"; };
-		95CD2CBD1ED848ED00DB7660 /* CMCammentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentList.h; sourceTree = "<group>"; };
-		95CD2CBE1ED848ED00DB7660 /* CMCammentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentList.m; sourceTree = "<group>"; };
-		95CD2CBF1ED848ED00DB7660 /* CMDevcammentClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMDevcammentClient.h; sourceTree = "<group>"; };
-		95CD2CC01ED848ED00DB7660 /* CMDevcammentClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMDevcammentClient.m; sourceTree = "<group>"; };
-		95CD2CC11ED848ED00DB7660 /* CMShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShow.h; sourceTree = "<group>"; };
-		95CD2CC21ED848ED00DB7660 /* CMShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShow.m; sourceTree = "<group>"; };
-		95CD2CC31ED848ED00DB7660 /* CMShowList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowList.h; sourceTree = "<group>"; };
-		95CD2CC41ED848ED00DB7660 /* CMShowList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowList.m; sourceTree = "<group>"; };
 		95CD2CC61ED848ED00DB7660 /* CMCammentUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentUploader.h; sourceTree = "<group>"; };
 		95CD2CC71ED848ED00DB7660 /* CMCammentUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentUploader.m; sourceTree = "<group>"; };
 		95CD2CC91ED848ED00DB7660 /* CMServerListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMServerListener.h; sourceTree = "<group>"; };
@@ -499,6 +405,10 @@
 		95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowsListModule.h; sourceTree = "<group>"; };
 		95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListModule.m; sourceTree = "<group>"; };
 		95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMPublicModuleInterface.h; path = PublicModule/CMPublicModuleInterface.h; sourceTree = "<group>"; };
+		9606F22539C0141BA1A57DC3 /* libPods-CammentSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CammentSDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AEA97F7495C3E709B96CCF85 /* Pods-CammentSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.release.xcconfig"; path = "../Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.release.xcconfig"; sourceTree = "<group>"; };
+		B916B789787A2CE80207793E /* Pods-CammentSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.release.xcconfig"; sourceTree = "<group>"; };
+		FE53B2665291310F24AA0E21 /* Pods-CammentSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -506,39 +416,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				959E089B1EDC3F3000C1F0F9 /* AccountKit.framework in Frameworks */,
-				959E089C1EDC3F3000C1F0F9 /* AsyncDisplayKit.framework in Frameworks */,
-				959E089D1EDC3F3000C1F0F9 /* AWSAPIGateway.framework in Frameworks */,
-				959E089E1EDC3F3000C1F0F9 /* AWSCognito.framework in Frameworks */,
-				959E089F1EDC3F3000C1F0F9 /* AWSCognitoIdentityProvider.framework in Frameworks */,
-				959E08A01EDC3F3000C1F0F9 /* AWSCore.framework in Frameworks */,
-				959E08A11EDC3F3000C1F0F9 /* AWSDynamoDB.framework in Frameworks */,
-				959E08A21EDC3F3000C1F0F9 /* AWSIoT.framework in Frameworks */,
-				959E08A31EDC3F3000C1F0F9 /* AWSLogs.framework in Frameworks */,
-				959E08A41EDC3F3000C1F0F9 /* AWSMobileAnalytics.framework in Frameworks */,
-				959E08A51EDC3F3000C1F0F9 /* AWSS3.framework in Frameworks */,
-				959E08A61EDC3F3000C1F0F9 /* Bolts.framework in Frameworks */,
-				959E08A71EDC3F3000C1F0F9 /* FBAudienceNetwork.framework in Frameworks */,
-				959E08A81EDC3F3000C1F0F9 /* FBNotifications.framework in Frameworks */,
-				959E08A91EDC3F3000C1F0F9 /* FBSDKCoreKit.framework in Frameworks */,
-				959E08AA1EDC3F3000C1F0F9 /* FBSDKLoginKit.framework in Frameworks */,
-				959E08AB1EDC3F3000C1F0F9 /* FBSDKMessengerShareKit.framework in Frameworks */,
-				959E08AC1EDC3F3000C1F0F9 /* FBSDKPlacesKit.framework in Frameworks */,
-				959E08AD1EDC3F3000C1F0F9 /* FBSDKShareKit.framework in Frameworks */,
-				959E08AE1EDC3F3000C1F0F9 /* MBProgressHUD.framework in Frameworks */,
-				959E08AF1EDC3F3000C1F0F9 /* PINCache.framework in Frameworks */,
-				959E08B01EDC3F3000C1F0F9 /* PINRemoteImage.framework in Frameworks */,
-				959E08B11EDC3F3000C1F0F9 /* pop.framework in Frameworks */,
-				959E08B21EDC3F3000C1F0F9 /* ReactiveObjC.framework in Frameworks */,
+				954D1B331EDDA2B100F93BEC /* UIKit.framework in Frameworks */,
 				959E089A1EDC3F2000C1F0F9 /* AVFoundation.framework in Frameworks */,
 				95CD2C851ED843FC00DB7660 /* VideoToolbox.framework in Frameworks */,
 				95CD2C811ED843EF00DB7660 /* ImageIO.framework in Frameworks */,
+				8909004C9DFAD83FA9818979 /* libPods-CammentSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2C5CA3C2942F3A999B11DE51 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				FE53B2665291310F24AA0E21 /* Pods-CammentSDK.debug.xcconfig */,
+				B916B789787A2CE80207793E /* Pods-CammentSDK.release.xcconfig */,
+				65E6129DC1B5BCFEBA797A01 /* Pods-CammentSDK.debug.xcconfig */,
+				AEA97F7495C3E709B96CCF85 /* Pods-CammentSDK.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		6FFAB0AD9BD20AF107CD1368 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
@@ -625,6 +524,7 @@
 				95CD2C3E1ED836C900DB7660 /* CammentSDK */,
 				95CD2C3D1ED836C900DB7660 /* Products */,
 				95CD2C7F1ED843EF00DB7660 /* Frameworks */,
+				2C5CA3C2942F3A999B11DE51 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -647,6 +547,7 @@
 				95CD2C4F1ED83F5F00DB7660 /* Frameworks */,
 				95CD2C401ED836C900DB7660 /* Info.plist */,
 				95CA1FBD1EDC3B220024C4F6 /* CammentSDKFramework.h */,
+				954D1B341EDDA3DE00F93BEC /* Prefix.h */,
 			);
 			path = CammentSDK;
 			sourceTree = "<group>";
@@ -654,30 +555,6 @@
 		95CD2C4F1ED83F5F00DB7660 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				95CA1F8D1EDC39920024C4F6 /* AccountKit.framework */,
-				95CA1F8E1EDC39920024C4F6 /* AsyncDisplayKit.framework */,
-				95CA1F8F1EDC39920024C4F6 /* AWSAPIGateway.framework */,
-				95CA1F901EDC39920024C4F6 /* AWSCognito.framework */,
-				95CA1F911EDC39920024C4F6 /* AWSCognitoIdentityProvider.framework */,
-				95CA1F921EDC39920024C4F6 /* AWSCore.framework */,
-				95CA1F931EDC39920024C4F6 /* AWSDynamoDB.framework */,
-				95CA1F941EDC39920024C4F6 /* AWSIoT.framework */,
-				95CA1F951EDC39920024C4F6 /* AWSLogs.framework */,
-				95CA1F961EDC39920024C4F6 /* AWSMobileAnalytics.framework */,
-				95CA1F971EDC39920024C4F6 /* AWSS3.framework */,
-				95CA1F981EDC39920024C4F6 /* Bolts.framework */,
-				95CA1F991EDC39920024C4F6 /* FBAudienceNetwork.framework */,
-				95CA1F9A1EDC39930024C4F6 /* FBNotifications.framework */,
-				95CA1F9B1EDC39930024C4F6 /* FBSDKCoreKit.framework */,
-				95CA1F9C1EDC39930024C4F6 /* FBSDKLoginKit.framework */,
-				95CA1F9D1EDC39930024C4F6 /* FBSDKMessengerShareKit.framework */,
-				95CA1F9E1EDC39930024C4F6 /* FBSDKPlacesKit.framework */,
-				95CA1F9F1EDC39930024C4F6 /* FBSDKShareKit.framework */,
-				95CA1FA01EDC39930024C4F6 /* MBProgressHUD.framework */,
-				95CA1FA11EDC39930024C4F6 /* PINCache.framework */,
-				95CA1FA21EDC39930024C4F6 /* PINRemoteImage.framework */,
-				95CA1FA31EDC39930024C4F6 /* pop.framework */,
-				95CA1FA41EDC39930024C4F6 /* ReactiveObjC.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -685,33 +562,11 @@
 		95CD2C7F1ED843EF00DB7660 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				95CA1F391EDC39500024C4F6 /* AccountKit.framework */,
-				95CA1F3B1EDC39500024C4F6 /* AsyncDisplayKit.framework */,
-				95CA1F3C1EDC39500024C4F6 /* AWSAPIGateway.framework */,
-				95CA1F3F1EDC39500024C4F6 /* AWSCognito.framework */,
-				95CA1F401EDC39500024C4F6 /* AWSCognitoIdentityProvider.framework */,
-				95CA1F411EDC39500024C4F6 /* AWSCore.framework */,
-				95CA1F421EDC39500024C4F6 /* AWSDynamoDB.framework */,
-				95CA1F451EDC39500024C4F6 /* AWSIoT.framework */,
-				95CA1F4A1EDC39500024C4F6 /* AWSLogs.framework */,
-				95CA1F4C1EDC39500024C4F6 /* AWSMobileAnalytics.framework */,
-				95CA1F501EDC39500024C4F6 /* AWSS3.framework */,
-				95CA1F551EDC39500024C4F6 /* Bolts.framework */,
-				95CA1F571EDC39500024C4F6 /* FBAudienceNetwork.framework */,
-				95CA1F581EDC39500024C4F6 /* FBNotifications.framework */,
-				95CA1F591EDC39500024C4F6 /* FBSDKCoreKit.framework */,
-				95CA1F5A1EDC39500024C4F6 /* FBSDKLoginKit.framework */,
-				95CA1F5B1EDC39500024C4F6 /* FBSDKMessengerShareKit.framework */,
-				95CA1F5C1EDC39500024C4F6 /* FBSDKPlacesKit.framework */,
-				95CA1F5D1EDC39500024C4F6 /* FBSDKShareKit.framework */,
-				95CA1F5E1EDC39500024C4F6 /* MBProgressHUD.framework */,
-				95CA1F5F1EDC39500024C4F6 /* PINCache.framework */,
-				95CA1F601EDC39500024C4F6 /* PINRemoteImage.framework */,
-				95CA1F611EDC39500024C4F6 /* pop.framework */,
-				95CA1F621EDC39500024C4F6 /* ReactiveObjC.framework */,
+				954D1B321EDDA2B100F93BEC /* UIKit.framework */,
 				95CD2C841ED843FC00DB7660 /* VideoToolbox.framework */,
 				95CD2C821ED843F600DB7660 /* AVFoundation.framework */,
 				95CD2C801ED843EF00DB7660 /* ImageIO.framework */,
+				9606F22539C0141BA1A57DC3 /* libPods-CammentSDK.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -779,18 +634,18 @@
 		95CD2CB81ED848ED00DB7660 /* AWSApi */ = {
 			isa = PBXGroup;
 			children = (
-				95CD2CB91ED848ED00DB7660 /* CMCamment.h */,
-				95CD2CBA1ED848ED00DB7660 /* CMCamment.m */,
-				95CD2CBB1ED848ED00DB7660 /* CMCammentInRequest.h */,
-				95CD2CBC1ED848ED00DB7660 /* CMCammentInRequest.m */,
-				95CD2CBD1ED848ED00DB7660 /* CMCammentList.h */,
-				95CD2CBE1ED848ED00DB7660 /* CMCammentList.m */,
-				95CD2CBF1ED848ED00DB7660 /* CMDevcammentClient.h */,
-				95CD2CC01ED848ED00DB7660 /* CMDevcammentClient.m */,
-				95CD2CC11ED848ED00DB7660 /* CMShow.h */,
-				95CD2CC21ED848ED00DB7660 /* CMShow.m */,
-				95CD2CC31ED848ED00DB7660 /* CMShowList.h */,
-				95CD2CC41ED848ED00DB7660 /* CMShowList.m */,
+				959E09541EDC539700C1F0F9 /* CMCamment.h */,
+				959E09551EDC539700C1F0F9 /* CMCamment.m */,
+				959E09561EDC539700C1F0F9 /* CMCammentInRequest.h */,
+				959E09571EDC539700C1F0F9 /* CMCammentInRequest.m */,
+				959E09581EDC539700C1F0F9 /* CMCammentList.h */,
+				959E09591EDC539700C1F0F9 /* CMCammentList.m */,
+				959E095A1EDC539700C1F0F9 /* CMDevcammentClient.h */,
+				959E095B1EDC539700C1F0F9 /* CMDevcammentClient.m */,
+				959E095C1EDC539700C1F0F9 /* CMShow.h */,
+				959E095D1EDC539700C1F0F9 /* CMShow.m */,
+				959E095E1EDC539700C1F0F9 /* CMShowList.h */,
+				959E095F1EDC539700C1F0F9 /* CMShowList.m */,
 			);
 			path = AWSApi;
 			sourceTree = "<group>";
@@ -838,6 +693,12 @@
 				95CD2CD91ED848ED00DB7660 /* User.h */,
 				95CD2CDA1ED848ED00DB7660 /* User.m */,
 				95CD2CDB1ED848ED00DB7660 /* User.value */,
+				6FFAB6C4C432CEC263BCF82A /* Ads.value */,
+				6FFABD979ADFBE83BAF4E76B /* Ads.h */,
+				6FFAB5B303A905542B61AABB /* Ads.m */,
+				6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */,
+				6FFABC228BDB221E9D7161C1 /* CammentsBlockItem.h */,
+				6FFABE5404C9E2873EAB55C4 /* CammentsBlockItem.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -961,6 +822,10 @@
 				95CD2D341ED8494600DB7660 /* CMLeftAlignedLayout.m */,
 				95CD2D351ED8494600DB7660 /* CMStreamPlayerNode.h */,
 				95CD2D361ED8494600DB7660 /* CMStreamPlayerNode.m */,
+				6FFABA73F497C5670EF3F5FC /* CMAdsCell.m */,
+				6FFAB87B5658EDAA6E4AF991 /* CMAdsCell.h */,
+				6FFAB845EEFA38EEE20D6E7A /* CMAdsNode.m */,
+				6FFAB6CDC43FF5E019D4A259 /* CMAdsNode.h */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1053,11 +918,10 @@
 		95CD2DE01ED84D0A00DB7660 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
-				959E08F61EDC403C00C1F0F9 /* AccountKitStrings.bundle */,
-				959E08F71EDC403C00C1F0F9 /* FacebookSDKStrings.bundle */,
 				95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */,
 				95CD2DE21ED84D0A00DB7660 /* backgroundStream.mp4 */,
 				95CD2DE31ED84D0A00DB7660 /* Config.plist */,
+				6FFAB9479692BE245A168DB2 /* ads.gif */,
 			);
 			path = Assets;
 			sourceTree = "<group>";
@@ -1080,7 +944,6 @@
 				95CA1FBE1EDC3B220024C4F6 /* CammentSDKFramework.h in Headers */,
 				6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */,
 				95CA1F1D1EDC38D50024C4F6 /* SCRecorderDelegate.h in Headers */,
-				95CD2CE71ED848ED00DB7660 /* CMCamment.h in Headers */,
 				95CA1F301EDC38D50024C4F6 /* SCVideoConfiguration.h in Headers */,
 				6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */,
 				6FFAB409083C441438B2BF0E /* CammentSDK.h in Headers */,
@@ -1117,7 +980,9 @@
 				95CA1F021EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch in Headers */,
 				95CD2D841ED8494600DB7660 /* CMShowsListCollectionPresenter.h in Headers */,
 				95CA1F2A1EDC38D50024C4F6 /* SCSampleBufferHolder.h in Headers */,
+				959E09681EDC539700C1F0F9 /* CMShow.h in Headers */,
 				95CD2D081ED848ED00DB7660 /* UIColorMacros.h in Headers */,
+				959E096A1EDC539700C1F0F9 /* CMShowList.h in Headers */,
 				95CA1EFE1EDC38D50024C4F6 /* SCAudioConfiguration.h in Headers */,
 				95CD2D891ED8494600DB7660 /* CMShowCellNode.h in Headers */,
 				95CA1F341EDC38D50024C4F6 /* SCWeakSelectorTarget.h in Headers */,
@@ -1132,6 +997,7 @@
 				95CD2D8B1ED8494600DB7660 /* CMShowsListNode.h in Headers */,
 				95CA1F151EDC38D50024C4F6 /* SCPhotoConfiguration.h in Headers */,
 				95CD2D661ED8494600DB7660 /* CMOneThirdScaleAnimation.h in Headers */,
+				959E09621EDC539700C1F0F9 /* CMCammentInRequest.h in Headers */,
 				95CA1F201EDC38D50024C4F6 /* SCRecorderHeader.h in Headers */,
 				95CA1F0F1EDC38D50024C4F6 /* SCImageView.h in Headers */,
 				95CD2D6E1ED8494600DB7660 /* CMCammentNode.h in Headers */,
@@ -1148,28 +1014,31 @@
 				95CD2D741ED8494600DB7660 /* CMCammentsInStreamPlayerNode.h in Headers */,
 				95CD2D5A1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.h in Headers */,
 				95CD2D621ED8494600DB7660 /* CMCammentsBlockPresenter.h in Headers */,
-				95CD2CE91ED848ED00DB7660 /* CMCammentInRequest.h in Headers */,
+				959E09601EDC539700C1F0F9 /* CMCamment.h in Headers */,
 				95CA1F071EDC38D50024C4F6 /* SCFilter+UIImage.h in Headers */,
 				95CD2D871ED8494600DB7660 /* CMShowsListViewController.h in Headers */,
 				95CD2D001ED848ED00DB7660 /* Post.h in Headers */,
 				95CD2D641ED8494600DB7660 /* CMHalfOpacityAnimation.h in Headers */,
+				959E09661EDC539700C1F0F9 /* CMDevcammentClient.h in Headers */,
 				95CA1EFC1EDC38D50024C4F6 /* SCAssetExportSession.h in Headers */,
 				95CD2D701ED8494600DB7660 /* CMCammentRecorderPreviewNode.h in Headers */,
+				959E09641EDC539700C1F0F9 /* CMCammentList.h in Headers */,
 				95CD2CF51ED848ED00DB7660 /* CMServerListener.h in Headers */,
 				95CA1F111EDC38D50024C4F6 /* SCIOPixelBuffers.h in Headers */,
 				95CA1F251EDC38D50024C4F6 /* SCRecordSession_Internal.h in Headers */,
 				95CA1F321EDC38D50024C4F6 /* SCVideoPlayerView.h in Headers */,
 				95CD2CF91ED848ED00DB7660 /* CMServerMessage.h in Headers */,
-				95CD2CEB1ED848ED00DB7660 /* CMCammentList.h in Headers */,
 				95CA1F281EDC38D50024C4F6 /* SCRecordSessionSegment.h in Headers */,
-				95CD2CF11ED848ED00DB7660 /* CMShowList.h in Headers */,
-				95CD2CED1ED848ED00DB7660 /* CMDevcammentClient.h in Headers */,
 				95CD2CE31ED848ED00DB7660 /* CMCognitoAuthService.h in Headers */,
 				95CD2D061ED848ED00DB7660 /* CMStore.h in Headers */,
 				95CD2D561ED8494600DB7660 /* CMCammentRecorderInteractor.h in Headers */,
 				95CA1EFA1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h in Headers */,
 				95CD2CE51ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.h in Headers */,
-				95CD2CEF1ED848ED00DB7660 /* CMShow.h in Headers */,
+				6FFAB1B8F544C56FD7BE52D0 /* CMAdsCell.h in Headers */,
+				6FFABBCBBBBD83171755FF28 /* CMAdsNode.h in Headers */,
+				6FFABDAFED5A8BC388EA3358 /* Ads.h in Headers */,
+				954D1B351EDDA3E100F93BEC /* Prefix.h in Headers */,
+				6FFAB7982040743C50B0B647 /* CammentsBlockItem.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1180,11 +1049,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 95CD2C441ED836C900DB7660 /* Build configuration list for PBXNativeTarget "CammentSDK" */;
 			buildPhases = (
+				D09A48A5B760D9F3B35E1221 /* [CP] Check Pods Manifest.lock */,
 				95CD2C371ED836C900DB7660 /* Sources */,
 				95CD2C381ED836C900DB7660 /* Frameworks */,
 				95CD2C391ED836C900DB7660 /* Headers */,
 				95CD2C3A1ED836C900DB7660 /* Resources */,
-				959E08B31EDC3FBF00C1F0F9 /* CopyFiles */,
+				C604ACB8BDECBDE23845EC64 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1204,10 +1074,14 @@
 				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = Camment;
 				TargetAttributes = {
-					95CD2C3B1ED836C900DB7660 = {
+					959E09231EDC4D4600C1F0F9 = {
 						CreatedOnToolsVersion = 8.3.2;
 						DevelopmentTeam = 8L5UM9D7Z5;
 						ProvisioningStyle = Automatic;
+					};
+					95CD2C3B1ED836C900DB7660 = {
+						CreatedOnToolsVersion = 8.3.2;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -1224,6 +1098,7 @@
 			projectRoot = "";
 			targets = (
 				95CD2C3B1ED836C900DB7660 /* CammentSDK */,
+				959E09231EDC4D4600C1F0F9 /* CammentSDK-Universal */,
 			);
 		};
 /* End PBXProject section */
@@ -1234,14 +1109,61 @@
 			buildActionMask = 2147483647;
 			files = (
 				95CD2DE41ED84D0A00DB7660 /* awsiot-identity.p12 in Resources */,
-				959E08F91EDC403C00C1F0F9 /* FacebookSDKStrings.bundle in Resources */,
 				95CD2DE61ED84D0A00DB7660 /* Config.plist in Resources */,
 				95CD2DE51ED84D0A00DB7660 /* backgroundStream.mp4 in Resources */,
-				959E08F81EDC403C00C1F0F9 /* AccountKitStrings.bundle in Resources */,
+				6FFABB58C39AE6733F2391CB /* Ads.value in Resources */,
+				6FFABE025F7CF81CEDC27421 /* CammentsBlockItem.adtValue in Resources */,
+				6FFAB1380B8B4EF638D8FA2B /* ads.gif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		959E09271EDC4D4B00C1F0F9 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\n\n######################\n# Build Frameworks\n######################\n\nxcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nxcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\n\nlipo \"${SIMULATOR_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\n\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\n                                                                      fi\n                                                                      \n                                                                      if [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\n                                                                      cp -f ${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\n                                                                      fi\n                                                                      \n                                                                      ######################\n                                                                      # On Release, copy the result to release directory\n                                                                      ######################\n                                                                      OUTPUT_DIR=\"${PROJECT_DIR}/Output/${FRAMEWORK_NAME}-${CONFIGURATION}-iphoneuniversal/\"\n                                                                      \n                                                                      rm -rf \"$OUTPUT_DIR\"\n                                                                      mkdir -p \"$OUTPUT_DIR\"\n                                                                      \n                                                                      cp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n                                                                      \n                                                                      if [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\n                                                                      open \"${OUTPUT_DIR}/\"\n                                                                      fi";
+		};
+		C604ACB8BDECBDE23845EC64 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/../Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		D09A48A5B760D9F3B35E1221 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		95CD2C371ED836C900DB7660 /* Sources */ = {
@@ -1250,17 +1172,16 @@
 			files = (
 				95CD2D851ED8494600DB7660 /* CMShowsListCollectionPresenter.m in Sources */,
 				95CD2D671ED8494600DB7660 /* CMOneThirdScaleAnimation.m in Sources */,
-				95CD2CF21ED848ED00DB7660 /* CMShowList.m in Sources */,
 				95CD2D7B1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.m in Sources */,
 				95CA1F1F1EDC38D50024C4F6 /* SCRecorderFocusTargetView.m in Sources */,
 				95CD2CF41ED848ED00DB7660 /* CMCammentUploader.m in Sources */,
+				959E09611EDC539700C1F0F9 /* CMCamment.m in Sources */,
 				95CD2D571ED8494600DB7660 /* CMCammentRecorderInteractor.m in Sources */,
 				95CD2D691ED8494600DB7660 /* CMCammentsInStreamPlayerViewController.m in Sources */,
 				95CD2D6B1ED8494600DB7660 /* CMCammentButton.m in Sources */,
 				95CA1EFB1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m in Sources */,
 				95CD2CFA1ED848ED00DB7660 /* CMServerMessage.m in Sources */,
 				95CA1F351EDC38D50024C4F6 /* SCWeakSelectorTarget.m in Sources */,
-				95CD2CEA1ED848ED00DB7660 /* CMCammentInRequest.m in Sources */,
 				95CA1F371EDC38D50024C4F6 /* UIImage+SCSaveToCameraRoll.m in Sources */,
 				95CD2D8A1ED8494600DB7660 /* CMShowCellNode.m in Sources */,
 				95CA1F2F1EDC38D50024C4F6 /* SCSwipeableFilterView.m in Sources */,
@@ -1289,29 +1210,30 @@
 				95CA1F291EDC38D50024C4F6 /* SCRecordSessionSegment.m in Sources */,
 				95CA1F101EDC38D50024C4F6 /* SCImageView.m in Sources */,
 				95CD2D5B1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.m in Sources */,
+				959E09691EDC539700C1F0F9 /* CMShow.m in Sources */,
 				95CD2CE41ED848ED00DB7660 /* CMCognitoAuthService.m in Sources */,
 				95CA1F1C1EDC38D50024C4F6 /* SCRecorder.m in Sources */,
-				95CD2CEE1ED848ED00DB7660 /* CMDevcammentClient.m in Sources */,
 				95CD2D8E1ED8494600DB7660 /* CMShowsListWireframe.m in Sources */,
 				95CA1F141EDC38D50024C4F6 /* SCMediaTypeConfiguration.m in Sources */,
 				95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */,
 				95CD2D011ED848ED00DB7660 /* Post.m in Sources */,
+				959E09631EDC539700C1F0F9 /* CMCammentInRequest.m in Sources */,
 				95CD2CFC1ED848ED00DB7660 /* CMAppConfig.m in Sources */,
 				95CD2D6F1ED8494600DB7660 /* CMCammentNode.m in Sources */,
 				95CA1F2D1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m in Sources */,
 				95CA1F061EDC38D50024C4F6 /* SCFilter.m in Sources */,
-				95CD2CF01ED848ED00DB7660 /* CMShow.m in Sources */,
+				959E09651EDC539700C1F0F9 /* CMCammentList.m in Sources */,
 				95CD2D751ED8494600DB7660 /* CMCammentsInStreamPlayerNode.m in Sources */,
 				95CD2D771ED8494600DB7660 /* CMLeftAlignedLayout.m in Sources */,
 				95CA1EFF1EDC38D50024C4F6 /* SCAudioConfiguration.m in Sources */,
 				95CA1F331EDC38D50024C4F6 /* SCVideoPlayerView.m in Sources */,
 				95CA1F1A1EDC38D50024C4F6 /* SCProcessingQueue.m in Sources */,
+				959E09671EDC539700C1F0F9 /* CMDevcammentClient.m in Sources */,
 				95CD2CF61ED848ED00DB7660 /* CMServerListener.m in Sources */,
+				959E096B1EDC539700C1F0F9 /* CMShowList.m in Sources */,
 				95CA1F2B1EDC38D50024C4F6 /* SCSampleBufferHolder.m in Sources */,
-				95CD2CEC1ED848ED00DB7660 /* CMCammentList.m in Sources */,
 				95CD2D7D1ED8494600DB7660 /* CMShowsListInteractor.m in Sources */,
 				95CD2CE61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m in Sources */,
-				95CD2CE81ED848ED00DB7660 /* CMCamment.m in Sources */,
 				95CD2CF81ED848ED00DB7660 /* CMServerListenerCredentials.m in Sources */,
 				95CA1F311EDC38D50024C4F6 /* SCVideoConfiguration.m in Sources */,
 				95CD2D5F1ED8494600DB7660 /* CMCammentsInStreamPlayerPresenter.m in Sources */,
@@ -1323,13 +1245,17 @@
 				95CA1EFD1EDC38D50024C4F6 /* SCAssetExportSession.m in Sources */,
 				6FFABF523CEEF44F620EC732 /* CMCammentIdentity.m in Sources */,
 				6FFAB4F8269D3D665DFDA32B /* CMCammentFacebookIdentity.m in Sources */,
+				6FFAB619691D976D7FF7525A /* CMAdsCell.m in Sources */,
+				6FFABEC83D5FA4A66035BB8F /* CMAdsNode.m in Sources */,
+				6FFABC15DB6A22708540D76D /* Ads.m in Sources */,
+				6FFAB765E376A696208A2AAA /* CammentsBlockItem.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		95CD2C421ED836C900DB7660 /* Debug */ = {
+		954D1B571EDDAE7F00F93BEC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1354,17 +1280,11 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -1372,16 +1292,47 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
-				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
-		95CD2C431ED836C900DB7660 /* Release */ = {
+		954D1B581EDDAE7F00F93BEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 65E6129DC1B5BCFEBA797A01 /* Pods-CammentSDK.debug.xcconfig */;
+			buildSettings = {
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_BITCODE = YES;
+				GCC_PREFIX_HEADER = CammentSDK/Prefix.h;
+				INFOPLIST_FILE = CammentSDK/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.camment.CammentSDK;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		954D1B591EDDAE7F00F93BEC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		954D1B5A1EDDAEFA00F93BEC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -1427,74 +1378,66 @@
 			};
 			name = Release;
 		};
-		95CD2C451ED836C900DB7660 /* Debug */ = {
+		954D1B5B1EDDAEFA00F93BEC /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AEA97F7495C3E709B96CCF85 /* Pods-CammentSDK.release.xcconfig */;
 			buildSettings = {
 				DEFINES_MODULE = YES;
-				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
+				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/CammentSDK",
-					"$(PROJECT_DIR)/Frameworks",
-				);
+				ENABLE_BITCODE = YES;
+				GCC_PREFIX_HEADER = CammentSDK/Prefix.h;
 				INFOPLIST_FILE = CammentSDK/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.camment.CammentSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 			};
-			name = Debug;
+			name = Release;
 		};
-		95CD2C461ED836C900DB7660 /* Release */ = {
+		954D1B5C1EDDAEFA00F93BEC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				ENABLE_BITCODE = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/CammentSDK",
-					"$(PROJECT_DIR)/Frameworks",
-				);
-				INFOPLIST_FILE = CammentSDK/Info.plist;
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.camment.CammentSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		959E09241EDC4D4600C1F0F9 /* Build configuration list for PBXAggregateTarget "CammentSDK-Universal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				954D1B591EDDAE7F00F93BEC /* Debug */,
+				954D1B5C1EDDAEFA00F93BEC /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		95CD2C361ED836C900DB7660 /* Build configuration list for PBXProject "CammentSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				95CD2C421ED836C900DB7660 /* Debug */,
-				95CD2C431ED836C900DB7660 /* Release */,
+				954D1B571EDDAE7F00F93BEC /* Debug */,
+				954D1B5A1EDDAEFA00F93BEC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		95CD2C441ED836C900DB7660 /* Build configuration list for PBXNativeTarget "CammentSDK" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				95CD2C451ED836C900DB7660 /* Debug */,
-				95CD2C461ED836C900DB7660 /* Release */,
+				954D1B581EDDAE7F00F93BEC /* Debug */,
+				954D1B5B1EDDAEFA00F93BEC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

@@ -102,5 +102,25 @@
     [[CMStore instance] setPlayingCammentId: kCMStoreCammentIdIfNotPlaying];
 }
 
+- (void)imageNode:(ASNetworkImageNode *)imageNode didLoadImage:(UIImage *)image {
+    
+}
+
+- (void)imageNodeDidFinishDecoding:(ASNetworkImageNode *)imageNode {
+    CIImage * ciimage = [[CIImage alloc] initWithImage:imageNode.image];
+    if (!ciimage) {return;}
+    
+    CIFilter * filter = [CIFilter filterWithName:@"CIColorControls"
+                             withInputParameters:
+                         @{
+                           kCIInputSaturationKey : @0.0,
+                           kCIInputImageKey : ciimage
+                           }
+                         ];
+    CIImage * grayscale  = [filter outputImage];
+    UIImage *thumbnail = [UIImage imageWithCIImage:grayscale];
+    
+    [_videoPlayerNode setImage:thumbnail];
+}
 
 @end

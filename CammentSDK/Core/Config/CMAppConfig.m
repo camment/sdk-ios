@@ -23,7 +23,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        NSString *propertyListPath = [[NSBundle mainBundle] pathForResource:@"Config" ofType:@"plist"];
+        NSString *propertyListPath = [[NSBundle bundleForClass:[self class]] pathForResource:@"Config" ofType:@"plist"];
         NSDictionary *propertyList = [NSDictionary dictionaryWithContentsOfFile:propertyListPath];
         _awsCognitoIdenityPoolId = [propertyList valueForKey:@"awsCognitoPoolId"] ?: @"";
         _awsS3BucketName = [propertyList valueForKey:@"awsS3BucketName"] ?: @"";

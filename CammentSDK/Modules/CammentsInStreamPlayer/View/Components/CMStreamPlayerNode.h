@@ -8,4 +8,7 @@
 
 
 @interface CMStreamPlayerNode : ASDisplayNode
+
+- (void)playVideoAtURL:(NSURL *)url;
+
 @end

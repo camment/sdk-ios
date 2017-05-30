@@ -6,16 +6,15 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMCammentsBlockNode.h"
-
-@class Camment;
-
+#import "Camment.h"
+#import "CammentsBlockItem.h"
 
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate>
 
-@property (nonatomic, strong) NSArray<Camment *> *camments;
+@property (nonatomic, strong) NSArray<CammentsBlockItem *> *items;
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
 
-- (void)playCamment:(NSInteger)cammentId;
+- (void)playCamment:(NSString *)cammentId;
 
-- (void)insertNewCamment:(Camment *)camment;
+- (void)insertNewItem:(CammentsBlockItem *)item;
 @end

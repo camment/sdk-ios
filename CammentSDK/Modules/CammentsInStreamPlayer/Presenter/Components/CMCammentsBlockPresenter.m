@@ -4,11 +4,10 @@
 //
 
 #import "CMCammentsBlockPresenter.h"
-#import "Camment.h"
 #import "CMCammentCell.h"
 #import "CMCammentNode.h"
 #import "CMStore.h"
-#import <ReactiveObjC/ReactiveObjC.h>
+#import "CMAdsCell.h"
 
 @implementation CMCammentsBlockPresenter
 
@@ -17,7 +16,7 @@
 }
 
 - (NSInteger)collectionNode:(ASCollectionNode *)collectionNode numberOfItemsInSection:(NSInteger)section {
-    return [self.camments count];
+    return [self.items count];
 }
 
 - (NSInteger)numberOfSectionsInCollectionNode:(ASCollectionNode *)collectionNode {
@@ -25,9 +24,16 @@
 }
 
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
-    Camment *camment = self.camments[(NSUInteger) indexPath.row];
+    CammentsBlockItem *item = self.items[(NSUInteger) indexPath.row];
     return ^ASCellNode * {
-        return [[CMCammentCell alloc] initWithCamment:camment];
+        __block ASCellNode *node;
+        [item matchCamment:^(Camment *camment) {
+            node = [[CMCammentCell alloc] initWithCamment:camment];
+        } ads:^(Ads *ads) {
+            node = [[CMAdsCell alloc] initWithAds:ads];
+        }];
+
+        return node;
     };
 }
 
@@ -36,14 +42,15 @@
     return result;
 }
 
-- (void)playCamment:(NSInteger)cammentId {
+- (void)playCamment:(NSString *)cammentId {
     [_collectionNode.collectionViewLayout invalidateLayout];
     [_collectionNode performBatchAnimated:YES updates:^{
-        [_collectionNode.visibleNodes.rac_sequence map:^id(CMCammentCell *cammentCell) {
+        for (ASCellNode *node in _collectionNode.visibleNodes) {
+            if (![node isKindOfClass:[CMCammentCell class]]) {continue;}
+            CMCammentCell *cammentCell = (CMCammentCell *) node;
             BOOL oldExpandedValue = cammentCell.expanded;
-            BOOL shouldPlay =
-                    cammentCell.cammentNode.camment.cammentId == cammentId
-                            && !cammentCell.cammentNode.isPlaying;
+            BOOL shouldPlay = [cammentCell.cammentNode.camment.cammentUUID isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
+        
             cammentCell.expanded = shouldPlay;
             if (oldExpandedValue != cammentCell.expanded) {
                 [cammentCell transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
@@ -53,32 +60,52 @@
             } else {
                 [cammentCell.cammentNode stopCamment];
             }
-            return cammentCell;
-        }].array;
+        }
+
     } completion:nil];
 }
 
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    Camment *camment = self.camments[(NSUInteger) indexPath.row];
-    BOOL shouldPlay = camment.cammentId != [[CMStore instance] playingCammentId];
-    [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.cammentId : kCMStoreCammentIdIfNotPlaying];
+    CammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
+    [cammentsBlockItem matchCamment:^(Camment *camment) {
+        BOOL shouldPlay = ![camment.cammentUUID isEqualToString: [[CMStore instance] playingCammentId]];
+        [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.cammentUUID : kCMStoreCammentIdIfNotPlaying];
+    } ads:^(Ads *ads) {
+        [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:ads.openURL]
+                                           options:@{}
+                                 completionHandler:nil];
+    }];
 }
 
-- (void)insertNewCamment:(Camment *)camment {
-    _camments = [@[camment] arrayByAddingObjectsFromArray:_camments];
+- (void)insertNewItem:(CammentsBlockItem *)item {
+    _items = [@[item] arrayByAddingObjectsFromArray:_items];
     [_collectionNode performBatchAnimated:YES updates:^{
         [_collectionNode insertItemsAtIndexPaths:@[
                 [NSIndexPath indexPathForItem:0 inSection:0]
         ]];
     } completion:nil];
+
+    if (_items.count == 1) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSString *filepath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ads" ofType:@"gif"];
+            NSURL *url = [NSURL fileURLWithPath:filepath];
+            CammentsBlockItem *ads = [CammentsBlockItem adsWithAds:[[Ads alloc] initWithURL:url.absoluteString
+                                                                                    openURL:@"http://wolt.com"]];
+            [self insertNewItem:ads];
+        });
+    }
 }
 
 - (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
 
-    CGSize result = CGSizeZero;
+    __block CGSize result = CGSizeZero;
 
-    Camment *camment = self.camments[(NSUInteger) indexPath.row];
-    result = camment.cammentId == [CMStore instance].playingCammentId ? CGSizeMake(90.0f, 90.0f) : CGSizeMake(45.0f, 45.0f);
+    CammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
+    [cammentsBlockItem matchCamment:^(Camment *camment) {
+        result = camment.cammentUUID == [CMStore instance].playingCammentId ? CGSizeMake(90.0f, 90.0f) : CGSizeMake(45.0f, 45.0f);
+    } ads:^(Ads *ads) {
+        result = CGSizeMake(45.0f, 45.0f);
+    }];
 
     return ASSizeRangeMake(result);
 }

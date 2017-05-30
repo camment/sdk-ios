@@ -10,7 +10,7 @@
 
 }
 + (CMCammentFacebookIdentity *)identityWithFBSDKAccessToken:(FBSDKAccessToken *)token {
-    CMCammentFacebookIdentity *identity = [self init];
+    CMCammentFacebookIdentity *identity = [CMCammentFacebookIdentity new];
     identity.fbsdkAccessToken = token;
     return identity;
 }

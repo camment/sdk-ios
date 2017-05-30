@@ -10,6 +10,6 @@
 
 @protocol CMCammentsInStreamPlayerInteractorInput <NSObject>
 
-- (void)fetchCachedCamments;
+- (void)fetchCachedCamments:(NSString *)showUUID;
 
 @end

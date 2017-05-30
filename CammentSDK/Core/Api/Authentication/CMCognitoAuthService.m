@@ -38,11 +38,15 @@
         [[_credentialsProvider getIdentityId] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 [subscriber sendError:task.error];
-            } else {
-                [subscriber sendNext:task.result];
+                return nil;
             }
 
             [[_credentialsProvider credentials] continueWithBlock:^id(AWSTask<id> *t) {
+                if (t.error) {
+                    [subscriber sendError:t.error];
+                } else {
+                    [subscriber sendCompleted];
+                }
                 return nil;
             }];
 

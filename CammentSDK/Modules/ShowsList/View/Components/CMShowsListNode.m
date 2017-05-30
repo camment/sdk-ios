@@ -26,6 +26,11 @@
     return self;
 }
 
+- (void)didLoad {
+    [super didLoad];
+    self.view.alwaysBounceVertical = YES;
+}
+
 - (void)setShowsListDelegate:(id <CMShowsListNodeDelegate>)delegate {
     self.delegate = delegate;
     self.dataSource = delegate;

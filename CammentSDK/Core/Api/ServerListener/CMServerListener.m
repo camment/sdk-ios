@@ -39,12 +39,8 @@
 - (BOOL)importIdentity {
     NSString *identityPath = nil;
 
-    for (NSBundle *bundle in [NSBundle allBundles]) {
-        identityPath = [bundle pathForResource:_credentials.p12KeyFile ofType:@"p12"];
-        if (identityPath) {
-            break;
-        }
-    }
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    identityPath = [bundle pathForResource:_credentials.p12KeyFile ofType:@"p12"];
 
     if (!identityPath) { return NO; }
 
@@ -64,7 +60,7 @@
                                             cleanSession:YES
                                            certificateId:_credentials.certificateId
                                           statusCallback:^(AWSIoTMQTTStatus status) {
-                                              NSLog(@"%d", status);
+        
                                               _isConnected = status == AWSIoTMQTTStatusConnected;
                                               if (_isConnected) {
                                                   [self subscribe];
@@ -89,6 +85,7 @@
                                                                  error:nil];
     if (jsonObject) {
         message.json = jsonObject;
+        NSLog(@"%@", jsonObject);
     }
 
     [_messageSubject sendNext:message];

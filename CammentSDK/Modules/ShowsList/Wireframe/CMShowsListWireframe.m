@@ -26,7 +26,10 @@
     self.presenter = presenter;
     self.interactor = interactor;
 
-    [window setRootViewController:view];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:view];
+
+    self.parentNavigationController = navigationController;
+    [window setRootViewController:navigationController];
 }
 
 - (void)presentInViewController:(UIViewController *)viewController {

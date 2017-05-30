@@ -9,6 +9,7 @@
 
 #import "CMCammentUploader.h"
 #import "CMAppConfig.h"
+#import "CMDevcammentClient.h"
 
 @interface CMCammentUploader ()
 @property(nonatomic, copy) NSString *bucketName;
@@ -38,14 +39,16 @@
     return self;
 }
 
-- (RACSignal *)uploadVideoAsset:(NSURL *)url {
+- (RACSignal *)uploadVideoAsset:(NSURL *)url uuid:(NSString *)uuid {
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
 
         AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
 
         uploadRequest.bucket = self.bucketName;
-        uploadRequest.key = [NSString stringWithFormat:@"%@.mp4", [[NSUUID UUID] UUIDString]];
+        NSString *fileKey = [NSString stringWithFormat:@"%@.mp4", uuid];
+        uploadRequest.key = fileKey;
         uploadRequest.body = url;
+        uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
         uploadRequest.storageClass = AWSS3StorageClassReducedRedundancy;
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
@@ -72,7 +75,6 @@
 
             if (task.result) {
                 AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
-                [[NSFileManager defaultManager] removeItemAtURL:url error:nil];
                 [subscriber sendCompleted];
             }
             return nil;

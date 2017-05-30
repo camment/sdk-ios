@@ -32,7 +32,7 @@
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    UIEdgeInsets result = UIEdgeInsetsMake(2.0f, 2.0f, 2.0f, 2.0f);
+    UIEdgeInsets result = UIEdgeInsetsMake(2.0f, 0.0f, 2.0f, 0.0f);
     return result;
 }
 
@@ -42,7 +42,7 @@
 }
 
 - (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize result = CGSizeMake(collectionNode.bounds.size.width, 100.0f);
+    CGSize result = CGSizeMake(collectionNode.bounds.size.width, collectionNode.bounds.size.width / 16 * 9);
     return ASSizeRangeMake(result);
 }
 

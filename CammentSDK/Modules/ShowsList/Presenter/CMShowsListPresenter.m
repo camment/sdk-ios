@@ -29,6 +29,7 @@
 }
 
 - (void)setupView {
+    [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
     [self.interactor fetchShowList];
 }
@@ -36,6 +37,7 @@
 - (void)showListDidFetched:(CMShowList *)list {
     self.showsListCollectionPresenter.shows = list.items;
     [self.showsListCollectionPresenter.collectionNode reloadData];
+    [self.output hideLoadingIndicator];
 }
 
 - (void)showListFetchingFailed:(NSError *)error {
@@ -44,7 +46,7 @@
 
 - (void)didSelectShow:(CMShow *)show {
     CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow: show];
-    [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
+    [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.parentNavigationController];
 }
 
 @end

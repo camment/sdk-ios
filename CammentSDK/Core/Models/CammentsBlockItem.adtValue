@@ -1,0 +1,11 @@
+%type name="Camment"
+%type name="Ads"
+
+CammentsBlockItem {
+  camment {
+    Camment *camment
+  }
+  ads {
+    Ads *ads
+  }
+}

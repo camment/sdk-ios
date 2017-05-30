@@ -14,4 +14,7 @@
 
 - (void)setCammentsBlockNodeDelegate:(id<CMShowsListNodeDelegate>)delegate;
 
+- (void)setLoadingIndicator;
+
+- (void)hideLoadingIndicator;
 @end

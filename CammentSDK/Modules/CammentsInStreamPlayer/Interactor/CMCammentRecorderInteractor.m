@@ -79,19 +79,20 @@
 }
 
 - (void)recorder:(SCRecorder *__nonnull)recorder didCompleteSegment:(SCRecordSessionSegment *__nullable)segment inSession:(SCRecordSession *__nonnull)session error:(NSError *__nullable)error {
-    [self.output recorderDidFinishAVAsset:[recorder.session assetRepresentingSegments]];
+    NSString *assetKey = [NSUUID new].UUIDString;
+    [self.output recorderDidFinishAVAsset:[recorder.session assetRepresentingSegments] uuid:assetKey];
 
     AVAsset *asset = session.assetRepresentingSegments;
     SCAssetExportSession *assetExportSession = [[SCAssetExportSession alloc] initWithAsset:asset];
     assetExportSession.outputUrl = recorder.session.outputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
 
-    assetExportSession.videoConfiguration.filter = [CMAutoFrameFilter new];
+    //assetExportSession.videoConfiguration.filter = [CMAutoFrameFilter new];
     assetExportSession.videoConfiguration.preset = SCPresetMediumQuality;
     assetExportSession.audioConfiguration.preset = SCPresetLowQuality;
     [assetExportSession exportAsynchronouslyWithCompletionHandler: ^{
         if (assetExportSession.error == nil) {
-            [self.output recorderDidFinishExportingToURL:recorder.session.outputUrl];
+            [self.output recorderDidFinishExportingToURL:recorder.session.outputUrl uuid:assetKey];
         } else {
             // Something bad happened
         }

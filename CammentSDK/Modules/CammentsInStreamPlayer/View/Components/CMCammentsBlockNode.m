@@ -45,7 +45,7 @@
 - (void)setDelegate:(id <CMCammentsBlockDelegate>)delegate {
     self.collectionNode.dataSource = delegate;
     self.collectionNode.delegate = delegate;
-    self.collectionNode.view.delegate = delegate;
+    //self.collectionNode.view.asyncDelegate = delegate;
 }
 
 

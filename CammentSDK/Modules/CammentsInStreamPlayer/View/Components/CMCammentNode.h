@@ -11,7 +11,7 @@
 
 @interface CMCammentNode: ASDisplayNode
 
-@property(nonatomic, assign) Camment *camment;
+@property(nonatomic, copy) Camment *camment;
 
 - (instancetype)initWithCamment:(Camment *)camment;
 - (void)playCamment;

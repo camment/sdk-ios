@@ -14,14 +14,20 @@
 - (void)fetchShowList {
     [[[CMDevcammentClient defaultClient] showsGet] continueWithBlock:^id(AWSTask<id> *task) {
         if (task.error) {
-            [self.output showListFetchingFailed:task.error];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output showListFetchingFailed:task.error];
+            });
             return nil;
         }
 
         if ([task.result isKindOfClass:[CMShowList class]]) {
-            [self.output showListDidFetched:(CMShowList *)task.result];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output showListDidFetched:(CMShowList *)task.result];
+            });
         } else {
-            [self.output showListFetchingFailed:[NSError errorWithDomain:@"ios.camment.tv" code:1 userInfo:nil]];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output showListFetchingFailed:[NSError errorWithDomain:@"ios.camment.tv" code:1 userInfo:nil]];
+            });
         }
 
         return nil;

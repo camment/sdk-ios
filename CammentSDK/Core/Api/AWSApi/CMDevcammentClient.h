@@ -21,6 +21,7 @@
 #import "CMShow.h"
 #import "CMCammentList.h"
 #import "CMCammentInRequest.h"
+#import "CMCamment.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -203,7 +204,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param uuid 
  @param body 
  
- return type: 
+ return type: CMCamment *
  */
 - (AWSTask *)showsUuidCammentsPost:( NSString *)uuid body:( CMCammentInRequest *)body;
 

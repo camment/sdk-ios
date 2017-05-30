@@ -6,7 +6,7 @@
 #import "CMStore.h"
 
 
-const NSInteger kCMStoreCammentIdIfNotPlaying = -1;
+NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
 @implementation CMStore
 

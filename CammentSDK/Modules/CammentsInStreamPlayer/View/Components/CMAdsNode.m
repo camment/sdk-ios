@@ -28,7 +28,7 @@
                                                             downloader:self.downloader];
         self.adsPlayerNode.shouldCacheImage = NO;
         self.adsPlayerNode.URL = [[NSURL alloc] initWithString:ads.URL];
-        
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -36,9 +36,10 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+    ASRatioLayoutSpec *cammentBlockSpec = [ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0f
+                                                                                child:_adsPlayerNode];
     ASInsetLayoutSpec *layoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
-                                                                           child:[ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0f
-                                                                                                                       child:_adsPlayerNode]];
+                                                                           child:cammentBlockSpec];
     return layoutSpec;
 }
 

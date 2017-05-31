@@ -10,6 +10,7 @@
 #import "CMServerListenerCredentials.h"
 #import "CMAppConfig.h"
 #import "CMServerMessage.h"
+#import "CMStore.h"
 
 @implementation CMServerListener
 
@@ -54,7 +55,8 @@
 
 - (void)connect {
     if (_isConnected) { return; }
-
+    [CMStore instance].isConnected = NO;
+    
     [self importIdentity];
     BOOL initialized = [_dataManager connectWithClientId:_credentials.clientId
                                             cleanSession:YES
@@ -62,6 +64,7 @@
                                           statusCallback:^(AWSIoTMQTTStatus status) {
         
                                               _isConnected = status == AWSIoTMQTTStatusConnected;
+                                              [CMStore instance].isConnected = _isConnected;
                                               if (_isConnected) {
                                                   [self subscribe];
                                               }

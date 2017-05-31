@@ -17,6 +17,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         if (_instance == nil) {
             _instance = [[self alloc] init];
             _instance.playingCammentId = kCMStoreCammentIdIfNotPlaying;
+            _instance.isConnected = NO;
         }
     }
 

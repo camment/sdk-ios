@@ -42,6 +42,7 @@
     [self.cammentIcon.view addGestureRecognizer:_gestureRecognizer];
     self.cammentIcon.layer.shadowColor = [UIColor blackColor].CGColor;
     self.cammentIcon.layer.shadowRadius = 2.0f;
+    self.cammentIcon.layer.shadowOpacity = 1.0f;
     self.cammentIcon.layer.shadowOffset = CGSizeMake(.0f, .0f);
     self.view.alpha = 0.5;
 }

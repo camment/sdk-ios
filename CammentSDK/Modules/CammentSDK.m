@@ -16,6 +16,10 @@
 #import "CMServerListener.h"
 #import "CMCammentFacebookIdentity.h"
 
+#import <FBTweak.h>
+#import <FBTweakStore.h>
+#import <FBTweakCollection.h>
+#import <FBTweakCategory.h>
 
 @interface CammentSDK ()
 @property(nonatomic, strong) id authService;
@@ -33,6 +37,51 @@
     }
 
     return _instance;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        [self setupTweaks];
+    }
+    
+    return self;
+}
+
+- (void)setupTweaks {
+    FBTweakStore *store = [FBTweakStore sharedInstance];
+    
+    FBTweakCategory *presentationCategory = [store tweakCategoryWithName:@"Predefined stuff"];
+    if (!presentationCategory) {
+        presentationCategory = [[FBTweakCategory alloc] initWithName:@"Predefined stuff"];
+        [store addTweakCategory:presentationCategory];
+    }
+    
+    FBTweakCollection *presentationsCollection = [presentationCategory tweakCollectionWithName:@"Presentations"];
+    if (!presentationsCollection) {
+        presentationsCollection = [[FBTweakCollection alloc] initWithName:@"Presentations"];
+        [presentationCategory addTweakCollection: presentationsCollection];
+    }
+    
+    FBTweak *showTweak = [presentationsCollection tweakWithIdentifier:@"Scenario"];
+    if (!showTweak) {
+        showTweak = [[FBTweak alloc] initWithIdentifier:@"Scenario"];
+        showTweak.possibleValues = @[@"None", @"Wolt"];
+        showTweak.defaultValue = @"None";
+        showTweak.name = @"Choose demo scenario";
+        [presentationsCollection addTweak:showTweak];
+    }
+    
+    FBTweak *delayTweak = [presentationsCollection tweakWithIdentifier:@"Ads delay"];
+    if (!delayTweak) {
+        delayTweak = [[FBTweak alloc] initWithIdentifier:@"Ads delay"];
+        delayTweak.defaultValue = @1.0f;
+        delayTweak.minimumValue = @.0f;
+        delayTweak.maximumValue = @10.0f;
+        delayTweak.name = @"How fast ads appears";
+        [presentationsCollection addTweak:delayTweak];
+    }
+    
 }
 
 - (void)configureWithApiKey:(NSString *)apiKey {

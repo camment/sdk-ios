@@ -22,7 +22,7 @@
         self.collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout: self.flowLayout];
         self.collectionNode.backgroundColor = [UIColor clearColor];
         self.flowLayout.minimumInteritemSpacing = 400.f;
-        self.flowLayout.minimumLineSpacing = 4.f;
+        self.flowLayout.minimumLineSpacing = 10.f;
         self.flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
         self.collectionNode.collectionViewLayout = self.flowLayout;
         self.automaticallyManagesSubnodes = YES;
@@ -35,17 +35,17 @@
     [super didLoad];
     [self.collectionNode.view setShowsVerticalScrollIndicator: NO];
     [self.collectionNode.view setAlwaysBounceVertical: YES];
+    [self.collectionNode.view setContentInset:UIEdgeInsetsMake(10.0f, 20.0f, .0f, .0f)];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, .0f, .0f)
+    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 0.0f, .0f, .0f)
                                                   child:_collectionNode];
 }
 
 - (void)setDelegate:(id <CMCammentsBlockDelegate>)delegate {
     self.collectionNode.dataSource = delegate;
     self.collectionNode.delegate = delegate;
-    //self.collectionNode.view.asyncDelegate = delegate;
 }
 
 

@@ -41,7 +41,7 @@
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(20.0f, INFINITY, INFINITY, 20.0f)
                                 child:_cammentButton];
 
-    CGFloat leftLayoutInset = 20.0f;
+    CGFloat leftLayoutInset = 0.0f;
     _cammentsBlockNode.style.width = ASDimensionMake(100.0f);
     ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, _showCammentsBlock ? .0f : -_cammentsBlockNode.style.width.value, 0.0f, INFINITY)
@@ -54,7 +54,7 @@
     ASInsetLayoutSpec *cammentRecorderNodeInsetsLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                     _showCammentRecorderNode ? 20.0f : .0f,
-                    .0f,
+                    20.0f,
                     _showCammentRecorderNode ? 4.0f : .0f,
                     INFINITY)
                                 child:_cammentRecorderNode];

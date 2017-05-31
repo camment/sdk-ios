@@ -8,8 +8,21 @@
 #import "CMCammentNode.h"
 #import "CMStore.h"
 #import "CMAdsCell.h"
+#import "NSArray+AWSMTLManipulationAdditions.h"
+
+@interface CMCammentsBlockPresenter () <CMAdsCellDelegate>
+@end
 
 @implementation CMCammentsBlockPresenter
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.items = @[];
+    }
+    
+    return self;
+}
 
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node {
     _collectionNode = node;
@@ -31,6 +44,7 @@
             node = [[CMCammentCell alloc] initWithCamment:camment];
         } ads:^(Ads *ads) {
             node = [[CMAdsCell alloc] initWithAds:ads];
+            [(CMAdsCell *)node setDelegate:self];
         }];
 
         return node;
@@ -47,6 +61,7 @@
     [_collectionNode performBatchAnimated:YES updates:^{
         for (ASCellNode *node in _collectionNode.visibleNodes) {
             if (![node isKindOfClass:[CMCammentCell class]]) {continue;}
+
             CMCammentCell *cammentCell = (CMCammentCell *) node;
             BOOL oldExpandedValue = cammentCell.expanded;
             BOOL shouldPlay = [cammentCell.cammentNode.camment.cammentUUID isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
@@ -78,22 +93,12 @@
 }
 
 - (void)insertNewItem:(CammentsBlockItem *)item {
-    _items = [@[item] arrayByAddingObjectsFromArray:_items];
+    self.items = [@[item] arrayByAddingObjectsFromArray:_items];
     [_collectionNode performBatchAnimated:YES updates:^{
         [_collectionNode insertItemsAtIndexPaths:@[
                 [NSIndexPath indexPathForItem:0 inSection:0]
         ]];
     } completion:nil];
-
-    if (_items.count == 1) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            NSString *filepath = [[NSBundle bundleForClass:[self class]] pathForResource:@"ads" ofType:@"gif"];
-            NSURL *url = [NSURL fileURLWithPath:filepath];
-            CammentsBlockItem *ads = [CammentsBlockItem adsWithAds:[[Ads alloc] initWithURL:url.absoluteString
-                                                                                    openURL:@"http://wolt.com"]];
-            [self insertNewItem:ads];
-        });
-    }
 }
 
 - (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -110,5 +115,19 @@
     return ASSizeRangeMake(result);
 }
 
+- (void)adsCellDidTapOnCloseButton:(CMAdsCell *)cell {
+
+    NSIndexPath *indexPath = [_collectionNode indexPathForNode:cell];
+    if (indexPath && indexPath.row < _items.count && indexPath.row >= 0) {
+        NSMutableArray *mutableItems = [_items mutableCopy];
+        [mutableItems removeObjectAtIndex:(NSUInteger) indexPath.row];
+        self.items = mutableItems;
+        [_collectionNode performBatchAnimated:YES updates:^{
+            [_collectionNode deleteItemsAtIndexPaths:@[
+                    indexPath
+            ]];
+        } completion:nil];
+    }
+}
 
 @end

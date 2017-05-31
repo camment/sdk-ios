@@ -16,10 +16,19 @@
 #import "CMShow.h"
 #import "CMCammentUploader.h"
 #import "CMDevcammentClient.h"
+#import "CMPresentationPlayerInteractor.h"
+#import "CMPositionPresentationInstruction.h"
+#import "CMPresentationState.h"
+#import "FBTweakInline.h"
+#import "CMPresentationBuilder.h"
+#import "CMWoltPresentationBuilder.h"
 
-@interface CMCammentsInStreamPlayerPresenter ()
+@interface CMCammentsInStreamPlayerPresenter () <CMPresentationInstructionOutput>
+
+@property (nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
 @property (nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property (nonatomic, strong) CMShow *show;
+
 @end
 
 @implementation CMCammentsInStreamPlayerPresenter
@@ -30,6 +39,8 @@
     if (self) {
         self.show = show;
         self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
+        self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
+        self.presentationPlayerInteractor.instructionOutput = self;
 
         __weak typeof(self) weakSelf = self;
         [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
@@ -53,6 +64,18 @@
             [self.recorderInteractor startRecording];
             NSLog(@"recordind...");
         }];
+
+        [[RACSignal combineLatest:@[
+                RACObserve(self.cammentsBlockNodePresenter, items),
+                RACObserve([CMStore instance], currentShowTimeInterval)
+        ]] subscribeNext:^(RACTuple *tuple) {
+            typeof(self) strongSelf = weakSelf;
+            if (!strongSelf) { return; }
+            CMPresentationState *state = [CMPresentationState new];
+            state.items = tuple.first;
+            state.timestamp = [tuple.second unsignedIntegerValue];
+            [strongSelf.presentationPlayerInteractor update:state];
+        }];
     }
 
     return self;
@@ -64,6 +87,22 @@
     [self.output presenterDidRequestViewPreviewView];
     [self.output setCammentsBlockNodeDelegate:_cammentsBlockNodePresenter];
     [self.interactor fetchCachedCamments:_show.uuid];
+    [self setupPresentationInstruction];
+}
+
+- (void)setupPresentationInstruction {
+    NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Presentations"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
+
+    id<CMPresentationBuilder> builder = nil;
+
+    if ([scenario isEqualToString:@"Wolt"]) {
+        builder = [CMWoltPresentationBuilder new];
+    }
+
+    if (!builder) {
+        return;
+    }
+    self.presentationPlayerInteractor.instructions = [builder instructions];
 }
 
 - (void)reloadCamments {
@@ -71,7 +110,9 @@
 }
 
 - (void)didFetchCamments:(NSArray<Camment *> *)camments {
-    _cammentsBlockNodePresenter.items = camments;
+    _cammentsBlockNodePresenter.items = [camments.rac_sequence map:^id(Camment *value) {
+        return [CammentsBlockItem cammentWithCamment:value];
+    }].array;
     [self reloadCamments];
 }
 
@@ -135,20 +176,26 @@
 }
 
 - (void)didReceiveNewCamment:(Camment *)camment {
-
-    NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+    
+    NSArray *filteredItemsArray = [self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CammentsBlockItem *value) {
         __block BOOL result = NO;
-
-        [obj matchCamment:^(Camment *camment) {
-            result = [camment.remoteURL isEqualToString:camment.remoteURL];
+        
+        [value matchCamment:^(Camment *mathedCamment) {
+            result = [camment.remoteURL isEqualToString:mathedCamment.remoteURL];
         } ads:^(Ads *ads) {}];
-
+        
         return result;
-    }];
+    }].array ?: @[];
+    
+    BOOL isNewItem = filteredItemsArray.count == 0;
 
-    if ([camment.showUUID isEqualToString:_show.uuid] && index == NSNotFound) {
-        [self.cammentsBlockNodePresenter insertNewItem:camment];
+    if ([camment.showUUID isEqualToString:_show.uuid] && isNewItem) {
+        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
     }
+}
+
+- (void)didReceiveNewAds:(Ads *)ads {
+    [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem adsWithAds:ads]];
 }
 
 @end

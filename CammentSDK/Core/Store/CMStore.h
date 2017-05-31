@@ -10,7 +10,9 @@ extern NSString *kCMStoreCammentIdIfNotPlaying;
 @interface CMStore: NSObject
 
 @property (nonatomic, assign) BOOL isSignedIn;
+@property (nonatomic, assign) BOOL isConnected;
 
+@property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;
 @property (nonatomic, copy) NSString *playingCammentId;
 @property (nonatomic, assign) BOOL isRecordingCamment;
 

@@ -82,6 +82,29 @@
     for (id <CMPresentationBuilder> presentation in presentations) {
         [presentation configureTweaks:presentationCategory];
     }
+    
+    FBTweakCategory *settingsCategory = [store tweakCategoryWithName:@"Settings"];
+    if (!settingsCategory) {
+        settingsCategory = [[FBTweakCategory alloc] initWithName:@"Settings"];
+        [store addTweakCategory:settingsCategory];
+    }
+    
+    FBTweakCollection *videoSettingsCollection = [presentationCategory tweakCollectionWithName:@"Video player settings"];
+    if (!videoSettingsCollection) {
+        videoSettingsCollection = [[FBTweakCollection alloc] initWithName:@"Video player settings"];
+        [settingsCategory addTweakCollection: videoSettingsCollection];
+    }
+        
+    FBTweak *volumeTweak = [presentationsCollection tweakWithIdentifier:@"Volume"];
+    if (!volumeTweak) {
+        volumeTweak = [[FBTweak alloc] initWithIdentifier:@"Volume"];
+        volumeTweak.minimumValue = @.0f;
+        volumeTweak.stepValue = @10.0f;
+        volumeTweak.maximumValue = @100.0f;
+        volumeTweak.defaultValue = @30.0f;
+        volumeTweak.name = @"Volume (%)";
+        [videoSettingsCollection addTweak:volumeTweak];
+    }
 }
 
 - (void)configureWithApiKey:(NSString *)apiKey {

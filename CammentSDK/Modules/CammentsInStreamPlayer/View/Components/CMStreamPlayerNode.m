@@ -7,6 +7,10 @@
 #import "CMStreamPlayerNode.h"
 #import "CMStore.h"
 
+#import <FBTweakStore.h>
+#import <FBTweak.h>
+#import <FBTweakCategory.h>
+#import <FBTweakCollection.h>
 
 @interface CMStreamPlayerNode () <ASVideoPlayerNodeDelegate>
 @property(nonatomic, strong) ASVideoPlayerNode *videoPlayerNode;
@@ -36,7 +40,12 @@
             if (!strongSelf) { return; }
             BOOL isRecording = [(NSNumber *)tuple.first boolValue];
             BOOL isPlaying = ![(NSString *)tuple.second isEqualToString:kCMStoreCammentIdIfNotPlaying] ;
-            [strongSelf.videoPlayerNode setMuted:isRecording || isPlaying];
+            [strongSelf.videoPlayerNode setMuted:isRecording];
+            
+            FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
+                                             tweakCollectionWithName:@"Video player settings"];
+            CGFloat value = [([collection tweakWithIdentifier:@"Volume"].currentValue ?: [collection tweakWithIdentifier:@"Volume"].defaultValue) floatValue] / 100;
+            [strongSelf.videoPlayerNode.videoNode.player setVolume:isPlaying ? value : 1];
         }];
 
     }

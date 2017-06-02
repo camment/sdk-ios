@@ -6,10 +6,15 @@
 #import <Foundation/Foundation.h>
 
 @class CammentsBlockItem;
+@protocol CMPresentationBuilder;
 
+extern NSString * const kCMPresentationBuilderUtilityAnyShowUUID;
 
 @interface CMPresentationUtility : NSObject
 
++ (NSArray<id<CMPresentationBuilder>> *)activePresentations;
+
 - (CammentsBlockItem *)blockItemAdsWithLocalGif:(NSString *)filename url:(NSString *)url;
+- (CammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename;
 
 @end

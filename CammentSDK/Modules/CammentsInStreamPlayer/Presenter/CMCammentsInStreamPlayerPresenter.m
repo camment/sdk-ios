@@ -22,6 +22,7 @@
 #import "FBTweakInline.h"
 #import "CMPresentationBuilder.h"
 #import "CMWoltPresentationBuilder.h"
+#import "CMPresentationUtility.h"
 
 @interface CMCammentsInStreamPlayerPresenter () <CMPresentationInstructionOutput>
 
@@ -66,7 +67,7 @@
         }];
 
         [[RACSignal combineLatest:@[
-                RACObserve(self.cammentsBlockNodePresenter, items),
+                RACObserve(self, cammentsBlockNodePresenter.items),
                 RACObserve([CMStore instance], currentShowTimeInterval)
         ]] subscribeNext:^(RACTuple *tuple) {
             typeof(self) strongSelf = weakSelf;
@@ -91,12 +92,15 @@
 }
 
 - (void)setupPresentationInstruction {
-    NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Presentations"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
+    NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Demo"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
 
     id<CMPresentationBuilder> builder = nil;
 
-    if ([scenario isEqualToString:@"Wolt"]) {
-        builder = [CMWoltPresentationBuilder new];
+    NSArray<id<CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
+    for (id <CMPresentationBuilder> presentation in presentations) {
+        if ([[presentation presentationName] isEqualToString:scenario]) {
+            builder = presentation;
+        }
     }
 
     if (!builder) {
@@ -189,7 +193,9 @@
     
     BOOL isNewItem = filteredItemsArray.count == 0;
 
-    if ([camment.showUUID isEqualToString:_show.uuid] && isNewItem) {
+    if (([camment.showUUID isEqualToString:_show.uuid]
+            || [camment.showUUID isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
+            && isNewItem) {
         [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
     }
 }

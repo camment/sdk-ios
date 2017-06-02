@@ -4,9 +4,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <FBTweakCategory.h>
 
 @protocol CMPresentationBuilder <NSObject>
 
+- (NSString *)presentationName;
 - (NSArray *)instructions;
+- (void)configureTweaks:(FBTweakCategory *)category;
 
 @end

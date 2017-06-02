@@ -9,7 +9,7 @@
 
 @protocol CMPresentationInstructionInterface <NSObject>
 
-- (BOOL)shouldTriggeredForState:(CMPresentationState *)state;
+- (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state;
 - (void)runWithOutput:(id<CMPresentationInstructionOutput>)output;
 
 @end

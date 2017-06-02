@@ -42,7 +42,7 @@
                                 child:_cammentButton];
 
     CGFloat leftLayoutInset = 0.0f;
-    _cammentsBlockNode.style.width = ASDimensionMake(100.0f);
+    _cammentsBlockNode.style.width = ASDimensionMake(120.0f);
     ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, _showCammentsBlock ? .0f : -_cammentsBlockNode.style.width.value, 0.0f, INFINITY)
                                 child:_cammentsBlockNode];

@@ -11,6 +11,9 @@
 #import "NSArray+AWSMTLManipulationAdditions.h"
 
 @interface CMCammentsBlockPresenter () <CMAdsCellDelegate>
+
+@property (nonatomic, strong) NSOperationQueue *updatesQueue;
+
 @end
 
 @implementation CMCammentsBlockPresenter
@@ -19,6 +22,11 @@
     self = [super init];
     if (self) {
         self.items = @[];
+        
+        self.updatesQueue = [[NSOperationQueue alloc] init];
+        self.updatesQueue.underlyingQueue = dispatch_get_main_queue();
+        self.updatesQueue.maxConcurrentOperationCount = 1;
+        [self.updatesQueue setSuspended: NO];
     }
     
     return self;
@@ -93,12 +101,15 @@
 }
 
 - (void)insertNewItem:(CammentsBlockItem *)item {
-    self.items = [@[item] arrayByAddingObjectsFromArray:_items];
-    [_collectionNode performBatchAnimated:YES updates:^{
-        [_collectionNode insertItemsAtIndexPaths:@[
-                [NSIndexPath indexPathForItem:0 inSection:0]
-        ]];
-    } completion:nil];
+    [self.updatesQueue addOperationWithBlock:^{
+        [_collectionNode performBatchAnimated:YES updates:^{
+            self.items = [@[item] arrayByAddingObjectsFromArray:[_items copy]];
+            [_collectionNode insertItemsAtIndexPaths:@[
+                                                       [NSIndexPath indexPathForItem:0 inSection:0]
+                                                       ]];
+        } completion:^(BOOL completed){
+        }];
+    }];
 }
 
 - (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {

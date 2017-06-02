@@ -8,7 +8,7 @@
 #import "CMStore.h"
 
 
-@interface CMStreamPlayerNode ()
+@interface CMStreamPlayerNode () <ASVideoPlayerNodeDelegate>
 @property(nonatomic, strong) ASVideoPlayerNode *videoPlayerNode;
 @property(nonatomic, strong) RACDisposable *disposable;
 @end
@@ -24,6 +24,7 @@
         self.videoPlayerNode.gravity = AVLayerVideoGravityResizeAspectFill;
         self.videoPlayerNode.shouldAutoRepeat = YES;
         self.videoPlayerNode.shouldAutoPlay = YES;
+        self.videoPlayerNode.delegate = self;
         self.automaticallyManagesSubnodes = YES;
         __weak typeof(self) __weakSelf = self;
         CMStore *store = [CMStore instance];
@@ -37,6 +38,7 @@
             BOOL isPlaying = ![(NSString *)tuple.second isEqualToString:kCMStoreCammentIdIfNotPlaying] ;
             [strongSelf.videoPlayerNode setMuted:isRecording || isPlaying];
         }];
+
     }
 
     return self;
@@ -59,5 +61,8 @@
                                                   child:_videoPlayerNode];
 }
 
+- (void)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer didPlayToTime:(CMTime)time {
+    [[CMStore instance] setCurrentShowTimeInterval:CMTimeGetSeconds(time)];
+}
 
 @end

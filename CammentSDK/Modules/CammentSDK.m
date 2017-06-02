@@ -15,6 +15,9 @@
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
 #import "CMCammentFacebookIdentity.h"
+#import "CMPresentationBuilder.h"
+#import "CMWoltPresentationBuilder.h"
+#import "CMPresentationUtility.h"
 
 #import <FBTweak.h>
 #import <FBTweakStore.h>
@@ -57,31 +60,28 @@
         [store addTweakCategory:presentationCategory];
     }
     
-    FBTweakCollection *presentationsCollection = [presentationCategory tweakCollectionWithName:@"Presentations"];
+    FBTweakCollection *presentationsCollection = [presentationCategory tweakCollectionWithName:@"Demo"];
     if (!presentationsCollection) {
-        presentationsCollection = [[FBTweakCollection alloc] initWithName:@"Presentations"];
+        presentationsCollection = [[FBTweakCollection alloc] initWithName:@"Demo"];
         [presentationCategory addTweakCollection: presentationsCollection];
     }
-    
+
+    NSArray<id<CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
+
     FBTweak *showTweak = [presentationsCollection tweakWithIdentifier:@"Scenario"];
     if (!showTweak) {
         showTweak = [[FBTweak alloc] initWithIdentifier:@"Scenario"];
-        showTweak.possibleValues = @[@"None", @"Wolt"];
+        showTweak.possibleValues = [@[@"None"] arrayByAddingObjectsFromArray:[presentations.rac_sequence map:^id(id <CMPresentationBuilder> value) {
+            return [value presentationName];
+        }].array];
         showTweak.defaultValue = @"None";
         showTweak.name = @"Choose demo scenario";
         [presentationsCollection addTweak:showTweak];
     }
-    
-    FBTweak *delayTweak = [presentationsCollection tweakWithIdentifier:@"Ads delay"];
-    if (!delayTweak) {
-        delayTweak = [[FBTweak alloc] initWithIdentifier:@"Ads delay"];
-        delayTweak.defaultValue = @1.0f;
-        delayTweak.minimumValue = @.0f;
-        delayTweak.maximumValue = @10.0f;
-        delayTweak.name = @"How fast ads appears";
-        [presentationsCollection addTweak:delayTweak];
+
+    for (id <CMPresentationBuilder> presentation in presentations) {
+        [presentation configureTweaks:presentationCategory];
     }
-    
 }
 
 - (void)configureWithApiKey:(NSString *)apiKey {

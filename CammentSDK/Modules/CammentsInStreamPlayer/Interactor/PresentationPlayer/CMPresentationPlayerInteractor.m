@@ -14,7 +14,7 @@
 
 - (void)update:(CMPresentationState *)state {
     for (id<CMPresentationInstructionInterface> instruction in _instructions) {
-        if ([instruction shouldTriggeredForState:state]) {
+        if ([instruction shouldBeTriggeredForState:state]) {
             [instruction runWithOutput:self.instructionOutput];
         }
     }

@@ -10,7 +10,7 @@
 
 @implementation CMPresentationInstruction
 
-- (BOOL)shouldTriggeredForState:(CMPresentationState *)state {
+- (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state {
     return !_wasTriggered || _shouldTriggerEveryTick;
 }
 

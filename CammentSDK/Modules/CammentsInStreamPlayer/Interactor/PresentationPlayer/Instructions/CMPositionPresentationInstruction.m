@@ -30,9 +30,9 @@
     return self;
 }
 
-- (BOOL)shouldTriggeredForState:(CMPresentationState *)state {
+- (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state {
     BOOL shouldTriggered = (state.items.count + 1) == _position;
-    return [super shouldTriggeredForState:state] && shouldTriggered;
+    return [super shouldBeTriggeredForState:state] && shouldTriggered;
 }
 
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {

@@ -21,12 +21,13 @@
     return self;
 }
 
-- (BOOL)shouldTriggeredForState:(CMPresentationState *)state {
-    BOOL shouldTriggered = state.timestamp >= state.timestamp;
-    return [super shouldTriggeredForState:state] && shouldTriggered;
+- (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state {
+    BOOL shouldTriggered = state.timestamp >= self.timestamp;
+    return [super shouldBeTriggeredForState:state] && shouldTriggered;
 }
 
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {
+    [super runWithOutput:output];
     [self.item matchCamment:^(Camment *camment) {
         [output didReceiveNewCamment:camment];
     } ads:^(Ads *ads) {

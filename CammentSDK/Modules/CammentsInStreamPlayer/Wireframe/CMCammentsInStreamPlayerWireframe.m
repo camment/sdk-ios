@@ -6,14 +6,14 @@
 //  Copyright 2017 Sportacam. All rights reserved.
 //
 
+#import "ASCollectionNode.h"
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMCammentRecorderInteractor.h"
-#import "CMShow.h"
 
 
 @implementation CMCammentsInStreamPlayerWireframe
 
-- (instancetype)initWithShow:(CMShow *)show {
+- (instancetype)initWithShow:(Show *)show {
     self = [super init];
     if (self) {
         self.show = show;

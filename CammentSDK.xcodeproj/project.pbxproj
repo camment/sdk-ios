@@ -21,41 +21,67 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		6FFAB0C0F8A948B064C55437 /* CMCammentList.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB4D0B57108D9687AFC1F /* CMCammentList.h */; };
+		6FFAB0E797676EF5FD72BDCF /* CMInvitation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB11A5F237A4D7AC6855D /* CMInvitation.m */; };
 		6FFAB111A8ECEB676CC4EB79 /* CMPositionPresentationInstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3DA7DCB32E05BC79BEC /* CMPositionPresentationInstruction.h */; };
+		6FFAB1374B6585597F34CDCA /* CMDevcammentClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB17A7F5B88255BFA1866 /* CMDevcammentClient.h */; };
 		6FFAB1380B8B4EF638D8FA2B /* ads.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB9479692BE245A168DB2 /* ads.gif */; };
 		6FFAB149581D4462427B8F2B /* CammentSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABB7C48C0955956A52984 /* CammentSDK.m */; };
 		6FFAB14E7F382F02C5F1B3FF /* CMTimestampPresentationInstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABF2E43075729A9A95640 /* CMTimestampPresentationInstruction.h */; };
 		6FFAB17BAB4C9824C29E5F24 /* CMPresentationInstruction.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABB4518B70231D2FA0413 /* CMPresentationInstruction.m */; };
+		6FFAB1A0567F9AE94BDE8435 /* CMContentViewerNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3C52BFE56FD91D93DE8 /* CMContentViewerNode.h */; };
 		6FFAB1B8F544C56FD7BE52D0 /* CMAdsCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB87B5658EDAA6E4AF991 /* CMAdsCell.h */; };
 		6FFAB1CD8A61868755889ACC /* CMPresentationPlayerInteractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB741D16F710BFC592388 /* CMPresentationPlayerInteractor.h */; };
+		6FFAB25DEAED9504B002B9DD /* CMShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB61714BD93B374B2EDA6 /* CMShow.m */; };
 		6FFAB27594C78D3D74C01B1C /* CMPresentationUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB5F0312CF83B804E9D5A /* CMPresentationUtility.h */; };
 		6FFAB2FED3F21ED76FC70701 /* CMTimestampPresentationInstruction.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB248AC4C47BA30C9B345 /* CMTimestampPresentationInstruction.m */; };
 		6FFAB3A0312ED09A9040631D /* CMNetflixPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3E9D29D324BCF43BDC6 /* CMNetflixPresentationBuilder.h */; };
+		6FFAB3CCDBB9EF58B544CFD6 /* CMInvitationInRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB222795D7672613BB927 /* CMInvitationInRequest.h */; };
 		6FFAB3E38864105619E2B2CE /* CMWoltPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABF4970083A135A4EB8B4 /* CMWoltPresentationBuilder.h */; };
 		6FFAB409083C441438B2BF0E /* CammentSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB75DEC81AE0BFCF0D91E /* CammentSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6FFAB40EE39ECFDBAFD506B2 /* CMCamment.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB196296E085509E5539B /* CMCamment.m */; };
 		6FFAB42F3E7E46BF8D0BBD45 /* CMPresentationPlayerInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABD71F6B29125DB77C095 /* CMPresentationPlayerInteractor.m */; };
+		6FFAB4D9A15CFA44E9DD58D6 /* Show.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB5A0E2446F7B1E703472 /* Show.m */; };
 		6FFAB4F8269D3D665DFDA32B /* CMCammentFacebookIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABD97717BB19E39E29DBE /* CMCammentFacebookIdentity.m */; };
 		6FFAB5CDB939D7065009ECF1 /* CMPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB91DC056E67B0DB76A7D /* CMPresentationBuilder.h */; };
 		6FFAB6150324569EF6C7BCF5 /* CMPresentationInstructionInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB8B6C045BFF8C8A3480B /* CMPresentationInstructionInterface.h */; };
 		6FFAB619691D976D7FF7525A /* CMAdsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABA73F497C5670EF3F5FC /* CMAdsCell.m */; };
+		6FFAB6518EA9EC45BEDCC0F1 /* CMInvitationInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB85E2804E6D8A79533F4 /* CMInvitationInRequest.m */; };
+		6FFAB668518E3532B1CADD87 /* CMCammentInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABFBA910074D1ED57F14C /* CMCammentInRequest.m */; };
+		6FFAB670AA0CD71522D9B336 /* netflix-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB5CF2B01A24A1BC1230F /* netflix-4.gif */; };
 		6FFAB6C849301F72A6A59A3B /* CMNetflixPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABCC99A994805C9CDC1FC /* CMNetflixPresentationBuilder.m */; };
 		6FFAB6CF05F26AC9240E1133 /* CMPresentationInstruction.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB4A74E95DB959039FDCA /* CMPresentationInstruction.h */; };
+		6FFAB6E51BDD7C9AC2D36D42 /* CMShowList.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB22D62B5F009C6A1E9D0 /* CMShowList.m */; };
+		6FFAB707C0D9D65C61187503 /* CMInvitation.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABB3A7FCC2BD13506DF46 /* CMInvitation.h */; };
 		6FFAB73102F031BA2C84BAB2 /* CMCammentIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FFAB765E376A696208A2AAA /* CammentsBlockItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABE5404C9E2873EAB55C4 /* CammentsBlockItem.m */; };
+		6FFAB768A264CA71758EC857 /* ShowType.adtValue in Resources */ = {isa = PBXBuildFile; fileRef = 6FFABB97BF66E9F9B89545DD /* ShowType.adtValue */; };
 		6FFAB7982040743C50B0B647 /* CammentsBlockItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABC228BDB221E9D7161C1 /* CammentsBlockItem.h */; };
+		6FFAB7A66A4294136AB32428 /* CMCammentInRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABC1B71DAD927D6275E5D /* CMCammentInRequest.h */; };
+		6FFAB80B0D3F807411C63D43 /* CMShow.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABDA62EF7B948620A66A5 /* CMShow.h */; };
 		6FFAB86DEC960FDD8A9B7F7F /* CMWoltPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB5B9DD330108908C3353 /* CMWoltPresentationBuilder.m */; };
 		6FFAB873B1A5BE33FF2E0E92 /* CMPresentationInstructionOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3F4285C21C2523726D5 /* CMPresentationInstructionOutput.h */; };
 		6FFAB877FEE1BB22CFEEE803 /* CMPositionPresentationInstruction.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB79B70A079C58FDCCD70 /* CMPositionPresentationInstruction.m */; };
+		6FFAB89E76232A51F17A23BC /* ShowType.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3AE673B8CBC0EADA94D /* ShowType.h */; };
+		6FFAB8FCBFDFCA8B383A5E35 /* ShowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABD33BF48FDFFE98055B6 /* ShowType.m */; };
 		6FFAB8FDDF5C1E72918064F1 /* CMPresentationState.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB5B79B894C97BAF150FC /* CMPresentationState.h */; };
 		6FFAB9A795661A33D3091892 /* CMPresentationState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB59124146C60AA0602FF /* CMPresentationState.m */; };
+		6FFABA004C55C852F3AE4617 /* CMWebContentPlayerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB7560366D03A982EED99 /* CMWebContentPlayerNode.m */; };
 		6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6FFABB58C39AE6733F2391CB /* Ads.value in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB6C4C432CEC263BCF82A /* Ads.value */; };
 		6FFABBB2472B926F2AEC89BA /* CMPresentationUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABDBD2B4AB68A382D8545 /* CMPresentationUtility.m */; };
 		6FFABBCBBBBD83171755FF28 /* CMAdsNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB6CDC43FF5E019D4A259 /* CMAdsNode.h */; };
+		6FFABC01D9C8297FB8C05E2A /* Show.value in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB99DABD8E5A170A8BD4A /* Show.value */; };
 		6FFABC15DB6A22708540D76D /* Ads.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB5B303A905542B61AABB /* Ads.m */; };
+		6FFABC1C55FF2691895660DD /* CMWebContentPlayerNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB7317540C1E64F0A5F1B /* CMWebContentPlayerNode.h */; };
 		6FFABDAFED5A8BC388EA3358 /* Ads.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABD979ADFBE83BAF4E76B /* Ads.h */; };
+		6FFABDF222EB63F3E26258B0 /* CMCammentList.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB0D33E467ABC8D9F2060 /* CMCammentList.m */; };
 		6FFABE025F7CF81CEDC27421 /* CammentsBlockItem.adtValue in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */; };
+		6FFABE403CDD292560AED1FE /* Show.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB7C5DF56ADCC7B5E8670 /* Show.h */; };
+		6FFABE7304819BC392AA6AA7 /* CMShowList.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB7BC53191210EC4C6FC7 /* CMShowList.h */; };
 		6FFABEC83D5FA4A66035BB8F /* CMAdsNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB845EEFA38EEE20D6E7A /* CMAdsNode.m */; };
+		6FFABF099A308D7535E531A1 /* CMDevcammentClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB8FECDD78EB9272F2E61 /* CMDevcammentClient.m */; };
+		6FFABF2E33DFBCA3060B59A3 /* CMCamment.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB023B4E8B6DFB8F0B944 /* CMCamment.h */; };
 		6FFABF523CEEF44F620EC732 /* CMCammentIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */; };
 		8909004C9DFAD83FA9818979 /* libPods-CammentSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9606F22539C0141BA1A57DC3 /* libPods-CammentSDK.a */; };
 		954D1B331EDDA2B100F93BEC /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 954D1B321EDDA2B100F93BEC /* UIKit.framework */; };
@@ -68,18 +94,6 @@
 		959311F71EE1652B00948B79 /* netflix-2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F41EE1652B00948B79 /* netflix-2.mp4 */; };
 		959311F81EE1652B00948B79 /* netflix-3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F51EE1652B00948B79 /* netflix-3.mp4 */; };
 		959E089A1EDC3F2000C1F0F9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C821ED843F600DB7660 /* AVFoundation.framework */; };
-		959E09601EDC539700C1F0F9 /* CMCamment.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E09541EDC539700C1F0F9 /* CMCamment.h */; };
-		959E09611EDC539700C1F0F9 /* CMCamment.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E09551EDC539700C1F0F9 /* CMCamment.m */; };
-		959E09621EDC539700C1F0F9 /* CMCammentInRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E09561EDC539700C1F0F9 /* CMCammentInRequest.h */; };
-		959E09631EDC539700C1F0F9 /* CMCammentInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E09571EDC539700C1F0F9 /* CMCammentInRequest.m */; };
-		959E09641EDC539700C1F0F9 /* CMCammentList.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E09581EDC539700C1F0F9 /* CMCammentList.h */; };
-		959E09651EDC539700C1F0F9 /* CMCammentList.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E09591EDC539700C1F0F9 /* CMCammentList.m */; };
-		959E09661EDC539700C1F0F9 /* CMDevcammentClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E095A1EDC539700C1F0F9 /* CMDevcammentClient.h */; };
-		959E09671EDC539700C1F0F9 /* CMDevcammentClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E095B1EDC539700C1F0F9 /* CMDevcammentClient.m */; };
-		959E09681EDC539700C1F0F9 /* CMShow.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E095C1EDC539700C1F0F9 /* CMShow.h */; };
-		959E09691EDC539700C1F0F9 /* CMShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E095D1EDC539700C1F0F9 /* CMShow.m */; };
-		959E096A1EDC539700C1F0F9 /* CMShowList.h in Headers */ = {isa = PBXBuildFile; fileRef = 959E095E1EDC539700C1F0F9 /* CMShowList.h */; };
-		959E096B1EDC539700C1F0F9 /* CMShowList.m in Sources */ = {isa = PBXBuildFile; fileRef = 959E095F1EDC539700C1F0F9 /* CMShowList.m */; };
 		95CA1EFA1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */; };
 		95CA1EFB1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */; };
 		95CA1EFC1EDC38D50024C4F6 /* SCAssetExportSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */; };
@@ -238,42 +252,68 @@
 
 /* Begin PBXFileReference section */
 		65E6129DC1B5BCFEBA797A01 /* Pods-CammentSDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.debug.xcconfig"; sourceTree = "<group>"; };
+		6FFAB023B4E8B6DFB8F0B944 /* CMCamment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCamment.h; sourceTree = "<group>"; };
+		6FFAB0D33E467ABC8D9F2060 /* CMCammentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentList.m; sourceTree = "<group>"; };
+		6FFAB11A5F237A4D7AC6855D /* CMInvitation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMInvitation.m; sourceTree = "<group>"; };
+		6FFAB17A7F5B88255BFA1866 /* CMDevcammentClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMDevcammentClient.h; sourceTree = "<group>"; };
+		6FFAB196296E085509E5539B /* CMCamment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCamment.m; sourceTree = "<group>"; };
+		6FFAB222795D7672613BB927 /* CMInvitationInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMInvitationInRequest.h; sourceTree = "<group>"; };
+		6FFAB22D62B5F009C6A1E9D0 /* CMShowList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowList.m; sourceTree = "<group>"; };
 		6FFAB248AC4C47BA30C9B345 /* CMTimestampPresentationInstruction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMTimestampPresentationInstruction.m; sourceTree = "<group>"; };
+		6FFAB3AE673B8CBC0EADA94D /* ShowType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowType.h; sourceTree = "<group>"; };
+		6FFAB3C52BFE56FD91D93DE8 /* CMContentViewerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMContentViewerNode.h; sourceTree = "<group>"; };
 		6FFAB3DA7DCB32E05BC79BEC /* CMPositionPresentationInstruction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPositionPresentationInstruction.h; sourceTree = "<group>"; };
 		6FFAB3E9D29D324BCF43BDC6 /* CMNetflixPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMNetflixPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFAB3F4285C21C2523726D5 /* CMPresentationInstructionOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationInstructionOutput.h; sourceTree = "<group>"; };
 		6FFAB4A74E95DB959039FDCA /* CMPresentationInstruction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationInstruction.h; sourceTree = "<group>"; };
+		6FFAB4D0B57108D9687AFC1F /* CMCammentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentList.h; sourceTree = "<group>"; };
 		6FFAB59124146C60AA0602FF /* CMPresentationState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPresentationState.m; sourceTree = "<group>"; };
+		6FFAB5A0E2446F7B1E703472 /* Show.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Show.m; sourceTree = "<group>"; };
 		6FFAB5B303A905542B61AABB /* Ads.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Ads.m; sourceTree = "<group>"; };
 		6FFAB5B79B894C97BAF150FC /* CMPresentationState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationState.h; sourceTree = "<group>"; };
 		6FFAB5B9DD330108908C3353 /* CMWoltPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMWoltPresentationBuilder.m; sourceTree = "<group>"; };
 		6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.adtValue; path = CammentsBlockItem.adtValue; sourceTree = "<group>"; };
+		6FFAB5CF2B01A24A1BC1230F /* netflix-4.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = "netflix-4.gif"; sourceTree = "<group>"; };
 		6FFAB5F0312CF83B804E9D5A /* CMPresentationUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationUtility.h; sourceTree = "<group>"; };
+		6FFAB61714BD93B374B2EDA6 /* CMShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShow.m; sourceTree = "<group>"; };
 		6FFAB6C4C432CEC263BCF82A /* Ads.value */ = {isa = PBXFileReference; lastKnownFileType = file.value; path = Ads.value; sourceTree = "<group>"; };
 		6FFAB6CDC43FF5E019D4A259 /* CMAdsNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAdsNode.h; sourceTree = "<group>"; };
+		6FFAB7317540C1E64F0A5F1B /* CMWebContentPlayerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMWebContentPlayerNode.h; sourceTree = "<group>"; };
 		6FFAB741D16F710BFC592388 /* CMPresentationPlayerInteractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationPlayerInteractor.h; sourceTree = "<group>"; };
+		6FFAB7560366D03A982EED99 /* CMWebContentPlayerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMWebContentPlayerNode.m; sourceTree = "<group>"; };
 		6FFAB75DEC81AE0BFCF0D91E /* CammentSDK.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentSDK.h; sourceTree = "<group>"; };
 		6FFAB79B70A079C58FDCCD70 /* CMPositionPresentationInstruction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPositionPresentationInstruction.m; sourceTree = "<group>"; };
+		6FFAB7BC53191210EC4C6FC7 /* CMShowList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowList.h; sourceTree = "<group>"; };
+		6FFAB7C5DF56ADCC7B5E8670 /* Show.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Show.h; sourceTree = "<group>"; };
 		6FFAB845EEFA38EEE20D6E7A /* CMAdsNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAdsNode.m; sourceTree = "<group>"; };
+		6FFAB85E2804E6D8A79533F4 /* CMInvitationInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMInvitationInRequest.m; sourceTree = "<group>"; };
 		6FFAB87B5658EDAA6E4AF991 /* CMAdsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAdsCell.h; sourceTree = "<group>"; };
 		6FFAB8B6C045BFF8C8A3480B /* CMPresentationInstructionInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationInstructionInterface.h; sourceTree = "<group>"; };
+		6FFAB8FECDD78EB9272F2E61 /* CMDevcammentClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMDevcammentClient.m; sourceTree = "<group>"; };
 		6FFAB91DC056E67B0DB76A7D /* CMPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFAB9479692BE245A168DB2 /* ads.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = ads.gif; sourceTree = "<group>"; };
+		6FFAB99DABD8E5A170A8BD4A /* Show.value */ = {isa = PBXFileReference; lastKnownFileType = file.adtValue; path = Show.value; sourceTree = "<group>"; };
 		6FFABA73F497C5670EF3F5FC /* CMAdsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAdsCell.m; sourceTree = "<group>"; };
+		6FFABB3A7FCC2BD13506DF46 /* CMInvitation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMInvitation.h; sourceTree = "<group>"; };
 		6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentFacebookIdentity.h; sourceTree = "<group>"; };
 		6FFABB4518B70231D2FA0413 /* CMPresentationInstruction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPresentationInstruction.m; sourceTree = "<group>"; };
 		6FFABB7C48C0955956A52984 /* CammentSDK.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CammentSDK.m; sourceTree = "<group>"; };
+		6FFABB97BF66E9F9B89545DD /* ShowType.adtValue */ = {isa = PBXFileReference; lastKnownFileType = file.adtValue; path = ShowType.adtValue; sourceTree = "<group>"; };
 		6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentIdentity.m; sourceTree = "<group>"; };
+		6FFABC1B71DAD927D6275E5D /* CMCammentInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentInRequest.h; sourceTree = "<group>"; };
 		6FFABC228BDB221E9D7161C1 /* CammentsBlockItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CammentsBlockItem.h; sourceTree = "<group>"; };
 		6FFABCC99A994805C9CDC1FC /* CMNetflixPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMNetflixPresentationBuilder.m; sourceTree = "<group>"; };
+		6FFABD33BF48FDFFE98055B6 /* ShowType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowType.m; sourceTree = "<group>"; };
 		6FFABD71F6B29125DB77C095 /* CMPresentationPlayerInteractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPresentationPlayerInteractor.m; sourceTree = "<group>"; };
 		6FFABD97717BB19E39E29DBE /* CMCammentFacebookIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentFacebookIdentity.m; sourceTree = "<group>"; };
 		6FFABD979ADFBE83BAF4E76B /* Ads.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Ads.h; sourceTree = "<group>"; };
+		6FFABDA62EF7B948620A66A5 /* CMShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShow.h; sourceTree = "<group>"; };
 		6FFABDBD2B4AB68A382D8545 /* CMPresentationUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPresentationUtility.m; sourceTree = "<group>"; };
 		6FFABE5404C9E2873EAB55C4 /* CammentsBlockItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CammentsBlockItem.m; sourceTree = "<group>"; };
 		6FFABF2E43075729A9A95640 /* CMTimestampPresentationInstruction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMTimestampPresentationInstruction.h; sourceTree = "<group>"; };
 		6FFABF4970083A135A4EB8B4 /* CMWoltPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMWoltPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentIdentity.h; sourceTree = "<group>"; };
+		6FFABFBA910074D1ED57F14C /* CMCammentInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentInRequest.m; sourceTree = "<group>"; };
 		954D1B321EDDA2B100F93BEC /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		954D1B341EDDA3DE00F93BEC /* Prefix.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.h; sourceTree = "<group>"; };
 		954F48A01EDEAF9A003AE18D /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
@@ -283,18 +323,6 @@
 		959311F31EE1652B00948B79 /* netflix-1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-1.mp4"; sourceTree = "<group>"; };
 		959311F41EE1652B00948B79 /* netflix-2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-2.mp4"; sourceTree = "<group>"; };
 		959311F51EE1652B00948B79 /* netflix-3.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-3.mp4"; sourceTree = "<group>"; };
-		959E09541EDC539700C1F0F9 /* CMCamment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCamment.h; sourceTree = "<group>"; };
-		959E09551EDC539700C1F0F9 /* CMCamment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCamment.m; sourceTree = "<group>"; };
-		959E09561EDC539700C1F0F9 /* CMCammentInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentInRequest.h; sourceTree = "<group>"; };
-		959E09571EDC539700C1F0F9 /* CMCammentInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentInRequest.m; sourceTree = "<group>"; };
-		959E09581EDC539700C1F0F9 /* CMCammentList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentList.h; sourceTree = "<group>"; };
-		959E09591EDC539700C1F0F9 /* CMCammentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentList.m; sourceTree = "<group>"; };
-		959E095A1EDC539700C1F0F9 /* CMDevcammentClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMDevcammentClient.h; sourceTree = "<group>"; };
-		959E095B1EDC539700C1F0F9 /* CMDevcammentClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMDevcammentClient.m; sourceTree = "<group>"; };
-		959E095C1EDC539700C1F0F9 /* CMShow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShow.h; sourceTree = "<group>"; };
-		959E095D1EDC539700C1F0F9 /* CMShow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShow.m; sourceTree = "<group>"; };
-		959E095E1EDC539700C1F0F9 /* CMShowList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowList.h; sourceTree = "<group>"; };
-		959E095F1EDC539700C1F0F9 /* CMShowList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowList.m; sourceTree = "<group>"; };
 		95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSURL+SCSaveToCameraRoll.h"; path = "SCRecorder-2.7.0/Library/Sources/NSURL+SCSaveToCameraRoll.h"; sourceTree = SOURCE_ROOT; };
 		95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSURL+SCSaveToCameraRoll.m"; path = "SCRecorder-2.7.0/Library/Sources/NSURL+SCSaveToCameraRoll.m"; sourceTree = SOURCE_ROOT; };
 		95CA1EBE1EDC38D50024C4F6 /* SCAssetExportSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SCAssetExportSession.h; path = "SCRecorder-2.7.0/Library/Sources/SCAssetExportSession.h"; sourceTree = SOURCE_ROOT; };
@@ -563,6 +591,7 @@
 				959311F31EE1652B00948B79 /* netflix-1.mp4 */,
 				959311F41EE1652B00948B79 /* netflix-2.mp4 */,
 				959311F51EE1652B00948B79 /* netflix-3.mp4 */,
+				6FFAB5CF2B01A24A1BC1230F /* netflix-4.gif */,
 			);
 			name = "Netflix demo";
 			sourceTree = "<group>";
@@ -762,18 +791,22 @@
 		95CD2CB81ED848ED00DB7660 /* AWSApi */ = {
 			isa = PBXGroup;
 			children = (
-				959E09541EDC539700C1F0F9 /* CMCamment.h */,
-				959E09551EDC539700C1F0F9 /* CMCamment.m */,
-				959E09561EDC539700C1F0F9 /* CMCammentInRequest.h */,
-				959E09571EDC539700C1F0F9 /* CMCammentInRequest.m */,
-				959E09581EDC539700C1F0F9 /* CMCammentList.h */,
-				959E09591EDC539700C1F0F9 /* CMCammentList.m */,
-				959E095A1EDC539700C1F0F9 /* CMDevcammentClient.h */,
-				959E095B1EDC539700C1F0F9 /* CMDevcammentClient.m */,
-				959E095C1EDC539700C1F0F9 /* CMShow.h */,
-				959E095D1EDC539700C1F0F9 /* CMShow.m */,
-				959E095E1EDC539700C1F0F9 /* CMShowList.h */,
-				959E095F1EDC539700C1F0F9 /* CMShowList.m */,
+				6FFAB023B4E8B6DFB8F0B944 /* CMCamment.h */,
+				6FFAB196296E085509E5539B /* CMCamment.m */,
+				6FFABC1B71DAD927D6275E5D /* CMCammentInRequest.h */,
+				6FFABFBA910074D1ED57F14C /* CMCammentInRequest.m */,
+				6FFAB4D0B57108D9687AFC1F /* CMCammentList.h */,
+				6FFAB0D33E467ABC8D9F2060 /* CMCammentList.m */,
+				6FFAB17A7F5B88255BFA1866 /* CMDevcammentClient.h */,
+				6FFAB8FECDD78EB9272F2E61 /* CMDevcammentClient.m */,
+				6FFABB3A7FCC2BD13506DF46 /* CMInvitation.h */,
+				6FFAB11A5F237A4D7AC6855D /* CMInvitation.m */,
+				6FFAB222795D7672613BB927 /* CMInvitationInRequest.h */,
+				6FFAB85E2804E6D8A79533F4 /* CMInvitationInRequest.m */,
+				6FFABDA62EF7B948620A66A5 /* CMShow.h */,
+				6FFAB61714BD93B374B2EDA6 /* CMShow.m */,
+				6FFAB7BC53191210EC4C6FC7 /* CMShowList.h */,
+				6FFAB22D62B5F009C6A1E9D0 /* CMShowList.m */,
 			);
 			path = AWSApi;
 			sourceTree = "<group>";
@@ -827,6 +860,12 @@
 				6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */,
 				6FFABC228BDB221E9D7161C1 /* CammentsBlockItem.h */,
 				6FFABE5404C9E2873EAB55C4 /* CammentsBlockItem.m */,
+				6FFAB99DABD8E5A170A8BD4A /* Show.value */,
+				6FFAB7C5DF56ADCC7B5E8670 /* Show.h */,
+				6FFAB5A0E2446F7B1E703472 /* Show.m */,
+				6FFABB97BF66E9F9B89545DD /* ShowType.adtValue */,
+				6FFAB3AE673B8CBC0EADA94D /* ShowType.h */,
+				6FFABD33BF48FDFFE98055B6 /* ShowType.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -955,6 +994,9 @@
 				6FFAB87B5658EDAA6E4AF991 /* CMAdsCell.h */,
 				6FFAB845EEFA38EEE20D6E7A /* CMAdsNode.m */,
 				6FFAB6CDC43FF5E019D4A259 /* CMAdsNode.h */,
+				6FFAB3C52BFE56FD91D93DE8 /* CMContentViewerNode.h */,
+				6FFAB7560366D03A982EED99 /* CMWebContentPlayerNode.m */,
+				6FFAB7317540C1E64F0A5F1B /* CMWebContentPlayerNode.h */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1111,9 +1153,7 @@
 				95CA1F021EDC38D50024C4F6 /* SCAudioVideoRecorder-Prefix.pch in Headers */,
 				95CD2D841ED8494600DB7660 /* CMShowsListCollectionPresenter.h in Headers */,
 				95CA1F2A1EDC38D50024C4F6 /* SCSampleBufferHolder.h in Headers */,
-				959E09681EDC539700C1F0F9 /* CMShow.h in Headers */,
 				95CD2D081ED848ED00DB7660 /* UIColorMacros.h in Headers */,
-				959E096A1EDC539700C1F0F9 /* CMShowList.h in Headers */,
 				95CA1EFE1EDC38D50024C4F6 /* SCAudioConfiguration.h in Headers */,
 				95CD2D891ED8494600DB7660 /* CMShowCellNode.h in Headers */,
 				95CA1F341EDC38D50024C4F6 /* SCWeakSelectorTarget.h in Headers */,
@@ -1128,7 +1168,6 @@
 				95CD2D8B1ED8494600DB7660 /* CMShowsListNode.h in Headers */,
 				95CA1F151EDC38D50024C4F6 /* SCPhotoConfiguration.h in Headers */,
 				95CD2D661ED8494600DB7660 /* CMOneThirdScaleAnimation.h in Headers */,
-				959E09621EDC539700C1F0F9 /* CMCammentInRequest.h in Headers */,
 				95CA1F201EDC38D50024C4F6 /* SCRecorderHeader.h in Headers */,
 				95CA1F0F1EDC38D50024C4F6 /* SCImageView.h in Headers */,
 				95CD2D6E1ED8494600DB7660 /* CMCammentNode.h in Headers */,
@@ -1145,15 +1184,12 @@
 				95CD2D741ED8494600DB7660 /* CMCammentsInStreamPlayerNode.h in Headers */,
 				95CD2D5A1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.h in Headers */,
 				95CD2D621ED8494600DB7660 /* CMCammentsBlockPresenter.h in Headers */,
-				959E09601EDC539700C1F0F9 /* CMCamment.h in Headers */,
 				95CA1F071EDC38D50024C4F6 /* SCFilter+UIImage.h in Headers */,
 				95CD2D871ED8494600DB7660 /* CMShowsListViewController.h in Headers */,
 				95CD2D001ED848ED00DB7660 /* Post.h in Headers */,
 				95CD2D641ED8494600DB7660 /* CMHalfOpacityAnimation.h in Headers */,
-				959E09661EDC539700C1F0F9 /* CMDevcammentClient.h in Headers */,
 				95CA1EFC1EDC38D50024C4F6 /* SCAssetExportSession.h in Headers */,
 				95CD2D701ED8494600DB7660 /* CMCammentRecorderPreviewNode.h in Headers */,
-				959E09641EDC539700C1F0F9 /* CMCammentList.h in Headers */,
 				95CD2CF51ED848ED00DB7660 /* CMServerListener.h in Headers */,
 				95CA1F111EDC38D50024C4F6 /* SCIOPixelBuffers.h in Headers */,
 				95CA1F251EDC38D50024C4F6 /* SCRecordSession_Internal.h in Headers */,
@@ -1181,6 +1217,18 @@
 				6FFAB27594C78D3D74C01B1C /* CMPresentationUtility.h in Headers */,
 				6FFAB3E38864105619E2B2CE /* CMWoltPresentationBuilder.h in Headers */,
 				6FFAB3A0312ED09A9040631D /* CMNetflixPresentationBuilder.h in Headers */,
+				6FFABF2E33DFBCA3060B59A3 /* CMCamment.h in Headers */,
+				6FFAB7A66A4294136AB32428 /* CMCammentInRequest.h in Headers */,
+				6FFAB0C0F8A948B064C55437 /* CMCammentList.h in Headers */,
+				6FFAB1374B6585597F34CDCA /* CMDevcammentClient.h in Headers */,
+				6FFAB707C0D9D65C61187503 /* CMInvitation.h in Headers */,
+				6FFAB3CCDBB9EF58B544CFD6 /* CMInvitationInRequest.h in Headers */,
+				6FFAB80B0D3F807411C63D43 /* CMShow.h in Headers */,
+				6FFABE7304819BC392AA6AA7 /* CMShowList.h in Headers */,
+				6FFAB1A0567F9AE94BDE8435 /* CMContentViewerNode.h in Headers */,
+				6FFABC1C55FF2691895660DD /* CMWebContentPlayerNode.h in Headers */,
+				6FFABE403CDD292560AED1FE /* Show.h in Headers */,
+				6FFAB89E76232A51F17A23BC /* ShowType.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1262,6 +1310,9 @@
 				954F48A81EDF055C003AE18D /* burger.gif in Resources */,
 				6FFABE025F7CF81CEDC27421 /* CammentsBlockItem.adtValue in Resources */,
 				6FFAB1380B8B4EF638D8FA2B /* ads.gif in Resources */,
+				6FFAB670AA0CD71522D9B336 /* netflix-4.gif in Resources */,
+				6FFABC01D9C8297FB8C05E2A /* Show.value in Resources */,
+				6FFAB768A264CA71758EC857 /* ShowType.adtValue in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1323,7 +1374,6 @@
 				95CD2D7B1ED8494600DB7660 /* CMCammentsInStreamPlayerWireframe.m in Sources */,
 				95CA1F1F1EDC38D50024C4F6 /* SCRecorderFocusTargetView.m in Sources */,
 				95CD2CF41ED848ED00DB7660 /* CMCammentUploader.m in Sources */,
-				959E09611EDC539700C1F0F9 /* CMCamment.m in Sources */,
 				95CD2D571ED8494600DB7660 /* CMCammentRecorderInteractor.m in Sources */,
 				95CD2D691ED8494600DB7660 /* CMCammentsInStreamPlayerViewController.m in Sources */,
 				95CD2D6B1ED8494600DB7660 /* CMCammentButton.m in Sources */,
@@ -1358,27 +1408,22 @@
 				95CA1F291EDC38D50024C4F6 /* SCRecordSessionSegment.m in Sources */,
 				95CA1F101EDC38D50024C4F6 /* SCImageView.m in Sources */,
 				95CD2D5B1ED8494600DB7660 /* CMCammentsInStreamPlayerInteractor.m in Sources */,
-				959E09691EDC539700C1F0F9 /* CMShow.m in Sources */,
 				95CD2CE41ED848ED00DB7660 /* CMCognitoAuthService.m in Sources */,
 				95CA1F1C1EDC38D50024C4F6 /* SCRecorder.m in Sources */,
 				95CD2D8E1ED8494600DB7660 /* CMShowsListWireframe.m in Sources */,
 				95CA1F141EDC38D50024C4F6 /* SCMediaTypeConfiguration.m in Sources */,
 				95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */,
 				95CD2D011ED848ED00DB7660 /* Post.m in Sources */,
-				959E09631EDC539700C1F0F9 /* CMCammentInRequest.m in Sources */,
 				95CD2CFC1ED848ED00DB7660 /* CMAppConfig.m in Sources */,
 				95CD2D6F1ED8494600DB7660 /* CMCammentNode.m in Sources */,
 				95CA1F2D1EDC38D50024C4F6 /* SCSaveToCameraRollOperation.m in Sources */,
 				95CA1F061EDC38D50024C4F6 /* SCFilter.m in Sources */,
-				959E09651EDC539700C1F0F9 /* CMCammentList.m in Sources */,
 				95CD2D751ED8494600DB7660 /* CMCammentsInStreamPlayerNode.m in Sources */,
 				95CD2D771ED8494600DB7660 /* CMLeftAlignedLayout.m in Sources */,
 				95CA1EFF1EDC38D50024C4F6 /* SCAudioConfiguration.m in Sources */,
 				95CA1F331EDC38D50024C4F6 /* SCVideoPlayerView.m in Sources */,
 				95CA1F1A1EDC38D50024C4F6 /* SCProcessingQueue.m in Sources */,
-				959E09671EDC539700C1F0F9 /* CMDevcammentClient.m in Sources */,
 				95CD2CF61ED848ED00DB7660 /* CMServerListener.m in Sources */,
-				959E096B1EDC539700C1F0F9 /* CMShowList.m in Sources */,
 				95CA1F2B1EDC38D50024C4F6 /* SCSampleBufferHolder.m in Sources */,
 				95CD2D7D1ED8494600DB7660 /* CMShowsListInteractor.m in Sources */,
 				95CD2CE61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m in Sources */,
@@ -1405,6 +1450,17 @@
 				6FFABBB2472B926F2AEC89BA /* CMPresentationUtility.m in Sources */,
 				6FFAB86DEC960FDD8A9B7F7F /* CMWoltPresentationBuilder.m in Sources */,
 				6FFAB6C849301F72A6A59A3B /* CMNetflixPresentationBuilder.m in Sources */,
+				6FFAB40EE39ECFDBAFD506B2 /* CMCamment.m in Sources */,
+				6FFAB668518E3532B1CADD87 /* CMCammentInRequest.m in Sources */,
+				6FFABDF222EB63F3E26258B0 /* CMCammentList.m in Sources */,
+				6FFABF099A308D7535E531A1 /* CMDevcammentClient.m in Sources */,
+				6FFAB0E797676EF5FD72BDCF /* CMInvitation.m in Sources */,
+				6FFAB6518EA9EC45BEDCC0F1 /* CMInvitationInRequest.m in Sources */,
+				6FFAB25DEAED9504B002B9DD /* CMShow.m in Sources */,
+				6FFAB6E51BDD7C9AC2D36D42 /* CMShowList.m in Sources */,
+				6FFABA004C55C852F3AE4617 /* CMWebContentPlayerNode.m in Sources */,
+				6FFAB4D9A15CFA44E9DD58D6 /* Show.m in Sources */,
+				6FFAB8FCBFDFCA8B383A5E35 /* ShowType.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1478,6 +1534,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../Pods\"/**";
 			};
 			name = Debug;
 		};
@@ -1555,6 +1612,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
+				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../Pods\"/**";
 			};
 			name = Release;
 		};

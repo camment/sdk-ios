@@ -6,13 +6,13 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class CMShow;
+@class Show;
 
 
 @interface CMShowCellNode: ASCellNode
 
-@property (nonatomic, strong, readonly) CMShow *show;
+@property (nonatomic, strong, readonly) Show *show;
 
-- (instancetype)initWithShow:(CMShow *)show;
+- (instancetype)initWithShow:(Show *)show;
 
 @end

@@ -13,7 +13,7 @@
 
 NSString * const tweakSettingsNetflixCollectionName = @"Netflix settings";
 NSString * const tweakSettingsNetflixCammentDelayTemplate = @"#%d camment time";
-const NSInteger cammentsCount = 3;
+const NSInteger cammentsCount = 4;
 
 @implementation CMNetflixPresentationBuilder {
 }
@@ -27,16 +27,22 @@ const NSInteger cammentsCount = 3;
     FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
             tweakCollectionWithName:tweakSettingsNetflixCollectionName];
 
-
     NSMutableArray *instructions = [NSMutableArray new];
-    for (int i = 1; i <= cammentsCount; ++i) {
+    for (int i = 1; i <= 4; ++i) {
         NSString *tweakName = [NSString stringWithFormat:tweakSettingsNetflixCammentDelayTemplate, i];
         NSString *cammentName = [NSString stringWithFormat:@"netflix-%d", i];
         FBTweak *cammentDelayTweak = [collection tweakWithIdentifier:tweakName];
         NSTimeInterval timeInterval = [cammentDelayTweak.currentValue ?: cammentDelayTweak.defaultValue floatValue];
-        [instructions addObject:[[CMTimestampPresentationInstruction alloc]
-                initWithTimestamp:timeInterval
-                             item:[utility blockItemCammentWithLocalVideo:cammentName]]];
+
+        if (i == 4) {
+            [instructions addObject:[[CMTimestampPresentationInstruction alloc]
+                    initWithTimestamp:timeInterval
+                                 item:[utility blockItemAdsWithLocalGif:cammentName url:@"https://www.ubereats.com"]]];
+        } else {
+            [instructions addObject:[[CMTimestampPresentationInstruction alloc]
+                    initWithTimestamp:timeInterval
+                                 item:[utility blockItemCammentWithLocalVideo:cammentName]]];
+        }
     }
     return instructions;
 }
@@ -48,7 +54,7 @@ const NSInteger cammentsCount = 3;
         [category addTweakCollection: netflixSettingCollection];
     }
 
-    NSArray *titles = @[@"Frans camment #1", @"Aleksi's camment", @"Frans camment #2"];
+    NSArray *titles = @[@"Frans camment #1", @"Aleksi's camment", @"Frans camment #2", @"Uber food camment"];
     for (int i = 1; i <= cammentsCount; ++i) {
         NSString *tweakName = [NSString stringWithFormat:tweakSettingsNetflixCammentDelayTemplate, i];
         FBTweak *cammentDelayTweak = [netflixSettingCollection tweakWithIdentifier:tweakName];

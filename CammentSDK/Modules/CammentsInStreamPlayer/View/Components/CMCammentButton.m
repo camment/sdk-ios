@@ -28,6 +28,7 @@
         self.cammentIcon.backgroundColor = [UIColor clearColor];
 
         self.gestureRecognizer = [UILongPressGestureRecognizer new];
+        self.gestureRecognizer.delegate = self;
         self.gestureRecognizer.minimumPressDuration = 0.f;
         [self.gestureRecognizer addTarget:self action:@selector(handleLongPress:)];
         self.automaticallyManagesSubnodes = YES;
@@ -53,7 +54,11 @@
             || sender.state == UIGestureRecognizerStateCancelled) {
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleDownAnimation] forKey:@"scale"];
         [self pop_addAnimation:[CMHalfOpacityAnimation opacityDownAnimation] forKey:@"opacity"];
-        [self.delegate didReleaseCammentButton];
+        if (sender.state == UIGestureRecognizerStateEnded) {
+            [self.delegate didReleaseCammentButton];
+        } else {
+            [self.delegate didCancelCammentButton];
+        }
     } else if (sender.state == UIGestureRecognizerStateBegan) {
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleUpAnimation] forKey:@"scale"];
         [self pop_addAnimation:[CMHalfOpacityAnimation opacityUpAnimation] forKey:@"opacity"];
@@ -63,6 +68,15 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero child:_cammentIcon];
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    return YES;
+}
+
+- (void)cancelLongPressGestureRecognizer {
+    [self.gestureRecognizer setEnabled:NO];
+    [self.gestureRecognizer setEnabled:YES];
 }
 
 @end

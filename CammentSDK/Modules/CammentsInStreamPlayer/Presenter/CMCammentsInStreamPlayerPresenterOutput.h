@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import "CMCammentsBlockNode.h"
 
-@class CMShow;
+@class Show;
 
 @protocol CMCammentsInStreamPlayerPresenterOutput <NSObject>
 
-- (void)startShow:(CMShow *)show;
+- (void)startShow:(Show *)show;
 - (void)setCammentsBlockNodeDelegate:(id<CMCammentsBlockDelegate>)delegate;
 - (void)presenterDidRequestViewPreviewView;
 

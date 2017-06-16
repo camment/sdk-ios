@@ -14,18 +14,16 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMInvitationInRequest.h"
 
- 
-/**
- Show object model.
- */
-@interface CMShow : AWSModel
+@implementation CMInvitationInRequest
 
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-@property (nonatomic, strong, nullable) NSString *url;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"showId": @"showId",
+             @"uuid": @"uuid",
+             @"users": @"users"
+             };
+}
 
 @end

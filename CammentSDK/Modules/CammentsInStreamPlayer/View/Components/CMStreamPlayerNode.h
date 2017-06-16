@@ -6,9 +6,10 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
+@protocol CMContentViewerNode;
 
-@interface CMStreamPlayerNode : ASDisplayNode
 
-- (void)playVideoAtURL:(NSURL *)url;
+@interface CMStreamPlayerNode : ASDisplayNode<CMContentViewerNode>
+
 
 @end

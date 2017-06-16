@@ -11,6 +11,12 @@
 #import "CMShowList.h"
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMShowsListWireframe.h"
+#import "Show.h"
+#import "FBTweak/FBTweak.h"
+#import "FBTweak/FBTweakCategory.h"
+#import "FBTweak/FBTweakCollection.h"
+#import "FBTweak/FBTweakStore.h"
+#import <ReactiveObjC.h>
 
 @interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput>
 @property(nonatomic, strong) CMShowsListCollectionPresenter *showsListCollectionPresenter;
@@ -35,7 +41,21 @@
 }
 
 - (void)showListDidFetched:(CMShowList *)list {
-    self.showsListCollectionPresenter.shows = list.items;
+    NSArray *shows = [list.items.rac_sequence map:^Show *(CMShow *value) {
+        return [[Show alloc] initWithUuid:value.uuid url:value.url showType:[ShowType videoWithShow:value]];
+    }].array ?: @[];
+
+    FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
+            tweakCollectionWithName:@"Web settings"];
+
+    NSString *tweakName = @"Web page url";
+    FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
+
+    self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
+            [[Show alloc] initWithUuid:[(CMShow *) list.items.firstObject uuid]
+                                   url:webShowTweak.currentValue
+                              showType:[ShowType htmlWithWebURL:webShowTweak.currentValue]]
+    ]];
     [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
 }
@@ -44,8 +64,8 @@
 
 }
 
-- (void)didSelectShow:(CMShow *)show {
-    CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow: show];
+- (void)didSelectShow:(Show *)show {
+    CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
     [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.parentNavigationController];
 }
 

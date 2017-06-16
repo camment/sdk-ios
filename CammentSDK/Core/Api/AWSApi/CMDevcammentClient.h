@@ -17,6 +17,8 @@
 #import <Foundation/Foundation.h>
 #import <AWSAPIGateway/AWSAPIGateway.h>
 
+#import "CMInvitationInRequest.h"
+#import "CMInvitation.h"
 #import "CMShowList.h"
 #import "CMShow.h"
 #import "CMCammentList.h"
@@ -175,6 +177,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param body 
+ 
+ return type: CMInvitation *
+ */
+- (AWSTask *)invitationsPost:( CMInvitationInRequest *)body;
+
+/**
+ 
+ 
  
  return type: CMShowList *
  */
@@ -207,6 +218,16 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMCamment *
  */
 - (AWSTask *)showsUuidCammentsPost:( NSString *)uuid body:( CMCammentInRequest *)body;
+
+/**
+ 
+ 
+ @param cammentUuid 
+ @param uuid 
+ 
+ return type: 
+ */
+- (AWSTask *)showsUuidCammentsCammentUuidDelete:( NSString *)cammentUuid uuid:( NSString *)uuid;
 
 @end
 

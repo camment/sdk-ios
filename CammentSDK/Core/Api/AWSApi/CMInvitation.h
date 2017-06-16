@@ -19,13 +19,23 @@
 
  
 /**
- Show object model.
+ Invitation object model.
  */
-@interface CMShow : AWSModel
+@interface CMInvitation : AWSModel
+
+@property (nonatomic, strong, nullable) NSString *showId;
+
+
+@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
+
 
 @property (nonatomic, strong, nullable) NSString *uuid;
 
-@property (nonatomic, strong, nullable) NSString *url;
+
+@property (nonatomic, strong, nullable) NSArray *users;
+
+
+@property (nonatomic, strong, nullable) NSString *timestamp;
 
 
 @end

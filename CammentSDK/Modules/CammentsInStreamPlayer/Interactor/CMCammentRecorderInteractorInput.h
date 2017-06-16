@@ -9,10 +9,11 @@
 
 @protocol CMCammentRecorderInteractorInput <NSObject>
 
-- (void)configureCamera;
+- (void)configureCamera:(AVCaptureVideoOrientation)orientation;
 - (void)releaseCamera;
 - (void)startRecording;
 - (void)stopRecording;
+- (void)cancelRecording;
 - (void)connectPreviewViewToRecorder:(SCImageView *)view;
 
 @end

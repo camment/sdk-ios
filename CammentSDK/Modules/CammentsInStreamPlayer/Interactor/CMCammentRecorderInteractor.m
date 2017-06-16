@@ -24,20 +24,21 @@
 
     if (self) {
         recorder = [SCRecorder recorder];
-        [RACObserve([CMStore instance], isRecordingCamment) subscribeNext:^(NSNumber *isRecording) {
-            [recorder setSCImageView:isRecording.boolValue ? _previewView : nil];
+        [RACObserve([CMStore instance], cammentRecordingState) subscribeNext:^(NSNumber *state) {
+            BOOL showPreview = state.integerValue == CMCammentRecordingStateRecording;
+            [recorder setSCImageView:showPreview ? _previewView : nil];
         }];
     }
 
     return self;
 }
 
-- (void) configureCamera {
+- (void)configureCamera:(AVCaptureVideoOrientation)orientation {
     recorder.captureSessionPreset = AVCaptureSessionPresetHigh;
     recorder.device = AVCaptureDevicePositionFront;
     recorder.autoSetVideoOrientation = YES;
     recorder.delegate = self;
-    recorder.videoOrientation = AVCaptureVideoOrientationLandscapeRight;
+    recorder.videoOrientation = orientation;
     // Get the video configuration object
     SCVideoConfiguration *video = recorder.videoConfiguration;
     video.enabled = YES;
@@ -76,6 +77,10 @@
 
 - (void)stopRecording {
     [recorder pause];
+}
+
+- (void)cancelRecording {
+    [recorder.session cancelSession:nil];
 }
 
 - (void)recorder:(SCRecorder *__nonnull)recorder didCompleteSegment:(SCRecordSessionSegment *__nullable)segment inSession:(SCRecordSession *__nonnull)session error:(NSError *__nullable)error {

@@ -5,10 +5,10 @@
 
 #import <Foundation/Foundation.h>
 
-@class CMShow;
+@class Show;
 
 @protocol CMShowsListCollectionPresenterOutput <NSObject>
 
-- (void)didSelectShow:(CMShow *)show;
+- (void)didSelectShow:(Show *)show;
 
 @end

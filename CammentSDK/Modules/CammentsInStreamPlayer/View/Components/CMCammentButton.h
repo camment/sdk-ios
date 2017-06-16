@@ -10,6 +10,7 @@
 
 - (void)didPressCammentButton;
 - (void)didReleaseCammentButton;
+- (void)didCancelCammentButton;
 
 @end
 
@@ -17,4 +18,5 @@
 
 @property (nonatomic, weak) id<CMCammentButtonDelegate> delegate;
 
+- (void)cancelLongPressGestureRecognizer;
 @end

@@ -6,6 +6,7 @@
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMStreamPlayerNode.h"
 #import "CMStore.h"
+#import "CMContentViewerNode.h"
 
 #import <FBTweakStore.h>
 #import <FBTweak.h>
@@ -33,14 +34,14 @@
         __weak typeof(self) __weakSelf = self;
         CMStore *store = [CMStore instance];
         _disposable = [[RACSignal combineLatest:@[
-                RACObserve(store, isRecordingCamment),
+                RACObserve(store, cammentRecordingState),
                 RACObserve(store, playingCammentId)
         ]] subscribeNext:^(RACTuple *tuple) {
             typeof(__weakSelf) strongSelf = __weakSelf;
             if (!strongSelf) { return; }
-            BOOL isRecording = [(NSNumber *)tuple.first boolValue];
+            CMCammentRecordingState recordingState = (CMCammentRecordingState) [(NSNumber *)tuple.first integerValue];
             BOOL isPlaying = ![(NSString *)tuple.second isEqualToString:kCMStoreCammentIdIfNotPlaying] ;
-            [strongSelf.videoPlayerNode setMuted:isRecording];
+            [strongSelf.videoPlayerNode setMuted:recordingState == CMCammentRecordingStateRecording];
             
             FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
                                              tweakCollectionWithName:@"Video player settings"];
@@ -53,7 +54,7 @@
     return self;
 }
 
-- (void)playVideoAtURL:(NSURL *)url {
+- (void)openContentAtUrl:(NSURL *)url {
     self.videoPlayerNode.assetURL = url;
 }
 

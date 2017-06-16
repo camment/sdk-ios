@@ -19,13 +19,17 @@
 
  
 /**
- Show object model.
+ Invitation object model in POST requests.
  */
-@interface CMShow : AWSModel
+@interface CMInvitationInRequest : AWSModel
+
+@property (nonatomic, strong, nullable) NSString *showId;
+
 
 @property (nonatomic, strong, nullable) NSString *uuid;
 
-@property (nonatomic, strong, nullable) NSString *url;
+
+@property (nonatomic, strong, nullable) NSArray *users;
 
 
 @end

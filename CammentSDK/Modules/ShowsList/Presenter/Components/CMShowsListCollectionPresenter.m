@@ -7,7 +7,7 @@
 #import "CMShowsListCollectionPresenter.h"
 #import "CMShow.h"
 #import "CMShowCellNode.h"
-#import "CMShowsListCollectionPresenterOutput.h"
+#import "Show.h"
 
 
 @implementation CMShowsListCollectionPresenter
@@ -25,7 +25,7 @@
 }
 
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CMShow *show = self.shows[(NSUInteger) indexPath.row];
+    Show *show = self.shows[(NSUInteger) indexPath.row];
     return ^ASCellNode * {
         return [[CMShowCellNode alloc] initWithShow:show];
     };
@@ -37,7 +37,7 @@
 }
 
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    CMShow *show = self.shows[(NSUInteger) indexPath.row];
+    Show *show = self.shows[(NSUInteger) indexPath.row];
     [self.output didSelectShow: show];
 }
 

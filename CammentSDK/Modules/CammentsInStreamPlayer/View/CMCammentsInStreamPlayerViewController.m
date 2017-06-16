@@ -14,8 +14,10 @@
 #import "CMCammentRecorderPreviewNode.h"
 #import "CMStreamPlayerNode.h"
 #import "CMShow.h"
+#import "CMContentViewerNode.h"
+#import "Show.h"
 
-@interface CMCammentsInStreamPlayerViewController () <CMCammentButtonDelegate>
+@interface CMCammentsInStreamPlayerViewController () <CMCammentButtonDelegate, CMCammentsInStreamPlayerNodeDelegate>
 @end
 
 @implementation CMCammentsInStreamPlayerViewController
@@ -41,11 +43,12 @@
     [self.node.view addGestureRecognizer:showCammentsBlockRecognizer];
 
     UISwipeGestureRecognizer *goBack = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController)];
-    goBack.direction = UISwipeGestureRecognizerDirectionDown;
+    goBack.direction = UISwipeGestureRecognizerDirectionRight;
     goBack.numberOfTouchesRequired = 2;
     [self.node.view addGestureRecognizer:goBack];
 
     self.node.cammentButton.delegate = self;
+    self.node.delegate = self;
 
     [self setupBindings];
     [self.presenter setupView];
@@ -53,10 +56,10 @@
 
 - (void)setupBindings {
     __weak typeof(self) __weakSelf = self;
-    [RACObserve([CMStore instance], isRecordingCamment) subscribeNext:^(NSNumber *isRecording) {
+    [RACObserve([CMStore instance], cammentRecordingState) subscribeNext:^(NSNumber *state) {
         typeof(self) strongSelf = __weakSelf;
         if (!strongSelf) {return;}
-        strongSelf.node.showCammentRecorderNode = isRecording.boolValue;
+        strongSelf.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
         [strongSelf.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
     }];
 }
@@ -71,7 +74,7 @@
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskLandscapeRight;
+    return [self.presenter contentPossibleOrientationMask];
 }
 
 - (BOOL)shouldAutorotate {
@@ -93,19 +96,32 @@
 }
 
 - (void)didPressCammentButton {
-    [[CMStore instance] setIsRecordingCamment:YES];
+    [[CMStore instance] setCammentRecordingState:CMCammentRecordingStateRecording];
 }
 
 - (void)didReleaseCammentButton {
-    [[CMStore instance] setIsRecordingCamment:NO];
+    [[CMStore instance] setCammentRecordingState:CMCammentRecordingStateFinished];
+}
+
+- (void)didCancelCammentButton {
+    [[CMStore instance] setCammentRecordingState:CMCammentRecordingStateCancelled];
 }
 
 - (void)presenterDidRequestViewPreviewView {
     [_presenter connectPreviewViewToRecorder:(SCImageView *) [self.node.cammentRecorderNode scImageView]];
 }
 
-- (void)startShow:(CMShow *)show {
-    [self.node.streamPlayerNode playVideoAtURL:[[NSURL alloc] initWithString:show.url]];
+- (void)startShow:(Show *)show {
+    [show.showType matchVideo:^(CMShow *matchedShow) {
+        self.node.contentType = CMContentTypeVideo;
+    } html:^(NSString *webURL) {
+        self.node.contentType = CMContentTypeHTML;
+    }];
+    [self.node.contentViewerNode openContentAtUrl:[[NSURL alloc] initWithString:show.url]];
+}
+
+- (void)handleShareAction {
+    [_presenter inviteFriendsAction];
 }
 
 @end

@@ -7,13 +7,14 @@
 //
 
 #import <ReactiveObjC/ReactiveObjC.h>
+#import <FBSDKMessengerShareKit/FBSDKMessengerShareKit.h>
 #import "CMCammentsInStreamPlayerPresenter.h"
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMCammentsBlockPresenter.h"
 #import "CMStore.h"
 #import "Camment.h"
 #import "CMCammentRecorderInteractorInput.h"
-#import "CMShow.h"
+#import "Show.h"
 #import "CMCammentUploader.h"
 #import "CMDevcammentClient.h"
 #import "CMPresentationPlayerInteractor.h"
@@ -26,15 +27,15 @@
 
 @interface CMCammentsInStreamPlayerPresenter () <CMPresentationInstructionOutput>
 
-@property (nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
-@property (nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
-@property (nonatomic, strong) CMShow *show;
+@property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
+@property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
+@property(nonatomic, strong) Show *show;
 
 @end
 
 @implementation CMCammentsInStreamPlayerPresenter
 
-- (instancetype)initWithShow:(CMShow *)show {
+- (instancetype)initWithShow:(Show *)show {
     self = [super init];
 
     if (self) {
@@ -48,22 +49,31 @@
             [weakSelf playCamment:nextId];
         }];
 
-        [[RACObserve([CMStore instance], isRecordingCamment) flattenMap:^RACSignal *(NSNumber *isRecording) {
+        [[[RACObserve([CMStore instance], cammentRecordingState) filter:^BOOL(NSNumber *state) {
+            return state.integerValue != CMCammentRecordingStateNotRecording;
+        }] flattenMap:^RACSignal *(NSNumber *state) {
             typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) { return nil; }
-            if (![isRecording boolValue]) {
+            if (!strongSelf) {return nil;}
+            CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
+
+            if (cammentRecordingState == CMCammentRecordingStateFinished) {
                 [self.recorderInteractor stopRecording];
                 return nil;
             }
 
-            return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-                [subscriber sendNext:isRecording];
+            if (cammentRecordingState == CMCammentRecordingStateCancelled) {
+                [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
+                [self.recorderInteractor cancelRecording];
                 return nil;
-            }] delay: 0.0f];
+            }
+
+            return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+                [subscriber sendNext:@YES];
+                return nil;
+            }] delay:0.0f];
         }] subscribeNext:^(id x) {
-            [[CMStore instance] setPlayingCammentId: kCMStoreCammentIdIfNotPlaying];
+            [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
             [self.recorderInteractor startRecording];
-            NSLog(@"recordind...");
         }];
 
         [[RACSignal combineLatest:@[
@@ -71,7 +81,7 @@
                 RACObserve([CMStore instance], currentShowTimeInterval)
         ]] subscribeNext:^(RACTuple *tuple) {
             typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) { return; }
+            if (!strongSelf) {return;}
             CMPresentationState *state = [CMPresentationState new];
             state.items = tuple.first;
             state.timestamp = [tuple.second unsignedIntegerValue];
@@ -84,19 +94,35 @@
 
 - (void)setupView {
     [self.output startShow:_show];
-    [self.recorderInteractor configureCamera];
+    [self.show.showType matchVideo:^(CMShow *show) {
+        [self.recorderInteractor configureCamera:AVCaptureVideoOrientationLandscapeRight];
+    } html:^(NSString *webURL) {
+        [self.recorderInteractor configureCamera:AVCaptureVideoOrientationPortrait];
+    }];
     [self.output presenterDidRequestViewPreviewView];
     [self.output setCammentsBlockNodeDelegate:_cammentsBlockNodePresenter];
     [self.interactor fetchCachedCamments:_show.uuid];
     [self setupPresentationInstruction];
 }
 
+- (UIInterfaceOrientationMask)contentPossibleOrientationMask {
+    __block UIInterfaceOrientationMask mask;
+
+    [self.show.showType matchVideo:^(CMShow *show) {
+        mask = UIInterfaceOrientationMaskLandscapeRight;
+    } html:^(NSString *webURL) {
+        mask = UIInterfaceOrientationMaskPortrait;
+    }];
+
+    return mask;
+}
+
 - (void)setupPresentationInstruction {
     NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Demo"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
 
-    id<CMPresentationBuilder> builder = nil;
+    id <CMPresentationBuilder> builder = nil;
 
-    NSArray<id<CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
+    NSArray<id <CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
     for (id <CMPresentationBuilder> presentation in presentations) {
         if ([[presentation presentationName] isEqualToString:scenario]) {
             builder = presentation;
@@ -121,7 +147,7 @@
 }
 
 - (void)playCamment:(NSString *)cammentId {
-    [_cammentsBlockNodePresenter playCamment: cammentId];
+    [_cammentsBlockNodePresenter playCamment:cammentId];
 }
 
 - (void)connectPreviewViewToRecorder:(SCImageView *)view {
@@ -144,21 +170,22 @@
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
     [[[[CMCammentUploader instance] uploadVideoAsset:url
-                                               uuid:uuid] deliverOnMainThread] subscribeCompleted:^{
+                                                uuid:uuid] deliverOnMainThread] subscribeCompleted:^{
         CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
         cammentInRequest.url = [NSString stringWithFormat:@"https://s3.eu-central-1.amazonaws.com/sportacam-temp/%@.mp4", uuid];
         NSMutableArray<CammentsBlockItem *> *mutableCamments = [self.cammentsBlockNodePresenter.items mutableCopy];
-        NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL * _Nonnull stop) {
+        NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
             __block BOOL result = NO;
 
             [obj matchCamment:^(Camment *camment) {
                 result = [camment.temporaryUUID isEqualToString:uuid];
-            } ads:^(Ads *ads) {}];
+            }             ads:^(Ads *ads) {
+            }];
 
             return result;
         }];
         if (index != NSNotFound) {
-            CammentsBlockItem *cammentsBlockItem = mutableCamments[index];
+            CammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
             [cammentsBlockItem matchCamment:^(Camment *camment) {
                 Camment *updateCamment = [[Camment alloc] initWithShowUUID:camment.showUUID
                                                                cammentUUID:camment.cammentUUID
@@ -166,31 +193,33 @@
                                                                   localURL:camment.localURL
                                                                 localAsset:camment.localAsset
                                                              temporaryUUID:camment.temporaryUUID];
-                mutableCamments[index] = [CammentsBlockItem cammentWithCamment:updateCamment];
-            } ads:^(Ads *ads) {}];
+                mutableCamments[(NSUInteger) index] = [CammentsBlockItem cammentWithCamment:updateCamment];
+            }                           ads:^(Ads *ads) {
+            }];
         }
         self.cammentsBlockNodePresenter.items = mutableCamments.copy;
-        
+
         [[[CMDevcammentClient defaultClient] showsUuidCammentsPost:self.show.uuid
                                                               body:cammentInRequest]
-         continueWithBlock:^id(AWSTask<CMCamment *> *t) {
-             return nil;
-         }];
+                continueWithBlock:^id(AWSTask<CMCamment *> *t) {
+                    return nil;
+                }];
     }];
 }
 
 - (void)didReceiveNewCamment:(Camment *)camment {
-    
+
     NSArray *filteredItemsArray = [self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CammentsBlockItem *value) {
         __block BOOL result = NO;
-        
+
         [value matchCamment:^(Camment *mathedCamment) {
             result = [camment.remoteURL isEqualToString:mathedCamment.remoteURL];
-        } ads:^(Ads *ads) {}];
-        
+        }               ads:^(Ads *ads) {
+        }];
+
         return result;
     }].array ?: @[];
-    
+
     BOOL isNewItem = filteredItemsArray.count == 0;
 
     if (([camment.showUUID isEqualToString:_show.uuid]
@@ -202,6 +231,9 @@
 
 - (void)didReceiveNewAds:(Ads *)ads {
     [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem adsWithAds:ads]];
+}
+
+- (void)inviteFriendsAction {
 }
 
 @end

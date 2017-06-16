@@ -7,6 +7,12 @@
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
+typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
+    CMCammentRecordingStateNotRecording,
+    CMCammentRecordingStateRecording,
+    CMCammentRecordingStateFinished,
+    CMCammentRecordingStateCancelled
+};
 @interface CMStore: NSObject
 
 @property (nonatomic, assign) BOOL isSignedIn;
@@ -14,7 +20,8 @@ extern NSString *kCMStoreCammentIdIfNotPlaying;
 
 @property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;
 @property (nonatomic, copy) NSString *playingCammentId;
-@property (nonatomic, assign) BOOL isRecordingCamment;
+
+@property (nonatomic, assign) CMCammentRecordingState cammentRecordingState;
 
 + (CMStore *)instance;
 

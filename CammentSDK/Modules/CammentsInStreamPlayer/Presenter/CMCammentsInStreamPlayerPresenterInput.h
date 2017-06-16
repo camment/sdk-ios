@@ -15,5 +15,6 @@
 
 - (void)setupView;
 - (void)connectPreviewViewToRecorder:(SCImageView *)view;
-
+- (UIInterfaceOrientationMask)contentPossibleOrientationMask;
+- (void)inviteFriendsAction;
 @end

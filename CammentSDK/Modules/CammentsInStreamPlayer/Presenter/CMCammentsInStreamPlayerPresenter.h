@@ -30,5 +30,5 @@
 
 @property (nonatomic) CMCammentsInStreamPlayerWireframe *wireframe;
 
-- (instancetype)initWithShow:(CMShow *)show;
+- (instancetype)initWithShow:(Show *)show;
 @end

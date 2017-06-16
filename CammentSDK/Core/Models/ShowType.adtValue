@@ -1,0 +1,10 @@
+%type name="CMShow"
+
+ShowType {
+  video {
+     CMShow* show;
+  }
+  html {
+    NSString* webURL;
+  }
+}

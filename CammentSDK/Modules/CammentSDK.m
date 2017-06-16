@@ -82,7 +82,23 @@
     for (id <CMPresentationBuilder> presentation in presentations) {
         [presentation configureTweaks:presentationCategory];
     }
-    
+
+    FBTweakCollection *webSettingCollection = [presentationCategory tweakCollectionWithName:@"Web settings"];
+    if (!webSettingCollection) {
+        webSettingCollection = [[FBTweakCollection alloc] initWithName:@"Web settings"];
+        [presentationCategory addTweakCollection: webSettingCollection];
+    }
+
+    NSString *tweakName = @"Web page url";
+    FBTweak *cammentDelayTweak = [webSettingCollection tweakWithIdentifier:tweakName];
+    if (!cammentDelayTweak) {
+        cammentDelayTweak = [[FBTweak alloc] initWithIdentifier:tweakName];
+        cammentDelayTweak.defaultValue = @"http://aftonbladet.se";
+        cammentDelayTweak.currentValue = @"http://aftonbladet.se";
+        cammentDelayTweak.name = tweakName;
+        [webSettingCollection addTweak:cammentDelayTweak];
+    }
+
     FBTweakCategory *settingsCategory = [store tweakCategoryWithName:@"Settings"];
     if (!settingsCategory) {
         settingsCategory = [[FBTweakCategory alloc] initWithName:@"Settings"];

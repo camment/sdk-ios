@@ -1039,19 +1039,11 @@
 		95CD2D0A1ED8494600DB7660 /* CammentsInStreamPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				95CD2D0B1ED8494600DB7660 /* Interactor */,
 				95CD2D161ED8494600DB7660 /* Presenter */,
 				95CD2D1E1ED8494600DB7660 /* View */,
 				95CD2D371ED8494600DB7660 /* Wireframe */,
 			);
 			path = CammentsInStreamPlayer;
-			sourceTree = "<group>";
-		};
-		95CD2D0B1ED8494600DB7660 /* Interactor */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Interactor;
 			sourceTree = "<group>";
 		};
 		95CD2D161ED8494600DB7660 /* Presenter */ = {

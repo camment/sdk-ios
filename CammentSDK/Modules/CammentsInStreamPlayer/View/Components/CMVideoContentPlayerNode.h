@@ -12,4 +12,7 @@
 @interface CMVideoContentPlayerNode : ASDisplayNode<CMContentViewerNode>
 
 
+- (void)setMuted:(BOOL)muted;
+
+- (void)setLowVolume:(BOOL)lowVolume;
 @end

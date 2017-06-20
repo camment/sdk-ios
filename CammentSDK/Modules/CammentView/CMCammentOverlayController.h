@@ -9,7 +9,21 @@
 @class CMCammentViewController;
 @class Show;
 
+@protocol CMCammentOverlayControllerDelegate<NSObject>
+
+@optional
+
+ - (void)cammentOverlayDidStartRecording;
+ - (void)cammentOverlayDidFinishRecording;
+
+- (void)cammentOverlayDidStartPlaying;
+- (void)cammentOverlayDidFinishPlaying;
+
+@end
+
 @interface CMCammentOverlayController : NSObject
+
+@property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> delegate;
 
 - (instancetype _Nonnull)initWithShow:(Show * _Nonnull)show;
 

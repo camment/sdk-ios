@@ -10,12 +10,11 @@
 #import "CMCammentsInStreamPlayerViewController.h"
 #import "CMShow.h"
 #import "Show.h"
-#import "CMCammentViewPresenterInput.h"
 #import "CMCammentOverlayController.h"
 #import "CMVideoContentPlayerNode.h"
 #import "CMWebContentPlayerNode.h"
 
-@interface CMCammentsInStreamPlayerViewController ()
+@interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate>
 
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 @property (nonatomic, strong) UIView *cammentsOverlayView;
@@ -60,6 +59,7 @@
     }
 
     _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShow:show];
+    _cammentOverlayController.delegate = self;
     [_cammentOverlayController addToParentViewController:self];
     self.cammentsOverlayView = [_cammentOverlayController cammentView];
     [self.view addSubview:self.cammentsOverlayView];
@@ -72,6 +72,30 @@
 
     [_cammentOverlayController setContentView:self.contentViewerNode.view];
     [(id<CMContentViewerNode>)self.contentViewerNode openContentAtUrl:[[NSURL alloc] initWithString:show.url]];
+}
+
+- (void)cammentOverlayDidStartRecording {
+    if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {
+        [(CMVideoContentPlayerNode *)self.contentViewerNode setMuted:YES];
+    }
+}
+
+- (void)cammentOverlayDidFinishRecording {
+    if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {
+        [(CMVideoContentPlayerNode *)self.contentViewerNode setMuted:NO];
+    }
+}
+
+- (void)cammentOverlayDidStartPlaying {
+    if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {
+        [(CMVideoContentPlayerNode *)self.contentViewerNode setLowVolume:YES];
+    }
+}
+
+- (void)cammentOverlayDidFinishPlaying {
+    if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {
+        [(CMVideoContentPlayerNode *)self.contentViewerNode setLowVolume:NO];
+    }
 }
 
 @end

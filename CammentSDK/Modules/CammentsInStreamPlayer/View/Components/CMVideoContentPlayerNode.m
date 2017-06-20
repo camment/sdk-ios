@@ -31,24 +31,6 @@
         self.videoPlayerNode.shouldAutoPlay = YES;
         self.videoPlayerNode.delegate = self;
         self.automaticallyManagesSubnodes = YES;
-        __weak typeof(self) __weakSelf = self;
-        CMStore *store = [CMStore instance];
-        _disposable = [[RACSignal combineLatest:@[
-                RACObserve(store, cammentRecordingState),
-                RACObserve(store, playingCammentId)
-        ]] subscribeNext:^(RACTuple *tuple) {
-            typeof(__weakSelf) strongSelf = __weakSelf;
-            if (!strongSelf) { return; }
-            CMCammentRecordingState recordingState = (CMCammentRecordingState) [(NSNumber *)tuple.first integerValue];
-            BOOL isPlaying = ![(NSString *)tuple.second isEqualToString:kCMStoreCammentIdIfNotPlaying] ;
-            [strongSelf.videoPlayerNode setMuted:recordingState == CMCammentRecordingStateRecording];
-            
-            FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
-                                             tweakCollectionWithName:@"Video player settings"];
-            CGFloat value = [([collection tweakWithIdentifier:@"Volume"].currentValue ?: [collection tweakWithIdentifier:@"Volume"].defaultValue) floatValue] / 100;
-            [strongSelf.videoPlayerNode.videoNode.player setVolume:isPlaying ? value : 1];
-        }];
-
     }
 
     return self;
@@ -73,6 +55,17 @@
 
 - (void)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer didPlayToTime:(CMTime)time {
     [[CMStore instance] setCurrentShowTimeInterval:CMTimeGetSeconds(time)];
+}
+
+- (void)setMuted:(BOOL)muted {
+    [self.videoPlayerNode setMuted:muted];
+}
+
+- (void)setLowVolume:(BOOL)lowVolume {
+    FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
+            tweakCollectionWithName:@"Video player settings"];
+    CGFloat value = [([collection tweakWithIdentifier:@"Volume"].currentValue ?: [collection tweakWithIdentifier:@"Volume"].defaultValue) floatValue] / 100;
+    [self.videoPlayerNode.videoNode.player setVolume:lowVolume ? value : 1];
 }
 
 @end

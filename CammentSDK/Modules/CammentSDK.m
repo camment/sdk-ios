@@ -15,6 +15,7 @@
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
 #import "CMCammentFacebookIdentity.h"
+#import "CMCammentAnonymousIdentity.h"
 #import "CMPresentationBuilder.h"
 #import "CMWoltPresentationBuilder.h"
 #import "CMPresentationUtility.h"
@@ -32,13 +33,13 @@
 
 + (CammentSDK *)instance {
     static CammentSDK *_instance = nil;
-
+    
     @synchronized (self) {
         if (_instance == nil) {
             _instance = [[self alloc] init];
         }
     }
-
+    
     return _instance;
 }
 
@@ -65,9 +66,9 @@
         presentationsCollection = [[FBTweakCollection alloc] initWithName:@"Demo"];
         [presentationCategory addTweakCollection: presentationsCollection];
     }
-
+    
     NSArray<id<CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
-
+    
     FBTweak *showTweak = [presentationsCollection tweakWithIdentifier:@"Scenario"];
     if (!showTweak) {
         showTweak = [[FBTweak alloc] initWithIdentifier:@"Scenario"];
@@ -78,17 +79,17 @@
         showTweak.name = @"Choose demo scenario";
         [presentationsCollection addTweak:showTweak];
     }
-
+    
     for (id <CMPresentationBuilder> presentation in presentations) {
         [presentation configureTweaks:presentationCategory];
     }
-
+    
     FBTweakCollection *webSettingCollection = [presentationCategory tweakCollectionWithName:@"Web settings"];
     if (!webSettingCollection) {
         webSettingCollection = [[FBTweakCollection alloc] initWithName:@"Web settings"];
         [presentationCategory addTweakCollection: webSettingCollection];
     }
-
+    
     NSString *tweakName = @"Web page url";
     FBTweak *cammentDelayTweak = [webSettingCollection tweakWithIdentifier:tweakName];
     if (!cammentDelayTweak) {
@@ -98,7 +99,7 @@
         cammentDelayTweak.name = tweakName;
         [webSettingCollection addTweak:cammentDelayTweak];
     }
-
+    
     FBTweakCategory *settingsCategory = [store tweakCategoryWithName:@"Settings"];
     if (!settingsCategory) {
         settingsCategory = [[FBTweakCategory alloc] initWithName:@"Settings"];
@@ -110,7 +111,7 @@
         videoSettingsCollection = [[FBTweakCollection alloc] initWithName:@"Video player settings"];
         [settingsCategory addTweakCollection: videoSettingsCollection];
     }
-        
+    
     FBTweak *volumeTweak = [presentationsCollection tweakWithIdentifier:@"Volume"];
     if (!volumeTweak) {
         volumeTweak = [[FBTweak alloc] initWithIdentifier:@"Volume"];
@@ -129,9 +130,9 @@
 }
 
 - (RACSignal *)connectUserWithIdentity:(CMCammentIdentity *)identity {
-
+    
     return [RACSubject createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-
+        
         if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
             CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
             [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
@@ -142,13 +143,17 @@
                 [[CMStore instance] setIsSignedIn:YES];
                 [subscriber sendCompleted];
             }];
-        } else {
+        } if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
+            CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
+            [[CMStore instance] setIsSignedIn:YES];
+            [subscriber sendCompleted];
+        }  else {
             [subscriber sendError:[NSError
-                    errorWithDomain:@"tv.camment.ios"
-                               code:0
-                           userInfo:@{}]];
+                                   errorWithDomain:@"tv.camment.ios"
+                                   code:0
+                                   userInfo:@{}]];
         }
-
+        
         return nil;
     }];
 }
@@ -166,21 +171,21 @@
 
 - (void)configure {
     [[CMAnalytics instance] configureAWSMobileAnalytics];
-
+    
     self.authService = [[CMCognitoAuthService alloc] initWithProvider:[CMCognitoFacebookAuthProvider new]];
 }
 
 - (void)configureIoTListener {
     CMServerListenerCredentials *credentials =
-            [[CMServerListenerCredentials alloc] initWithClientId:[NSUUID new].UUIDString
-                                                          keyFile:@"awsiot-identity"
-                                                       passPhrase:@"8uT$BwY+x=DF,M"
-                                                    certificateId:nil];
-
+    [[CMServerListenerCredentials alloc] initWithClientId:[NSUUID new].UUIDString
+                                                  keyFile:@"awsiot-identity"
+                                               passPhrase:@"8uT$BwY+x=DF,M"
+                                            certificateId:nil];
+    
     CMServerListener* listener = [CMServerListener instanceWithCredentials:credentials];
     [listener connect];
     [listener.messageSubject subscribeNext:^(CMServerMessage *x) {
-
+        
     }];
 }
 @end

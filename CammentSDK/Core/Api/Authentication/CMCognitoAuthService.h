@@ -11,9 +11,6 @@
 
 - (instancetype)initWithProvider:(id<AWSIdentityProviderManager>)provider;
 
-+ (CMCognitoAuthService *)instance;
-
-
 - (RACSignal *)signIn;
 - (void)refreshIdentity;
 - (void)signOut;

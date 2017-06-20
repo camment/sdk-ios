@@ -74,6 +74,7 @@
 		6FFABC01D9C8297FB8C05E2A /* Show.value in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB99DABD8E5A170A8BD4A /* Show.value */; };
 		6FFABC15DB6A22708540D76D /* Ads.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB5B303A905542B61AABB /* Ads.m */; };
 		6FFABC1C55FF2691895660DD /* CMWebContentPlayerNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB7317540C1E64F0A5F1B /* CMWebContentPlayerNode.h */; };
+		6FFABC6DF984A1F8D2443FF7 /* CammentSDK.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB9AB370A1CD346DE1247 /* CammentSDK.podspec */; };
 		6FFABDAFED5A8BC388EA3358 /* Ads.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABD979ADFBE83BAF4E76B /* Ads.h */; };
 		6FFABDF222EB63F3E26258B0 /* CMCammentList.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB0D33E467ABC8D9F2060 /* CMCammentList.m */; };
 		6FFABE025F7CF81CEDC27421 /* CammentsBlockItem.adtValue in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB5C7B3598B33CBF4AEED /* CammentsBlockItem.adtValue */; };
@@ -248,6 +249,8 @@
 		95CD2E1B1EDC0E0C00DB7660 /* CMShowsListModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */; };
 		95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95EFB1CB1EF7F893007AAB14 /* CMCammentAnonymousIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 95EFB1C91EF7F893007AAB14 /* CMCammentAnonymousIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95EFB1CC1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 95EFB1CA1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -293,6 +296,7 @@
 		6FFAB91DC056E67B0DB76A7D /* CMPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFAB9479692BE245A168DB2 /* ads.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = ads.gif; sourceTree = "<group>"; };
 		6FFAB99DABD8E5A170A8BD4A /* Show.value */ = {isa = PBXFileReference; lastKnownFileType = file.adtValue; path = Show.value; sourceTree = "<group>"; };
+		6FFAB9AB370A1CD346DE1247 /* CammentSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = file.podspec; path = CammentSDK.podspec; sourceTree = "<group>"; };
 		6FFABA73F497C5670EF3F5FC /* CMAdsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAdsCell.m; sourceTree = "<group>"; };
 		6FFABB3A7FCC2BD13506DF46 /* CMInvitation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMInvitation.h; sourceTree = "<group>"; };
 		6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentFacebookIdentity.h; sourceTree = "<group>"; };
@@ -483,6 +487,8 @@
 		95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowsListModule.h; sourceTree = "<group>"; };
 		95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListModule.m; sourceTree = "<group>"; };
 		95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMPublicModuleInterface.h; path = PublicModule/CMPublicModuleInterface.h; sourceTree = "<group>"; };
+		95EFB1C91EF7F893007AAB14 /* CMCammentAnonymousIdentity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMCammentAnonymousIdentity.h; sourceTree = "<group>"; };
+		95EFB1CA1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMCammentAnonymousIdentity.m; sourceTree = "<group>"; };
 		9606F22539C0141BA1A57DC3 /* libPods-CammentSDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CammentSDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEA97F7495C3E709B96CCF85 /* Pods-CammentSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.release.xcconfig"; path = "../Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.release.xcconfig"; sourceTree = "<group>"; };
 		B916B789787A2CE80207793E /* Pods-CammentSDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CammentSDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-CammentSDK/Pods-CammentSDK.release.xcconfig"; sourceTree = "<group>"; };
@@ -523,6 +529,8 @@
 				6FFABF87BA80DCDB40887C0B /* CMCammentIdentity.h */,
 				6FFABD97717BB19E39E29DBE /* CMCammentFacebookIdentity.m */,
 				6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */,
+				95EFB1C91EF7F893007AAB14 /* CMCammentAnonymousIdentity.h */,
+				95EFB1CA1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -682,6 +690,7 @@
 				95CD2C3D1ED836C900DB7660 /* Products */,
 				95CD2C7F1ED843EF00DB7660 /* Frameworks */,
 				2C5CA3C2942F3A999B11DE51 /* Pods */,
+				6FFAB9AB370A1CD346DE1247 /* CammentSDK.podspec */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1114,6 +1123,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95EFB1CB1EF7F893007AAB14 /* CMCammentAnonymousIdentity.h in Headers */,
 				95CA1FBE1EDC3B220024C4F6 /* CammentSDKFramework.h in Headers */,
 				6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */,
 				95CA1F1D1EDC38D50024C4F6 /* SCRecorderDelegate.h in Headers */,
@@ -1313,6 +1323,7 @@
 				6FFAB670AA0CD71522D9B336 /* netflix-4.gif in Resources */,
 				6FFABC01D9C8297FB8C05E2A /* Show.value in Resources */,
 				6FFAB768A264CA71758EC857 /* ShowType.adtValue in Resources */,
+				6FFABC6DF984A1F8D2443FF7 /* CammentSDK.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1330,7 +1341,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "######################\n# Options\n######################\n\nREVEAL_ARCHIVE_IN_FINDER=false\n\nFRAMEWORK_NAME=\"${PROJECT_NAME}\"\n\nSIMULATOR_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/${FRAMEWORK_NAME}.framework\"\n\nDEVICE_LIBRARY_PATH=\"${BUILD_DIR}/${CONFIGURATION}-iphoneos/${FRAMEWORK_NAME}.framework\"\n\nUNIVERSAL_LIBRARY_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphoneuniversal\"\n\nFRAMEWORK=\"${UNIVERSAL_LIBRARY_DIR}/${FRAMEWORK_NAME}.framework\"\n\n\n######################\n# Build Frameworks\n######################\n\nxcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphonesimulator -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphonesimulator 2>&1\n\nxcodebuild -workspace ${PROJECT_NAME}.xcworkspace -scheme ${PROJECT_NAME} -sdk iphoneos -configuration ${CONFIGURATION} clean build CONFIGURATION_BUILD_DIR=${BUILD_DIR}/${CONFIGURATION}-iphoneos 2>&1\n\n######################\n# Create directory for universal\n######################\n\nrm -rf \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${UNIVERSAL_LIBRARY_DIR}\"\n\nmkdir \"${FRAMEWORK}\"\n\n\n######################\n# Copy files Framework\n######################\n\ncp -r \"${DEVICE_LIBRARY_PATH}/.\" \"${FRAMEWORK}\"\n\n\n######################\n# Make an universal binary\n######################\n\nlipo \"${SIMULATOR_LIBRARY_PATH}/${FRAMEWORK_NAME}\" \"${DEVICE_LIBRARY_PATH}/${FRAMEWORK_NAME}\" -create -output \"${FRAMEWORK}/${FRAMEWORK_NAME}\" | echo\n\n# For Swift framework, Swiftmodule needs to be copied in the universal framework\nif [ -d \"${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\ncp -f ${SIMULATOR_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\n                                                                      fi\n                                                                      \n                                                                      if [ -d \"${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" ]; then\n                                                                      cp -f ${DEVICE_LIBRARY_PATH}/Modules/${FRAMEWORK_NAME}.swiftmodule/* \"${FRAMEWORK}/Modules/${FRAMEWORK_NAME}.swiftmodule/\" | echo\n                                                                      fi\n                                                                      \n                                                                      ######################\n                                                                      # On Release, copy the result to release directory\n                                                                      ######################\n                                                                      OUTPUT_DIR=\"${PROJECT_DIR}/Output/${FRAMEWORK_NAME}-${CONFIGURATION}-iphoneuniversal/\"\n                                                                      \n                                                                      rm -rf \"$OUTPUT_DIR\"\n                                                                      mkdir -p \"$OUTPUT_DIR\"\n                                                                      \n                                                                      cp -r \"${FRAMEWORK}\" \"$OUTPUT_DIR\"\n                                                                      \n                                                                      if [ ${REVEAL_ARCHIVE_IN_FINDER} = true ]; then\n                                                                      open \"${OUTPUT_DIR}/\"\n                                                                      fi";
+			shellScript = "# Merge Script\n\n# 1\n# Set bash script to exit immediately if any commands fail.\nset -e\n\n# 2\n# Setup some constants for use later on.\nFRAMEWORK_NAME=\"CammentSDK\"\n\n# 3\n# If remnants from a previous build exist, delete them.\nif [ -d \"${SRCROOT}/build\" ]; then\nrm -rf \"${SRCROOT}/build\"\nfi\n\n# 4\n# Build the framework for device and for simulator (using\n# all needed architectures).\nxcodebuild -target \"${FRAMEWORK_NAME}\" -configuration Release -arch arm64 -arch armv7 -arch armv7s only_active_arch=no defines_module=yes -sdk \"iphoneos\"\nxcodebuild -target \"${FRAMEWORK_NAME}\" -configuration Release -arch x86_64 -arch i386 only_active_arch=no defines_module=yes -sdk \"iphonesimulator\"\n\n# 5\n# Remove .framework file if exists on Desktop from previous run.\nif [ -d \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\" ]; then\nrm -rf \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\"\nfi\n\n# 6\n# Copy the device version of framework to Desktop.\ncp -r \"${SRCROOT}/build/Release-iphoneos/${FRAMEWORK_NAME}.framework\" \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework\"\n\n# 7\n# Replace the framework executable within the framework with\n# a new version created by merging the device and simulator\n# frameworks' executables with lipo.\nlipo -create -output \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${SRCROOT}/build/Release-iphoneos/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\" \"${SRCROOT}/build/Release-iphonesimulator/${FRAMEWORK_NAME}.framework/${FRAMEWORK_NAME}\"\n\n# 8\n# Copy the Swift module mappings for the simulator into the\n# framework.  The device mappings already exist from step 6.\ncp -r \"${SRCROOT}/build/Release-iphonesimulator/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule/\" \"${HOME}/Desktop/${FRAMEWORK_NAME}.framework/Modules/${FRAMEWORK_NAME}.swiftmodule\"\n\n# 9\n# Delete the most recent build.\nif [ -d \"${SRCROOT}/build\" ]; then\nrm -rf \"${SRCROOT}/build\"\nfi";
 		};
 		C604ACB8BDECBDE23845EC64 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1424,6 +1435,7 @@
 				95CA1F331EDC38D50024C4F6 /* SCVideoPlayerView.m in Sources */,
 				95CA1F1A1EDC38D50024C4F6 /* SCProcessingQueue.m in Sources */,
 				95CD2CF61ED848ED00DB7660 /* CMServerListener.m in Sources */,
+				95EFB1CC1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m in Sources */,
 				95CA1F2B1EDC38D50024C4F6 /* SCSampleBufferHolder.m in Sources */,
 				95CD2D7D1ED8494600DB7660 /* CMShowsListInteractor.m in Sources */,
 				95CD2CE61ED848ED00DB7660 /* CMCognitoFacebookAuthProvider.m in Sources */,
@@ -1533,8 +1545,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.camment.CammentSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../Pods\"/**";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -1611,8 +1624,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.camment.CammentSDK;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				SKIP_INSTALL = YES;
+				SKIP_INSTALL = NO;
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../Pods\"/**";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 			};
 			name = Release;
 		};

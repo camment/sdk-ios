@@ -15,6 +15,7 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 // In this header, you should import all the public headers of your framework using statements like #import <CammentSDK/PublicHeader.h>
 
 #import <CammentSDK/CMCammentIdentity.h>
+#import <CammentSDK/CMCammentAnonymousIdentity.h>
 #import <CammentSDK/CMCammentFacebookIdentity.h>
 #import <CammentSDK/CMShowsListModule.h>
 #import <CammentSDK/CMPublicModuleInterface.h>

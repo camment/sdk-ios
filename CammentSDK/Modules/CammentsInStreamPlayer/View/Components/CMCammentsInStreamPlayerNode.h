@@ -1,38 +1,19 @@
 //
-// Created by Alexander Fedosov on 15.05.17.
-// Copyright (c) 2017 Sportacam. All rights reserved.
+// Created by Alexander Fedosov on 20.06.17.
+// Copyright (c) 2017 Camment. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-#import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "ASDisplayNode.h"
+#import "CMContentViewerNode.h"
 
-@class CMStreamPlayerNode;
-@class CMCammentsBlockNode;
-@class CMCammentButton;
-@class CMCammentRecorderPreviewNode;
-@protocol CMContentViewerNode;
+@class CMCammentsOverlayViewNode;
+@class CMCammentOverlayController;
 
-typedef NS_ENUM(NSUInteger, CMContentType) {
-    CMContentTypeVideo = 0,
-    CMContentTypeHTML,
-};
+@interface CMCammentsInStreamPlayerNode : ASDisplayNode
 
-@protocol CMCammentsInStreamPlayerNodeDelegate
-
-- (void)handleShareAction;
-
-@end
-
-@interface CMCammentsInStreamPlayerNode: ASDisplayNode
-
-@property(nonatomic, assign) CMContentType contentType;
-@property(nonatomic, readonly) id<CMContentViewerNode> contentViewerNode;
-@property(nonatomic, strong) CMCammentsBlockNode *cammentsBlockNode;
-@property(nonatomic, strong) CMCammentRecorderPreviewNode *cammentRecorderNode;
-@property(nonatomic, strong) CMCammentButton *cammentButton;
-@property(nonatomic, assign) BOOL showCammentsBlock;
-@property(nonatomic, assign) BOOL showCammentRecorderNode;
-
-@property(nonatomic, weak) id<CMCammentsInStreamPlayerNodeDelegate> delegate;
+@property (nonatomic, strong) UIView *cammentsOverlayView;
+@property(nonatomic, strong) id<CMContentViewerNode> contentViewerNode;
+@property(nonatomic) enum CMContentType contentType;
 
 @end

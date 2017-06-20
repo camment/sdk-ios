@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CMCammentsInStreamPlayerInteractorInput <NSObject>
+@protocol CMCammentsLoaderInteractorInput <NSObject>
 
 - (void)fetchCachedCamments:(NSString *)showUUID;
 

@@ -10,7 +10,7 @@
 #import <UIKit/UIKit.h>
 
 #import "CMCammentsInStreamPlayerPresenter.h"
-#import "CMCammentsInStreamPlayerInteractor.h"
+#import "CMCammentsLoaderInteractor.h"
 #import "CMCammentsInStreamPlayerViewController.h"
 
 @class Show;
@@ -21,7 +21,7 @@
 
 @property (nonatomic, weak) CMCammentsInStreamPlayerViewController *view;
 @property (nonatomic, weak) CMCammentsInStreamPlayerPresenter *presenter;
-@property (nonatomic, weak) CMCammentsInStreamPlayerInteractor *interactor;
+@property (nonatomic, weak) CMCammentsLoaderInteractor *interactor;
 
 @property (nonatomic, weak) UIViewController *parentViewController;
 @property (nonatomic, weak) UINavigationController *parentNavigationController;

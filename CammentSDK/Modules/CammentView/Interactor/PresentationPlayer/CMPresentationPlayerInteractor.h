@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@protocol CMCammentsInStreamPlayerInteractorOutput;
+@protocol CMCammentsLoaderInteractorOutput;
 @class CMPresentationState;
 @protocol CMPresentationInstructionInterface;
 @protocol CMPresentationInstructionOutput;

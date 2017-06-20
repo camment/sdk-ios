@@ -5,6 +5,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class AVAsset;
+
 @protocol CMCammentRecorderInteractorOutput <NSObject>
 
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid;

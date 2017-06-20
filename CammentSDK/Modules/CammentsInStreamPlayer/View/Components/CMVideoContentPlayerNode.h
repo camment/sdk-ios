@@ -9,7 +9,7 @@
 @protocol CMContentViewerNode;
 
 
-@interface CMStreamPlayerNode : ASDisplayNode<CMContentViewerNode>
+@interface CMVideoContentPlayerNode : ASDisplayNode<CMContentViewerNode>
 
 
 @end

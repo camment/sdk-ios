@@ -4,7 +4,7 @@
 //
 
 #import "CMPresentationPlayerInteractor.h"
-#import "CMCammentsInStreamPlayerInteractorOutput.h"
+#import "CMCammentsLoaderInteractorOutput.h"
 #import "CMPresentationState.h"
 #import "CMPresentationInstructionInterface.h"
 #import "CMPresentationInstructionOutput.h"

@@ -11,7 +11,7 @@
 @class Camment;
 @class Ads;
 
-@protocol CMCammentsInStreamPlayerInteractorOutput <NSObject>
+@protocol CMCammentsLoaderInteractorOutput <NSObject>
 
 - (void)didFetchCamments:(NSArray<Camment *> *)camments;
 - (void)didReceiveNewCamment:(Camment *)camment;

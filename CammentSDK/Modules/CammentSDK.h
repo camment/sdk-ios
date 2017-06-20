@@ -2,9 +2,7 @@
 // Created by Alexander Fedosov on 26.05.17.
 // Copyright (c) 2017 Camment. All rights reserved.
 //
-
 #import <Foundation/Foundation.h>
-#import <ReactiveObjC/ReactiveObjC.h>
 
 //! Project version number for CammentSDK.
 FOUNDATION_EXPORT double CammentSDKVersionNumber;
@@ -14,6 +12,7 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <CammentSDK/PublicHeader.h>
 
+#import <ReactiveObjC/ReactiveObjC.h>
 #import <CammentSDK/CMCammentIdentity.h>
 #import <CammentSDK/CMCammentAnonymousIdentity.h>
 #import <CammentSDK/CMCammentFacebookIdentity.h>
@@ -24,5 +23,8 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 + (CammentSDK *)instance;
 
 - (void)configureWithApiKey:(NSString *)apiKey;
-- (RACSignal *)connectUserWithIdentity:(CMCammentIdentity *)identity;
+
+- (void)connectUserWithIdentity:(CMCammentIdentity *)identity
+                        success:(void (^ _Nullable)())successBlock
+                          error:(void (^ _Nullable)(NSError *error))errorBlock;
 @end

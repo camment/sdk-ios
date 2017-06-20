@@ -9,24 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "CMCammentsInStreamPlayerPresenterInput.h"
 #import "CMCammentsInStreamPlayerPresenterOutput.h"
-#import "CMCammentsInStreamPlayerInteractorInput.h"
-#import "CMCammentsInStreamPlayerInteractorOutput.h"
-#import "CMCammentRecorderInteractorOutput.h"
 
 @class CMCammentsInStreamPlayerWireframe;
-@class CMCammentsBlockPresenter;
-@protocol CMCammentRecorderInteractorInput;
 @class CMShow;
 
-@interface CMCammentsInStreamPlayerPresenter : NSObject<
-        CMCammentsInStreamPlayerPresenterInput,
-        CMCammentsInStreamPlayerInteractorOutput,
-        CMCammentRecorderInteractorOutput>
+@interface CMCammentsInStreamPlayerPresenter : NSObject<CMCammentsInStreamPlayerPresenterInput>
 
 @property (nonatomic, weak) id<CMCammentsInStreamPlayerPresenterOutput> output;
-
-@property (nonatomic) id<CMCammentsInStreamPlayerInteractorInput> interactor;
-@property (nonatomic) id<CMCammentRecorderInteractorInput> recorderInteractor;
 
 @property (nonatomic) CMCammentsInStreamPlayerWireframe *wireframe;
 

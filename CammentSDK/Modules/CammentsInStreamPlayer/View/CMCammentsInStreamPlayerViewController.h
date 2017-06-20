@@ -1,5 +1,5 @@
 //
-//  CMCammentsInStreamPlayerCMCammentsInStreamPlayerViewController.h
+//  CMCammentsInStreamPlayerViewController.h
 //  Camment
 //
 //  Created by Alexander Fedosov on 15/05/2017.
@@ -11,10 +11,9 @@
 
 #import "CMCammentsInStreamPlayerPresenterInput.h"
 #import "CMCammentsInStreamPlayerPresenterOutput.h"
-
 #import "CMCammentsInStreamPlayerNode.h"
 
-@interface CMCammentsInStreamPlayerViewController : ASViewController<CMCammentsInStreamPlayerNode *><CMCammentsInStreamPlayerPresenterOutput>
+@interface CMCammentsInStreamPlayerViewController : UIViewController <CMCammentsInStreamPlayerPresenterOutput>
 
 @property (nonatomic, strong) id<CMCammentsInStreamPlayerPresenterInput> presenter;
 

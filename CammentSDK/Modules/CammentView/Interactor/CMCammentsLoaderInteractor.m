@@ -9,18 +9,18 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import <AWSIoT/AWSIoT.h>
 #import <ReactiveObjC/ReactiveObjC.h>
-#import "CMCammentsInStreamPlayerInteractor.h"
+#import "CMCammentsLoaderInteractor.h"
 #import "Camment.h"
 #import "CMServerListener.h"
 #import "CMServerListenerCredentials.h"
 #import "CMServerMessage.h"
 #import "CMDevcammentClient.h"
 
-@interface CMCammentsInStreamPlayerInteractor ()
+@interface CMCammentsLoaderInteractor ()
 @property(nonatomic, strong) RACDisposable *disposable;
 @end
 
-@implementation CMCammentsInStreamPlayerInteractor
+@implementation CMCammentsLoaderInteractor
 
 - (instancetype)init {
     self = [super init];

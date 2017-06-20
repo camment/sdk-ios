@@ -14,7 +14,5 @@
 @protocol CMCammentsInStreamPlayerPresenterOutput <NSObject>
 
 - (void)startShow:(Show *)show;
-- (void)setCammentsBlockNodeDelegate:(id<CMCammentsBlockDelegate>)delegate;
-- (void)presenterDidRequestViewPreviewView;
 
 @end

@@ -4,8 +4,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CMCammentsInStreamPlayerInteractorOutput.h"
+#import "CMCammentsLoaderInteractorOutput.h"
 
-@protocol CMPresentationInstructionOutput <CMCammentsInStreamPlayerInteractorOutput>
+@protocol CMPresentationInstructionOutput <CMCammentsLoaderInteractorOutput>
 
 @end

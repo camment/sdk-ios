@@ -4,12 +4,14 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
 @class SCImageView;
 
 @protocol CMCammentRecorderInteractorInput <NSObject>
 
-- (void)configureCamera:(AVCaptureVideoOrientation)orientation;
+- (void)configureCamera;
+- (void)updateDeviceOrientation:(AVCaptureVideoOrientation)orientation;
 - (void)releaseCamera;
 - (void)startRecording;
 - (void)stopRecording;

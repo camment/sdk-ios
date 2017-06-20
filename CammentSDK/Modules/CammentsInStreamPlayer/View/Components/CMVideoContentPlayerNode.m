@@ -4,7 +4,7 @@
 //
 
 #import <ReactiveObjC/ReactiveObjC.h>
-#import "CMStreamPlayerNode.h"
+#import "CMVideoContentPlayerNode.h"
 #import "CMStore.h"
 #import "CMContentViewerNode.h"
 
@@ -13,12 +13,12 @@
 #import <FBTweakCategory.h>
 #import <FBTweakCollection.h>
 
-@interface CMStreamPlayerNode () <ASVideoPlayerNodeDelegate>
+@interface CMVideoContentPlayerNode () <ASVideoPlayerNodeDelegate>
 @property(nonatomic, strong) ASVideoPlayerNode *videoPlayerNode;
 @property(nonatomic, strong) RACDisposable *disposable;
 @end
 
-@implementation CMStreamPlayerNode
+@implementation CMVideoContentPlayerNode
 
 - (instancetype)init {
     self = [super init];

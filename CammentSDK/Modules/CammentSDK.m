@@ -26,7 +26,7 @@
 #import <FBTweakCategory.h>
 
 @interface CammentSDK ()
-@property(nonatomic, strong) id authService;
+@property(nonatomic, strong) CMCognitoAuthService* authService;
 @end
 
 @implementation CammentSDK
@@ -127,35 +127,39 @@
 - (void)configureWithApiKey:(NSString *)apiKey {
     [self configure];
     [self launch];
+    [self connectUserWithIdentity:[CMCammentAnonymousIdentity new]
+                          success:nil
+                            error:nil];
 }
 
-- (RACSignal *)connectUserWithIdentity:(CMCammentIdentity *)identity {
-    
-    return [RACSubject createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        
-        if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
-            CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
-            [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
-            [[self.authService signIn] subscribeError:^(NSError *error) {
-                [[CMStore instance] setIsSignedIn:NO];
-                [subscriber sendError:error];
-            } completed:^{
-                [[CMStore instance] setIsSignedIn:YES];
-                [subscriber sendCompleted];
-            }];
-        } if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
-            CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
+- (void)connectUserWithIdentity:(CMCammentIdentity *)identity
+                        success:(void (^ _Nullable)())successBlock
+                          error:(void (^ _Nullable)(NSError *error))errorBlock {
+
+    if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
+        [self.authService configureWithProvider:[CMCognitoFacebookAuthProvider new]];
+        CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
+        [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
+        [[self.authService signIn] subscribeError:^(NSError *error) {
+            [[CMStore instance] setIsSignedIn:NO];
+            if (errorBlock) {
+                errorBlock(error);
+            }
+        } completed:^{
             [[CMStore instance] setIsSignedIn:YES];
-            [subscriber sendCompleted];
-        }  else {
-            [subscriber sendError:[NSError
-                                   errorWithDomain:@"tv.camment.ios"
-                                   code:0
-                                   userInfo:@{}]];
+            if (successBlock) { successBlock(); }
+        }];
+    } if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
+        [[CMStore instance] setIsSignedIn:YES];
+        if (successBlock) { successBlock(); }
+    }  else {
+        if (errorBlock) {
+            errorBlock([NSError
+                    errorWithDomain:@"tv.camment.ios"
+                               code:0
+                           userInfo:@{}]);
         }
-        
-        return nil;
-    }];
+    }
 }
 
 
@@ -172,7 +176,7 @@
 - (void)configure {
     [[CMAnalytics instance] configureAWSMobileAnalytics];
     
-    self.authService = [[CMCognitoAuthService alloc] initWithProvider:[CMCognitoFacebookAuthProvider new]];
+    self.authService = [[CMCognitoAuthService alloc] init];
 }
 
 - (void)configureIoTListener {

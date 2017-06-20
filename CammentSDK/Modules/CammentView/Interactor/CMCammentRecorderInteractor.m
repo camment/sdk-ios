@@ -33,12 +33,11 @@
     return self;
 }
 
-- (void)configureCamera:(AVCaptureVideoOrientation)orientation {
+- (void)configureCamera {
     recorder.captureSessionPreset = AVCaptureSessionPresetHigh;
     recorder.device = AVCaptureDevicePositionFront;
-    recorder.autoSetVideoOrientation = YES;
+    recorder.autoSetVideoOrientation = NO;
     recorder.delegate = self;
-    recorder.videoOrientation = orientation;
     // Get the video configuration object
     SCVideoConfiguration *video = recorder.videoConfiguration;
     video.enabled = YES;
@@ -51,6 +50,10 @@
 
     SCPhotoConfiguration *photo = recorder.photoConfiguration;
     photo.enabled = NO;
+}
+
+- (void)updateDeviceOrientation:(AVCaptureVideoOrientation)orientation {
+    [recorder setVideoOrientation:orientation];
 }
 
 - (void)releaseCamera {

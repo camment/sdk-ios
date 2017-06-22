@@ -33,6 +33,7 @@
 		6FFAB13F2A35361F443E671C /* CMCammentRecorderPreviewNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB217C312D71DDD38ADD8 /* CMCammentRecorderPreviewNode.m */; };
 		6FFAB149581D4462427B8F2B /* CammentSDK.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABB7C48C0955956A52984 /* CammentSDK.m */; };
 		6FFAB17B41849B095871C700 /* CMAdsCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB9C4A335998ED663B1A5 /* CMAdsCell.m */; };
+		6FFAB187CCAB86FA5255C067 /* CMSBPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3FB548192D7927F951E /* CMSBPresentationBuilder.h */; };
 		6FFAB1A0567F9AE94BDE8435 /* CMContentViewerNode.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB3C52BFE56FD91D93DE8 /* CMContentViewerNode.h */; };
 		6FFAB255E32F334DE3C1DA15 /* CMCammentsBlockPresenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABC5C511594A60F4F7C99 /* CMCammentsBlockPresenter.m */; };
 		6FFAB25DEAED9504B002B9DD /* CMShow.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB61714BD93B374B2EDA6 /* CMShow.m */; };
@@ -92,6 +93,7 @@
 		6FFAB8FCBFDFCA8B383A5E35 /* ShowType.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABD33BF48FDFFE98055B6 /* ShowType.m */; };
 		6FFAB920B3423200AAD79D23 /* CMPresentationPlayerInteractor.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB19366E026690904BC12 /* CMPresentationPlayerInteractor.m */; };
 		6FFAB929C408A310937CA05D /* CMAuthInteractor.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB76AB58AD3DD0A0F74C7 /* CMAuthInteractor.h */; };
+		6FFAB9406BC3495E5D8EC38A /* CMSBPresentationBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB0739099453CCD4AD206 /* CMSBPresentationBuilder.m */; };
 		6FFAB95CFD60E03F4B7DE319 /* CMNetflixPresentationBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB96BA1DC39DFB3C2037D /* CMNetflixPresentationBuilder.h */; };
 		6FFABA004C55C852F3AE4617 /* CMWebContentPlayerNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB7560366D03A982EED99 /* CMWebContentPlayerNode.m */; };
 		6FFABA24427FEB963E56D641 /* CMCammentFacebookIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABB43D324A1980FAEF8F7 /* CMCammentFacebookIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -282,6 +284,7 @@
 		6F0A0900851904217BCB3E6C /* CMCammentViewWireframe.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = CMCammentViewWireframe.m; sourceTree = "<group>"; };
 		6FFAB023B4E8B6DFB8F0B944 /* CMCamment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCamment.h; sourceTree = "<group>"; };
 		6FFAB04F2DEDDE0AFC8E8179 /* CMCammentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentView.m; sourceTree = "<group>"; };
+		6FFAB0739099453CCD4AD206 /* CMSBPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMSBPresentationBuilder.m; sourceTree = "<group>"; };
 		6FFAB0977D31D2E39181EF51 /* CMWoltPresentationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMWoltPresentationBuilder.m; sourceTree = "<group>"; };
 		6FFAB0CBCE6FEE079735C31C /* CMAuthInteractorOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMAuthInteractorOutput.h; sourceTree = "<group>"; };
 		6FFAB0D33E467ABC8D9F2060 /* CMCammentList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentList.m; sourceTree = "<group>"; };
@@ -303,6 +306,7 @@
 		6FFAB368F1318D5EEA906367 /* CMCammentsLoaderInteractorInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentsLoaderInteractorInput.h; sourceTree = "<group>"; };
 		6FFAB3AE673B8CBC0EADA94D /* ShowType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowType.h; sourceTree = "<group>"; };
 		6FFAB3C52BFE56FD91D93DE8 /* CMContentViewerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMContentViewerNode.h; sourceTree = "<group>"; };
+		6FFAB3FB548192D7927F951E /* CMSBPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMSBPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFAB42C6EFAFE642493F5B2 /* CMWoltPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMWoltPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFAB467FFC8DFD45FE34D67 /* CMCammentRecorderInteractorOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentRecorderInteractorOutput.h; sourceTree = "<group>"; };
 		6FFAB4A55BEA0C8D651A020E /* CMTimestampPresentationInstruction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMTimestampPresentationInstruction.m; sourceTree = "<group>"; };
@@ -629,6 +633,7 @@
 				6FFAB97AC40CE0796858A6DF /* CMPresentationUtility.h */,
 				6FFABC0F36B57E992B0E88D2 /* Wolt */,
 				6FFAB195641AA4A2C0368646 /* Netflix */,
+				6FFABB57A9A8E886EE7D09F5 /* SB */,
 			);
 			path = Presentations;
 			sourceTree = "<group>";
@@ -653,6 +658,15 @@
 				6FFAB96BA1DC39DFB3C2037D /* CMNetflixPresentationBuilder.h */,
 			);
 			path = Netflix;
+			sourceTree = "<group>";
+		};
+		6FFABB57A9A8E886EE7D09F5 /* SB */ = {
+			isa = PBXGroup;
+			children = (
+				6FFAB0739099453CCD4AD206 /* CMSBPresentationBuilder.m */,
+				6FFAB3FB548192D7927F951E /* CMSBPresentationBuilder.h */,
+			);
+			path = SB;
 			sourceTree = "<group>";
 		};
 		6FFABC0F36B57E992B0E88D2 /* Wolt */ = {
@@ -1376,6 +1390,7 @@
 				6FFAB7F76E7863A77B9C6AF0 /* CMAuthInteractorOutput.h in Headers */,
 				6FFAB929C408A310937CA05D /* CMAuthInteractor.h in Headers */,
 				6FFABFA4C114213FFB49B5C3 /* CMAuthInteractorInput.h in Headers */,
+				6FFAB187CCAB86FA5255C067 /* CMSBPresentationBuilder.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1620,6 +1635,7 @@
 				6FFAB6775D071BF90963E24F /* CMLeftAlignedLayout.m in Sources */,
 				6FFAB66EA62BE46700A57799 /* CMCammentsOverlayViewNode.m in Sources */,
 				6FFAB2D5A4F8CFA53D418109 /* CMAuthInteractor.m in Sources */,
+				6FFAB9406BC3495E5D8EC38A /* CMSBPresentationBuilder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

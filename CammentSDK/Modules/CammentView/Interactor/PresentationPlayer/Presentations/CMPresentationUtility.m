@@ -8,6 +8,7 @@
 #import "CMPresentationBuilder.h"
 #import "CMWoltPresentationBuilder.h"
 #import "CMNetflixPresentationBuilder.h"
+#import "CMSBPresentationBuilder.h"
 
 NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -17,7 +18,8 @@ NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 + (NSArray<id <CMPresentationBuilder>> *)activePresentations {
     return @[
             [CMWoltPresentationBuilder new],
-            [CMNetflixPresentationBuilder new]
+            [CMNetflixPresentationBuilder new],
+            [CMSBPresentationBuilder new]
     ];
 }
 

@@ -7,21 +7,24 @@
 //
 
 #import <ReactiveObjC/ReactiveObjC.h>
+#import <AMPopTip.h>
 #import "CMCammentViewController.h"
 #import "CMCammentButton.h"
 #import "CMStore.h"
 #import "CMCammentsBlockNode.h"
 #import "CMCammentRecorderPreviewNode.h"
-
+#import "UIColorMacros.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
+@property(nonatomic, strong) AMPopTip *popTip;
 @end
 
 @implementation CMCammentViewController
 
 - (instancetype)init {
     self = [super initWithNode:[CMCammentViewNode new]];
-    if (self) {}
+    if (self) {
+    }
     return self;
 }
 
@@ -46,6 +49,23 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self updateCameraOrientation];
+}
+
+- (void)showToolTip {
+    self.popTip = [AMPopTip new];
+    self.popTip.padding = 9.0f;
+    self.popTip.arrowSize = CGSizeMake(18, 10);
+    self.popTip.actionAnimation = AMPopTipActionAnimationFloat;
+    self.popTip.edgeMargin = 14.0f;
+    self.popTip.popoverColor = UIColorFromRGB(0x9B9B9B);
+    self.popTip.radius = 8.0f;
+    self.popTip.shouldDismissOnTapOutside = YES;
+    self.popTip.actionFloatOffset = 3.0f;
+    [self.popTip showText:@"Tap & hold to record a mini video (camment)"
+                direction:AMPopTipDirectionDown
+                 maxWidth:self.view.frame.size.width - 60.0f
+                   inView:self.view
+                fromFrame:self.node.cammentButton.frame];
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {

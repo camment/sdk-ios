@@ -61,6 +61,7 @@ const NSInteger cammentsCount = 4;
         if (!cammentDelayTweak) {
             cammentDelayTweak = [[FBTweak alloc] initWithIdentifier:tweakName];
             cammentDelayTweak.defaultValue = @(3.0f * i);
+            cammentDelayTweak.currentValue = @(3.0f * i);
             cammentDelayTweak.minimumValue = @.0f;
             cammentDelayTweak.maximumValue = @3600.0f;
             cammentDelayTweak.stepValue = @1;

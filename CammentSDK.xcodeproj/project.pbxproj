@@ -272,6 +272,11 @@
 		95CD2E1B1EDC0E0C00DB7660 /* CMShowsListModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		95CD2E1C1EDC0E0C00DB7660 /* CMShowsListModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */; };
 		95CD2E231EDC0F7500DB7660 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		95CDEE531EFBC37400B7C546 /* kokoro.gif in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE501EFBC37300B7C546 /* kokoro.gif */; };
+		95CDEE541EFBC37400B7C546 /* shakeshack.gif in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE511EFBC37300B7C546 /* shakeshack.gif */; };
+		95CDEE551EFBC37400B7C546 /* ubereats.gif in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE521EFBC37400B7C546 /* ubereats.gif */; };
+		95CDEE581EFBC3FC00B7C546 /* teemu.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE561EFBC3FC00B7C546 /* teemu.mp4 */; };
+		95CDEE591EFBC3FC00B7C546 /* petteri.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE571EFBC3FC00B7C546 /* petteri.mp4 */; };
 		95EFB1CB1EF7F893007AAB14 /* CMCammentAnonymousIdentity.h in Headers */ = {isa = PBXBuildFile; fileRef = 95EFB1C91EF7F893007AAB14 /* CMCammentAnonymousIdentity.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		95EFB1CC1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m in Sources */ = {isa = PBXBuildFile; fileRef = 95EFB1CA1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m */; };
 /* End PBXBuildFile section */
@@ -527,6 +532,11 @@
 		95CD2E191EDC0E0C00DB7660 /* CMShowsListModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowsListModule.h; sourceTree = "<group>"; };
 		95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListModule.m; sourceTree = "<group>"; };
 		95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMPublicModuleInterface.h; path = PublicModule/CMPublicModuleInterface.h; sourceTree = "<group>"; };
+		95CDEE501EFBC37300B7C546 /* kokoro.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = kokoro.gif; path = ../../../../../../../../Downloads/kokoro.gif; sourceTree = "<group>"; };
+		95CDEE511EFBC37300B7C546 /* shakeshack.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = shakeshack.gif; path = ../../../../../../../../Downloads/shakeshack.gif; sourceTree = "<group>"; };
+		95CDEE521EFBC37400B7C546 /* ubereats.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = ubereats.gif; path = ../../../../../../../../Downloads/ubereats.gif; sourceTree = "<group>"; };
+		95CDEE561EFBC3FC00B7C546 /* teemu.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = teemu.mp4; path = ../../../../../../../../Downloads/teemu.mp4; sourceTree = "<group>"; };
+		95CDEE571EFBC3FC00B7C546 /* petteri.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = petteri.mp4; path = ../../../../../../../../Downloads/petteri.mp4; sourceTree = "<group>"; };
 		95EFB1C91EF7F893007AAB14 /* CMCammentAnonymousIdentity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMCammentAnonymousIdentity.h; sourceTree = "<group>"; };
 		95EFB1CA1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMCammentAnonymousIdentity.m; sourceTree = "<group>"; };
 		9CCDED7691C7719413E5F30B /* CMCammentViewPresenterInput.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = CMCammentViewPresenterInput.h; sourceTree = "<group>"; };
@@ -1217,6 +1227,7 @@
 		95CD2DE01ED84D0A00DB7660 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				95CDEE4F1EFBC35000B7C546 /* SB demo */,
 				959311F21EE15FE500948B79 /* Wolt demo */,
 				959311F11EE15FDA00948B79 /* Netflix demo */,
 				95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */,
@@ -1233,6 +1244,18 @@
 				95CD2E221EDC0F7500DB7660 /* CMPublicModuleInterface.h */,
 			);
 			name = PublicModule;
+			sourceTree = "<group>";
+		};
+		95CDEE4F1EFBC35000B7C546 /* SB demo */ = {
+			isa = PBXGroup;
+			children = (
+				95CDEE571EFBC3FC00B7C546 /* petteri.mp4 */,
+				95CDEE561EFBC3FC00B7C546 /* teemu.mp4 */,
+				95CDEE501EFBC37300B7C546 /* kokoro.gif */,
+				95CDEE511EFBC37300B7C546 /* shakeshack.gif */,
+				95CDEE521EFBC37400B7C546 /* ubereats.gif */,
+			);
+			path = "SB demo";
 			sourceTree = "<group>";
 		};
 		95EFB1CF1EF90D9C007AAB14 /* ThirdParty */ = {
@@ -1461,13 +1484,18 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95CDEE581EFBC3FC00B7C546 /* teemu.mp4 in Resources */,
+				95CDEE551EFBC37400B7C546 /* ubereats.gif in Resources */,
 				959311F61EE1652B00948B79 /* netflix-1.mp4 in Resources */,
 				95CD2DE41ED84D0A00DB7660 /* awsiot-identity.p12 in Resources */,
 				959311F81EE1652B00948B79 /* netflix-3.mp4 in Resources */,
+				95CDEE531EFBC37400B7C546 /* kokoro.gif in Resources */,
 				954F48A91EDF055C003AE18D /* sushi.gif in Resources */,
+				95CDEE591EFBC3FC00B7C546 /* petteri.mp4 in Resources */,
 				954F48AA1EDF055C003AE18D /* wolt.gif in Resources */,
 				95CD2DE61ED84D0A00DB7660 /* Config.plist in Resources */,
 				959311F71EE1652B00948B79 /* netflix-2.mp4 in Resources */,
+				95CDEE541EFBC37400B7C546 /* shakeshack.gif in Resources */,
 				954F48A11EDEAF9A003AE18D /* Images.xcassets in Resources */,
 				6FFABB58C39AE6733F2391CB /* Ads.value in Resources */,
 				954F48A81EDF055C003AE18D /* burger.gif in Resources */,
@@ -1680,7 +1708,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_MODULE_NAME = CammentSDK;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "CammentSDK-Swift.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1711,6 +1742,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "CammentSDK-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../Pods\"/**";
@@ -1764,7 +1796,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_MODULE_NAME = CammentSDK;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "CammentSDK-Swift.h";
+				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1794,6 +1829,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = NO;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "CammentSDK-Swift.h";
 				SWIFT_VERSION = 3.0;
 				USER_HEADER_SEARCH_PATHS = "\"${PROJECT_DIR}/../Pods\"/**";
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";

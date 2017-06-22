@@ -47,6 +47,7 @@ NSString * const tweakSettingWoltAdsDelayName = @"Ads delay";
     if (!delayTweak) {
         delayTweak = [[FBTweak alloc] initWithIdentifier:tweakSettingWoltAdsDelayName];
         delayTweak.defaultValue = @1.0f;
+        delayTweak.currentValue = @1.0f;
         delayTweak.stepValue = @1;
         delayTweak.minimumValue = @.0f;
         delayTweak.maximumValue = @10.0f;

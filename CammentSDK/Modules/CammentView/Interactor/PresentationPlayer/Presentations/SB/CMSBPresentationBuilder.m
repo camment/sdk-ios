@@ -28,11 +28,15 @@ NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
     NSString *uberEatsAppUrl = @"https://itunes.apple.com/us/app/uber/id1058959277?mt=8";
     return @[
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:3 item:[utility blockItemAdsWithLocalGif:@"wolt" url:@""] delay: adsDelay.floatValue],
+                    initWithPosition:3 item:[utility blockItemCammentWithLocalVideo:@"petteri"] delay: adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:5 item:[utility blockItemAdsWithLocalGif:@"burger" url:uberEatsAppUrl] delay: adsDelay.floatValue],
+                    initWithPosition:4 item:[utility blockItemCammentWithLocalVideo:@"teemu"] delay: adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:7 item:[utility blockItemAdsWithLocalGif:@"sushi" url:uberEatsAppUrl] delay: adsDelay.floatValue],
+                    initWithPosition:5 item:[utility blockItemAdsWithLocalGif:@"ubereats" url:@""] delay: adsDelay.floatValue],
+            [[CMPositionPresentationInstruction alloc]
+                    initWithPosition:7 item:[utility blockItemAdsWithLocalGif:@"shakeshack" url:uberEatsAppUrl] delay: adsDelay.floatValue],
+            [[CMPositionPresentationInstruction alloc]
+                    initWithPosition:9 item:[utility blockItemAdsWithLocalGif:@"kokoro" url:uberEatsAppUrl] delay: adsDelay.floatValue],
     ];
 }
 
@@ -47,10 +51,11 @@ NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
     if (!delayTweak) {
         delayTweak = [[FBTweak alloc] initWithIdentifier:tweakSettingSBAdsDelayName];
         delayTweak.defaultValue = @1.0f;
+        delayTweak.currentValue = @1.0f;
         delayTweak.stepValue = @1;
         delayTweak.minimumValue = @.0f;
         delayTweak.maximumValue = @10.0f;
-        delayTweak.name = @"How fast ads appears";
+        delayTweak.name = @"Delay between camments";
         [supeballSettingCollection addTweak:delayTweak];
     }
 }

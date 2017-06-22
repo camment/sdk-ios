@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ASDisplayNode.h"
+#import <AsyncDisplayKit/ASDisplayNode.h>
 #import "CMContentViewerNode.h"
 
 @class CMCammentsOverlayViewNode;

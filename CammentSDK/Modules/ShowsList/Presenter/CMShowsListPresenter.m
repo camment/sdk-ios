@@ -12,10 +12,10 @@
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMShowsListWireframe.h"
 #import "Show.h"
-#import "FBTweak/FBTweak.h"
-#import "FBTweak/FBTweakCategory.h"
-#import "FBTweak/FBTweakCollection.h"
-#import "FBTweak/FBTweakStore.h"
+#import <FBTweak.h>
+#import <FBTweakCategory.h>
+#import <FBTweakCollection.h>
+#import <FBTweakStore.h>
 #import <ReactiveObjC.h>
 
 @interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput>

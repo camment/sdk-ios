@@ -7,7 +7,7 @@
 #import "CMCammentOverlayController.h"
 #import "CMCammentsLoaderInteractorOutput.h"
 #import "CMCammentRecorderInteractorOutput.h"
-#import "ASCollectionNode.h"
+#import <AsyncDisplayKit/ASCollectionNode.h>
 #import "CMCammentViewWireframe.h"
 #import "Show.h"
 #import "CMStore.h"

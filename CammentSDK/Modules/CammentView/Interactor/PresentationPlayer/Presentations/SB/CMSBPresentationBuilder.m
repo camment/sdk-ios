@@ -11,13 +11,13 @@
 #import "CMTimestampPresentationInstruction.h"
 #import "CMPositionPresentationInstruction.h"
 
-NSString * const tweakSettingsSBCollectionName = @"Superball settings";
+NSString * const tweakSettingsSBCollectionName = @"Super Bowl settings";
 NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
 
 @implementation CMSBPresentationBuilder
 
 - (NSString *)presentationName {
-    return @"Superball";
+    return @"Super Bowl";
 }
 
 - (NSArray *)instructions {
@@ -41,13 +41,13 @@ NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
 }
 
 - (void)configureTweaks:(FBTweakCategory *)category {
-    FBTweakCollection *supeballSettingCollection = [category tweakCollectionWithName:tweakSettingsSBCollectionName];
-    if (!supeballSettingCollection) {
-        supeballSettingCollection = [[FBTweakCollection alloc] initWithName:tweakSettingsSBCollectionName];
-        [category addTweakCollection: supeballSettingCollection];
+    FBTweakCollection *superbowlSettingCollection = [category tweakCollectionWithName:tweakSettingsSBCollectionName];
+    if (!superbowlSettingCollection) {
+        superbowlSettingCollection = [[FBTweakCollection alloc] initWithName:tweakSettingsSBCollectionName];
+        [category addTweakCollection: superbowlSettingCollection];
     }
 
-    FBTweak *delayTweak = [supeballSettingCollection tweakWithIdentifier:tweakSettingSBAdsDelayName];
+    FBTweak *delayTweak = [superbowlSettingCollection tweakWithIdentifier:tweakSettingSBAdsDelayName];
     if (!delayTweak) {
         delayTweak = [[FBTweak alloc] initWithIdentifier:tweakSettingSBAdsDelayName];
         delayTweak.defaultValue = @1.0f;
@@ -56,7 +56,7 @@ NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
         delayTweak.minimumValue = @.0f;
         delayTweak.maximumValue = @10.0f;
         delayTweak.name = @"Delay between camments";
-        [supeballSettingCollection addTweak:delayTweak];
+        [superbowlSettingCollection addTweak:delayTweak];
     }
 }
 

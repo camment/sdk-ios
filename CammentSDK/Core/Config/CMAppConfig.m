@@ -5,6 +5,7 @@
 
 #import "CMAppConfig.h"
 
+NSString* const CMS3TransferManagerName = @"defaultTransferManager";
 
 @implementation CMAppConfig
 

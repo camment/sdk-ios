@@ -5,6 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
+extern NSString* const CMS3TransferManagerName;
 
 @interface CMAppConfig : NSObject
 

@@ -6,7 +6,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "CMCognitoAuthService.h"
 #import "CMAppConfig.h"
-
+#import "AWSS3TransferManager.h"
 
 @interface CMCognitoAuthService ()
 
@@ -24,6 +24,7 @@
 
         AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1 credentialsProvider:_credentialsProvider];
         AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+        [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
     }
 
     return self;
@@ -37,6 +38,7 @@
     
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1 credentialsProvider:_credentialsProvider];
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+    [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
 }
 
 - (RACSignal *)signIn {

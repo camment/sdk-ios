@@ -41,7 +41,7 @@
 
 - (RACSignal *)uploadVideoAsset:(NSURL *)url uuid:(NSString *)uuid {
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-
+        
         AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
 
         uploadRequest.bucket = self.bucketName;
@@ -53,7 +53,7 @@
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
-        AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+        AWSS3TransferManager *transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
         [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {

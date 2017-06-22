@@ -4,11 +4,10 @@
 //
 
 #import "CMCammentFacebookIdentity.h"
+#import <FBSDKCoreKit/FBSDKAccessToken.h>
 
+@implementation CMCammentFacebookIdentity
 
-@implementation CMCammentFacebookIdentity {
-
-}
 + (CMCammentFacebookIdentity *)identityWithFBSDKAccessToken:(FBSDKAccessToken *)token {
     CMCammentFacebookIdentity *identity = [CMCammentFacebookIdentity new];
     identity.fbsdkAccessToken = token;

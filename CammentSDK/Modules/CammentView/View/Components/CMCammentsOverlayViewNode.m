@@ -65,7 +65,11 @@
     self.contentNode.style.height = ASDimensionMake(constrainedSize.max.height);
 
     ASInsetLayoutSpec *cammentButtonLayout = [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(self.cammentButtonTopInset, INFINITY, INFINITY, 20.0f)
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                    self.cammentButtonTopInset,
+                    INFINITY,
+                    INFINITY,
+                    _showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2)
                                 child:_cammentButton];
 
     CGFloat leftLayoutInset = 0.0f;
@@ -116,42 +120,24 @@
 
     CGRect cammentButtonFinalFrame = [context finalFrameForNode:self.cammentButton];
 
-    RACSubject<NSNumber *> *animationSubject = [RACSubject new];
-
     self.cammentsBlockNode.view.frame = CGRectMake(
             cammentBlockInitialFrame.origin.x,
             cammentBlockInitialFrame.origin.y,
             cammentBlockFinalFrame.size.width,
             MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
 
-    [UIView animateWithDuration:0.5 animations:^{
+    [UIView animateWithDuration:0.3 animations:^{
         self.cammentsBlockNode.view.frame = CGRectMake(
                 cammentBlockFinalFrame.origin.x,
                 cammentBlockFinalFrame.origin.y,
                 cammentBlockFinalFrame.size.width,
-                MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));;
+                MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
+        self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];
         self.cammentsBlockNode.frame = cammentBlockFinalFrame;
-        [animationSubject sendNext:@(finished)];
-    }];
-
-    POPSpringAnimation *cammentButtonAnimation = [POPSpringAnimation animationWithPropertyNamed:kPOPViewFrame];
-    cammentButtonAnimation.toValue = [NSValue valueWithCGRect:cammentButtonFinalFrame];
-    cammentButtonAnimation.springSpeed = 10;
-    cammentButtonAnimation.springBounciness = 10;
-    [cammentButtonAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
-        [animationSubject sendNext:@(finished)];
-    }];
-    [self.cammentButton.view pop_addAnimation:cammentButtonAnimation forKey:@"frame"];
-
-    __block NSInteger firedAnimation = 0;
-    [animationSubject subscribeNext:^(NSNumber *x) {
-        firedAnimation++;
-        if (firedAnimation == 2) {
-            [context completeTransition:YES];
-        }
+        [context completeTransition:YES];
     }];
 }
 

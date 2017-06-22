@@ -17,7 +17,6 @@
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate>
 
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
-@property (nonatomic, strong) UIView *cammentsOverlayView;
 @property(nonatomic, strong) ASDisplayNode* contentViewerNode;
 
 @end
@@ -45,7 +44,7 @@
 
 -(void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
-    [self.cammentsOverlayView setFrame:self.view.bounds];
+    [[_cammentOverlayController cammentView] setFrame:self.view.bounds];
 }
 
 - (void)dismissViewController {
@@ -55,14 +54,13 @@
 - (void)startShow:(Show *)show {
     if (_cammentOverlayController) {
         [_cammentOverlayController removeFromParentViewController];
-        [self.cammentsOverlayView removeFromSuperview];
+        [[_cammentOverlayController cammentView] removeFromSuperview];
     }
 
     _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShow:show];
     _cammentOverlayController.delegate = self;
     [_cammentOverlayController addToParentViewController:self];
-    self.cammentsOverlayView = [_cammentOverlayController cammentView];
-    [self.view addSubview:self.cammentsOverlayView];
+    [self.view addSubview:[_cammentOverlayController cammentView]];
 
     [show.showType matchVideo:^(CMShow *matchedShow) {
         self.contentViewerNode = [CMVideoContentPlayerNode new];

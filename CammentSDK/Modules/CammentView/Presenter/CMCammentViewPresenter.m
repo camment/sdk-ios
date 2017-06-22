@@ -26,9 +26,13 @@
 #import "CMCammentUploader.h"
 #import "CMCammentInRequest.h"
 #import "CMDevcammentClient.h"
+#import "CMAuthInteractor.h"
+#import "CammentSDK.h"
+#import "FBSDKAccessToken.h"
 
-@interface CMCammentViewPresenter () <CMPresentationInstructionOutput>
+@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput>
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
+@property(nonatomic, strong) CMAuthInteractor *authInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) Show *show;
 
@@ -43,6 +47,8 @@
         self.show = show;
         self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
+        self.authInteractor = [CMAuthInteractor new];
+        self.authInteractor.output = self;
         self.presentationPlayerInteractor.instructionOutput = self;
 
         __weak typeof(self) weakSelf = self;
@@ -54,18 +60,18 @@
             return state.integerValue != CMCammentRecordingStateNotRecording;
         }] flattenMap:^RACSignal *(NSNumber *state) {
             typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) {return nil;}
+            if (!strongSelf) {return [RACSignal empty];}
             CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
 
             if (cammentRecordingState == CMCammentRecordingStateFinished) {
                 [self.recorderInteractor stopRecording];
-                return nil;
+                return [RACSignal empty];
             }
 
             if (cammentRecordingState == CMCammentRecordingStateCancelled) {
                 [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
                 [self.recorderInteractor cancelRecording];
-                return nil;
+                return [RACSignal empty];
             }
 
             return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
@@ -110,7 +116,7 @@
 
     [self.show.showType matchVideo:^(CMShow *show) {
         mask = UIInterfaceOrientationMaskLandscapeRight;
-    } html:^(NSString *webURL) {
+    }                         html:^(NSString *webURL) {
         mask = UIInterfaceOrientationMaskPortrait;
     }];
 
@@ -156,7 +162,7 @@
 
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
     if (asset) {
-        if (CMTimeGetSeconds(asset.duration) < 0.3) { return; }
+        if (CMTimeGetSeconds(asset.duration) < 0.3) {return;}
         NSString *cammentId = [NSUUID new].UUIDString;
         Camment *camment = [[Camment alloc] initWithShowUUID:_show.uuid
                                                  cammentUUID:cammentId
@@ -234,6 +240,21 @@
 }
 
 - (void)inviteFriendsAction {
+    [_authInteractor signInWithFacebookProvider:(id) self.output];
+}
+
+- (void)authInteractorDidSignedIn {
+    CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
+    [[CammentSDK instance] connectUserWithIdentity:fbIdentity
+                                           success:^{
+                                               NSLog(@"User connected with fb");
+                                           } error:^(NSError *error) {
+                NSLog(@"Error %@", error);
+            }];
+}
+
+- (void)authInteractorFailedToSignIn:(NSError *)error {
+    NSLog(@"Error %@", error);
 }
 
 @end

@@ -149,7 +149,7 @@
             [[CMStore instance] setIsSignedIn:YES];
             if (successBlock) { successBlock(); }
         }];
-    } if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
+    } else if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
         [[CMStore instance] setIsSignedIn:YES];
         if (successBlock) { successBlock(); }
     }  else {
@@ -161,7 +161,6 @@
         }
     }
 }
-
 
 - (void)launch {
     [[CMStore instance] setIsSignedIn:[self.authService isSignedIn]];
@@ -192,4 +191,22 @@
         
     }];
 }
+
+- (void)applicationDidBecomeActive:(UIApplication *)application {
+    [FBSDKAppEvents activateApp];
+}
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                    didFinishLaunchingWithOptions:launchOptions];
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
+    return [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                          openURL:url
+                                                sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                                       annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
+    ];
+}
+
 @end

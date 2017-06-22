@@ -4,14 +4,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <CammentSDK/CMCammentIdentity.h>
 
 
 @interface CMCammentFacebookIdentity: CMCammentIdentity
 
-@property (nonatomic, strong) FBSDKAccessToken *fbsdkAccessToken;
+@property (nonatomic, strong) id fbsdkAccessToken;
 
-+(CMCammentFacebookIdentity *)identityWithFBSDKAccessToken:(FBSDKAccessToken *)token;
++(CMCammentFacebookIdentity *)identityWithFBSDKAccessToken:(id)token;
 
 @end

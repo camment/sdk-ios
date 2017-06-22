@@ -12,7 +12,6 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <CammentSDK/PublicHeader.h>
 
-#import <ReactiveObjC/ReactiveObjC.h>
 #import <CammentSDK/CMCammentIdentity.h>
 #import <CammentSDK/CMCammentAnonymousIdentity.h>
 #import <CammentSDK/CMCammentFacebookIdentity.h>
@@ -20,11 +19,20 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 #import <CammentSDK/CMPublicModuleInterface.h>
 
 @interface CammentSDK: NSObject
-+ (CammentSDK *)instance;
+
++ (CammentSDK * _Nonnull)instance;
 
 - (void)configureWithApiKey:(NSString *)apiKey;
 
 - (void)connectUserWithIdentity:(CMCammentIdentity *)identity
                         success:(void (^ _Nullable)())successBlock
                           error:(void (^ _Nullable)(NSError *error))errorBlock;
+
+- (void)applicationDidBecomeActive:(UIApplication *)application;
+
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+
+- (BOOL)application:(UIApplication *)application
+            openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options;
 @end

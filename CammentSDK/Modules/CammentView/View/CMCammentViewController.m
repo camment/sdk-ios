@@ -43,27 +43,36 @@
     [self.presenter setupView];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self updateCameraOrientation];
+}
+
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-        switch (orientation) {
-            case UIDeviceOrientationLandscapeRight:
-            case UIDeviceOrientationUnknown:
-                [self.presenter updateCameraOrientation: AVCaptureVideoOrientationLandscapeLeft];
-                break;
-            case UIDeviceOrientationPortrait:
-                [self.presenter updateCameraOrientation: AVCaptureVideoOrientationPortrait];
-                break;
-            case UIDeviceOrientationPortraitUpsideDown:
-                [self.presenter updateCameraOrientation: AVCaptureVideoOrientationPortraitUpsideDown];
-                break;
-            case UIDeviceOrientationLandscapeLeft:
-                [self.presenter updateCameraOrientation: AVCaptureVideoOrientationLandscapeRight];
-                break;
-            case UIDeviceOrientationFaceUp:break;
-            case UIDeviceOrientationFaceDown:break;
-        };
+        [self updateCameraOrientation];
     }];
+}
+
+- (void)updateCameraOrientation {
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    switch (orientation) {
+        case UIDeviceOrientationLandscapeRight:
+        case UIDeviceOrientationUnknown:
+            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationLandscapeLeft];
+            break;
+        case UIDeviceOrientationPortrait:
+            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationPortrait];
+            break;
+        case UIDeviceOrientationPortraitUpsideDown:
+            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationPortraitUpsideDown];
+            break;
+        case UIDeviceOrientationLandscapeLeft:
+            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationLandscapeRight];
+            break;
+        case UIDeviceOrientationFaceUp:break;
+        case UIDeviceOrientationFaceDown:break;
+    };
 }
 
 - (void)setupBindings {

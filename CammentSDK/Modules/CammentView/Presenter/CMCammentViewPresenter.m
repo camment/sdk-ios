@@ -9,6 +9,7 @@
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentViewPresenter.h"
 #import "CMCammentViewWireframe.h"
+#import "CMInvitationWireframe.h"
 #import "CMPresentationInstructionOutput.h"
 #import "CMPresentationPlayerInteractor.h"
 #import "CMCammentsBlockPresenter.h"
@@ -28,7 +29,8 @@
 #import "CMDevcammentClient.h"
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
-#import "FBSDKAccessToken.h"
+#import <FBSDKAccessToken.h>
+#import <DateTools/DateTools.h>
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput>
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
@@ -240,20 +242,31 @@
 }
 
 - (void)inviteFriendsAction {
-    [_authInteractor signInWithFacebookProvider:(id) self.output];
+    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
+    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
+    if ([CMStore instance].isFBConnected) {
+        [[CMInvitationWireframe new] presentInViewController:self.wireframe.parentViewController];
+    } else {
+        [self.output setDisplayWaitingHUD:YES];
+        [_authInteractor signInWithFacebookProvider:(id) self.output];
+    }
 }
 
 - (void)authInteractorDidSignedIn {
     CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
     [[CammentSDK instance] connectUserWithIdentity:fbIdentity
                                            success:^{
-                                               NSLog(@"User connected with fb");
-                                           } error:^(NSError *error) {
-                NSLog(@"Error %@", error);
-            }];
+                                               [self.output setDisplayWaitingHUD:NO];
+                                               [self inviteFriendsAction];
+                                           }
+                                             error:^(NSError *error) {
+                                                 [self.output setDisplayWaitingHUD:NO];
+                                                 NSLog(@"Error %@", error);
+                                             }];
 }
 
 - (void)authInteractorFailedToSignIn:(NSError *)error {
+    [self.output setDisplayWaitingHUD:NO];
     NSLog(@"Error %@", error);
 }
 

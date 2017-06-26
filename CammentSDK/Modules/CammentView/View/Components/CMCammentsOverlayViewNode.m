@@ -155,7 +155,11 @@
             [self setNeedsLayout];
         }
 
-        if (translation.y > 50) {
+        if (translation.y > 20) {
+            [_cammentButton cancelLongPressGestureRecognizer];
+        }
+
+        if (translation.y > self.bounds.size.height / 3) {
             [sender setEnabled:NO];
             [_cammentButton cancelLongPressGestureRecognizer];
             [_delegate handleShareAction];

@@ -14,6 +14,7 @@
 
 @interface CMCammentOverlayController ()
 @property(nonatomic, strong) CMCammentViewController *cammentViewController;
+@property (nonatomic, weak) CMCammentViewWireframe *wireframe;
 @property(nonatomic, strong) RACDisposable *disposable;
 @end
 
@@ -22,7 +23,9 @@
 - (instancetype)initWithShow:(Show *)show {
     self = [super init];
     if (self) {
-        self.cammentViewController = [[[CMCammentViewWireframe alloc] initWithShow:show] controller];
+        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShow:show];
+        self.cammentViewController = [viewWireframe controller];
+        self.wireframe = viewWireframe;
         __weak typeof(self) __weakSelf = self;
         CMStore *store = [CMStore instance];
 
@@ -56,6 +59,7 @@
 
 - (void)addToParentViewController:(UIViewController *)viewController {
     [viewController addChildViewController:self.cammentViewController];
+    self.wireframe.parentViewController = viewController;
 }
 
 - (void)removeFromParentViewController {

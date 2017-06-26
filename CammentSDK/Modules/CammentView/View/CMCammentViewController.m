@@ -14,6 +14,7 @@
 #import "CMCammentsBlockNode.h"
 #import "CMCammentRecorderPreviewNode.h"
 #import "UIColorMacros.h"
+#import "MBProgressHUD.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 @property(nonatomic, strong) AMPopTip *popTip;
@@ -144,5 +145,22 @@
     [_presenter inviteFriendsAction];
 }
 
+- (void)setLoadingIndicator {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    [hud setMode:MBProgressHUDModeIndeterminate];
+    [hud setAnimationType:MBProgressHUDAnimationFade];
+}
+
+- (void)hideLoadingIndicator {
+    [MBProgressHUD hideHUDForView:self.view animated:NO];
+}
+
+- (void)setDisplayWaitingHUD:(BOOL)displayHUD {
+    if (displayHUD) {
+        [self setLoadingIndicator];
+    } else {
+        [self hideLoadingIndicator];
+    }
+}
 
 @end

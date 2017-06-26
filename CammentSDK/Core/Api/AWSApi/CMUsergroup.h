@@ -14,18 +14,22 @@
  */
  
 
-#import "CMCamment.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMCamment
+ 
+/**
+ Usergroup object model.
+ */
+@interface CMUsergroup : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"userGroupUuid": @"userGroupUuid",
-             @"userCognitoIdentityId": @"userCognitoIdentityId",
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"url": @"url"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
+
+
+@property (nonatomic, strong, nullable) NSString *uuid;
+
+
+@property (nonatomic, strong, nullable) NSString *timestamp;
+
 
 @end

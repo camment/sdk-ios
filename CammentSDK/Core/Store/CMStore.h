@@ -16,6 +16,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @interface CMStore: NSObject
 
 @property (nonatomic, assign) BOOL isSignedIn;
+@property (nonatomic, assign) BOOL isFBConnected;
 @property (nonatomic, assign) BOOL isConnected;
 
 @property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;

@@ -36,6 +36,11 @@
     return self;
 }
 
+- (void)layout {
+    [super layout];
+    self.videoPlayerNode.gravity = self.bounds.size.height > self.bounds.size.width ? AVLayerVideoGravityResizeAspect : AVLayerVideoGravityResizeAspectFill;
+}
+
 - (void)openContentAtUrl:(NSURL *)url {
     self.videoPlayerNode.assetURL = url;
 }
@@ -47,6 +52,7 @@
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
 }
+
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, .0f, .0f)

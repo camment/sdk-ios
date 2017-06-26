@@ -14,18 +14,19 @@
  */
  
 
-#import "CMCamment.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMCamment
+ 
+/**
+ Request model for adding users to user groups.
+ */
+@interface CMUserInAddToGroupRequest : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"userGroupUuid": @"userGroupUuid",
-             @"userCognitoIdentityId": @"userCognitoIdentityId",
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"url": @"url"
-             };
-}
+@property (nonatomic, strong, nullable) NSNumber *userFacebookId;
+
+
+@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
+
 
 @end

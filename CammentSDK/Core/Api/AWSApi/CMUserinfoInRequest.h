@@ -14,18 +14,16 @@
  */
  
 
-#import "CMCamment.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMCamment
+ 
+/**
+ Userinfo object model in POST requests.
+ */
+@interface CMUserinfoInRequest : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"userGroupUuid": @"userGroupUuid",
-             @"userCognitoIdentityId": @"userCognitoIdentityId",
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"url": @"url"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *userinfojson;
+
 
 @end

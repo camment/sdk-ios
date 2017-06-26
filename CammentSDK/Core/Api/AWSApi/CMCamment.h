@@ -23,6 +23,9 @@
  */
 @interface CMCamment : AWSModel
 
+@property (nonatomic, strong, nullable) NSString *userGroupUuid;
+
+
 @property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
 
 

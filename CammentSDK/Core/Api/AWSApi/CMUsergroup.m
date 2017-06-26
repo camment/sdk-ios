@@ -14,17 +14,15 @@
  */
  
 
-#import "CMCamment.h"
+#import "CMUsergroup.h"
 
-@implementation CMCamment
+@implementation CMUsergroup
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"userGroupUuid": @"userGroupUuid",
              @"userCognitoIdentityId": @"userCognitoIdentityId",
-             @"showUuid": @"showUuid",
              @"uuid": @"uuid",
-             @"url": @"url"
+             @"timestamp": @"timestamp"
              };
 }
 

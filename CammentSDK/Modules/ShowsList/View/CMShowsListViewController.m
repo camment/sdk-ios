@@ -36,8 +36,11 @@
     [[RACObserve([CMStore instance], isConnected) deliverOnMainThread] subscribeNext:^(NSNumber *isConnected) {
         self.title = isConnected.boolValue ? @"Shows" : @"...Connecting";
     }];
-    
     [self.presenter setupView];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
 }
 
 - (void)setLoadingIndicator {

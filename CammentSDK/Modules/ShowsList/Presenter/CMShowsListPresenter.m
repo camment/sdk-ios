@@ -18,7 +18,7 @@
 #import "FBTweak/FBTweakStore.h"
 #import <ReactiveObjC.h>
 
-@interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput>
+@interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver>
 @property(nonatomic, strong) CMShowsListCollectionPresenter *showsListCollectionPresenter;
 @end
 
@@ -29,6 +29,13 @@
     if (self) {
         self.showsListCollectionPresenter = [CMShowsListCollectionPresenter new];
         self.showsListCollectionPresenter.output = self;
+
+        FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
+                tweakCollectionWithName:@"Web settings"];
+
+        NSString *tweakName = @"Web page url";
+        FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
+        [webShowTweak addObserver:self];
     }
 
     return self;
@@ -58,6 +65,27 @@
     ]];
     [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
+}
+
+- (void)tweakDidChange:(FBTweak *)tweak {
+    if ([tweak.name isEqualToString:@"Web page url"]) {
+        NSArray *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(Show *value) {
+            __block BOOL webShow = NO;
+            [value.showType matchVideo:^(CMShow *show) {
+                webShow = NO;
+            } html:^(NSString *webURL) {
+                webShow = YES;
+            }];
+            return !webShow;
+        }].array ?: @[];
+
+        self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
+                [[Show alloc] initWithUuid:[(CMShow *) shows.firstObject uuid]
+                                       url:tweak.currentValue
+                                  showType:[ShowType htmlWithWebURL:tweak.currentValue]]
+        ]];
+        [self.showsListCollectionPresenter.collectionNode reloadData];
+    }
 }
 
 - (void)showListFetchingFailed:(NSError *)error {

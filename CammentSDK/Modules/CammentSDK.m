@@ -26,49 +26,53 @@
 #import <FBTweakCategory.h>
 
 @interface CammentSDK ()
-@property(nonatomic, strong) CMCognitoAuthService* authService;
+@property(nonatomic, strong) CMCognitoAuthService *authService;
 @end
 
 @implementation CammentSDK
 
 + (CammentSDK *)instance {
     static CammentSDK *_instance = nil;
-    
+
     @synchronized (self) {
         if (_instance == nil) {
             _instance = [[self alloc] init];
         }
     }
-    
+
     return _instance;
 }
 
 - (instancetype)init {
     self = [super init];
     if (self) {
+
+        [DDLog addLogger:[DDTTYLogger sharedInstance]];
+
+        DDLogInfo(@"Camment SDK has started");
         [self setupTweaks];
     }
-    
+
     return self;
 }
 
 - (void)setupTweaks {
     FBTweakStore *store = [FBTweakStore sharedInstance];
-    
+
     FBTweakCategory *presentationCategory = [store tweakCategoryWithName:@"Predefined stuff"];
     if (!presentationCategory) {
         presentationCategory = [[FBTweakCategory alloc] initWithName:@"Predefined stuff"];
         [store addTweakCategory:presentationCategory];
     }
-    
+
     FBTweakCollection *presentationsCollection = [presentationCategory tweakCollectionWithName:@"Demo"];
     if (!presentationsCollection) {
         presentationsCollection = [[FBTweakCollection alloc] initWithName:@"Demo"];
-        [presentationCategory addTweakCollection: presentationsCollection];
+        [presentationCategory addTweakCollection:presentationsCollection];
     }
-    
-    NSArray<id<CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
-    
+
+    NSArray<id <CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
+
     FBTweak *showTweak = [presentationsCollection tweakWithIdentifier:@"Scenario"];
     if (!showTweak) {
         showTweak = [[FBTweak alloc] initWithIdentifier:@"Scenario"];
@@ -79,17 +83,17 @@
         showTweak.name = @"Choose demo scenario";
         [presentationsCollection addTweak:showTweak];
     }
-    
+
     for (id <CMPresentationBuilder> presentation in presentations) {
         [presentation configureTweaks:presentationCategory];
     }
-    
+
     FBTweakCollection *webSettingCollection = [presentationCategory tweakCollectionWithName:@"Web settings"];
     if (!webSettingCollection) {
         webSettingCollection = [[FBTweakCollection alloc] initWithName:@"Web settings"];
-        [presentationCategory addTweakCollection: webSettingCollection];
+        [presentationCategory addTweakCollection:webSettingCollection];
     }
-    
+
     NSString *tweakName = @"Web page url";
     FBTweak *cammentDelayTweak = [webSettingCollection tweakWithIdentifier:tweakName];
     if (!cammentDelayTweak) {
@@ -99,19 +103,19 @@
         cammentDelayTweak.name = tweakName;
         [webSettingCollection addTweak:cammentDelayTweak];
     }
-    
+
     FBTweakCategory *settingsCategory = [store tweakCategoryWithName:@"Settings"];
     if (!settingsCategory) {
         settingsCategory = [[FBTweakCategory alloc] initWithName:@"Settings"];
         [store addTweakCategory:settingsCategory];
     }
-    
+
     FBTweakCollection *videoSettingsCollection = [presentationCategory tweakCollectionWithName:@"Video player settings"];
     if (!videoSettingsCollection) {
         videoSettingsCollection = [[FBTweakCollection alloc] initWithName:@"Video player settings"];
-        [settingsCategory addTweakCollection: videoSettingsCollection];
+        [settingsCategory addTweakCollection:videoSettingsCollection];
     }
-    
+
     FBTweak *volumeTweak = [presentationsCollection tweakWithIdentifier:@"Volume"];
     if (!volumeTweak) {
         volumeTweak = [[FBTweak alloc] initWithIdentifier:@"Volume"];
@@ -122,6 +126,8 @@
         volumeTweak.name = @"Volume (%)";
         [videoSettingsCollection addTweak:volumeTweak];
     }
+
+    DDLogInfo(@"Tweaks hav been configured");
 }
 
 - (void)configureWithApiKey:(NSString *)apiKey {
@@ -142,17 +148,20 @@
         [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
         [[self.authService signIn] subscribeError:^(NSError *error) {
             [[CMStore instance] setIsSignedIn:NO];
+            DDLogError(@"%@", error);
+
             if (errorBlock) {
                 errorBlock(error);
             }
-        } completed:^{
+        }                               completed:^{
             [[CMStore instance] setIsSignedIn:YES];
-            if (successBlock) { successBlock(); }
+            if (successBlock) {successBlock();}
         }];
     } else if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
         [[CMStore instance] setIsSignedIn:YES];
-        if (successBlock) { successBlock(); }
-    }  else {
+        if (successBlock) {successBlock();}
+    } else {
+        DDLogError(@"Trying to connect unknown idenity %@", [identity class]);
         if (errorBlock) {
             errorBlock([NSError
                     errorWithDomain:@"tv.camment.ios"
@@ -174,34 +183,35 @@
 
 - (void)configure {
     [[CMAnalytics instance] configureAWSMobileAnalytics];
-    
+
     self.authService = [[CMCognitoAuthService alloc] init];
 }
 
 - (void)configureIoTListener {
     CMServerListenerCredentials *credentials =
-    [[CMServerListenerCredentials alloc] initWithClientId:[NSUUID new].UUIDString
-                                                  keyFile:@"awsiot-identity"
-                                               passPhrase:@"8uT$BwY+x=DF,M"
-                                            certificateId:nil];
-    
-    CMServerListener* listener = [CMServerListener instanceWithCredentials:credentials];
+            [[CMServerListenerCredentials alloc] initWithClientId:[NSUUID new].UUIDString
+                                                          keyFile:@"awsiot-identity"
+                                                       passPhrase:@"8uT$BwY+x=DF,M"
+                                                    certificateId:nil];
+
+    CMServerListener *listener = [CMServerListener instanceWithCredentials:credentials];
     [listener connect];
-    [listener.messageSubject subscribeNext:^(CMServerMessage *x) {
-        
-    }];
+    [listener.messageSubject subscribeNext:^(CMServerMessage *x) {}];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    DDLogInfo(@"applicationDidBecomeActive hook has been installed");
     [FBSDKAppEvents activateApp];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    DDLogInfo(@"didFinishLaunchingWithOptions hook has been installed");
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                     didFinishLaunchingWithOptions:launchOptions];
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
+    DDLogInfo(@"openURL hook has been installed");
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]

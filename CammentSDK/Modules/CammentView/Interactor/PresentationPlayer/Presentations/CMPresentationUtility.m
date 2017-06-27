@@ -9,6 +9,7 @@
 #import "CMWoltPresentationBuilder.h"
 #import "CMNetflixPresentationBuilder.h"
 #import "CMSBPresentationBuilder.h"
+#import "CammentBuilder.h"
 
 NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -33,12 +34,10 @@ NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
 - (CammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename {
     NSString *filepath = [[NSBundle bundleForClass:[self class]] pathForResource:filename ofType:@"mp4"];
-    Camment *camment = [[Camment alloc] initWithShowUUID:kCMPresentationBuilderUtilityAnyShowUUID
-                                             cammentUUID:[NSUUID new].UUIDString
-                                               remoteURL:nil
-                                                localURL:filepath
-                                              localAsset:nil
-                                           temporaryUUID:nil];
+    Camment *camment = [[[[[CammentBuilder new]
+            withShowUUID:kCMPresentationBuilderUtilityAnyShowUUID]
+            withUuid:[NSUUID new].UUIDString.lowercaseString]
+            withLocalURL:filepath] build];
     return [CammentsBlockItem cammentWithCamment:camment];
 }
 

@@ -4,6 +4,8 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "User.h"
+#import "UsersGroup.h"
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -23,6 +25,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, copy) NSString *playingCammentId;
 
 @property (nonatomic, assign) CMCammentRecordingState cammentRecordingState;
+
+@property (nonatomic, copy) UsersGroup *activeGroup;
 
 + (CMStore *)instance;
 

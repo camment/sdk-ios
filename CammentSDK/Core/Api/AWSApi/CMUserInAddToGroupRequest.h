@@ -23,10 +23,7 @@
  */
 @interface CMUserInAddToGroupRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSNumber *userFacebookId;
-
-
-@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
+@property (nonatomic, strong, nullable) NSArray *userFacebookIdList;
 
 
 @end

@@ -1,0 +1,5 @@
+UsersGroup includes(RMBuilder)  {
+  NSString *uuid
+  NSString *ownerCognitoUserId
+  NSString *timestamp
+}

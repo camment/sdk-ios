@@ -1,4 +1,4 @@
-User includes(RMBuilder) excludes(RMCoding)  {
+User includes(RMBuilder)  {
   NSString *userId
   NSString *cognitoUserId
   NSString *fbUserId

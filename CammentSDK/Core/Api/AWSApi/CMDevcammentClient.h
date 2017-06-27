@@ -244,6 +244,15 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
+ 
+ return type: CMCammentList *
+ */
+- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid;
+
+/**
+ 
+ 
+ @param groupUuid 
  @param body 
  
  return type: CMCamment *

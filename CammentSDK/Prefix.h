@@ -9,4 +9,8 @@
 #ifndef Prefix_h
 #define Prefix_h
 
+#define LOG_LEVEL_DEF ddLogLevel
+#import <CocoaLumberjack/CocoaLumberjack.h>
+static const DDLogLevel ddLogLevel = DDLogLevelAll;
+
 #endif /* Prefix_h */

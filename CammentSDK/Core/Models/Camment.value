@@ -1,9 +1,9 @@
 %type name="AVAsset" library="AVFoundation" file="AVAsset"
-Camment {
+Camment includes(RMBuilder) {
   NSString* showUUID
-  NSString* cammentUUID
+  NSString* usersGroupUUID
+  NSString* uuid
   NSString* remoteURL
   NSString* localURL
   AVAsset* localAsset
-  NSString* temporaryUUID
 }

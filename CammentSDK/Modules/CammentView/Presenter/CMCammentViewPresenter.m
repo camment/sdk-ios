@@ -29,14 +29,17 @@
 #import "CMDevcammentClient.h"
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
+#import "CammentBuilder.h"
 #import <FBSDKAccessToken.h>
 #import <DateTools/DateTools.h>
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput>
+
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
 @property(nonatomic, strong) CMAuthInteractor *authInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) Show *show;
+@property(nonatomic, strong) UsersGroup *usersGroup;
 
 @end
 
@@ -54,6 +57,10 @@
         self.presentationPlayerInteractor.instructionOutput = self;
 
         __weak typeof(self) weakSelf = self;
+        [RACObserve([CMStore instance], activeGroup) subscribeNext:^(UsersGroup *group) {
+            weakSelf.usersGroup = group;
+        }];
+
         [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
             [weakSelf playCamment:nextId];
         }];
@@ -165,53 +172,63 @@
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
     if (asset) {
         if (CMTimeGetSeconds(asset.duration) < 0.3) {return;}
-        NSString *cammentId = [NSUUID new].UUIDString;
-        Camment *camment = [[Camment alloc] initWithShowUUID:_show.uuid
-                                                 cammentUUID:cammentId
+        NSString *groupUUID = [self.usersGroup uuid];
+        Camment *camment = [[Camment alloc] initWithShowUUID:self.show.uuid
+                                              usersGroupUUID:groupUUID
+                                                        uuid:uuid
                                                    remoteURL:nil
                                                     localURL:nil
-                                                  localAsset:asset
-                                               temporaryUUID:uuid];
+                                                  localAsset:asset];
         [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
     }
 }
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
-    [[[[CMCammentUploader instance] uploadVideoAsset:url
-                                                uuid:uuid] deliverOnMainThread] subscribeCompleted:^{
-        CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
-        cammentInRequest.url = [NSString stringWithFormat:@"https://s3.eu-central-1.amazonaws.com/sportacam-temp/%@.mp4", uuid];
+
+    RACSignal<UsersGroup *> *verifyUserGroup = [RACSignal empty];
+
+    if (self.usersGroup) {
+        verifyUserGroup = [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+            [subscriber sendNext:self.usersGroup];
+            return nil;
+        }];
+    } else {
+        verifyUserGroup = [[self.interactor createEmptyGroup] doNext:^(UsersGroup *x) {
+            [[CMStore instance] setActiveGroup:x];
+        }];
+    }
+
+    [[[verifyUserGroup flattenMap:^RACSignal *(UsersGroup *groupToSend) {
+        Camment *cammentToUpload = [[[[[[CammentBuilder new]
+                withUuid:uuid]
+                withLocalURL:url.absoluteString]
+                withShowUUID:self.show.uuid]
+                withUsersGroupUUID:groupToSend.uuid]
+                build];
+        return [self.interactor uploadCamment:cammentToUpload];
+    }] deliverOnMainThread] subscribeNext:^(Camment *uploadedCamment) {
         NSMutableArray<CammentsBlockItem *> *mutableCamments = [self.cammentsBlockNodePresenter.items mutableCopy];
         NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
             __block BOOL result = NO;
 
             [obj matchCamment:^(Camment *camment) {
-                result = [camment.temporaryUUID isEqualToString:uuid];
+                result = [camment.uuid isEqualToString:uploadedCamment.uuid];
             }             ads:^(Ads *ads) {
             }];
 
             return result;
         }];
+
         if (index != NSNotFound) {
             CammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
             [cammentsBlockItem matchCamment:^(Camment *camment) {
-                Camment *updateCamment = [[Camment alloc] initWithShowUUID:camment.showUUID
-                                                               cammentUUID:camment.cammentUUID
-                                                                 remoteURL:cammentInRequest.url
-                                                                  localURL:camment.localURL
-                                                                localAsset:camment.localAsset
-                                                             temporaryUUID:camment.temporaryUUID];
-                mutableCamments[(NSUInteger) index] = [CammentsBlockItem cammentWithCamment:updateCamment];
+                mutableCamments[(NSUInteger) index] = [CammentsBlockItem cammentWithCamment:uploadedCamment];
             }                           ads:^(Ads *ads) {
             }];
         }
         self.cammentsBlockNodePresenter.items = mutableCamments.copy;
+    } error:^(NSError *error) {
 
-        [[[CMDevcammentClient defaultClient] showsUuidCammentsPost:self.show.uuid
-                                                              body:cammentInRequest]
-                continueWithBlock:^id(AWSTask<CMCamment *> *t) {
-                    return nil;
-                }];
     }];
 }
 
@@ -221,7 +238,7 @@
         __block BOOL result = NO;
 
         [value matchCamment:^(Camment *mathedCamment) {
-            result = [camment.remoteURL isEqualToString:mathedCamment.remoteURL];
+            result = [camment.uuid isEqualToString:mathedCamment.uuid];
         }               ads:^(Ads *ads) {
         }];
 
@@ -230,7 +247,7 @@
 
     BOOL isNewItem = filteredItemsArray.count == 0;
 
-    if (([camment.showUUID isEqualToString:_show.uuid]
+    if (([camment.usersGroupUUID isEqualToString:[self.usersGroup uuid]]
             || [camment.showUUID isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
             && isNewItem) {
         [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];

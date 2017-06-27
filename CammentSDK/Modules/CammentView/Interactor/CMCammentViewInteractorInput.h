@@ -7,6 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ReactiveObjC.h>
+#import "Camment.h"
+#import "UsersGroup.h"
 
 @protocol CMCammentViewInteractorInput <NSObject>
+
+- (RACSignal<Camment *> *)uploadCamment:(Camment *)camment;
+- (RACSignal<UsersGroup *> *)createEmptyGroup;
+
 @end

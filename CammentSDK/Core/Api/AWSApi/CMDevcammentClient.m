@@ -313,6 +313,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMUsergroup class]];
 }
 
+- (AWSTask *)usergroupsGroupUuidCammentsGet:(NSString *)groupUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/usergroups/{groupUuid}/camments"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMCammentList class]];
+}
+
 - (AWSTask *)usergroupsGroupUuidCammentsPost:(NSString *)groupUuid body:(CMCammentInRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",

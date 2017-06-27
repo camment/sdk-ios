@@ -9,7 +9,8 @@
 #import "CMInvitationPresenter.h"
 #import "CMInvitationWireframe.h"
 #import "CMInvitationListPresenter.h"
-#import "CMDevcammentClient.h"
+#import "CMStore.h"
+#import "User.h"
 
 @interface CMInvitationPresenter ()
 @property(nonatomic, strong) CMInvitationListPresenter *listPresenter;
@@ -35,10 +36,19 @@
 }
 
 - (void)inviteAction {
-    NSArray<NSString *> *ids = self.listPresenter.selectedUsersId;
-    CMUserInAddToGroupRequest *users = [[CMUserInAddToGroupRequest alloc] init];
-//    [[CMDevcammentClient defaultClient] in]
+    NSArray *users = [self.listPresenter.items.rac_sequence filter:^BOOL(User *user) {
+        return [self.listPresenter.selectedUsersId containsObject:user.fbUserId];
+    }].array;
+    [self.interactor addUsers:users group:[CMStore instance].activeGroup];
+}
+
+- (void)didInviteUsersToTheGroup:(UsersGroup *)group {
+    [[CMStore instance] setActiveGroup:group];
     [self.wireframe.view.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)didFailToInviteUsersWithError:(NSError *)error {
+
 }
 
 @end

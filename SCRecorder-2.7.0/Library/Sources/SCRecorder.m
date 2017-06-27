@@ -305,25 +305,27 @@ static char* SCRecorderPhotoOptionsContext = "PhotoOptionsContext";
     if (_captureSession != nil) {
         [NSException raise:@"SCCameraException" format:@"The session is already opened"];
     }
-    
+
     AVCaptureSession *session = [[AVCaptureSession alloc] init];
     _beginSessionConfigurationCount = 0;
     _captureSession = session;
     [self beginConfiguration];
-    
+
     BOOL success = [self _reconfigureSession];
-    
+
     if (!success && error != nil) {
         *error = _error;
     }
-    
+
     _previewLayer.session = session;
-    
+
     [self reconfigureVideoInput:YES audioInput:YES];
-    
+
     [self commitConfiguration];
 
-    [_metadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    if ([[_metadataOutput availableMetadataObjectTypes] containsObject:AVMetadataObjectTypeQRCode]) {
+        [_metadataOutput setMetadataObjectTypes:@[AVMetadataObjectTypeQRCode]];
+    }
 
     return success;
 }

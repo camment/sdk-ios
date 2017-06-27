@@ -72,7 +72,7 @@
 
             CMCammentCell *cammentCell = (CMCammentCell *) node;
             BOOL oldExpandedValue = cammentCell.expanded;
-            BOOL shouldPlay = [cammentCell.cammentNode.camment.cammentUUID isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
+            BOOL shouldPlay = [cammentCell.cammentNode.camment.uuid isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
         
             cammentCell.expanded = shouldPlay;
             if (oldExpandedValue != cammentCell.expanded) {
@@ -91,8 +91,8 @@
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     CammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
     [cammentsBlockItem matchCamment:^(Camment *camment) {
-        BOOL shouldPlay = ![camment.cammentUUID isEqualToString: [[CMStore instance] playingCammentId]];
-        [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.cammentUUID : kCMStoreCammentIdIfNotPlaying];
+        BOOL shouldPlay = ![camment.uuid isEqualToString: [[CMStore instance] playingCammentId]];
+        [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.uuid : kCMStoreCammentIdIfNotPlaying];
     } ads:^(Ads *ads) {
         [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:ads.openURL]
                                            options:@{}
@@ -118,7 +118,7 @@
 
     CammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
     [cammentsBlockItem matchCamment:^(Camment *camment) {
-        result = camment.cammentUUID == [CMStore instance].playingCammentId ? CGSizeMake(90.0f, 90.0f) : CGSizeMake(45.0f, 45.0f);
+        result = camment.uuid == [CMStore instance].playingCammentId ? CGSizeMake(90.0f, 90.0f) : CGSizeMake(45.0f, 45.0f);
     } ads:^(Ads *ads) {
         result = CGSizeMake(45.0f, 45.0f);
     }];

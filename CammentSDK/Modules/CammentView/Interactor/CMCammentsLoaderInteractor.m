@@ -27,13 +27,12 @@
     if (self) {
         self.disposable = [[[[CMServerListener instanceWithCredentials:[CMServerListenerCredentials defaultCredentials]] messageSubject] deliverOnMainThread]subscribeNext:^(CMServerMessage * _Nullable x) {
             NSDictionary *values = [x json];
-            Camment *camment = [[Camment alloc]
-                    initWithShowUUID:values[@"showUuid"]
-                         cammentUUID:values[@"uuid"]
-                           remoteURL:values[@"url"]
-                            localURL:nil
-                          localAsset:nil
-                       temporaryUUID:nil];
+            Camment *camment = [[Camment alloc] initWithShowUUID:values[@"showUuid"]
+                                                  usersGroupUUID:values[@"userGroupUuid"]
+                                                            uuid:values[@"uuid"]
+                                                       remoteURL:values[@"url"]
+                                                        localURL:nil
+                                                      localAsset:nil];
             [self.output didReceiveNewCamment:camment];
         }];
     }

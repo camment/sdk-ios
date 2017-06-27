@@ -87,7 +87,7 @@
 }
 
 - (void)recorder:(SCRecorder *__nonnull)recorder didCompleteSegment:(SCRecordSessionSegment *__nullable)segment inSession:(SCRecordSession *__nonnull)session error:(NSError *__nullable)error {
-    NSString *assetKey = [NSUUID new].UUIDString;
+    NSString *assetKey = [[NSUUID new].UUIDString lowercaseString];
     [self.output recorderDidFinishAVAsset:[recorder.session assetRepresentingSegments] uuid:assetKey];
 
     AVAsset *asset = session.assetRepresentingSegments;

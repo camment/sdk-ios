@@ -8,5 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
+@class User;
+
+@class UsersGroup;
+
 @protocol CMInvitationInteractorInput <NSObject>
+
+- (void)addUsers:(NSArray<User *> *)users group:(UsersGroup *)group;
+
 @end

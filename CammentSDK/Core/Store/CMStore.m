@@ -4,6 +4,8 @@
 //
 
 #import "CMStore.h"
+#import "User.h"
+#import "UsersGroup.h"
 
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";

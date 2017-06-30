@@ -10,6 +10,6 @@
 
 @protocol CMCammentsLoaderInteractorInput <NSObject>
 
-- (void)fetchCachedCamments:(NSString *)showUUID;
+- (void)fetchCachedCamments:(NSString *)groupUUID;
 
 @end

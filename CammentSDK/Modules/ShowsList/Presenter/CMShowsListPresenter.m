@@ -12,6 +12,7 @@
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMShowsListWireframe.h"
 #import "Show.h"
+#import "CMStore.h"
 #import <FBTweak.h>
 #import <FBTweakCategory.h>
 #import <FBTweakCollection.h>
@@ -44,7 +45,11 @@
 - (void)setupView {
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
-    [self.interactor fetchShowList];
+    [[RACObserve([CMStore instance], isSignedIn) deliverOnMainThread] subscribeNext:^(NSNumber * isSignedIn) {
+        if (isSignedIn.boolValue) {
+            [self.interactor fetchShowList];
+        }
+    }];
 }
 
 - (void)showListDidFetched:(CMShowList *)list {
@@ -89,7 +94,7 @@
 }
 
 - (void)showListFetchingFailed:(NSError *)error {
-
+    DDLogError(@"Show list fetch error %@", error);
 }
 
 - (void)didSelectShow:(Show *)show {

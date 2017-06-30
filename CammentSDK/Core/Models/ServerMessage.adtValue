@@ -1,0 +1,11 @@
+%type name="Camment"
+%type name="Invitation"
+
+ServerMessage includes(RMBuilder) {
+  invitation {
+    Invitation *invitation
+  }
+  camment {
+    Camment *camment
+  }
+}

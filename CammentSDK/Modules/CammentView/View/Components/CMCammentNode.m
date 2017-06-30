@@ -34,23 +34,24 @@
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
     if (_camment.localAsset) {
-        AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:_camment.localAsset];
-        CMTime time = CMTimeMake(1, 1);
-        CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
-        CIImage * ciimage = [[CIImage alloc] initWithCGImage:imageRef];
-        CIFilter * filter = [CIFilter filterWithName:@"CIColorControls"
-                                 withInputParameters:
-                                         @{
-                                                 kCIInputSaturationKey : @0.0,
-                                                 kCIInputImageKey : ciimage
-                                         }
-        ];
-        CIImage * grayscale  = [filter outputImage];
-        UIImage *thumbnail = [UIImage imageWithCIImage:grayscale];
-        CGImageRelease(imageRef);
-
         _videoPlayerNode.asset = _camment.localAsset;
-        [_videoPlayerNode setImage:thumbnail];
+        if (!_camment.thumbnailURL) {
+            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:_camment.localAsset];
+            CMTime time = CMTimeMake(1, 1);
+            CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
+            CIImage * ciimage = [[CIImage alloc] initWithCGImage:imageRef];
+            CIFilter * filter = [CIFilter filterWithName:@"CIColorControls"
+                                     withInputParameters:
+                                             @{
+                                                     kCIInputSaturationKey : @0.0,
+                                                     kCIInputImageKey : ciimage
+                                             }
+            ];
+            CIImage * grayscale  = [filter outputImage];
+            UIImage *thumbnail = [UIImage imageWithCIImage:grayscale];
+            CGImageRelease(imageRef);
+            [_videoPlayerNode setImage:thumbnail];
+        }
         return;
     }
 
@@ -63,6 +64,9 @@
 
     if (assetURL == nil) { return; }
     _videoPlayerNode.asset = [AVAsset assetWithURL:assetURL];
+    if (_camment.thumbnailURL) {
+        [_videoPlayerNode setURL:[[NSURL alloc] initWithString:_camment.thumbnailURL]];
+    }
 }
 
 
@@ -100,27 +104,6 @@
 
 - (void)videoDidPlayToEnd:(ASVideoNode *)videoNode {
     [[CMStore instance] setPlayingCammentId: kCMStoreCammentIdIfNotPlaying];
-}
-
-- (void)imageNode:(ASNetworkImageNode *)imageNode didLoadImage:(UIImage *)image {
-    
-}
-
-- (void)imageNodeDidFinishDecoding:(ASNetworkImageNode *)imageNode {
-    CIImage * ciimage = [[CIImage alloc] initWithImage:imageNode.image];
-    if (!ciimage) {return;}
-    
-    CIFilter * filter = [CIFilter filterWithName:@"CIColorControls"
-                             withInputParameters:
-                         @{
-                           kCIInputSaturationKey : @0.0,
-                           kCIInputImageKey : ciimage
-                           }
-                         ];
-    CIImage * grayscale  = [filter outputImage];
-    UIImage *thumbnail = [UIImage imageWithCIImage:grayscale];
-    
-    [_videoPlayerNode setImage:thumbnail];
 }
 
 @end

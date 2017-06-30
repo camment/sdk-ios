@@ -3,6 +3,7 @@
 // Copyright (c) 2017 Camment. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <ReactiveObjC/ReactiveObjC.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
@@ -19,6 +20,12 @@
 #import "CMPresentationBuilder.h"
 #import "CMWoltPresentationBuilder.h"
 #import "CMPresentationUtility.h"
+#import "ServerMessage.h"
+#import "UsersGroupBuilder.h"
+#import "UIViewController+topVisibleViewController.h"
+#import "CMDevcammentClient.h"
+#import "CMAppConfig.h"
+#import "CMInvitationViewController.h"
 
 #import <FBTweak.h>
 #import <FBTweakStore.h>
@@ -133,7 +140,15 @@
 - (void)configureWithApiKey:(NSString *)apiKey {
     [self configure];
     [self launch];
-    [self connectUserWithIdentity:[CMCammentAnonymousIdentity new]
+    CMCammentIdentity *identity = [CMCammentAnonymousIdentity new];
+
+    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
+    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
+    if ([CMStore instance].isFBConnected) {
+        identity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:token];
+    }
+
+    [self connectUserWithIdentity:identity
                           success:nil
                             error:nil];
 }
@@ -142,24 +157,14 @@
                         success:(void (^ _Nullable)())successBlock
                           error:(void (^ _Nullable)(NSError *error))errorBlock {
 
+    [self.authService refreshIdentity];
     if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
         [self.authService configureWithProvider:[CMCognitoFacebookAuthProvider new]];
         CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
         [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
-        [[self.authService signIn] subscribeError:^(NSError *error) {
-            [[CMStore instance] setIsSignedIn:NO];
-            DDLogError(@"%@", error);
-
-            if (errorBlock) {
-                errorBlock(error);
-            }
-        }                               completed:^{
-            [[CMStore instance] setIsSignedIn:YES];
-            if (successBlock) {successBlock();}
-        }];
+        [self signInUserWithSuccess:successBlock error:errorBlock];
     } else if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
-        [[CMStore instance] setIsSignedIn:YES];
-        if (successBlock) {successBlock();}
+        [self signInUserWithSuccess:successBlock error:errorBlock];
     } else {
         DDLogError(@"Trying to connect unknown idenity %@", [identity class]);
         if (errorBlock) {
@@ -171,32 +176,133 @@
     }
 }
 
-- (void)launch {
-    [[CMStore instance] setIsSignedIn:[self.authService isSignedIn]];
-    [[RACObserve([CMStore instance], isSignedIn) deliverOnMainThread] subscribeNext:^(NSNumber *isSignedIn) {
-        if (isSignedIn.boolValue) {
-            [self configureIoTListener];
-        } else {
+- (void)signInUserWithSuccess:(void (^ _Nullable)())successBlock
+                        error:(void (^ _Nullable)(NSError *error))errorBlock {
+    [[self.authService signIn]
+            subscribeNext:^(NSString *cognitoUserId) {
+                [[CMStore instance] setCognitoUserId:cognitoUserId];
+            }
+                    error:^(NSError *error) {
+                        [[CMStore instance] setIsSignedIn:NO];
+                        DDLogError(@"%@", error);
+
+                        if (errorBlock) {
+                            errorBlock(error);
+                        }
+                    }
+                completed:^{
+                    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
+                    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
+                    [self updateUserInfo];
+                    [[CMStore instance] setIsSignedIn:YES];
+                    [self configureIoTListener:[CMStore instance].cognitoUserId];
+                    if (successBlock) {successBlock();}
+                }];
+}
+
+- (void)updateUserInfo {
+
+    FBSDKProfile *profile = [FBSDKProfile currentProfile];
+    if (!profile) {
+        DDLogVerbose(@"FB profile not found");
+        return;
+    }
+
+    NSMutableDictionary *userInfo = [NSMutableDictionary new];
+    if (profile.name) {
+        userInfo[@"name"] = profile.name;
+    }
+
+    NSURL *imageUrl = [profile imageURLForPictureMode:FBSDKProfilePictureModeSquare size:CGSizeMake(270, 270)];
+    if (imageUrl) {
+        userInfo[@"picture"] = imageUrl.absoluteString;
+    }
+
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
+                                                       options:0
+                                                         error:&error];
+    if (!jsonData) {return;}
+
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    if (!jsonString) {return;}
+
+    CMUserinfoInRequest *userinfoInRequest = [CMUserinfoInRequest new];
+    userinfoInRequest.userinfojson = jsonString;
+
+    CMDevcammentClient *client = [CMDevcammentClient defaultClient];
+    [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+        if (!t.error) {
+            DDLogVerbose(@"User info has been updated with data %@", userInfo);
         }
+        return nil;
     }];
 }
 
-- (void)configure {
-    [[CMAnalytics instance] configureAWSMobileAnalytics];
-
-    self.authService = [[CMCognitoAuthService alloc] init];
+- (void)launch {
 }
 
-- (void)configureIoTListener {
+- (void)configure {
+    [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
+    [[CMAnalytics instance] configureAWSMobileAnalytics];
+    self.authService = [[CMCognitoAuthService alloc] init];
+    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:FBSDKProfileDidChangeNotification object:nil];
+}
+
+- (void)configureIoTListener:(NSString *)userId {
     CMServerListenerCredentials *credentials =
-            [[CMServerListenerCredentials alloc] initWithClientId:[NSUUID new].UUIDString
+            [[CMServerListenerCredentials alloc] initWithClientId:userId
                                                           keyFile:@"awsiot-identity"
                                                        passPhrase:@"8uT$BwY+x=DF,M"
                                                     certificateId:nil];
 
     CMServerListener *listener = [CMServerListener instanceWithCredentials:credentials];
     [listener connect];
-    [listener.messageSubject subscribeNext:^(CMServerMessage *x) {}];
+    [listener.messageSubject subscribeNext:^(ServerMessage *message) {
+        [message matchInvitation:^(Invitation *invitation) {
+            if (![invitation.userGroupUuid isEqualToString:[CMStore instance].cognitoUserId]) {
+                [self presentChatInvitation:invitation];
+            }
+        }                camment:^(Camment *camment) {
+
+        }];
+    }];
+}
+
+- (void)presentChatInvitation:(Invitation *)invitation {
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"User invited you to a private chat"
+                                                                             message:@"Would you like to join the conversation?"
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:@"Join" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        UsersGroup *usersGroup = [[[UsersGroupBuilder new] withUuid:invitation.userGroupUuid] build];
+        [[CMStore instance] setActiveGroup:usersGroup];
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+
+    }]];
+
+    UIViewController *presentedViewController = [rootViewController topVisibleViewController];
+
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([presentedViewController isKindOfClass:[CMInvitationViewController class]] && presentedViewController.beingPresented) {
+            [presentedViewController dismissViewControllerAnimated:YES
+                                                        completion:^{
+                                                            [presentedViewController presentViewController:alertController
+                                                                                                  animated:YES
+                                                                                                completion:nil];
+                                                        }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [presentedViewController presentViewController:alertController
+                                                      animated:YES
+                                                    completion:nil];
+            });
+        }
+    });
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

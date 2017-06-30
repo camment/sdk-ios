@@ -41,13 +41,17 @@
 
 - (RACSignal *)uploadVideoAsset:(NSURL *)url uuid:(NSString *)uuid {
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        
+
         AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
 
         uploadRequest.bucket = self.bucketName;
-        NSString *fileKey = [NSString stringWithFormat:@"%@.mp4", uuid];
+        NSString *fileKey = [NSString stringWithFormat:@"uploads/%@.mp4", uuid];
         uploadRequest.key = fileKey;
         uploadRequest.body = url;
+        uploadRequest.metadata = @{
+                @"ContentType": @"video/mp4"
+        };
+        uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
         uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
         uploadRequest.storageClass = AWSS3StorageClassReducedRedundancy;
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
@@ -74,7 +78,6 @@
             }
 
             if (task.result) {
-                AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
                 [subscriber sendCompleted];
             }
             return nil;

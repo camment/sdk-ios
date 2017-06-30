@@ -28,7 +28,7 @@
     return self;
 }
 
-- (AWSTask<UsersGroup *> *)createEmptyGroup{
+- (AWSTask<UsersGroup *> *)createEmptyGroup {
     return [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
         if ([t.result isKindOfClass:[CMUsergroup class]]) {
             CMUsergroup *group = t.result;
@@ -69,11 +69,29 @@
         if (!t.error && [t.result isKindOfClass:[UsersGroup class]]) {
             DDLogVerbose(@"Invited users %@", users);
             UsersGroup *usersGroup = t.result;
-            [self.output didInviteUsersToTheGroup:usersGroup];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didInviteUsersToTheGroup:usersGroup];
+            });
+
+            CMInvitationInRequest *invitationInRequest = [CMInvitationInRequest new];
+            invitationInRequest.users = usersParameter.userFacebookIdList;
+            [[self.client usergroupsGroupUuidInvitationsPost:usersGroup.uuid body:invitationInRequest]
+                    continueWithBlock:^id(AWSTask<id> *invitationTask) {
+                        if (invitationTask.error) {
+                            DDLogError(@"%@", t.error);
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [self.output didFailToInviteUsersWithError:t.error];
+                            });
+                        }
+                        return nil;
+                    }];
         } else {
             DDLogError(@"%@", t.error);
-            [self.output didFailToInviteUsersWithError:t.error];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didFailToInviteUsersWithError:t.error];
+            });
         }
+
         return nil;
     }];
 }

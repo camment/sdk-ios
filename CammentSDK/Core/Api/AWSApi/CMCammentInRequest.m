@@ -20,8 +20,7 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"uuid": @"uuid",
-             @"url": @"url"
+             @"uuid": @"uuid"
              };
 }
 

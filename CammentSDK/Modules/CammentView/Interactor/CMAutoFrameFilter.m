@@ -17,8 +17,9 @@
         [delegate filter:self willProcessImage:image atTime:time];
     }
 
+    NSString *orientation = (__bridge NSString *)kCGImagePropertyOrientation;
     NSDictionary *options = @{ CIDetectorImageOrientation:
-            ([[image properties] valueForKey:kCGImagePropertyOrientation] ?: @1) };
+            ([[image properties] valueForKey:orientation] ?: @1) };
     NSArray *adjustments = [image autoAdjustmentFiltersWithOptions:options];
     for (CIFilter *filter in adjustments) {
         [filter setValue:image forKey:kCIInputImageKey];

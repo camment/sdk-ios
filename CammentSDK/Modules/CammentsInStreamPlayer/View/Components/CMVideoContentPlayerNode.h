@@ -5,9 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
-
-@protocol CMContentViewerNode;
-
+#import "CMContentViewerNode.h"
 
 @interface CMVideoContentPlayerNode : ASDisplayNode<CMContentViewerNode>
 

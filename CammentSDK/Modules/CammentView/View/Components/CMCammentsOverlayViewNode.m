@@ -118,8 +118,6 @@
     CGRect cammentBlockFinalFrame = [context finalFrameForNode:self.cammentsBlockNode];
     CGRect cammentBlockInitialFrame = [context initialFrameForNode:self.cammentsBlockNode];
 
-    CGRect cammentButtonFinalFrame = [context finalFrameForNode:self.cammentButton];
-
     self.cammentsBlockNode.view.frame = CGRectMake(
             cammentBlockInitialFrame.origin.x,
             cammentBlockInitialFrame.origin.y,

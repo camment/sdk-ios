@@ -12,10 +12,7 @@
 @implementation CMInvitationViewController
 
 - (instancetype)init {
-    self = [super initWithNode:[CMInvitationNode new]];
-    if (self) {
-    }
-    return self;
+    return [super initWithNode:[CMInvitationNode new]];
 }
 
 - (void)viewDidLoad {

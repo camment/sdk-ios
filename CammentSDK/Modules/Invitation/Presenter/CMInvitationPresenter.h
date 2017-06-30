@@ -12,12 +12,13 @@
 #import "CMInvitationInteractorInput.h"
 #import "CMInvitationInteractorOutput.h"
 #import "CMFBFetchFrinedsInteractorInput.h"
+#import "CMLoadingHUD.h"
 
 @class CMInvitationWireframe;
 
 @interface CMInvitationPresenter : NSObject<CMInvitationPresenterInput, CMInvitationInteractorOutput>
 
-@property (nonatomic, weak) id<CMInvitationPresenterOutput> output;
+@property (nonatomic, weak) id<CMInvitationPresenterOutput, CMLoadingHUD> output;
 @property (nonatomic) id<CMInvitationInteractorInput> interactor;
 @property (nonatomic) id<CMFBFetchFrinedsInteractorInput> fbFetchFriendsInteractor;
 @property (nonatomic) CMInvitationWireframe *wireframe;

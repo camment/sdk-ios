@@ -15,14 +15,9 @@
 #import "CMCammentsLoaderInteractorOutput.h"
 #import "CMCammentRecorderInteractorInput.h"
 #import "CMCammentRecorderInteractorOutput.h"
+#import "CMLoadingHUD.h"
 
 @class CMCammentViewWireframe;
-
-@protocol CMCammentsLoaderInteractorInput;
-@protocol CMCammentRecorderInteractorInput;
-@protocol CMCammentsLoaderInteractorOutput;
-@protocol CMCammentRecorderInteractorOutput;
-
 @class Show;
 
 @interface CMCammentViewPresenter : NSObject<
@@ -31,7 +26,7 @@
         CMCammentsLoaderInteractorOutput,
         CMCammentRecorderInteractorOutput>
 
-@property (nonatomic, weak) id<CMCammentViewPresenterOutput> output;
+@property (nonatomic, weak) id<CMCammentViewPresenterOutput, CMLoadingHUD> output;
 @property (nonatomic) id<CMCammentViewInteractorInput> interactor;
 @property (nonatomic) CMCammentViewWireframe *wireframe;
 

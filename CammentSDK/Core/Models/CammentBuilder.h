@@ -11,15 +11,17 @@
 
 - (Camment *)build;
 
-- (instancetype)withShowUUID:(NSString *)showUUID;
+- (instancetype)withShowUuid:(NSString *)showUuid;
 
-- (instancetype)withUsersGroupUUID:(NSString *)usersGroupUUID;
+- (instancetype)withUserGroupUuid:(NSString *)userGroupUuid;
 
 - (instancetype)withUuid:(NSString *)uuid;
 
 - (instancetype)withRemoteURL:(NSString *)remoteURL;
 
 - (instancetype)withLocalURL:(NSString *)localURL;
+
+- (instancetype)withThumbnailURL:(NSString *)thumbnailURL;
 
 - (instancetype)withLocalAsset:(AVAsset *)localAsset;
 

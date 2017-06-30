@@ -26,7 +26,4 @@
 @property (nonatomic, strong, nullable) NSString *uuid;
 
 
-@property (nonatomic, strong, nullable) NSString *url;
-
-
 @end

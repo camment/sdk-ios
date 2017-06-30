@@ -16,7 +16,7 @@
 #import "CammentBuilder.h"
 #import "UsersGroup.h"
 
-NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/sportacam-temp/%@.mp4";
+NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camment-camments/uploads/%@.mp4";
 
 @interface CMCammentViewInteractor ()
 @property(nonatomic, strong) CMDevcammentClient *client;
@@ -54,15 +54,13 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/sport
 
 - (RACSignal<Camment *> *)uploadCamment:(Camment *)camment {
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        NSString *remoteURL = [NSString stringWithFormat:bucketFormatPath, camment.uuid];
         [[[CMCammentUploader instance] uploadVideoAsset:[[NSURL alloc] initWithString:camment.localURL]
                                                    uuid:camment.uuid] subscribeCompleted:^{
             CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
-            cammentInRequest.url = remoteURL;
             cammentInRequest.uuid = camment.uuid;
             DDLogVerbose(@"Posting camment %@", camment);
 
-            [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.usersGroupUUID
+            [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
                                                                             body:cammentInRequest]
                     continueWithBlock:^id(AWSTask<CMCamment *> *t) {
                         if (t.error) {
@@ -71,9 +69,9 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/sport
                             CMCamment *cmCamment = t.result;
                             Camment *uploadedCamment = [[[[[[[CammentBuilder cammentFromExistingCamment:camment]
                                     withUuid:cmCamment.uuid]
-                                    withShowUUID:cmCamment.showUuid]
+                                    withShowUuid:cmCamment.showUuid]
                                     withRemoteURL:cmCamment.url]
-                                    withUsersGroupUUID:cmCamment.userGroupUuid]
+                                    withUserGroupUuid:cmCamment.userGroupUuid]
                                     withLocalURL:nil]
                                     build];
                             DDLogVerbose(@"Camment has been sent %@", uploadedCamment);

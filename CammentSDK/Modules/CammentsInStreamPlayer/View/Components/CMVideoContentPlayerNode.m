@@ -6,7 +6,6 @@
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMVideoContentPlayerNode.h"
 #import "CMStore.h"
-#import "CMContentViewerNode.h"
 
 #import <FBTweakStore.h>
 #import <FBTweak.h>

@@ -6,6 +6,7 @@
 #import "CMAppConfig.h"
 
 NSString* const CMS3TransferManagerName = @"defaultTransferManager";
+NSString* const CMIotManagerName = @"defaultIotManager";
 
 @implementation CMAppConfig
 
@@ -29,6 +30,7 @@ NSString* const CMS3TransferManagerName = @"defaultTransferManager";
         _awsCognitoIdenityPoolId = [propertyList valueForKey:@"awsCognitoPoolId"] ?: @"";
         _awsS3BucketName = [propertyList valueForKey:@"awsS3BucketName"] ?: @"";
         _hockeyAppId = [propertyList valueForKey:@"hockeyAppId"] ?: @"";
+        _fbAppId = [propertyList valueForKey:@"facebookAppId"] ?: @"";
     }
     return self;
 }

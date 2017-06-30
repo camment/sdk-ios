@@ -26,7 +26,6 @@
         CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShow:show];
         self.cammentViewController = [viewWireframe controller];
         self.wireframe = viewWireframe;
-        __weak typeof(self) __weakSelf = self;
         CMStore *store = [CMStore instance];
 
         [RACObserve(store, cammentRecordingState) subscribeNext:^(id x) {

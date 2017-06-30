@@ -4,18 +4,21 @@
 //
 
 #import "CMServerListenerCredentials.h"
+#import "CMStore.h"
 
 const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertificate";
 
-@implementation CMServerListenerCredentials {
-
-}
+@implementation CMServerListenerCredentials
 
 + (CMServerListenerCredentials *)defaultCredentials {
-    return [[CMServerListenerCredentials alloc] initWithClientId:[NSUUID new].UUIDString
-                                                  keyFile:@"awsiot-identity"
-                                               passPhrase:@"8uT$BwY+x=DF,M"
-                                            certificateId:nil];
+    return [CMServerListenerCredentials new];
+}
+
+- (instancetype)init {
+    return [self initWithClientId:[CMStore instance].cognitoUserId ?: @""
+                          keyFile:@"awsiot-identity"
+                       passPhrase:@"8uT$BwY+x=DF,M"
+                    certificateId:nil];
 }
 
 - (instancetype)initWithClientId:(NSString *)clientId
@@ -32,5 +35,6 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
     }
     return self;
 }
+
 
 @end

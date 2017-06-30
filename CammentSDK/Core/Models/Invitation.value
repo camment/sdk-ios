@@ -1,0 +1,5 @@
+
+Invitation includes(RMBuilder) {
+  NSString* userGroupUuid
+  NSString* userCognitoUuid
+}

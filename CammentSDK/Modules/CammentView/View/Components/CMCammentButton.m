@@ -23,7 +23,9 @@
         self.style.height = ASDimensionMake(65.0f);
 
         self.cammentIcon = [ASImageNode new];
-        self.cammentIcon.image = [UIImage imageNamed:@"cammentButton"];
+        self.cammentIcon.image = [UIImage imageNamed:@"cammentButton"
+                                            inBundle:[NSBundle bundleForClass:[self class]]
+                       compatibleWithTraitCollection:nil];
         self.cammentIcon.contentMode = UIViewContentModeScaleAspectFit;
         self.cammentIcon.backgroundColor = [UIColor clearColor];
 

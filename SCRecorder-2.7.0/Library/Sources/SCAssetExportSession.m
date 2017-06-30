@@ -271,7 +271,7 @@ static CGContextRef SCCreateContextFromPixelBuffer(CVPixelBufferRef pixelBuffer)
                 SCIOPixelBuffers *videoBuffer = nil;
                 SCSampleBufferHolder *bufferHolder = nil;
 
-                CMTime time;
+                CMTime time = kCMTimeZero;
                 if (videoProcessingQueue != nil) {
                     videoBuffer = [videoProcessingQueue dequeue];
                     time = videoBuffer.time;

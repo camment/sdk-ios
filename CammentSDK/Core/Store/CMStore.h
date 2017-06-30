@@ -28,6 +28,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property (nonatomic, copy) UsersGroup *activeGroup;
 
+@property(nonatomic, copy) NSString *cognitoUserId;
+
 + (CMStore *)instance;
 
 @end

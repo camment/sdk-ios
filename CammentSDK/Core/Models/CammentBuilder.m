@@ -7,11 +7,12 @@
 
 @implementation CammentBuilder
 {
-  NSString *_showUUID;
-  NSString *_usersGroupUUID;
+  NSString *_showUuid;
+  NSString *_userGroupUuid;
   NSString *_uuid;
   NSString *_remoteURL;
   NSString *_localURL;
+  NSString *_thumbnailURL;
   AVAsset *_localAsset;
 }
 
@@ -22,29 +23,30 @@
 
 + (instancetype)cammentFromExistingCamment:(Camment *)existingCamment
 {
-  return [[[[[[[CammentBuilder camment]
-               withShowUUID:existingCamment.showUUID]
-              withUsersGroupUUID:existingCamment.usersGroupUUID]
-             withUuid:existingCamment.uuid]
-            withRemoteURL:existingCamment.remoteURL]
-           withLocalURL:existingCamment.localURL]
+  return [[[[[[[[CammentBuilder camment]
+                withShowUuid:existingCamment.showUuid]
+               withUserGroupUuid:existingCamment.userGroupUuid]
+              withUuid:existingCamment.uuid]
+             withRemoteURL:existingCamment.remoteURL]
+            withLocalURL:existingCamment.localURL]
+           withThumbnailURL:existingCamment.thumbnailURL]
           withLocalAsset:existingCamment.localAsset];
 }
 
 - (Camment *)build
 {
-  return [[Camment alloc] initWithShowUUID:_showUUID usersGroupUUID:_usersGroupUUID uuid:_uuid remoteURL:_remoteURL localURL:_localURL localAsset:_localAsset];
+  return [[Camment alloc] initWithShowUuid:_showUuid userGroupUuid:_userGroupUuid uuid:_uuid remoteURL:_remoteURL localURL:_localURL thumbnailURL:_thumbnailURL localAsset:_localAsset];
 }
 
-- (instancetype)withShowUUID:(NSString *)showUUID
+- (instancetype)withShowUuid:(NSString *)showUuid
 {
-  _showUUID = [showUUID copy];
+  _showUuid = [showUuid copy];
   return self;
 }
 
-- (instancetype)withUsersGroupUUID:(NSString *)usersGroupUUID
+- (instancetype)withUserGroupUuid:(NSString *)userGroupUuid
 {
-  _usersGroupUUID = [usersGroupUUID copy];
+  _userGroupUuid = [userGroupUuid copy];
   return self;
 }
 
@@ -63,6 +65,12 @@
 - (instancetype)withLocalURL:(NSString *)localURL
 {
   _localURL = [localURL copy];
+  return self;
+}
+
+- (instancetype)withThumbnailURL:(NSString *)thumbnailURL
+{
+  _thumbnailURL = [thumbnailURL copy];
   return self;
 }
 

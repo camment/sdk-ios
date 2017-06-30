@@ -23,6 +23,9 @@
  */
 @interface CMCamment : AWSModel
 
+@property (nonatomic, strong, nullable) NSString *thumbnail;
+
+
 @property (nonatomic, strong, nullable) NSString *userGroupUuid;
 
 

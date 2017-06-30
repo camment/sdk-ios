@@ -81,7 +81,7 @@
 - (void)appendUsersList:(NSArray<User *> *)users {
     _items = [_items arrayByAddingObjectsFromArray:users];
     NSMutableArray *indexPathesToAdd = [NSMutableArray new];
-    for (int i = _items.count - users.count; i < _items.count; i++) {
+    for (NSInteger i = _items.count - users.count; i < _items.count; i++) {
         [indexPathesToAdd addObject:[NSIndexPath indexPathForRow:i inSection:0]];
     }
     [_tableNode insertRowsAtIndexPaths:indexPathesToAdd withRowAnimation:UITableViewRowAnimationBottom];

@@ -23,7 +23,7 @@
 
 @interface CMCammentOverlayController : NSObject
 
-@property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> delegate;
+@property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> _Nullable delegate;
 
 - (instancetype _Nonnull)initWithShow:(Show * _Nonnull)show;
 

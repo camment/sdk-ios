@@ -7,6 +7,8 @@
 //
 
 #import <ReactiveObjC/ReactiveObjC.h>
+#import <FBSDKAccessToken.h>
+#import <DateTools/DateTools.h>
 #import "CMCammentViewPresenter.h"
 #import "CMCammentViewWireframe.h"
 #import "CMInvitationWireframe.h"
@@ -30,8 +32,6 @@
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
 #import "CammentBuilder.h"
-#import <FBSDKAccessToken.h>
-#import <DateTools/DateTools.h>
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput>
 
@@ -55,21 +55,23 @@
         self.authInteractor = [CMAuthInteractor new];
         self.authInteractor.output = self;
         self.presentationPlayerInteractor.instructionOutput = self;
-
-        __weak typeof(self) weakSelf = self;
+        self.usersGroup = [CMStore instance].activeGroup;
+        @weakify(self);
         [RACObserve([CMStore instance], activeGroup) subscribeNext:^(UsersGroup *group) {
-            weakSelf.usersGroup = group;
+            @strongify(self);
+            self.usersGroup = group;
         }];
 
         [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
-            [weakSelf playCamment:nextId];
+            @strongify(self);
+            [self playCamment:nextId];
         }];
 
         [[[RACObserve([CMStore instance], cammentRecordingState) filter:^BOOL(NSNumber *state) {
             return state.integerValue != CMCammentRecordingStateNotRecording;
         }] flattenMap:^RACSignal *(NSNumber *state) {
-            typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) {return [RACSignal empty];}
+            @strongify(self);
+            if (!self) {return [RACSignal empty];}
             CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
 
             if (cammentRecordingState == CMCammentRecordingStateFinished) {
@@ -96,12 +98,12 @@
                 RACObserve(self, cammentsBlockNodePresenter.items),
                 RACObserve([CMStore instance], currentShowTimeInterval)
         ]] subscribeNext:^(RACTuple *tuple) {
-            typeof(self) strongSelf = weakSelf;
-            if (!strongSelf) {return;}
+            @strongify(self);
+            if (!self) {return;}
             CMPresentationState *state = [CMPresentationState new];
             state.items = tuple.first;
             state.timestamp = [tuple.second unsignedIntegerValue];
-            [strongSelf.presentationPlayerInteractor update:state];
+            [self.presentationPlayerInteractor update:state];
         }];
     }
 
@@ -112,11 +114,17 @@
     [self.recorderInteractor configureCamera];
     [self.output presenterDidRequestViewPreviewView];
     [self.output setCammentsBlockNodeDelegate:_cammentsBlockNodePresenter];
-    [self.loaderInteractor fetchCachedCamments:_show.uuid];
+    [self updateChatWithActiveGroup];
+}
+
+- (void)updateChatWithActiveGroup {
+    _cammentsBlockNodePresenter.items = @[];
+    [self reloadCamments];
+    [self.loaderInteractor fetchCachedCamments:self.usersGroup.uuid];
     [self setupPresentationInstruction];
 }
 
-- (void)updateCameraOrientation:(enum AVCaptureVideoOrientation)orientation {
+- (void)updateCameraOrientation:(AVCaptureVideoOrientation)orientation {
     [self.recorderInteractor updateDeviceOrientation:orientation];
 }
 
@@ -173,11 +181,12 @@
     if (asset) {
         if (CMTimeGetSeconds(asset.duration) < 0.3) {return;}
         NSString *groupUUID = [self.usersGroup uuid];
-        Camment *camment = [[Camment alloc] initWithShowUUID:self.show.uuid
-                                              usersGroupUUID:groupUUID
+        Camment *camment = [[Camment alloc] initWithShowUuid:self.show.uuid
+                                               userGroupUuid:groupUUID
                                                         uuid:uuid
                                                    remoteURL:nil
                                                     localURL:nil
+                                                thumbnailURL:nil
                                                   localAsset:asset];
         [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
     }
@@ -185,7 +194,7 @@
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
 
-    RACSignal<UsersGroup *> *verifyUserGroup = [RACSignal empty];
+    RACSignal<UsersGroup *> *verifyUserGroup = nil;
 
     if (self.usersGroup) {
         verifyUserGroup = [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
@@ -199,11 +208,10 @@
     }
 
     [[[verifyUserGroup flattenMap:^RACSignal *(UsersGroup *groupToSend) {
-        Camment *cammentToUpload = [[[[[[CammentBuilder new]
-                withUuid:uuid]
+        Camment *cammentToUpload = [[[[[[CammentBuilder new] withUuid:uuid]
                 withLocalURL:url.absoluteString]
-                withShowUUID:self.show.uuid]
-                withUsersGroupUUID:groupToSend.uuid]
+                withShowUuid:self.show.uuid]
+                withUserGroupUuid:groupToSend.uuid]
                 build];
         return [self.interactor uploadCamment:cammentToUpload];
     }] deliverOnMainThread] subscribeNext:^(Camment *uploadedCamment) {
@@ -227,7 +235,7 @@
             }];
         }
         self.cammentsBlockNodePresenter.items = mutableCamments.copy;
-    } error:^(NSError *error) {
+    }                               error:^(NSError *error) {
 
     }];
 }
@@ -247,9 +255,12 @@
 
     BOOL isNewItem = filteredItemsArray.count == 0;
 
-    if (([camment.usersGroupUUID isEqualToString:[self.usersGroup uuid]]
-            || [camment.showUUID isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
-            && isNewItem) {
+    if (
+            ([camment.userGroupUuid isEqualToString:[self.usersGroup uuid]]
+                    || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
+                    &&
+                    isNewItem
+            ) {
         [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
     }
 }
@@ -264,7 +275,7 @@
     if ([CMStore instance].isFBConnected) {
         [[CMInvitationWireframe new] presentInViewController:self.wireframe.parentViewController];
     } else {
-        [self.output setDisplayWaitingHUD:YES];
+        [self.output showLoadingHUD];
         [_authInteractor signInWithFacebookProvider:(id) self.output];
     }
 }
@@ -273,17 +284,23 @@
     CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
     [[CammentSDK instance] connectUserWithIdentity:fbIdentity
                                            success:^{
-                                               [self.output setDisplayWaitingHUD:NO];
-                                               [self inviteFriendsAction];
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [self.output hideLoadingHUD];
+                                                   [self inviteFriendsAction];
+                                               });
                                            }
                                              error:^(NSError *error) {
-                                                 [self.output setDisplayWaitingHUD:NO];
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     [self.output hideLoadingHUD];
+                                                 });
                                                  NSLog(@"Error %@", error);
                                              }];
 }
 
 - (void)authInteractorFailedToSignIn:(NSError *)error {
-    [self.output setDisplayWaitingHUD:NO];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.output hideLoadingHUD];
+    });
     NSLog(@"Error %@", error);
 }
 

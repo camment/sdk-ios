@@ -8,6 +8,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
 
 @class SCImageView;
@@ -19,5 +20,5 @@
 - (UIInterfaceOrientationMask)contentPossibleOrientationMask;
 - (void)inviteFriendsAction;
 
-- (void)updateCameraOrientation:(enum AVCaptureVideoOrientation)orientation;
+- (void)updateCameraOrientation:(AVCaptureVideoOrientation)orientation;
 @end

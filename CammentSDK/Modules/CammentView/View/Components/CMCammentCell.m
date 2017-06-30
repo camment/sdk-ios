@@ -33,7 +33,7 @@
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     [UIView animateWithDuration:0.5 animations:^{
-        CGRect frame = CGRectMake(
+        _cammentNode.frame = CGRectMake(
                 [context finalFrameForNode:self.cammentNode].origin.x,
                 [context finalFrameForNode:self.cammentNode].origin.y,
                 _expanded ? 90.0f : 45.0f,

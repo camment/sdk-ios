@@ -35,7 +35,7 @@ NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 - (CammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename {
     NSString *filepath = [[NSBundle bundleForClass:[self class]] pathForResource:filename ofType:@"mp4"];
     Camment *camment = [[[[[CammentBuilder new]
-            withShowUUID:kCMPresentationBuilderUtilityAnyShowUUID]
+            withShowUuid:kCMPresentationBuilderUtilityAnyShowUUID]
             withUuid:[NSUUID new].UUIDString.lowercaseString]
             withLocalURL:filepath] build];
     return [CammentsBlockItem cammentWithCamment:camment];

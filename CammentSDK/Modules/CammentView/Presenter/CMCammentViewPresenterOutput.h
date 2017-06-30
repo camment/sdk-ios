@@ -15,5 +15,4 @@
 - (void)setCammentsBlockNodeDelegate:(id<CMCammentsBlockDelegate>)delegate;
 - (void)presenterDidRequestViewPreviewView;
 
-- (void)setDisplayWaitingHUD:(BOOL)displayHUD;
 @end

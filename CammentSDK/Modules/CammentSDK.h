@@ -22,17 +22,17 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 
 + (CammentSDK * _Nonnull)instance;
 
-- (void)configureWithApiKey:(NSString *)apiKey;
+- (void)configureWithApiKey:(NSString * _Nonnull)apiKey;
 
-- (void)connectUserWithIdentity:(CMCammentIdentity *)identity
+- (void)connectUserWithIdentity:(CMCammentIdentity * _Nonnull)identity
                         success:(void (^ _Nullable)())successBlock
-                          error:(void (^ _Nullable)(NSError *error))errorBlock;
+                          error:(void (^ _Nullable)(NSError * _Nullable error))errorBlock;
 
-- (void)applicationDidBecomeActive:(UIApplication *)application;
+- (void)applicationDidBecomeActive:(UIApplication * _Nonnull)application;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions;
+- (BOOL)application:(UIApplication * _Nonnull)application didFinishLaunchingWithOptions:(NSDictionary * _Nullable)launchOptions;
 
-- (BOOL)application:(UIApplication *)application
-            openURL:(NSURL *)url
-            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options;
+- (BOOL)application:(UIApplication * _Nonnull)application
+            openURL:(NSURL * _Nonnull)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> * _Nullable)options;
 @end

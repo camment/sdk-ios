@@ -219,7 +219,7 @@
                                             completion:^{
                                                 if (self.isOnboardingRunning) {
                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [self showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                                                        [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
                                                     });
                                                 }
                                             }];
@@ -383,6 +383,7 @@
         case CMOnboardingAlertWouldYouLikeToChatAlert:break;
         case CMOnboardingAlertWhatIsCammentTooltip:break;
         case CMOnboardingAlertTapAndHoldToRecordTooltip:
+            [self showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
             break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
             [self showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];

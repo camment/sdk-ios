@@ -149,7 +149,7 @@
 }
 
 - (void)didPressCammentButton {
-    [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+    [self hideOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
     [[CMStore instance] setCammentRecordingState:CMCammentRecordingStateRecording];
 }
 

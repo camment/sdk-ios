@@ -40,6 +40,7 @@
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) Show *show;
 @property(nonatomic, strong) UsersGroup *usersGroup;
+@property(nonatomic, assign) BOOL isOnboardingRunning;
 
 @end
 
@@ -65,6 +66,9 @@
         [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
             @strongify(self);
             [self playCamment:nextId];
+            if (self.isOnboardingRunning && [nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
+                [self completeActionForOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+            }
         }];
 
         [[[RACObserve([CMStore instance], cammentRecordingState) filter:^BOOL(NSNumber *state) {
@@ -115,6 +119,15 @@
     [self.output presenterDidRequestViewPreviewView];
     [self.output setCammentsBlockNodeDelegate:_cammentsBlockNodePresenter];
     [self updateChatWithActiveGroup];
+}
+
+- (void)readyToShowOnboarding {
+    [self runOnboarding];
+}
+
+- (void)runOnboarding {
+    _isOnboardingRunning = YES;
+    [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
 }
 
 - (void)updateChatWithActiveGroup {
@@ -188,7 +201,14 @@
                                                     localURL:nil
                                                 thumbnailURL:nil
                                                   localAsset:asset];
-        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
+        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]
+                                            completion:^{
+                                                if (self.isOnboardingRunning) {
+                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                        [self.output showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                                                    });
+                                                }
+                                            }];
     }
 }
 
@@ -261,12 +281,14 @@
                     &&
                     isNewItem
             ) {
-        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]];
+        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment] completion:^{
+        }];
     }
 }
 
 - (void)didReceiveNewAds:(Ads *)ads {
-    [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem adsWithAds:ads]];
+    [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem adsWithAds:ads] completion:^{
+    }];
 }
 
 - (void)inviteFriendsAction {
@@ -302,6 +324,33 @@
         [self.output hideLoadingHUD];
     });
     NSLog(@"Error %@", error);
+}
+
+- (void)completeActionForOnboardingAlert:(CMOnboardingAlertType)type {
+    [self.output hideOnboardingAlert:type];
+    switch (type) {
+
+        case CMOnboardingAlertNone:
+            break;
+        case CMOnboardingAlertWouldYouLikeToChatAlert:break;
+        case CMOnboardingAlertWhatIsCammentTooltip:break;
+        case CMOnboardingAlertTapAndHoldToRecordTooltip:
+            break;
+        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
+            [self.output showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+            break;
+        case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
+            break;
+        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:break;
+        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:break;
+        case CMOnboardingAlertTapToPlayCamment:
+            [self.output showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+            break;
+    }
+}
+
+- (void)cancelActionForOnboardingAlert:(CMOnboardingAlertType)type {
+
 }
 
 @end

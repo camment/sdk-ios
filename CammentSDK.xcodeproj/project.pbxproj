@@ -124,6 +124,7 @@
 		6FFABA9F2ECE00B0C4A97C6C /* CMUsergroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB93673769BADA035E7B5 /* CMUsergroup.m */; };
 		6FFABABDDD22AA365C80142B /* ServerMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB06961ADBBAE2DE0FCFB /* ServerMessage.m */; };
 		6FFABAD0C40F86DF9453E2B8 /* CMDevcammentClient.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB1A67D2B9A2D028B071F /* CMDevcammentClient.h */; };
+		6FFABAD48E398354F058BA5A /* CMOnboardingAlertType.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB28886CC5E9C0BD55405 /* CMOnboardingAlertType.h */; };
 		6FFABADBCB70C5DFE0D52C36 /* CMCammentInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABCB55AED5934E5D09C8B /* CMCammentInRequest.m */; };
 		6FFABB2D0F6288E265CDB55F /* UIViewController+topVisibleViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB80CABE0FD0B8F83D73D /* UIViewController+topVisibleViewController.m */; };
 		6FFABB4DDEEF9B5E54ECA96F /* CMInvitationListPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABE765100C80DB3D197F9 /* CMInvitationListPresenter.h */; };
@@ -418,6 +419,7 @@
 		954F48A81EDF055C003AE18D /* burger.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A51EDF055C003AE18D /* burger.gif */; };
 		954F48A91EDF055C003AE18D /* sushi.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A61EDF055C003AE18D /* sushi.gif */; };
 		954F48AA1EDF055C003AE18D /* wolt.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A71EDF055C003AE18D /* wolt.gif */; };
+		955B50F61F0A34F000E0B7A2 /* CammentSDK.strings in Resources */ = {isa = PBXBuildFile; fileRef = 955B50F81F0A34F000E0B7A2 /* CammentSDK.strings */; };
 		959311F61EE1652B00948B79 /* netflix-1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F31EE1652B00948B79 /* netflix-1.mp4 */; };
 		959311F71EE1652B00948B79 /* netflix-2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F41EE1652B00948B79 /* netflix-2.mp4 */; };
 		959311F81EE1652B00948B79 /* netflix-3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F51EE1652B00948B79 /* netflix-3.mp4 */; };
@@ -590,6 +592,7 @@
 		6FFAB217C312D71DDD38ADD8 /* CMCammentRecorderPreviewNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentRecorderPreviewNode.m; sourceTree = "<group>"; };
 		6FFAB23A23D44B3355E1D587 /* CMFBFetchFriendsInteractor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMFBFetchFriendsInteractor.h; sourceTree = "<group>"; };
 		6FFAB266A41D57DE455586CF /* InvitationBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InvitationBuilder.m; sourceTree = "<group>"; };
+		6FFAB28886CC5E9C0BD55405 /* CMOnboardingAlertType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMOnboardingAlertType.h; sourceTree = "<group>"; };
 		6FFAB2D883D293403ADD41AB /* CMUserInAddToGroupRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMUserInAddToGroupRequest.h; sourceTree = "<group>"; };
 		6FFAB329FBCB46B7D415D4FA /* CMInvitation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMInvitation.h; sourceTree = "<group>"; };
 		6FFAB368F1318D5EEA906367 /* CMCammentsLoaderInteractorInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentsLoaderInteractorInput.h; sourceTree = "<group>"; };
@@ -719,6 +722,7 @@
 		954F48A51EDF055C003AE18D /* burger.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = burger.gif; sourceTree = "<group>"; };
 		954F48A61EDF055C003AE18D /* sushi.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = sushi.gif; sourceTree = "<group>"; };
 		954F48A71EDF055C003AE18D /* wolt.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = wolt.gif; sourceTree = "<group>"; };
+		955B50F71F0A34F000E0B7A2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/CammentSDK.strings; sourceTree = "<group>"; };
 		959311F31EE1652B00948B79 /* netflix-1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-1.mp4"; sourceTree = "<group>"; };
 		959311F41EE1652B00948B79 /* netflix-2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-2.mp4"; sourceTree = "<group>"; };
 		959311F51EE1652B00948B79 /* netflix-3.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-3.mp4"; sourceTree = "<group>"; };
@@ -978,6 +982,7 @@
 				9CCDED7691C7719413E5F30B /* CMCammentViewPresenterInput.h */,
 				B72CF6A8B9C3347E9B79CEAD /* CMCammentViewPresenterOutput.h */,
 				6FFABD24118B3B07DD2DF3F7 /* Components */,
+				6FFAB28886CC5E9C0BD55405 /* CMOnboardingAlertType.h */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -1505,6 +1510,7 @@
 				95CD2D3A1ED8494600DB7660 /* ShowsList */,
 				B00496928C6742A35D75AFED /* CammentView */,
 				81B6C3C1FD67F3AE37861B60 /* Invitation */,
+				955B50F81F0A34F000E0B7A2 /* CammentSDK.strings */,
 			);
 			path = Modules;
 			sourceTree = "<group>";
@@ -1992,6 +1998,7 @@
 				6FFAB7578514E6C456D84E4F /* UIViewController+topVisibleViewController.h in Headers */,
 				6FFAB51651B2DF46E944CDAD /* CMLoadingHUD.h in Headers */,
 				6FFABF982F2CC3CBA903D875 /* UIViewController+LoadingHUD.h in Headers */,
+				6FFABAD48E398354F058BA5A /* CMOnboardingAlertType.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2133,6 +2140,7 @@
 				6FFAB981E15DB5B23CE2276A /* UsersGroup.value in Resources */,
 				6FFAB2FA13ACD64A4B170FCB /* ServerMessage.adtValue in Resources */,
 				6FFAB6956CBFBA162EB61CE5 /* Invitation.value in Resources */,
+				955B50F61F0A34F000E0B7A2 /* CammentSDK.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2415,6 +2423,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		955B50F81F0A34F000E0B7A2 /* CammentSDK.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				955B50F71F0A34F000E0B7A2 /* en */,
+			);
+			name = CammentSDK.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		952ADB2B1EFBEE1100DB8ABB /* Debug */ = {

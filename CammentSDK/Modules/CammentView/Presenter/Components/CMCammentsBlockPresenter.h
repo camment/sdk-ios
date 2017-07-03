@@ -16,5 +16,5 @@
 
 - (void)playCamment:(NSString *)cammentId;
 
-- (void)insertNewItem:(CammentsBlockItem *)item;
+- (void)insertNewItem:(CammentsBlockItem *)item completion:(void (^)())completion;
 @end

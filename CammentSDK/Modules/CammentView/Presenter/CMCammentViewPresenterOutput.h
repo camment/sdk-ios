@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CMOnboardingAlertType.h"
 
 @protocol CMCammentsBlockDelegate;
 
@@ -14,5 +15,8 @@
 
 - (void)setCammentsBlockNodeDelegate:(id<CMCammentsBlockDelegate>)delegate;
 - (void)presenterDidRequestViewPreviewView;
+
+- (void)showOnboardingAlert:(CMOnboardingAlertType)type;
+- (void)hideOnboardingAlert:(CMOnboardingAlertType)type;
 
 @end

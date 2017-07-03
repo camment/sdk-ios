@@ -15,9 +15,13 @@
 #import "CMCammentRecorderPreviewNode.h"
 #import "UIColorMacros.h"
 #import "MBProgressHUD.h"
+#import "CammentSDK.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
+
+@property CMOnboardingAlertType currentOnboardingAlert;
 @property(nonatomic, strong) AMPopTip *popTip;
+
 @end
 
 @implementation CMCammentViewController
@@ -25,6 +29,7 @@
 - (instancetype)init {
     self = [super initWithNode:[CMCammentViewNode new]];
     if (self) {
+        self.currentOnboardingAlert = CMOnboardingAlertNone;
     }
     return self;
 }
@@ -50,9 +55,16 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self updateCameraOrientation];
+    [self.presenter readyToShowOnboarding];
 }
 
-- (void)showToolTip {
+- (void)showToolTip:(NSString *)text
+        anchorFrame:(CGRect)frame
+          direction:(AMPopTipDirection)direction {
+    if (self.popTip) {
+        [self.popTip hideForced:YES];
+    }
+
     self.popTip = [AMPopTip new];
     self.popTip.padding = 9.0f;
     self.popTip.arrowSize = CGSizeMake(18, 10);
@@ -60,39 +72,45 @@
     self.popTip.edgeMargin = 14.0f;
     self.popTip.popoverColor = UIColorFromRGB(0x9B9B9B);
     self.popTip.radius = 8.0f;
-    self.popTip.shouldDismissOnTapOutside = YES;
+    self.popTip.shouldDismissOnSwipeOutside = NO;
+    self.popTip.shouldDismissOnTap = YES;
+    self.popTip.shouldDismissOnTapOutside = NO;
     self.popTip.actionFloatOffset = 3.0f;
-    [self.popTip showText:@"Tap & hold to record a mini video (camment)"
-                direction:AMPopTipDirectionDown
+
+    [self.popTip showText:text
+                direction:direction
                  maxWidth:self.view.frame.size.width - 60.0f
                    inView:self.view
-                fromFrame:self.node.cammentButton.frame];
+                fromFrame:frame];
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [coordinator animateAlongsideTransition:nil completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
+    CMOnboardingAlertType alertType = _currentOnboardingAlert;
+
+    [self hideOnboardingAlert:[self currentOnboardingAlert]];
+    [coordinator animateAlongsideTransition:nil completion:^(id <UIViewControllerTransitionCoordinatorContext> context) {
         [self updateCameraOrientation];
+        [self showOnboardingAlert:alertType];
     }];
 }
 
 - (void)updateCameraOrientation {
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     switch (orientation) {
-        case UIDeviceOrientationLandscapeRight:
-        case UIDeviceOrientationUnknown:
-            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationLandscapeLeft];
+        case UIInterfaceOrientationUnknown:
             break;
-        case UIDeviceOrientationPortrait:
-            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationPortrait];
+        case UIInterfaceOrientationPortrait:
+            [self.presenter updateCameraOrientation:AVCaptureVideoOrientationPortrait];
             break;
-        case UIDeviceOrientationPortraitUpsideDown:
-            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationPortraitUpsideDown];
+        case UIInterfaceOrientationPortraitUpsideDown:
+            [self.presenter updateCameraOrientation:AVCaptureVideoOrientationPortraitUpsideDown];
             break;
-        case UIDeviceOrientationLandscapeLeft:
-            [self.presenter updateCameraOrientation: AVCaptureVideoOrientationLandscapeRight];
+        case UIInterfaceOrientationLandscapeLeft:
+            [self.presenter updateCameraOrientation:AVCaptureVideoOrientationLandscapeLeft];
             break;
-        case UIDeviceOrientationFaceUp:break;
-        case UIDeviceOrientationFaceDown:break;
+        case UIInterfaceOrientationLandscapeRight:
+            [self.presenter updateCameraOrientation:AVCaptureVideoOrientationLandscapeRight];
+            break;
     };
 }
 
@@ -115,6 +133,7 @@
     if (self.node.showCammentsBlock) {
         self.node.showCammentsBlock = NO;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
+        [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
     }
 }
 
@@ -122,10 +141,12 @@
     if (!self.node.showCammentsBlock) {
         self.node.showCammentsBlock = YES;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
+        [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
     }
 }
 
 - (void)didPressCammentButton {
+    [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
     [[CMStore instance] setCammentRecordingState:CMCammentRecordingStateRecording];
 }
 
@@ -143,6 +164,69 @@
 
 - (void)handleShareAction {
     [_presenter inviteFriendsAction];
+}
+
+- (void)showOnboardingAlert:(CMOnboardingAlertType)type {
+    self.currentOnboardingAlert = type;
+
+    CGRect frame = CGRectNull;
+    NSString *text = @"";
+    AMPopTipDirection direction = AMPopTipDirectionDown;
+
+    switch (type) {
+        case CMOnboardingAlertNone:
+            break;
+        case CMOnboardingAlertWouldYouLikeToChatAlert:
+            break;
+        case CMOnboardingAlertWhatIsCammentTooltip:
+            break;
+        case CMOnboardingAlertTapAndHoldToRecordTooltip:
+            frame = self.node.cammentButton.frame;
+            text = CMLocalized(@"help.tap_and_hold_to_record");
+            break;
+        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
+        {
+            ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            if (!node) {return;}
+            frame = node.frame;
+            frame = [self.view convertRect:frame fromView:node.view];
+            text = CMLocalized(@"help.swipe_left_to_hide_camments");
+            direction = AMPopTipDirectionRight;
+        }
+            break;
+        case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
+        {
+            ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            if (!node) {return;}
+            frame = node.frame;
+            frame = [self.view convertRect:frame fromView:node.view];
+            frame.origin.x = 10.0f;
+            frame.size.width = 0.0f;
+            text = CMLocalized(@"help.swipe_right_to_show_camments");
+            direction = AMPopTipDirectionRight;
+        }
+            break;
+        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
+            break;
+        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
+            break;
+        case CMOnboardingAlertTapToPlayCamment: {
+            ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            if (!node) {return;}
+            frame = node.frame;
+            frame = [self.view convertRect:frame fromView:node.view];
+            text = CMLocalized(@"help.tap_to_play");
+        }
+            break;
+    }
+
+    if (CGRectIsNull(frame)) {return;}
+    [self showToolTip:text anchorFrame:frame direction:direction];
+}
+
+- (void)hideOnboardingAlert:(CMOnboardingAlertType)type {
+    self.currentOnboardingAlert = CMOnboardingAlertNone;
+    [self.popTip hide];
 }
 
 @end

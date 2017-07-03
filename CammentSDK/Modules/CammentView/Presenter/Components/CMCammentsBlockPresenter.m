@@ -100,7 +100,7 @@
     }];
 }
 
-- (void)insertNewItem:(CammentsBlockItem *)item {
+- (void)insertNewItem:(CammentsBlockItem *)item completion:(void (^)())completion {
     [self.updatesQueue addOperationWithBlock:^{
         [_collectionNode performBatchAnimated:YES updates:^{
             self.items = [@[item] arrayByAddingObjectsFromArray:[_items copy]];
@@ -108,6 +108,9 @@
                                                        [NSIndexPath indexPathForItem:0 inSection:0]
                                                        ]];
         } completion:^(BOOL completed){
+            if (completion) {
+                completion();
+            }
         }];
     }];
 }

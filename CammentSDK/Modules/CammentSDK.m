@@ -247,7 +247,10 @@
     [[CMAnalytics instance] configureAWSMobileAnalytics];
     self.authService = [[CMCognitoAuthService alloc] init];
     [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateUserInfo) name:FBSDKProfileDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateUserInfo)
+                                                 name:FBSDKProfileDidChangeNotification
+                                               object:nil];
 }
 
 - (void)configureIoTListener:(NSString *)userId {
@@ -261,26 +264,24 @@
     [listener connect];
     [listener.messageSubject subscribeNext:^(ServerMessage *message) {
         [message matchInvitation:^(Invitation *invitation) {
-            if (![invitation.userGroupUuid isEqualToString:[CMStore instance].cognitoUserId]) {
+            if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) {
                 [self presentChatInvitation:invitation];
             }
-        }                camment:^(Camment *camment) {
-
-        }];
+        }                camment:^(Camment *camment) {}];
     }];
 }
 
 - (void)presentChatInvitation:(Invitation *)invitation {
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"User invited you to a private chat"
-                                                                             message:@"Would you like to join the conversation?"
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"User invited you to a private chat")
+                                                                             message:CMLocalized(@"Would you like to join the conversation?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:@"Join" style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UsersGroup *usersGroup = [[[UsersGroupBuilder new] withUuid:invitation.userGroupUuid] build];
         [[CMStore instance] setActiveGroup:usersGroup];
     }]];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:@"No" style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
 
     }]];
 

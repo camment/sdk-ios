@@ -83,7 +83,15 @@
 }
 
 - (void)cancelRecording {
-    [recorder.session cancelSession:nil];
+    SCRecordSession *recordSession = recorder.session;
+
+    if (recordSession != nil) {
+        [recordSession removeAllSegments];
+        recorder.session = nil;
+        [recordSession cancelSession:nil];
+        [recorder pause];
+        recorder.session = [SCRecordSession recordSession];
+    }
 }
 
 - (void)recorder:(SCRecorder *__nonnull)_recorder didCompleteSegment:(SCRecordSessionSegment *__nullable)segment inSession:(SCRecordSession *__nonnull)session error:(NSError *__nullable)error {

@@ -10,6 +10,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import <UIKit/UIKit.h>
+#import "CMOnboardingAlertType.h"
 
 @class SCImageView;
 
@@ -21,4 +22,9 @@
 - (void)inviteFriendsAction;
 
 - (void)updateCameraOrientation:(AVCaptureVideoOrientation)orientation;
+
+- (void)completeActionForOnboardingAlert:(CMOnboardingAlertType)type;
+- (void)cancelActionForOnboardingAlert:(CMOnboardingAlertType)type;
+
+- (void)readyToShowOnboarding;
 @end

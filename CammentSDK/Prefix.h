@@ -13,4 +13,8 @@
 #import <CocoaLumberjack/CocoaLumberjack.h>
 static const DDLogLevel ddLogLevel = DDLogLevelAll;
 
+@class CammentSDK;
+
+#define CMLocalized(str) NSLocalizedStringFromTableInBundle(str, @"CammentSDK", [NSBundle bundleForClass:[CammentSDK class]], @"")
+
 #endif /* Prefix_h */

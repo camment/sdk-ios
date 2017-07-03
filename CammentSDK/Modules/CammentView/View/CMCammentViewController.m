@@ -60,7 +60,8 @@
 
 - (void)showToolTip:(NSString *)text
         anchorFrame:(CGRect)frame
-          direction:(AMPopTipDirection)direction {
+          direction:(AMPopTipDirection)direction
+              delay:(NSTimeInterval)delay {
     if (self.popTip) {
         [self.popTip hideForced:YES];
     }
@@ -77,11 +78,13 @@
     self.popTip.shouldDismissOnTapOutside = NO;
     self.popTip.actionFloatOffset = 3.0f;
 
-    [self.popTip showText:text
-                direction:direction
-                 maxWidth:self.view.frame.size.width - 60.0f
-                   inView:self.view
-                fromFrame:frame];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        [self.popTip showText:text
+                    direction:direction
+                     maxWidth:self.view.frame.size.width - 60.0f
+                       inView:self.view
+                    fromFrame:frame];
+    });
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
@@ -132,16 +135,16 @@
 - (void)hideCamments {
     if (self.node.showCammentsBlock) {
         self.node.showCammentsBlock = NO;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
-        [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{}];
+        [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
     }
 }
 
 - (void)showCamments {
     if (!self.node.showCammentsBlock) {
         self.node.showCammentsBlock = YES;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
-        [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{}];
+        [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
     }
 }
 
@@ -163,7 +166,15 @@
 }
 
 - (void)handleShareAction {
+    [_presenter completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
     [_presenter inviteFriendsAction];
+}
+
+- (void)didCompleteLayoutTransition {
+    if (self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeRightToShowCammentsTooltip
+            || self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip ) {
+        [self.presenter completeActionForOnboardingAlert:self.presenter.currentOnboardingStep];
+    }
 }
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
@@ -172,6 +183,7 @@
     CGRect frame = CGRectNull;
     NSString *text = @"";
     AMPopTipDirection direction = AMPopTipDirectionDown;
+    NSTimeInterval delay = 0.5;
 
     switch (type) {
         case CMOnboardingAlertNone:
@@ -184,8 +196,7 @@
             frame = self.node.cammentButton.frame;
             text = CMLocalized(@"help.tap_and_hold_to_record");
             break;
-        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
-        {
+        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
             if (!node) {return;}
             frame = node.frame;
@@ -194,8 +205,7 @@
             direction = AMPopTipDirectionRight;
         }
             break;
-        case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
-        {
+        case CMOnboardingAlertSwipeRightToShowCammentsTooltip: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
             if (!node) {return;}
             frame = node.frame;
@@ -204,9 +214,14 @@
             frame.size.width = 0.0f;
             text = CMLocalized(@"help.swipe_right_to_show_camments");
             direction = AMPopTipDirectionRight;
+            delay = 1;
         }
             break;
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
+            frame = self.node.cammentButton.frame;
+            text = CMLocalized(@"help.swipe_down_to_invite");
+            direction = AMPopTipDirectionLeft;
+            delay = 1;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
             break;
@@ -221,10 +236,11 @@
     }
 
     if (CGRectIsNull(frame)) {return;}
-    [self showToolTip:text anchorFrame:frame direction:direction];
+    [self showToolTip:text anchorFrame:frame direction:direction delay:delay];
 }
 
 - (void)hideOnboardingAlert:(CMOnboardingAlertType)type {
+    if (_currentOnboardingAlert != type) { return; }
     self.currentOnboardingAlert = CMOnboardingAlertNone;
     [self.popTip hide];
 }

@@ -27,4 +27,6 @@
 - (void)cancelActionForOnboardingAlert:(CMOnboardingAlertType)type;
 
 - (void)readyToShowOnboarding;
+
+- (CMOnboardingAlertType)currentOnboardingStep;
 @end

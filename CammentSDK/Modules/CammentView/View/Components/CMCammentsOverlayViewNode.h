@@ -11,9 +11,10 @@
 @class CMCammentRecorderPreviewNode;
 @protocol CMContentViewerNode;
 
-@protocol CMCammentsOverlayViewNodeDelegate
+@protocol CMCammentsOverlayViewNodeDelegate<NSObject>
 
 - (void)handleShareAction;
+- (void)didCompleteLayoutTransition;
 
 @end
 

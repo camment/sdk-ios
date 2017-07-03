@@ -136,6 +136,9 @@
         [snapshot removeFromSuperview];
         self.cammentsBlockNode.frame = cammentBlockFinalFrame;
         [context completeTransition:YES];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
+            [self.delegate didCompleteLayoutTransition];
+        }
     }];
 }
 

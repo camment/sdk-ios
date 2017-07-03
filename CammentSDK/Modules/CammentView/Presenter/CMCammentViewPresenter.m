@@ -40,7 +40,10 @@
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) Show *show;
 @property(nonatomic, strong) UsersGroup *usersGroup;
+
 @property(nonatomic, assign) BOOL isOnboardingRunning;
+@property(nonatomic, assign) CMOnboardingAlertMaskType completedOnboardingSteps;
+@property(nonatomic, assign) CMOnboardingAlertType currentOnboardingStep;
 
 @end
 
@@ -57,6 +60,9 @@
         self.authInteractor.output = self;
         self.presentationPlayerInteractor.instructionOutput = self;
         self.usersGroup = [CMStore instance].activeGroup;
+        self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
+        self.currentOnboardingStep = CMOnboardingAlertNone;
+
         @weakify(self);
         [RACObserve([CMStore instance], activeGroup) subscribeNext:^(UsersGroup *group) {
             @strongify(self);
@@ -66,8 +72,16 @@
         [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
             @strongify(self);
             [self playCamment:nextId];
-            if (self.isOnboardingRunning && [nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
-                [self completeActionForOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+            if (self.isOnboardingRunning) {
+                if ([nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
+                    [self completeActionForOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                } else {
+                    [self.output hideOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                }
+
+                if (self.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip) {
+                    [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+                }
             }
         }];
 
@@ -127,7 +141,7 @@
 
 - (void)runOnboarding {
     _isOnboardingRunning = YES;
-    [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+    [self showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
 }
 
 - (void)updateChatWithActiveGroup {
@@ -205,7 +219,7 @@
                                             completion:^{
                                                 if (self.isOnboardingRunning) {
                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [self.output showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                                                        [self showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
                                                     });
                                                 }
                                             }];
@@ -326,10 +340,44 @@
     NSLog(@"Error %@", error);
 }
 
-- (void)completeActionForOnboardingAlert:(CMOnboardingAlertType)type {
-    [self.output hideOnboardingAlert:type];
-    switch (type) {
+- (void)showOnboardingAlert:(CMOnboardingAlertType)type {
 
+    CMOnboardingAlertMaskType maskType = (CMOnboardingAlertMaskType) (1 << type);
+    BOOL shouldDisplayAlert = YES;
+
+    switch (type) {
+        case CMOnboardingAlertNone:break;
+        case CMOnboardingAlertWouldYouLikeToChatAlert:break;
+        case CMOnboardingAlertWhatIsCammentTooltip:break;
+        case CMOnboardingAlertTapAndHoldToRecordTooltip:break;
+        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
+            shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertTapToPlayMaskCamment);
+            break;
+        case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
+            shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertSwipeLeftToHideCammentsMaskTooltip);
+            break;
+        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:break;
+        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:break;
+        case CMOnboardingAlertTapToPlayCamment:
+            shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertTapAndHoldToRecordMaskTooltip);
+            break;
+    }
+
+    if (!(self.completedOnboardingSteps & maskType) && shouldDisplayAlert) {
+        self.currentOnboardingStep = type;
+        [self.output showOnboardingAlert:type];
+    }
+}
+
+- (void)completeActionForOnboardingAlert:(CMOnboardingAlertType)type {
+    if (_currentOnboardingStep != type) {
+        return;
+    }
+
+    self.completedOnboardingSteps = self.completedOnboardingSteps | (1 << type);
+    [self.output hideOnboardingAlert:type];
+
+    switch (type) {
         case CMOnboardingAlertNone:
             break;
         case CMOnboardingAlertWouldYouLikeToChatAlert:break;
@@ -337,20 +385,23 @@
         case CMOnboardingAlertTapAndHoldToRecordTooltip:
             break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
-            [self.output showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+            [self showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
             break;
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
+            [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
             break;
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:break;
         case CMOnboardingAlertTapToPlayCamment:
-            [self.output showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+            [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
             break;
     }
 }
 
 - (void)cancelActionForOnboardingAlert:(CMOnboardingAlertType)type {
-
+    if (_currentOnboardingStep != type) {
+        return;
+    }
 }
 
 @end

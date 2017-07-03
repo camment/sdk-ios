@@ -30,6 +30,7 @@
 		6FB803970582D18A277FC46D /* CMInvitationWireframe.m in Sources */ = {isa = PBXBuildFile; fileRef = 91CE41B5B56322C70487C4CF /* CMInvitationWireframe.m */; };
 		6FFAB02081CFF1CFC9277803 /* UsersGroupBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABD32C21AED8661F9506F /* UsersGroupBuilder.m */; };
 		6FFAB056AC2FEB43EA7EBBA0 /* CMInvitationInRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB7862EBEAC0ED8365380 /* CMInvitationInRequest.h */; };
+		6FFAB0C075DFF214B8B0C391 /* OnboardingState.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB725EBD313E75859A6A4 /* OnboardingState.m */; };
 		6FFAB118AA962246C81B116D /* CMCammentRecorderInteractorOutput.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB467FFC8DFD45FE34D67 /* CMCammentRecorderInteractorOutput.h */; };
 		6FFAB11E3944ED43F40A1656 /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABE654C9BE70979379FB5 /* User.m */; };
 		6FFAB1380B8B4EF638D8FA2B /* ads.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB9479692BE245A168DB2 /* ads.gif */; };
@@ -78,6 +79,7 @@
 		6FFAB5873D1CB5B3AEBE3B71 /* CMCammentsLoaderInteractorInput.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB368F1318D5EEA906367 /* CMCammentsLoaderInteractorInput.h */; };
 		6FFAB5B5ED1F7899D0BB19EA /* CMUserinfoInRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFABC1EACB06C21800B3B19 /* CMUserinfoInRequest.m */; };
 		6FFAB5D57FD5F9BEB72CFE79 /* CMCammentNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB544590B231C1801DC15 /* CMCammentNode.m */; };
+		6FFAB5EBA361FC858CEFCC9C /* OnboardingState.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABBCC3F3A5AAAD4A4BAB4 /* OnboardingState.h */; };
 		6FFAB5F4C55CA354FE7A63CC /* CMPresentationInstructionInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB6C6C37763E1438AAFFE /* CMPresentationInstructionInterface.h */; };
 		6FFAB5FA9E3FAD1AF8A8CE79 /* CMCammentsBlockPresenter.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABA9218DA0F2FDAB2F1EF /* CMCammentsBlockPresenter.h */; };
 		6FFAB66EA62BE46700A57799 /* CMCammentsOverlayViewNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB5B9BD4C0BED22773440 /* CMCammentsOverlayViewNode.m */; };
@@ -628,6 +630,7 @@
 		6FFAB6C5F97E3E1B3260DFB8 /* CMCammentsLoaderInteractorOutput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMCammentsLoaderInteractorOutput.h; sourceTree = "<group>"; };
 		6FFAB6C6C37763E1438AAFFE /* CMPresentationInstructionInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationInstructionInterface.h; sourceTree = "<group>"; };
 		6FFAB6E8DC24F4CC8366F726 /* UIViewController+LoadingHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+LoadingHUD.h"; sourceTree = "<group>"; };
+		6FFAB725EBD313E75859A6A4 /* OnboardingState.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OnboardingState.m; sourceTree = "<group>"; };
 		6FFAB72AAB474F84CD5307B1 /* CMPresentationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMPresentationBuilder.h; sourceTree = "<group>"; };
 		6FFAB7317540C1E64F0A5F1B /* CMWebContentPlayerNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMWebContentPlayerNode.h; sourceTree = "<group>"; };
 		6FFAB7560366D03A982EED99 /* CMWebContentPlayerNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMWebContentPlayerNode.m; sourceTree = "<group>"; };
@@ -674,6 +677,7 @@
 		6FFABB97BF66E9F9B89545DD /* ShowType.adtValue */ = {isa = PBXFileReference; lastKnownFileType = file.adtValue; path = ShowType.adtValue; sourceTree = "<group>"; };
 		6FFABB9FF2F0E4FDE41F3436 /* CMInvitation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMInvitation.m; sourceTree = "<group>"; };
 		6FFABBC6B54616984C2577B7 /* CMPositionPresentationInstruction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMPositionPresentationInstruction.m; sourceTree = "<group>"; };
+		6FFABBCC3F3A5AAAD4A4BAB4 /* OnboardingState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OnboardingState.h; sourceTree = "<group>"; };
 		6FFABBDCB10909FA9563F5F1 /* CMUserinfoInRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMUserinfoInRequest.h; sourceTree = "<group>"; };
 		6FFABBF029BB2E8488C80D29 /* CMCammentIdentity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentIdentity.m; sourceTree = "<group>"; };
 		6FFABC1EACB06C21800B3B19 /* CMUserinfoInRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMUserinfoInRequest.m; sourceTree = "<group>"; };
@@ -983,6 +987,8 @@
 				B72CF6A8B9C3347E9B79CEAD /* CMCammentViewPresenterOutput.h */,
 				6FFABD24118B3B07DD2DF3F7 /* Components */,
 				6FFAB28886CC5E9C0BD55405 /* CMOnboardingAlertType.h */,
+				6FFAB725EBD313E75859A6A4 /* OnboardingState.m */,
+				6FFABBCC3F3A5AAAD4A4BAB4 /* OnboardingState.h */,
 			);
 			path = Presenter;
 			sourceTree = "<group>";
@@ -1999,6 +2005,7 @@
 				6FFAB51651B2DF46E944CDAD /* CMLoadingHUD.h in Headers */,
 				6FFABF982F2CC3CBA903D875 /* UIViewController+LoadingHUD.h in Headers */,
 				6FFABAD48E398354F058BA5A /* CMOnboardingAlertType.h in Headers */,
+				6FFAB5EBA361FC858CEFCC9C /* OnboardingState.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2419,6 +2426,7 @@
 				6FFABABDDD22AA365C80142B /* ServerMessage.m in Sources */,
 				6FFABB2D0F6288E265CDB55F /* UIViewController+topVisibleViewController.m in Sources */,
 				6FFAB6B856B076B887CC1B96 /* UIViewController+LoadingHUD.m in Sources */,
+				6FFAB0C075DFF214B8B0C391 /* OnboardingState.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

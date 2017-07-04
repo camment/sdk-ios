@@ -16,6 +16,7 @@
 #import "UIColorMacros.h"
 #import "MBProgressHUD.h"
 #import "CammentSDK.h"
+#import "CMCammentRecorderInteractorInput.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 
@@ -54,8 +55,24 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self.presenter checkIfNeedForOnboarding];
     [self updateCameraOrientation];
-    [self.presenter readyToShowOnboarding];
+}
+
+- (void)askForSetupPermissions {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"setup.use_camment_chat")
+                                                                             message:CMLocalized(@"setup.what_is_camment")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.sounds_fun") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self.presenter setupCameraSession];
+        [self updateCameraOrientation];
+        [self.presenter readyToShowOnboarding];
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [alertController dismissViewControllerAnimated:YES completion:nil];
+    }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)showToolTip:(NSString *)text

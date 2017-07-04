@@ -44,7 +44,7 @@
     }];
 }
 
-- (void)addUsers:(NSArray<User *> *)users group:(UsersGroup *)group {
+- (void)addUsers:(NSArray<User *> *)users group:(UsersGroup *)group showUuid:(NSString *)showUuid {
     CMUserInAddToGroupRequest *usersParameter = [[CMUserInAddToGroupRequest alloc] init];
     usersParameter.userFacebookIdList = [users.rac_sequence map:^id(User *value) {
         return value.fbUserId;
@@ -75,6 +75,7 @@
 
             CMInvitationInRequest *invitationInRequest = [CMInvitationInRequest new];
             invitationInRequest.users = usersParameter.userFacebookIdList;
+            invitationInRequest.showUuid = showUuid;
             [[self.client usergroupsGroupUuidInvitationsPost:usersGroup.uuid body:invitationInRequest]
                     continueWithBlock:^id(AWSTask<id> *invitationTask) {
                         if (invitationTask.error) {

@@ -14,16 +14,18 @@
  */
  
 
-#import "CMInvitationInRequest.h"
+#import "CMUserinfoList.h"
 
-@implementation CMInvitationInRequest
+@implementation CMUserinfoList
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"users": @"users"
+             @"items": @"items"
              };
+}
+
++ (NSValueTransformer *)itemsJSONTransformer {
+	return [NSValueTransformer awsmtl_JSONArrayTransformerWithModelClass:[CMUserinfo class]];
 }
 
 @end

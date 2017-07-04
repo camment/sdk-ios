@@ -3,8 +3,6 @@
  * The name of the input file is ServerMessage.adtValue
  */
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wconversion"
 #if  ! __has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
@@ -104,5 +102,3 @@ typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
 
 @end
 
-
-#pragma clang diagnostic pop

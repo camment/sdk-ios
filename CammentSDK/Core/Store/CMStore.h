@@ -7,6 +7,9 @@
 #import "User.h"
 #import "UsersGroup.h"
 
+@class Show;
+@class CMShowMetadata;
+
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
 typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
@@ -29,6 +32,12 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, copy) UsersGroup *activeGroup;
 
 @property(nonatomic, copy) NSString *cognitoUserId;
+
+@property(nonatomic) BOOL isOnboardingFinished;
+
+@property(nonatomic) CMShowMetadata *currentShowMetadata;
+
+@property(nonatomic, strong) User *currentUser;
 
 + (CMStore *)instance;
 

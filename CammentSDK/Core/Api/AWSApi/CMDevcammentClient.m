@@ -27,6 +27,7 @@
 #import "CMCamment.h"
 #import "CMUsergroup.h"
 #import "CMInvitationInRequest.h"
+#import "CMUserinfoList.h"
 #import "CMUserInAddToGroupRequest.h"
 #import "CMUserinfoInRequest.h"
 
@@ -358,6 +359,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
+- (AWSTask *)usergroupsGroupUuidUsersGet:(NSString *)groupUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/usergroups/{groupUuid}/users"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMUserinfoList class]];
+}
+
 - (AWSTask *)usergroupsGroupUuidUsersPost:(NSString *)groupUuid body:(CMUserInAddToGroupRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -378,6 +401,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:body
+                     responseClass:nil];
+}
+
+- (AWSTask *)userinfoGet {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/userinfo"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
                      responseClass:nil];
 }
 

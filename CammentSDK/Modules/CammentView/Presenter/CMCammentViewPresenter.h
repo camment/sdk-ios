@@ -19,6 +19,7 @@
 
 @class CMCammentViewWireframe;
 @class Show;
+@class CMShowMetadata;
 
 @interface CMCammentViewPresenter : NSObject<
         CMCammentViewPresenterInput,
@@ -33,5 +34,5 @@
 @property (nonatomic) id<CMCammentsLoaderInteractorInput> loaderInteractor;
 @property (nonatomic) id<CMCammentRecorderInteractorInput> recorderInteractor;
 
-- (instancetype)initWithShow:(Show *)show;
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata;
 @end

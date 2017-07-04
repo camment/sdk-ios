@@ -14,16 +14,22 @@
  */
  
 
-#import "CMInvitationInRequest.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMInvitationInRequest
+ 
+/**
+ Userinfo object model.
+ */
+@interface CMUserinfo : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"users": @"users"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
+
+
+@property (nonatomic, strong, nullable) NSString *name;
+
+
+@property (nonatomic, strong, nullable) NSString *picture;
+
 
 @end

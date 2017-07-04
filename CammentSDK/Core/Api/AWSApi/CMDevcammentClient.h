@@ -24,6 +24,7 @@
 #import "CMCamment.h"
 #import "CMUsergroup.h"
 #import "CMInvitationInRequest.h"
+#import "CMUserinfoList.h"
 #import "CMUserInAddToGroupRequest.h"
 #import "CMUserinfoInRequest.h"
 
@@ -263,11 +264,28 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
+ 
+ return type: CMUserinfoList *
+ */
+- (AWSTask *)usergroupsGroupUuidUsersGet:( NSString *)groupUuid;
+
+/**
+ 
+ 
+ @param groupUuid 
  @param body 
  
  return type: 
  */
 - (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid body:( CMUserInAddToGroupRequest *)body;
+
+/**
+ 
+ 
+ 
+ return type: 
+ */
+- (AWSTask *)userinfoGet;
 
 /**
  

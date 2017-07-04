@@ -19,4 +19,5 @@
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type;
 - (void)hideOnboardingAlert:(CMOnboardingAlertType)type;
 
+- (void)askForSetupPermissions;
 @end

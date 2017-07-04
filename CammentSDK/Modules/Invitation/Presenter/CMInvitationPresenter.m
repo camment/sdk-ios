@@ -11,6 +11,8 @@
 #import "CMInvitationListPresenter.h"
 #import "CMStore.h"
 #import "User.h"
+#import "Show.h"
+#import "CMShowMetadata.h"
 
 @interface CMInvitationPresenter ()
 @property(nonatomic, strong) CMInvitationListPresenter *listPresenter;
@@ -40,7 +42,13 @@
     NSArray *users = [self.listPresenter.items.rac_sequence filter:^BOOL(User *user) {
         return [self.listPresenter.selectedUsersId containsObject:user.fbUserId];
     }].array;
-    [self.interactor addUsers:users group:[CMStore instance].activeGroup];
+    User *currentUser = [CMStore instance].currentUser;
+    if (currentUser) {
+        users = [users arrayByAddingObject:currentUser];
+    }
+    [self.interactor addUsers:users 
+                        group:[CMStore instance].activeGroup 
+                     showUuid:[CMStore instance].currentShowMetadata.uuid];
 }
 
 - (void)didInviteUsersToTheGroup:(UsersGroup *)group {

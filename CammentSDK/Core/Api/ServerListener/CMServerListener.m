@@ -12,7 +12,9 @@
 #import "CMStore.h"
 #import "ServerMessage.h"
 #import "CammentBuilder.h"
-#import "Camment.h"
+#import "User.h"
+#import "UserBuilder.h"
+#import "AWSMobileAnalyticsMonetizationEventBuilder.h"
 
 static CMServerListener *_instance = nil;
 
@@ -140,8 +142,12 @@ static CMServerListener *_instance = nil;
         serverMessage = [ServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"invitation"]) {
+
+        User* user = [[[UserBuilder new] withCognitoUserId:body[@"userCognitoIdentityId"]] build];
         Invitation *invitation = [[Invitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
-                                                           userCognitoUuid:body[@"userCognitoIdentityId"]];
+                                                           userCognitoUuid:body[@"userCognitoIdentityId"]
+                                                                  showUuid:body[@"showUuid"]
+                                                          invitationIssuer:user];
         serverMessage = [ServerMessage invitationWithInvitation:invitation];
     }
 

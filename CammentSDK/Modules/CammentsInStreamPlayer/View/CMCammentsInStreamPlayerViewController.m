@@ -13,6 +13,7 @@
 #import "CMCammentOverlayController.h"
 #import "CMVideoContentPlayerNode.h"
 #import "CMWebContentPlayerNode.h"
+#import "CMShowMetadata.h"
 
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate>
 
@@ -57,8 +58,11 @@
         [[_cammentOverlayController cammentView] removeFromSuperview];
     }
 
-    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShow:show];
-    _cammentOverlayController.delegate = self;
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = show.uuid;
+
+    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata];
+    _cammentOverlayController.overlayDelegate = self;
     [_cammentOverlayController addToParentViewController:self];
     [self.view addSubview:[_cammentOverlayController cammentView]];
 
@@ -69,6 +73,8 @@
     }];
 
     [_cammentOverlayController setContentView:self.contentViewerNode.view];
+
+
     [(id<CMContentViewerNode>)self.contentViewerNode openContentAtUrl:[[NSURL alloc] initWithString:show.url]];
 }
 

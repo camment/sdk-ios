@@ -14,15 +14,15 @@
  */
  
 
-#import "CMInvitationInRequest.h"
+#import "CMUserinfo.h"
 
-@implementation CMInvitationInRequest
+@implementation CMUserinfo
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"users": @"users"
+             @"userCognitoIdentityId": @"userCognitoIdentityId",
+             @"name": @"name",
+             @"picture": @"picture"
              };
 }
 

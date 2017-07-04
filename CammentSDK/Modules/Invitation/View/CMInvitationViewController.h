@@ -12,9 +12,10 @@
 
 #import "CMInvitationPresenterInput.h"
 #import "CMInvitationPresenterOutput.h"
+#import "CMLoadingHUD.h"
 #import "CMInvitationNode.h"
 
-@interface CMInvitationViewController : ASViewController<CMInvitationNode *><CMInvitationPresenterOutput>
+@interface CMInvitationViewController : ASViewController<CMInvitationNode *><CMInvitationPresenterOutput, CMLoadingHUD>
 
 @property (nonatomic, strong) id<CMInvitationPresenterInput> presenter;
 

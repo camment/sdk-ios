@@ -29,4 +29,8 @@
 - (void)readyToShowOnboarding;
 
 - (CMOnboardingAlertType)currentOnboardingStep;
+
+- (void)checkIfNeedForOnboarding;
+
+- (void)setupCameraSession;
 @end

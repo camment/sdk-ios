@@ -13,6 +13,8 @@
 #import "CMCammentViewInteractor.h"
 #import "CMCammentViewController.h"
 
+@class CMShowMetadata;
+
 @interface CMCammentViewWireframe : NSObject
 
 @property (nonatomic, weak) CMCammentViewController *view;
@@ -22,9 +24,9 @@
 @property (nonatomic, weak) UIViewController *parentViewController;
 @property (nonatomic, weak) UINavigationController *parentNavigationController;
 
-@property(nonatomic, strong) Show *show;
+@property(nonatomic, strong) CMShowMetadata *metadata;
 
-- (instancetype)initWithShow:(Show *)show;
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata;
 
 - (CMCammentViewController *)controller;
 

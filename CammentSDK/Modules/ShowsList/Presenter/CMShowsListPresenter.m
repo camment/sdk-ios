@@ -13,13 +13,14 @@
 #import "CMShowsListWireframe.h"
 #import "Show.h"
 #import "CMStore.h"
+#import "CammentSDK.h"
 #import <FBTweak.h>
 #import <FBTweakCategory.h>
 #import <FBTweakCollection.h>
 #import <FBTweakStore.h>
 #import <ReactiveObjC.h>
 
-@interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver>
+@interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver, CMCammentSDKDelegate>
 @property(nonatomic, strong) CMShowsListCollectionPresenter *showsListCollectionPresenter;
 @end
 
@@ -37,6 +38,7 @@
         NSString *tweakName = @"Web page url";
         FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
         [webShowTweak addObserver:self];
+        [CammentSDK instance].sdkDelegate = self;
     }
 
     return self;
@@ -99,7 +101,26 @@
 
 - (void)didSelectShow:(Show *)show {
     CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
-    [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.parentNavigationController];
+    [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
+}
+
+- (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata {
+    NSArray<Show *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(Show *value) {
+        return [value.uuid isEqualToString:metadata.uuid];
+    }].array ?: @[];
+    Show *show = shows.firstObject;
+    if (show) {
+        UIViewController *viewController = (id) self.output;
+        UIViewController *presentingViewController = viewController;
+        if (presentingViewController) {
+            [presentingViewController dismissViewControllerAnimated:YES
+                                                         completion:^{
+                                                             [self didSelectShow:show];
+                                                         }];
+        } else {
+            [self didSelectShow:show];
+        }
+    }
 }
 
 @end

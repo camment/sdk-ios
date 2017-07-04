@@ -17,8 +17,17 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 #import <CammentSDK/CMCammentFacebookIdentity.h>
 #import <CammentSDK/CMShowsListModule.h>
 #import <CammentSDK/CMPublicModuleInterface.h>
+#import <CammentSDK/CMShowMetadata.h>
+
+@protocol CMCammentSDKDelegate <NSObject>
+
+- (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata;
+
+@end
 
 @interface CammentSDK: NSObject
+
+@property (nonatomic, weak) id<CMCammentSDKDelegate> sdkDelegate;
 
 + (CammentSDK * _Nonnull)instance;
 

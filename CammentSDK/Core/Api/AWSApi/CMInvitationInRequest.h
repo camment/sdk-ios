@@ -23,7 +23,7 @@
  */
 @interface CMInvitationInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *showId;
+@property (nonatomic, strong, nullable) NSString *showUuid;
 
 
 @property (nonatomic, strong, nullable) NSString *uuid;

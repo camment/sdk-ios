@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @class Invitation;
+@class User;
 
 @interface InvitationBuilder : NSObject
 
@@ -13,6 +14,10 @@
 - (instancetype)withUserGroupUuid:(NSString *)userGroupUuid;
 
 - (instancetype)withUserCognitoUuid:(NSString *)userCognitoUuid;
+
+- (instancetype)withShowUuid:(NSString *)showUuid;
+
+- (instancetype)withInvitationIssuer:(User *)invitationIssuer;
 
 @end
 

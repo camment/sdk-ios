@@ -1,5 +1,8 @@
+%type name="User"
 
 Invitation includes(RMBuilder) {
   NSString* userGroupUuid
   NSString* userCognitoUuid
+  NSString* showUuid
+  User* invitationIssuer
 }

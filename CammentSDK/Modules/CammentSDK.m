@@ -26,6 +26,8 @@
 #import "CMDevcammentClient.h"
 #import "CMAppConfig.h"
 #import "CMInvitationViewController.h"
+#import "UserBuilder.h"
+#import "InvitationBuilder.h"
 
 #import <FBTweak.h>
 #import <FBTweakStore.h>
@@ -181,6 +183,8 @@
     [[self.authService signIn]
             subscribeNext:^(NSString *cognitoUserId) {
                 [[CMStore instance] setCognitoUserId:cognitoUserId];
+                User *currentUser = [[[UserBuilder new] withCognitoUserId:cognitoUserId] build];
+                [[CMStore instance] setCurrentUser:currentUser];
             }
                     error:^(NSError *error) {
                         [[CMStore instance] setIsSignedIn:NO];
@@ -201,6 +205,7 @@
 }
 
 - (void)updateUserInfo {
+    UserBuilder *userBuilder = [CMStore instance].currentUser ? [UserBuilder userFromExistingUser:[CMStore instance].currentUser] : [UserBuilder new];
 
     FBSDKProfile *profile = [FBSDKProfile currentProfile];
     if (!profile) {
@@ -209,14 +214,23 @@
     }
 
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
+    if (profile.userID) {
+        userInfo[@"facebookId"] = profile.userID;
+        userBuilder = [userBuilder withFbUserId:profile.userID];
+    }
+
     if (profile.name) {
         userInfo[@"name"] = profile.name;
+        userBuilder = [userBuilder withUsername:profile.name];
     }
 
     NSURL *imageUrl = [profile imageURLForPictureMode:FBSDKProfilePictureModeSquare size:CGSizeMake(270, 270)];
     if (imageUrl) {
         userInfo[@"picture"] = imageUrl.absoluteString;
+        userBuilder = [userBuilder withUserPhoto:imageUrl.absoluteString];
     }
+
+    [[CMStore instance] setCurrentUser:[userBuilder build]];
 
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
@@ -265,20 +279,46 @@
     [listener.messageSubject subscribeNext:^(ServerMessage *message) {
         [message matchInvitation:^(Invitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) {
-                [self presentChatInvitation:invitation];
+                [[[CMDevcammentClient defaultClient] usergroupsGroupUuidUsersGet:invitation.userGroupUuid] continueWithBlock:^id(AWSTask<id> *t) {
+
+                    Invitation *processedInvitation = invitation;
+                    if ([t.result isKindOfClass:[CMUserinfoList class]]) {
+                        CMUserinfoList *userinfoList = t.result;
+                        NSArray<CMUserinfo *> *items = [userinfoList.items.rac_sequence filter:^BOOL(CMUserinfo *info) {
+                            return [info.userCognitoIdentityId isEqualToString:invitation.invitationIssuer.cognitoUserId];
+                        }].array ?: @[];
+
+                        CMUserinfo *invitationIssuerInfo = [items firstObject];
+                        if (invitationIssuerInfo) {
+                            UserBuilder *userBuilder = [UserBuilder userFromExistingUser:invitation.invitationIssuer];
+                            userBuilder = [[userBuilder withUsername:invitationIssuerInfo.name] withUserPhoto:invitationIssuerInfo.picture];
+                            processedInvitation = [[[InvitationBuilder invitationFromExistingInvitation:invitation] withInvitationIssuer:[userBuilder build]] build];
+                        }
+                    }
+
+                    [self presentChatInvitation:processedInvitation];
+                    return nil;
+                }];
             }
-        }                camment:^(Camment *camment) {}];
+        }                camment:^(Camment *camment) {
+        }];
     }];
 }
 
 - (void)presentChatInvitation:(Invitation *)invitation {
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"User invited you to a private chat")
+    NSString *username = invitation.invitationIssuer.username ?: @"Your friend";
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User invited you to a private chat"), username]
                                                                              message:CMLocalized(@"Would you like to join the conversation?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         UsersGroup *usersGroup = [[[UsersGroupBuilder new] withUuid:invitation.userGroupUuid] build];
         [[CMStore instance] setActiveGroup:usersGroup];
+        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
+            CMShowMetadata *metadata = [CMShowMetadata new];
+            metadata.uuid = invitation.showUuid;
+            [self.sdkDelegate didAcceptInvitationToShow:metadata];
+        }
     }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {

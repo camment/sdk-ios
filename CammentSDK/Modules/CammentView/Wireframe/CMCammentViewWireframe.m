@@ -11,14 +11,15 @@
 #import "CMCammentViewWireframe.h"
 #import "CMCammentRecorderInteractor.h"
 #import "CMCammentsLoaderInteractor.h"
+#import "CMShowMetadata.h"
 
 
 @implementation CMCammentViewWireframe
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata {
     self = [super init];
     if (self) {
-        self.show = show;
+        self.metadata = metadata;
     }
 
     return self;
@@ -26,7 +27,7 @@
 
 - (CMCammentViewController *)controller {
     CMCammentViewController *view = [CMCammentViewController new];
-    CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShow:_show];
+    CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata];
     CMCammentViewInteractor *interactor = [CMCammentViewInteractor new];
 
     view.presenter = presenter;

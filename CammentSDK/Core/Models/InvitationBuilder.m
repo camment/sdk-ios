@@ -9,6 +9,8 @@
 {
   NSString *_userGroupUuid;
   NSString *_userCognitoUuid;
+  NSString *_showUuid;
+  User *_invitationIssuer;
 }
 
 + (instancetype)invitation
@@ -18,14 +20,16 @@
 
 + (instancetype)invitationFromExistingInvitation:(Invitation *)existingInvitation
 {
-  return [[[InvitationBuilder invitation]
-           withUserGroupUuid:existingInvitation.userGroupUuid]
-          withUserCognitoUuid:existingInvitation.userCognitoUuid];
+  return [[[[[InvitationBuilder invitation]
+             withUserGroupUuid:existingInvitation.userGroupUuid]
+            withUserCognitoUuid:existingInvitation.userCognitoUuid]
+           withShowUuid:existingInvitation.showUuid]
+          withInvitationIssuer:existingInvitation.invitationIssuer];
 }
 
 - (Invitation *)build
 {
-  return [[Invitation alloc] initWithUserGroupUuid:_userGroupUuid userCognitoUuid:_userCognitoUuid];
+  return [[Invitation alloc] initWithUserGroupUuid:_userGroupUuid userCognitoUuid:_userCognitoUuid showUuid:_showUuid invitationIssuer:_invitationIssuer];
 }
 
 - (instancetype)withUserGroupUuid:(NSString *)userGroupUuid
@@ -37,6 +41,18 @@
 - (instancetype)withUserCognitoUuid:(NSString *)userCognitoUuid
 {
   _userCognitoUuid = [userCognitoUuid copy];
+  return self;
+}
+
+- (instancetype)withShowUuid:(NSString *)showUuid
+{
+  _showUuid = [showUuid copy];
+  return self;
+}
+
+- (instancetype)withInvitationIssuer:(User *)invitationIssuer
+{
+  _invitationIssuer = [invitationIssuer copy];
   return self;
 }
 

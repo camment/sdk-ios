@@ -8,6 +8,7 @@
 
 @class CMCammentViewController;
 @class Show;
+@class CMShowMetadata;
 
 @protocol CMCammentOverlayControllerDelegate<NSObject>
 
@@ -23,9 +24,9 @@
 
 @interface CMCammentOverlayController : NSObject
 
-@property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> _Nullable delegate;
+@property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> _Nullable overlayDelegate;
 
-- (instancetype _Nonnull)initWithShow:(Show * _Nonnull)show;
+- (instancetype _Nonnull)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata;
 
 - (void)addToParentViewController:(UIViewController * _Nonnull)viewController;
 - (void)removeFromParentViewController;
@@ -35,4 +36,5 @@
 - (void)setContentView:(UIView * _Nonnull)contentView;
 
 - (UIInterfaceOrientationMask)contentPossibleOrientationMask;
+
 @end

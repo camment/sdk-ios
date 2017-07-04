@@ -32,28 +32,30 @@
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
 #import "CammentBuilder.h"
+#import "CMShowMetadata.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput>
 
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
 @property(nonatomic, strong) CMAuthInteractor *authInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
-@property(nonatomic, strong) Show *show;
+@property(nonatomic, strong) CMShowMetadata *show;
 @property(nonatomic, strong) UsersGroup *usersGroup;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
 @property(nonatomic, assign) CMOnboardingAlertMaskType completedOnboardingSteps;
 @property(nonatomic, assign) CMOnboardingAlertType currentOnboardingStep;
 
+@property(nonatomic) BOOL isCameraSessionConfigured;
 @end
 
 @implementation CMCammentViewPresenter
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata {
     self = [super init];
 
     if (self) {
-        self.show = show;
+        self.show = metadata;
         self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
         self.authInteractor = [CMAuthInteractor new];
@@ -108,6 +110,10 @@
                 return nil;
             }] delay:0.0f];
         }] subscribeNext:^(id x) {
+            if (!self.isCameraSessionConfigured) {
+                [self.output askForSetupPermissions];
+                return;
+            }
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
             [self.recorderInteractor startRecording];
         }];
@@ -129,11 +135,28 @@
 }
 
 - (void)setupView {
-    [self.recorderInteractor configureCamera];
-    [self.output presenterDidRequestViewPreviewView];
     [self.output setCammentsBlockNodeDelegate:_cammentsBlockNodePresenter];
     [self updateChatWithActiveGroup];
 }
+
+- (CMOnboardingAlertType)currentOnboardingStep {
+    return _currentOnboardingStep;
+}
+
+- (void)checkIfNeedForOnboarding {
+    if (![CMStore instance].isOnboardingFinished) {
+        [self.output askForSetupPermissions];
+    } else if (!self.isCameraSessionConfigured) {
+        [self setupCameraSession];
+    }
+}
+
+- (void)setupCameraSession {
+    [self.recorderInteractor configureCamera];
+    [self.output presenterDidRequestViewPreviewView];
+    self.isCameraSessionConfigured = YES;
+}
+
 
 - (void)readyToShowOnboarding {
     [self runOnboarding];
@@ -156,15 +179,7 @@
 }
 
 - (UIInterfaceOrientationMask)contentPossibleOrientationMask {
-    __block UIInterfaceOrientationMask mask;
-
-    [self.show.showType matchVideo:^(CMShow *show) {
-        mask = UIInterfaceOrientationMaskLandscapeRight;
-    }                         html:^(NSString *webURL) {
-        mask = UIInterfaceOrientationMaskPortrait;
-    }];
-
-    return mask;
+    return UIInterfaceOrientationMaskAll;
 }
 
 - (void)setupPresentationInstruction {
@@ -249,7 +264,7 @@
                 build];
         return [self.interactor uploadCamment:cammentToUpload];
     }] deliverOnMainThread] subscribeNext:^(Camment *uploadedCamment) {
-        NSMutableArray<CammentsBlockItem *> *mutableCamments = [self.cammentsBlockNodePresenter.items mutableCopy];
+        NSMutableArray<CammentsBlockItem *> *mutableCamments = (NSMutableArray *)[self.cammentsBlockNodePresenter.items mutableCopy];
         NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
             __block BOOL result = NO;
 
@@ -391,7 +406,9 @@
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
             [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
             break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:break;
+        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
+            [CMStore instance].isOnboardingFinished = YES;
+            break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:break;
         case CMOnboardingAlertTapToPlayCamment:
             [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];

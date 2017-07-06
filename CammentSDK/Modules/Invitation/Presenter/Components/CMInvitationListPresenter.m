@@ -21,7 +21,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _items = @[];
+        self.items = @[];
         _selectedUsersId = [NSMutableArray new];
     }
     return self;
@@ -73,13 +73,13 @@
 }
 
 - (void)setUsersList:(NSArray<User *> *)users {
-    _items = [NSArray arrayWithArray:users];
+    self.items = [NSArray arrayWithArray:users];
     _selectedUsersId = [NSMutableArray new];
     [_tableNode reloadData];
 }
 
 - (void)appendUsersList:(NSArray<User *> *)users {
-    _items = [_items arrayByAddingObjectsFromArray:users];
+    self.items = [_items arrayByAddingObjectsFromArray:users];
     NSMutableArray *indexPathesToAdd = [NSMutableArray new];
     for (NSInteger i = _items.count - users.count; i < _items.count; i++) {
         [indexPathesToAdd addObject:[NSIndexPath indexPathForRow:i inSection:0]];

@@ -17,6 +17,8 @@
 @interface CMInvitationNode: ASDisplayNode
 
 @property (nonatomic, strong) ASTableNode *tableNode;
+@property (nonatomic, strong) ASTextNode *noFriendsTextNode;
+@property (nonatomic, assign) BOOL isNoFriendsFound;
 
 - (void)setInvitationListDelegate:(id<CMInvitationListDelegate>)delegate;
 

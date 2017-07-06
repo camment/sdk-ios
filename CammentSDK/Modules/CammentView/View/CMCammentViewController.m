@@ -245,6 +245,14 @@
             delay = 1;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
+        {
+            ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
+            if (!node) {return;}
+            frame = node.frame;
+            frame = [self.view convertRect:frame fromView:node.view];
+            text = CMLocalized(@"help.tap_and_hold_to_delete");
+        }
+
             break;
         case CMOnboardingAlertTapToPlayCamment: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];

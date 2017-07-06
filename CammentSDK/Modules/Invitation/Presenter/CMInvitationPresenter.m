@@ -24,6 +24,9 @@
     self = [super init];
     if (self) {
         self.listPresenter = [CMInvitationListPresenter new];
+        [RACObserve(self.listPresenter, items) subscribeNext:^(NSArray *x) {
+            [self.output showIsNoFriendsFound:[x count] == 0];
+        }];
     }
     return self;
 }

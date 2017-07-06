@@ -44,4 +44,9 @@
     [self.presenter inviteAction];
 }
 
+- (void)showIsNoFriendsFound:(BOOL)isNoFriendsCount {
+    self.node.isNoFriendsFound = isNoFriendsCount;
+    [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
 @end

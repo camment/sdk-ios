@@ -31,7 +31,7 @@
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
 
         NSMutableDictionary *params = [NSMutableDictionary new];
-        params[@"limit"] = @20;
+        params[@"limit"] = @40;
         params[@"fields"] = @"id,name";
         if (self.cursorAfter) {
             params[@"after"] = self.cursorAfter;
@@ -55,7 +55,6 @@
                             withFbUserId:value[@"id"]]
                             withUserPhoto:[[@"https://graph.facebook.com/v2.5/" stringByAppendingString:value[@"id"]] stringByAppendingString:@"/picture?type=normal"]] build];
                 }].array;
-
                 [subscriber sendNext:users];
                 [subscriber sendCompleted];
             }

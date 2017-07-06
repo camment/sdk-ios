@@ -421,12 +421,13 @@
             [self showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
             break;
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
-            [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
+            [self showOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
             break;
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
             [CMStore instance].isOnboardingFinished = YES;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
+            [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
             break;
         case CMOnboardingAlertTapToPlayCamment:
             [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
@@ -444,6 +445,7 @@
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
     if ([camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
+        [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }
     [self.output presentCammentOptionsView:camment actions:actions];

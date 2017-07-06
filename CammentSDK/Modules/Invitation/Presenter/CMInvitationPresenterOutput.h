@@ -14,4 +14,5 @@
 
 - (void)setInvitationListDelegate:(id<CMInvitationListDelegate>)delegate;
 
+- (void)showIsNoFriendsFound:(BOOL)isNoFriendsCount;
 @end

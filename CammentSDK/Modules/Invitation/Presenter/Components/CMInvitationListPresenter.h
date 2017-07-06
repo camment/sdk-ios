@@ -12,13 +12,12 @@
 
 @interface CMInvitationListPresenter : NSObject<CMInvitationListDelegate>
 
-@property (nonatomic, strong, readonly) NSArray<User *> *items;
+@property (nonatomic, strong) NSArray<User *> *items;
 @property (nonatomic, strong, readonly) NSMutableArray<NSString *> *selectedUsersId;
 @property (nonatomic, weak) ASTableNode *tableNode;
 
 @property (nonatomic, weak) id<CMFBFetchFrinedsInteractorInput> interactor;
 
-- (void)setUsersList:(NSArray<User *> *)users;
 - (void)appendUsersList:(NSArray<User *> *)users;
 
 @end

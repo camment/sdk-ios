@@ -23,7 +23,7 @@
  */
 @interface CMCammentInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *url;
+@property (nonatomic, strong, nullable) NSString *uuid;
 
 
 @end

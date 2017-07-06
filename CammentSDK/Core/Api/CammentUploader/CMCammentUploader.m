@@ -45,15 +45,19 @@
         AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
 
         uploadRequest.bucket = self.bucketName;
-        NSString *fileKey = [NSString stringWithFormat:@"%@.mp4", uuid];
+        NSString *fileKey = [NSString stringWithFormat:@"uploads/%@.mp4", uuid];
         uploadRequest.key = fileKey;
         uploadRequest.body = url;
+        uploadRequest.metadata = @{
+                @"ContentType": @"video/mp4"
+        };
+        uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
         uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
         uploadRequest.storageClass = AWSS3StorageClassReducedRedundancy;
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
-        AWSS3TransferManager *transferManager = [AWSS3TransferManager defaultS3TransferManager];
+        AWSS3TransferManager *transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
         [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
@@ -74,7 +78,6 @@
             }
 
             if (task.result) {
-                AWSS3TransferManagerUploadOutput *uploadOutput = task.result;
                 [subscriber sendCompleted];
             }
             return nil;

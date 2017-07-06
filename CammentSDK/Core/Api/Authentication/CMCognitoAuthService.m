@@ -3,10 +3,12 @@
 // Copyright (c) 2017 Sportacam. All rights reserved.
 //
 
+#import <Foundation/Foundation.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "CMCognitoAuthService.h"
 #import "CMAppConfig.h"
-
+#import "AWSS3TransferManager.h"
+#import "AWSIoTDataManager.h"
 
 @interface CMCognitoAuthService ()
 
@@ -16,19 +18,30 @@
 
 @implementation CMCognitoAuthService
 
-- (instancetype)initWithProvider:(id <AWSIdentityProviderManager>)provider {
+- (instancetype)init {
     self = [super init];
     if (self) {
-        self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
-                initWithRegionType:AWSRegionEUCentral1
-                    identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
-           identityProviderManager:provider];
+        self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionEUCentral1
+                                                                              identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId];
 
         AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1 credentialsProvider:_credentialsProvider];
         AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+        [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
+        [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
     }
 
     return self;
+}
+
+- (void)configureWithProvider:(id <AWSIdentityProviderManager>)provider {
+    self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
+                                initWithRegionType:AWSRegionEUCentral1
+                                identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
+                                identityProviderManager:provider];
+    
+    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1 credentialsProvider:_credentialsProvider];
+    AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
+    [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
 }
 
 - (RACSignal *)signIn {
@@ -41,10 +54,12 @@
                 return nil;
             }
 
+            NSString *cognitoUserIdentity = [task result];
             [[_credentialsProvider credentials] continueWithBlock:^id(AWSTask<id> *t) {
                 if (t.error) {
                     [subscriber sendError:t.error];
                 } else {
+                    [subscriber sendNext:cognitoUserIdentity];
                     [subscriber sendCompleted];
                 }
                 return nil;

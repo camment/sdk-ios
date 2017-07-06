@@ -1,0 +1,10 @@
+%type name="User"
+
+Invitation includes(RMBuilder) {
+  NSString* userGroupUuid
+  NSString* userCognitoUuid
+  NSString* showUuid
+  NSString* invitationKey
+  NSString* invitedUserFacebookId
+  User* invitationIssuer
+}

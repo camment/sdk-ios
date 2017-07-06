@@ -1,0 +1,24 @@
+/****************************************************************************/
+/* Localization file */
+
+
+"User invited you to a private chat" = "%@ invited you to a private chat";
+"Would you like to join the conversation?" = "Would you like to join the conversation?";
+"Join" = "Join";
+"No" = "No";
+
+"help.tap_and_hold_to_record" = "Tap & hold to record a mini video (camment)";
+"help.swipe_left_to_hide_camments" = "Swipe ← left anywhere to hide camments";
+"help.swipe_right_to_show_camments" = "Swipe → right to show camments";
+"help.tap_to_play" = "Great success! Now tap the camment to play it";
+"help.swipe_down_to_invite" = "Pull the camment button ↓ down to invite friends to this chat";
+"setup.use_camment_chat" = "Would you like to video chat with friends while watching this show?";
+"setup.what_is_camment" = "It’s like SMS group messaging but with mini videos (camments) on top of the show you are now watching";
+"setup.sounds_fun" = "Sounds fun";
+"setup.maybe_later" = "Maybe later";
+"camment_actions.delete_camment" = "Delete camment";
+
+"group_message.join_title" = "%@ entered your camment chat!";
+"group_message.join_desc" = "Maybe it would be polite to say hi with a camment?";
+
+"ok" = "OK";

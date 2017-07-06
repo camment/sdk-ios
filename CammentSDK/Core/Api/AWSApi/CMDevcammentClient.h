@@ -17,13 +17,17 @@
 #import <Foundation/Foundation.h>
 #import <AWSAPIGateway/AWSAPIGateway.h>
 
-#import "CMInvitationInRequest.h"
-#import "CMInvitation.h"
 #import "CMShowList.h"
 #import "CMShow.h"
 #import "CMCammentList.h"
 #import "CMCammentInRequest.h"
 #import "CMCamment.h"
+#import "CMUsergroup.h"
+#import "CMAcceptInvitationRequest.h"
+#import "CMInvitationInRequest.h"
+#import "CMUserinfoList.h"
+#import "CMUserInAddToGroupRequest.h"
+#import "CMUserinfoInRequest.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -177,15 +181,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param body 
- 
- return type: CMInvitation *
- */
-- (AWSTask *)invitationsPost:( CMInvitationInRequest *)body;
-
-/**
- 
- 
  
  return type: CMShowList *
  */
@@ -222,12 +217,95 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ 
+ return type: CMUsergroup *
+ */
+- (AWSTask *)usergroupsPost;
+
+/**
+ 
+ 
+ @param groupUuid 
+ 
+ return type: CMCammentList *
+ */
+- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid;
+
+/**
+ 
+ 
+ @param groupUuid 
+ @param body 
+ 
+ return type: CMCamment *
+ */
+- (AWSTask *)usergroupsGroupUuidCammentsPost:( NSString *)groupUuid body:( CMCammentInRequest *)body;
+
+/**
+ 
+ 
  @param cammentUuid 
- @param uuid 
+ @param groupUuid 
  
  return type: 
  */
-- (AWSTask *)showsUuidCammentsCammentUuidDelete:( NSString *)cammentUuid uuid:( NSString *)uuid;
+- (AWSTask *)usergroupsGroupUuidCammentsCammentUuidDelete:( NSString *)cammentUuid groupUuid:( NSString *)groupUuid;
+
+/**
+ 
+ 
+ @param groupUuid 
+ @param body 
+ 
+ return type: 
+ */
+- (AWSTask *)usergroupsGroupUuidInvitationsPut:( NSString *)groupUuid body:( CMAcceptInvitationRequest *)body;
+
+/**
+ 
+ 
+ @param groupUuid 
+ @param body 
+ 
+ return type: 
+ */
+- (AWSTask *)usergroupsGroupUuidInvitationsPost:( NSString *)groupUuid body:( CMInvitationInRequest *)body;
+
+/**
+ 
+ 
+ @param groupUuid 
+ 
+ return type: CMUserinfoList *
+ */
+- (AWSTask *)usergroupsGroupUuidUsersGet:( NSString *)groupUuid;
+
+/**
+ 
+ 
+ @param groupUuid 
+ @param body 
+ 
+ return type: 
+ */
+- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid body:( CMUserInAddToGroupRequest *)body;
+
+/**
+ 
+ 
+ 
+ return type: 
+ */
+- (AWSTask *)userinfoGet;
+
+/**
+ 
+ 
+ @param body 
+ 
+ return type: 
+ */
+- (AWSTask *)userinfoPost:( CMUserinfoInRequest *)body;
 
 @end
 

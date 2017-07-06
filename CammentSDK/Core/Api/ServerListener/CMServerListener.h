@@ -8,21 +8,24 @@
 @class AWSIoTDataManager;
 @class CMServerListenerCredentials;
 @class RACSubject;
-@class CMServerMessage;
-
+@class ServerMessage;
 
 @interface CMServerListener : NSObject
 
 @property (nonatomic, strong, readonly) AWSIoTDataManager *dataManager;
 @property (nonatomic, assign, readonly) BOOL isConnected;
 @property (nonatomic, readonly) CMServerListenerCredentials *credentials;
-@property (nonatomic, readonly) RACSubject<CMServerMessage *> *messageSubject;
+@property (nonatomic, readonly) RACSubject<ServerMessage *> *messageSubject;
 
 - (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials;
 
 - (void)connect;
 
++ (CMServerListener *)instance;
+
 + (CMServerListener *)instanceWithCredentials:(CMServerListenerCredentials *)credentials;
+
+- (void)refreshCredentials:(CMServerListenerCredentials *)credentials;
 
 
 @end

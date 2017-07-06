@@ -5,6 +5,11 @@
 
 #import <Foundation/Foundation.h>
 
+typedef NS_ENUM(NSUInteger, CMContentType) {
+    CMContentTypeVideo = 0,
+    CMContentTypeHTML,
+};
+
 @protocol CMContentViewerNode <NSObject>
 
 - (void)openContentAtUrl:(NSURL *)url;

@@ -20,13 +20,17 @@
 #import <AWSCore/AWSSignature.h>
 #import <AWSCore/AWSSynchronizedMutableDictionary.h>
 
-#import "CMInvitationInRequest.h"
-#import "CMInvitation.h"
 #import "CMShowList.h"
 #import "CMShow.h"
 #import "CMCammentList.h"
 #import "CMCammentInRequest.h"
 #import "CMCamment.h"
+#import "CMUsergroup.h"
+#import "CMAcceptInvitationRequest.h"
+#import "CMInvitationInRequest.h"
+#import "CMUserinfoList.h"
+#import "CMUserInAddToGroupRequest.h"
+#import "CMUserinfoInRequest.h"
 
 @interface AWSAPIGatewayClient()
 
@@ -154,28 +158,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     return self;
 }
 
-- (AWSTask *)invitationsPost:(CMInvitationInRequest *)body {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     
-                                     };
-    
-    return [self invokeHTTPRequest:@"POST"
-                         URLString:@"/invitations"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:body
-                     responseClass:[CMInvitation class]];
-}
-
 - (AWSTask *)showsGet {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -265,7 +247,74 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMCamment class]];
 }
 
-- (AWSTask *)showsUuidCammentsCammentUuidDelete:(NSString *)cammentUuid uuid:(NSString *)uuid {
+- (AWSTask *)usergroupsPost {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/usergroups"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMUsergroup class]];
+}
+
+- (AWSTask *)usergroupsGroupUuidCammentsGet:(NSString *)groupUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/usergroups/{groupUuid}/camments"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMCammentList class]];
+}
+
+- (AWSTask *)usergroupsGroupUuidCammentsPost:(NSString *)groupUuid body:(CMCammentInRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/usergroups/{groupUuid}/camments"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:[CMCamment class]];
+}
+
+- (AWSTask *)usergroupsGroupUuidCammentsCammentUuidDelete:(NSString *)cammentUuid groupUuid:(NSString *)groupUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -276,15 +325,150 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       };
     NSDictionary *pathParameters = @{
                                      @"cammentUuid": cammentUuid,
-                                     @"uuid": uuid
+                                     @"groupUuid": groupUuid
                                      };
     
     return [self invokeHTTPRequest:@"DELETE"
-                         URLString:@"/shows/{uuid}/camments/{cammentUuid}"
+                         URLString:@"/usergroups/{groupUuid}/camments/{cammentUuid}"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:nil
+                     responseClass:nil];
+}
+
+- (AWSTask *)usergroupsGroupUuidInvitationsPut:(NSString *)groupUuid body:(CMAcceptInvitationRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"PUT"
+                         URLString:@"/usergroups/{groupUuid}/invitations"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:nil];
+}
+
+- (AWSTask *)usergroupsGroupUuidInvitationsPost:(NSString *)groupUuid body:(CMInvitationInRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/usergroups/{groupUuid}/invitations"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:nil];
+}
+
+- (AWSTask *)usergroupsGroupUuidUsersGet:(NSString *)groupUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/usergroups/{groupUuid}/users"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMUserinfoList class]];
+}
+
+- (AWSTask *)usergroupsGroupUuidUsersPost:(NSString *)groupUuid body:(CMUserInAddToGroupRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/usergroups/{groupUuid}/users"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:nil];
+}
+
+- (AWSTask *)userinfoGet {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/userinfo"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
+- (AWSTask *)userinfoPost:(CMUserinfoInRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/userinfo"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
                      responseClass:nil];
 }
 

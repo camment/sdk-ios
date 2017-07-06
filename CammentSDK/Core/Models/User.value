@@ -1,8 +1,11 @@
-User {
-  NSInteger userId
+User includes(RMBuilder)  {
+  NSString *userId
+  NSString *cognitoUserId
+  NSString *fbUserId
   NSString *username
   NSString *firstname
   NSString *lastname
   NSString *email
   NSString *visibility
+  NSString *userPhoto
 }

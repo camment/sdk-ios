@@ -29,8 +29,9 @@
     if (image != nil) {
         if (_filter != nil) {
             if (_useAutoAdjustmentFilters) {
+                NSString *orientation = (__bridge NSString *)kCGImagePropertyOrientation;
                 NSDictionary *options = @{ CIDetectorImageOrientation:
-                        ([[image properties] valueForKey:kCGImagePropertyOrientation] ?: @1) };
+                        ([[image properties] valueForKey:orientation] ?: @1) };
                 NSArray *adjustments = [image autoAdjustmentFiltersWithOptions:options];
                 for (CIFilter *filter in adjustments) {
                     [filter setValue:image forKey:kCIInputImageKey];

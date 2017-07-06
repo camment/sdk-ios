@@ -16,3 +16,9 @@
 "setup.what_is_camment" = "It’s like SMS group messaging but with mini videos (camments) on top of the show you are now watching";
 "setup.sounds_fun" = "Sounds fun";
 "setup.maybe_later" = "Maybe later";
+"camment_actions.delete_camment" = "Delete camment";
+
+"group_message.join_title" = "%@ entered your camment chat!";
+"group_message.join_desc" = "Maybe it would be polite to say hi with a camment?";
+
+"ok" = "OK";

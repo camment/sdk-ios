@@ -11,12 +11,14 @@
 
 @implementation Invitation
 
-- (instancetype)initWithUserGroupUuid:(NSString *)userGroupUuid userCognitoUuid:(NSString *)userCognitoUuid showUuid:(NSString *)showUuid invitationIssuer:(User *)invitationIssuer
+- (instancetype)initWithUserGroupUuid:(NSString *)userGroupUuid userCognitoUuid:(NSString *)userCognitoUuid showUuid:(NSString *)showUuid invitationKey:(NSString *)invitationKey invitedUserFacebookId:(NSString *)invitedUserFacebookId invitationIssuer:(User *)invitationIssuer
 {
   if ((self = [super init])) {
     _userGroupUuid = [userGroupUuid copy];
     _userCognitoUuid = [userCognitoUuid copy];
     _showUuid = [showUuid copy];
+    _invitationKey = [invitationKey copy];
+    _invitedUserFacebookId = [invitedUserFacebookId copy];
     _invitationIssuer = [invitationIssuer copy];
   }
 
@@ -30,14 +32,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t userGroupUuid: %@; \n\t userCognitoUuid: %@; \n\t showUuid: %@; \n\t invitationIssuer: %@; \n", [super description], _userGroupUuid, _userCognitoUuid, _showUuid, _invitationIssuer];
+  return [NSString stringWithFormat:@"%@ - \n\t userGroupUuid: %@; \n\t userCognitoUuid: %@; \n\t showUuid: %@; \n\t invitationKey: %@; \n\t invitedUserFacebookId: %@; \n\t invitationIssuer: %@; \n", [super description], _userGroupUuid, _userCognitoUuid, _showUuid, _invitationKey, _invitedUserFacebookId, _invitationIssuer];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_userGroupUuid hash], [_userCognitoUuid hash], [_showUuid hash], [_invitationIssuer hash]};
+  NSUInteger subhashes[] = {[_userGroupUuid hash], [_userCognitoUuid hash], [_showUuid hash], [_invitationKey hash], [_invitedUserFacebookId hash], [_invitationIssuer hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 4; ++ii) {
+  for (int ii = 1; ii < 6; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -61,6 +63,8 @@
     (_userGroupUuid == object->_userGroupUuid ? YES : [_userGroupUuid isEqual:object->_userGroupUuid]) &&
     (_userCognitoUuid == object->_userCognitoUuid ? YES : [_userCognitoUuid isEqual:object->_userCognitoUuid]) &&
     (_showUuid == object->_showUuid ? YES : [_showUuid isEqual:object->_showUuid]) &&
+    (_invitationKey == object->_invitationKey ? YES : [_invitationKey isEqual:object->_invitationKey]) &&
+    (_invitedUserFacebookId == object->_invitedUserFacebookId ? YES : [_invitedUserFacebookId isEqual:object->_invitedUserFacebookId]) &&
     (_invitationIssuer == object->_invitationIssuer ? YES : [_invitationIssuer isEqual:object->_invitationIssuer]);
 }
 

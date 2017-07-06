@@ -85,4 +85,6 @@
 - (void)setCurrentShowMetadata:(CMShowMetadata *)metadata {
     [CMStore instance].currentShowMetadata = metadata;
 }
+
+
 @end

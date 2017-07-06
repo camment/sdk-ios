@@ -6,6 +6,7 @@
 #import <AWSIoT/AWSIoT.h>
 #import <AWSIoT/AWSIoTManager.h>
 #import <ReactiveObjC/ReactiveObjC.h>
+#import <AVFoundation/AVFoundation.h>
 #import "CMServerListener.h"
 #import "CMServerListenerCredentials.h"
 #import "CMAppConfig.h"
@@ -15,6 +16,9 @@
 #import "User.h"
 #import "UserBuilder.h"
 #import "AWSMobileAnalyticsMonetizationEventBuilder.h"
+#import "UserJoinedMessage.h"
+#import "UserJoinedMessageBuilder.h"
+#import "CMServerMessageParser.h"
 
 static CMServerListener *_instance = nil;
 
@@ -61,10 +65,10 @@ static CMServerListener *_instance = nil;
     NSBundle *bundle = [NSBundle bundleForClass:[self class]];
     identityPath = [bundle pathForResource:_credentials.p12KeyFile ofType:@"p12"];
 
-    if (!identityPath) { return NO; }
+    if (!identityPath) {return NO;}
 
     NSData *certData = [NSData dataWithContentsOfFile:identityPath];
-    if (!certData) { return NO; }
+    if (!certData) {return NO;}
 
     return [AWSIoTManager importIdentityFromPKCS12Data:certData
                                             passPhrase:_credentials.passPhrase
@@ -72,7 +76,7 @@ static CMServerListener *_instance = nil;
 }
 
 - (void)connect {
-    if (_isConnected) { return; }
+    if (_isConnected) {return;}
     [CMStore instance].isConnected = NO;
 
     [self importIdentity];
@@ -83,10 +87,14 @@ static CMServerListener *_instance = nil;
 
                                               switch (status) {
 
-                                                  case AWSIoTMQTTStatusUnknown:break;
-                                                  case AWSIoTMQTTStatusConnecting:break;
-                                                  case AWSIoTMQTTStatusConnected:break;
-                                                  case AWSIoTMQTTStatusDisconnected:break;
+                                                  case AWSIoTMQTTStatusUnknown:
+                                                      break;
+                                                  case AWSIoTMQTTStatusConnecting:
+                                                      break;
+                                                  case AWSIoTMQTTStatusConnected:
+                                                      break;
+                                                  case AWSIoTMQTTStatusDisconnected:
+                                                      break;
                                                   case AWSIoTMQTTStatusConnectionRefused:
                                                       DDLogError(@"Iot connection refused");
                                                       break;
@@ -126,32 +134,10 @@ static CMServerListener *_instance = nil;
         return;
     }
 
-    NSString *type = jsonObject[@"type"];
-    NSDictionary *body = jsonObject[@"body"];
+    DDLogVerbose(@"server message %@", jsonObject);
 
-    ServerMessage *serverMessage = nil;
-
-    if ([type isEqualToString:@"camment"]) {
-        Camment *camment = [[Camment alloc] initWithShowUuid:body[@"showUuid"]
-                                               userGroupUuid:body[@"userGroupUuid"]
-                                                        uuid:body[@"uuid"]
-                                                   remoteURL:body[@"url"]
-                                                    localURL:nil
-                                                thumbnailURL:body[@"thumbnail"]
-                                                  localAsset:nil];
-        serverMessage = [ServerMessage cammentWithCamment:camment];
-
-    } else if ([type isEqualToString:@"invitation"]) {
-
-        User* user = [[[UserBuilder new] withCognitoUserId:body[@"userCognitoIdentityId"]] build];
-        Invitation *invitation = [[Invitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
-                                                           userCognitoUuid:body[@"userCognitoIdentityId"]
-                                                                  showUuid:body[@"showUuid"]
-                                                          invitationIssuer:user];
-        serverMessage = [ServerMessage invitationWithInvitation:invitation];
-    }
-
-    if (!serverMessage) { return; }
+    ServerMessage *serverMessage = [[[CMServerMessageParser alloc] initWithMessageDictionary:jsonObject] parseMessage];
+    if (!serverMessage) {return;}
 
     NSLog(@"Got message %@", serverMessage);
     [_messageSubject sendNext:serverMessage];

@@ -10,6 +10,8 @@
 
 @class Camment;
 @class Ads;
+@class UserJoinedMessage;
+@class CammentDeletedMessage;
 
 @protocol CMCammentsLoaderInteractorOutput <NSObject>
 
@@ -17,4 +19,7 @@
 - (void)didReceiveNewCamment:(Camment *)camment;
 - (void)didReceiveNewAds:(Ads *)ads;
 
+- (void)didReceiveUserJoinedMessage:(UserJoinedMessage *)message;
+
+- (void)didReceiveCammentDeletedMessage:(CammentDeletedMessage *)message;
 @end

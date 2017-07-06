@@ -8,9 +8,8 @@
 #import "CMCammentNode.h"
 #import "CMStore.h"
 #import "CMAdsCell.h"
-#import "NSArray+AWSMTLManipulationAdditions.h"
 
-@interface CMCammentsBlockPresenter () <CMAdsCellDelegate>
+@interface CMCammentsBlockPresenter () <CMAdsCellDelegate, CMCammentCellDelegate>
 
 @property (nonatomic, strong) NSOperationQueue *updatesQueue;
 
@@ -50,6 +49,7 @@
         __block ASCellNode *node;
         [item matchCamment:^(Camment *camment) {
             node = [[CMCammentCell alloc] initWithCamment:camment];
+            [(CMCammentCell*)node setDelegate:self];
         } ads:^(Ads *ads) {
             node = [[CMAdsCell alloc] initWithAds:ads];
             [(CMAdsCell *)node setDelegate:self];
@@ -132,15 +132,37 @@
 - (void)adsCellDidTapOnCloseButton:(CMAdsCell *)cell {
 
     NSIndexPath *indexPath = [_collectionNode indexPathForNode:cell];
+    [self removeItemAtIndexPath:indexPath];
+}
+
+- (void)removeItemAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath && indexPath.row < _items.count && indexPath.row >= 0) {
-        NSMutableArray *mutableItems = [_items mutableCopy];
+        NSMutableArray *mutableItems = [[NSMutableArray alloc] initWithArray:_items copyItems:YES];
         [mutableItems removeObjectAtIndex:(NSUInteger) indexPath.row];
         self.items = mutableItems;
         [_collectionNode performBatchAnimated:YES updates:^{
             [_collectionNode deleteItemsAtIndexPaths:@[
                     indexPath
             ]];
-        } completion:nil];
+        }                          completion:nil];
+    }
+}
+
+- (void)cammentCellDidHandleLongPressAction:(CMCammentCell *)cell {
+    if (self.output && [self.output respondsToSelector:@selector(presentCammentOptionsDialog:)]) {
+        [self.output presentCammentOptionsDialog:cell.camment];
+    }
+}
+
+- (void)deleteItem:(CammentsBlockItem *)blockItem {
+    for (NSUInteger i = 0; i < self.items.count; i++) {
+        CammentsBlockItem *item = self.items[i];
+        [blockItem matchCamment:^(Camment *camment) {
+            [item matchCamment:^(Camment *itemCamment) {
+                if ([camment.uuid isEqualToString:itemCamment.uuid])
+                    [self removeItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+            } ads:^(Ads *ads) {}];
+        } ads:^(Ads *ads) {}];
     }
 }
 

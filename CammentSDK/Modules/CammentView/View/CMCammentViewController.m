@@ -17,6 +17,8 @@
 #import "MBProgressHUD.h"
 #import "CammentSDK.h"
 #import "CMCammentRecorderInteractorInput.h"
+#import "Camment.h"
+#import "UserJoinedMessage.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 
@@ -152,7 +154,8 @@
 - (void)hideCamments {
     if (self.node.showCammentsBlock) {
         self.node.showCammentsBlock = NO;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{}];
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
+        }];
         [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
     }
 }
@@ -160,7 +163,8 @@
 - (void)showCamments {
     if (!self.node.showCammentsBlock) {
         self.node.showCammentsBlock = YES;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{}];
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
+        }];
         [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
     }
 }
@@ -189,7 +193,7 @@
 
 - (void)didCompleteLayoutTransition {
     if (self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeRightToShowCammentsTooltip
-            || self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip ) {
+            || self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip) {
         [self.presenter completeActionForOnboardingAlert:self.presenter.currentOnboardingStep];
     }
 }
@@ -257,9 +261,48 @@
 }
 
 - (void)hideOnboardingAlert:(CMOnboardingAlertType)type {
-    if (_currentOnboardingAlert != type) { return; }
+    if (_currentOnboardingAlert != type) {return;}
     self.currentOnboardingAlert = CMOnboardingAlertNone;
     [self.popTip hide];
+}
+
+- (void)presentCammentOptionsView:(Camment *)camment actions:(CMCammentActionsMask)actions {
+    if (actions == 0) {
+        return;
+    }
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
+                                                                             message:@""
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+
+    if (actions & CMCammentActionsMaskDelete) {
+        [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"camment_actions.delete_camment")
+                                                            style:UIAlertActionStyleDestructive
+                                                          handler:^(UIAlertAction *action) {
+                                                              [self.presenter deleteCammentAction:camment];
+                                                          }]];
+    }
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)presentUserJoinedMessage:(UserJoinedMessage *)message {
+    User *user = message.joinedUser;
+    if (!user || !user.username) {return;}
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"group_message.join_title"), user.username]
+                                                                             message:CMLocalized(@"group_message.join_desc")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 @end

@@ -23,6 +23,8 @@
 
 - (instancetype)withThumbnailURL:(NSString *)thumbnailURL;
 
+- (instancetype)withUserCognitoIdentityId:(NSString *)userCognitoIdentityId;
+
 - (instancetype)withLocalAsset:(AVAsset *)localAsset;
 
 @end

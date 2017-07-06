@@ -11,7 +11,9 @@
 
 typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
   _ServerMessageSubtypesinvitation,
-  _ServerMessageSubtypescamment
+  _ServerMessageSubtypescamment,
+  _ServerMessageSubtypesuserJoined,
+  _ServerMessageSubtypescammentDeleted
 };
 
 @implementation ServerMessage
@@ -19,6 +21,16 @@ typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
   _ServerMessageSubtypes _subtype;
   Invitation *_invitation_invitation;
   Camment *_camment_camment;
+  UserJoinedMessage *_userJoined_userJoinedMessage;
+  CammentDeletedMessage *_cammentDeleted_cammentDeletedMessage;
+}
+
++ (instancetype)cammentDeletedWithCammentDeletedMessage:(CammentDeletedMessage *)cammentDeletedMessage
+{
+  ServerMessage *object = [[ServerMessage alloc] init];
+  object->_subtype = _ServerMessageSubtypescammentDeleted;
+  object->_cammentDeleted_cammentDeletedMessage = cammentDeletedMessage;
+  return object;
 }
 
 + (instancetype)cammentWithCamment:(Camment *)camment
@@ -34,6 +46,14 @@ typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
   ServerMessage *object = [[ServerMessage alloc] init];
   object->_subtype = _ServerMessageSubtypesinvitation;
   object->_invitation_invitation = invitation;
+  return object;
+}
+
++ (instancetype)userJoinedWithUserJoinedMessage:(UserJoinedMessage *)userJoinedMessage
+{
+  ServerMessage *object = [[ServerMessage alloc] init];
+  object->_subtype = _ServerMessageSubtypesuserJoined;
+  object->_userJoined_userJoinedMessage = userJoinedMessage;
   return object;
 }
 
@@ -53,14 +73,22 @@ typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
       return [NSString stringWithFormat:@"%@ - camment \n\t camment: %@; \n", [super description], _camment_camment];
       break;
     }
+    case _ServerMessageSubtypesuserJoined: {
+      return [NSString stringWithFormat:@"%@ - userJoined \n\t userJoinedMessage: %@; \n", [super description], _userJoined_userJoinedMessage];
+      break;
+    }
+    case _ServerMessageSubtypescammentDeleted: {
+      return [NSString stringWithFormat:@"%@ - cammentDeleted \n\t cammentDeletedMessage: %@; \n", [super description], _cammentDeleted_cammentDeletedMessage];
+      break;
+    }
   }
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {_subtype, [_invitation_invitation hash], [_camment_camment hash]};
+  NSUInteger subhashes[] = {_subtype, [_invitation_invitation hash], [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 3; ++ii) {
+  for (int ii = 1; ii < 5; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -83,10 +111,12 @@ typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
   return
     _subtype == object->_subtype &&
     (_invitation_invitation == object->_invitation_invitation ? YES : [_invitation_invitation isEqual:object->_invitation_invitation]) &&
-    (_camment_camment == object->_camment_camment ? YES : [_camment_camment isEqual:object->_camment_camment]);
+    (_camment_camment == object->_camment_camment ? YES : [_camment_camment isEqual:object->_camment_camment]) &&
+    (_userJoined_userJoinedMessage == object->_userJoined_userJoinedMessage ? YES : [_userJoined_userJoinedMessage isEqual:object->_userJoined_userJoinedMessage]) &&
+    (_cammentDeleted_cammentDeletedMessage == object->_cammentDeleted_cammentDeletedMessage ? YES : [_cammentDeleted_cammentDeletedMessage isEqual:object->_cammentDeleted_cammentDeletedMessage]);
 }
 
-- (void)matchInvitation:(ServerMessageInvitationMatchHandler)invitationMatchHandler camment:(ServerMessageCammentMatchHandler)cammentMatchHandler
+- (void)matchInvitation:(ServerMessageInvitationMatchHandler)invitationMatchHandler camment:(ServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(ServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(ServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler
 {
   switch (_subtype) {
     case _ServerMessageSubtypesinvitation: {
@@ -95,6 +125,14 @@ typedef NS_ENUM(NSUInteger, _ServerMessageSubtypes) {
     }
     case _ServerMessageSubtypescamment: {
       cammentMatchHandler(_camment_camment);
+      break;
+    }
+    case _ServerMessageSubtypesuserJoined: {
+      userJoinedMatchHandler(_userJoined_userJoinedMessage);
+      break;
+    }
+    case _ServerMessageSubtypescammentDeleted: {
+      cammentDeletedMatchHandler(_cammentDeleted_cammentDeletedMessage);
       break;
     }
   }

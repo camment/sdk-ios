@@ -8,11 +8,16 @@
 #import "Camment.h"
 #import "UIColorMacros.h"
 
+@interface CMCammentCell ()
+@property(nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@end
+
 @implementation CMCammentCell
 
 - (instancetype)initWithCamment:(Camment *)camment {
     self = [super init];
     if (self) {
+        _camment = camment;
         self.cammentNode = [[CMCammentNode alloc] initWithCamment:camment];
         self.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
         self.borderWidth = 2.0f;
@@ -21,6 +26,25 @@
     }
 
     return self;
+}
+
+- (void)didLoad {
+    [super didLoad];
+
+    UILongPressGestureRecognizer *longPressGestureRecognizer = [UILongPressGestureRecognizer new];
+    [longPressGestureRecognizer addTarget:self action:@selector(handleLongPressAction:)];
+    [self.view addGestureRecognizer:longPressGestureRecognizer];
+    self.longPressGestureRecognizer = longPressGestureRecognizer;
+}
+
+- (void)handleLongPressAction:(UILongPressGestureRecognizer *)recognizer {
+    if (recognizer.state != UIGestureRecognizerStateBegan) {
+        return;
+    }
+
+    if (self.delegate && [self.delegate respondsToSelector:@selector(cammentCellDidHandleLongPressAction:)]) {
+        [self.delegate cammentCellDidHandleLongPressAction:self];
+    }
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

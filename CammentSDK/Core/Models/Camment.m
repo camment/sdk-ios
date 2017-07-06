@@ -8,10 +8,11 @@
 #endif
 
 #import "Camment.h"
+#import "CammentDeletedMessage.h"
 
 @implementation Camment
 
-- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL localAsset:(AVAsset *)localAsset
+- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset
 {
   if ((self = [super init])) {
     _showUuid = [showUuid copy];
@@ -20,6 +21,7 @@
     _remoteURL = [remoteURL copy];
     _localURL = [localURL copy];
     _thumbnailURL = [thumbnailURL copy];
+    _userCognitoIdentityId = [userCognitoIdentityId copy];
     _localAsset = [localAsset copy];
   }
 
@@ -33,14 +35,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t showUuid: %@; \n\t userGroupUuid: %@; \n\t uuid: %@; \n\t remoteURL: %@; \n\t localURL: %@; \n\t thumbnailURL: %@; \n\t localAsset: %@; \n", [super description], _showUuid, _userGroupUuid, _uuid, _remoteURL, _localURL, _thumbnailURL, _localAsset];
+  return [NSString stringWithFormat:@"%@ - \n\t showUuid: %@; \n\t userGroupUuid: %@; \n\t uuid: %@; \n\t remoteURL: %@; \n\t localURL: %@; \n\t thumbnailURL: %@; \n\t userCognitoIdentityId: %@; \n\t localAsset: %@; \n", [super description], _showUuid, _userGroupUuid, _uuid, _remoteURL, _localURL, _thumbnailURL, _userCognitoIdentityId, _localAsset];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_showUuid hash], [_userGroupUuid hash], [_uuid hash], [_remoteURL hash], [_localURL hash], [_thumbnailURL hash], [_localAsset hash]};
+  NSUInteger subhashes[] = {[_showUuid hash], [_userGroupUuid hash], [_uuid hash], [_remoteURL hash], [_localURL hash], [_thumbnailURL hash], [_userCognitoIdentityId hash], [_localAsset hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 7; ++ii) {
+  for (int ii = 1; ii < 8; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -67,6 +69,7 @@
     (_remoteURL == object->_remoteURL ? YES : [_remoteURL isEqual:object->_remoteURL]) &&
     (_localURL == object->_localURL ? YES : [_localURL isEqual:object->_localURL]) &&
     (_thumbnailURL == object->_thumbnailURL ? YES : [_thumbnailURL isEqual:object->_thumbnailURL]) &&
+    (_userCognitoIdentityId == object->_userCognitoIdentityId ? YES : [_userCognitoIdentityId isEqual:object->_userCognitoIdentityId]) &&
     (_localAsset == object->_localAsset ? YES : [_localAsset isEqual:object->_localAsset]);
 }
 

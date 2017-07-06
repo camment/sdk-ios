@@ -14,19 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAcceptInvitationRequest.h"
 
- 
-/**
- Request model for adding users to user groups.
- */
-@interface CMUserInAddToGroupRequest : AWSModel
+@implementation CMAcceptInvitationRequest
 
-@property (nonatomic, strong, nullable) NSString *showUuid;
-
-
-@property (nonatomic, strong, nullable) NSArray *userFacebookIdList;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"invitationKey": @"invitationKey"
+             };
+}
 
 @end

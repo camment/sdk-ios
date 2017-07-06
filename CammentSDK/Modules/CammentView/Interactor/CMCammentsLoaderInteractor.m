@@ -26,11 +26,16 @@
     self = [super init];
     if (self) {
         self.disposable = [[[[CMServerListener instance] messageSubject] deliverOnMainThread] subscribeNext:^(ServerMessage *_Nullable message) {
-            [message matchInvitation:^(Invitation *invitation) {
+            [message
+                    matchInvitation:^(Invitation *invitation) {
                     }
-                             camment:^(Camment *camment) {
-                                 [self.output didReceiveNewCamment:camment];
-                             }];
+                            camment:^(Camment *camment) {
+                                [self.output didReceiveNewCamment:camment];
+                            } userJoined:^(UserJoinedMessage *userJoinedMessage) {
+                        [self.output didReceiveUserJoinedMessage:userJoinedMessage];
+                    } cammentDeleted:^(CammentDeletedMessage *cammentDeletedMessage) {
+                        [self.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
+                    }];
         }];
     }
     return self;
@@ -49,6 +54,7 @@
                                                remoteURL:value.url
                                                 localURL:nil
                                             thumbnailURL:value.thumbnail
+                                   userCognitoIdentityId:value.userCognitoIdentityId
                                               localAsset:nil];
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{

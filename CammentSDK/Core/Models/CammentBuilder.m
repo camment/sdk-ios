@@ -13,6 +13,7 @@
   NSString *_remoteURL;
   NSString *_localURL;
   NSString *_thumbnailURL;
+  NSString *_userCognitoIdentityId;
   AVAsset *_localAsset;
 }
 
@@ -23,19 +24,20 @@
 
 + (instancetype)cammentFromExistingCamment:(Camment *)existingCamment
 {
-  return [[[[[[[[CammentBuilder camment]
-                withShowUuid:existingCamment.showUuid]
-               withUserGroupUuid:existingCamment.userGroupUuid]
-              withUuid:existingCamment.uuid]
-             withRemoteURL:existingCamment.remoteURL]
-            withLocalURL:existingCamment.localURL]
-           withThumbnailURL:existingCamment.thumbnailURL]
+  return [[[[[[[[[CammentBuilder camment]
+                 withShowUuid:existingCamment.showUuid]
+                withUserGroupUuid:existingCamment.userGroupUuid]
+               withUuid:existingCamment.uuid]
+              withRemoteURL:existingCamment.remoteURL]
+             withLocalURL:existingCamment.localURL]
+            withThumbnailURL:existingCamment.thumbnailURL]
+           withUserCognitoIdentityId:existingCamment.userCognitoIdentityId]
           withLocalAsset:existingCamment.localAsset];
 }
 
 - (Camment *)build
 {
-  return [[Camment alloc] initWithShowUuid:_showUuid userGroupUuid:_userGroupUuid uuid:_uuid remoteURL:_remoteURL localURL:_localURL thumbnailURL:_thumbnailURL localAsset:_localAsset];
+  return [[Camment alloc] initWithShowUuid:_showUuid userGroupUuid:_userGroupUuid uuid:_uuid remoteURL:_remoteURL localURL:_localURL thumbnailURL:_thumbnailURL userCognitoIdentityId:_userCognitoIdentityId localAsset:_localAsset];
 }
 
 - (instancetype)withShowUuid:(NSString *)showUuid
@@ -71,6 +73,12 @@
 - (instancetype)withThumbnailURL:(NSString *)thumbnailURL
 {
   _thumbnailURL = [thumbnailURL copy];
+  return self;
+}
+
+- (instancetype)withUserCognitoIdentityId:(NSString *)userCognitoIdentityId
+{
+  _userCognitoIdentityId = [userCognitoIdentityId copy];
   return self;
 }
 

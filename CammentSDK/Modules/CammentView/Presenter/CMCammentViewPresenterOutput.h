@@ -9,7 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "CMOnboardingAlertType.h"
 
+@class UserJoinedMessage;
+@class Camment;
 @protocol CMCammentsBlockDelegate;
+
+typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
+    CMCammentActionsMaskNone,
+    CMCammentActionsMaskDelete
+};
 
 @protocol CMCammentViewPresenterOutput <NSObject>
 
@@ -20,4 +27,8 @@
 - (void)hideOnboardingAlert:(CMOnboardingAlertType)type;
 
 - (void)askForSetupPermissions;
+
+- (void)presentCammentOptionsView:(Camment *)camment actions:(CMCammentActionsMask)actions;
+
+- (void)presentUserJoinedMessage:(UserJoinedMessage *)message;
 @end

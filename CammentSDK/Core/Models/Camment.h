@@ -14,9 +14,10 @@
 @property (nonatomic, readonly, copy) NSString *remoteURL;
 @property (nonatomic, readonly, copy) NSString *localURL;
 @property (nonatomic, readonly, copy) NSString *thumbnailURL;
+@property (nonatomic, readonly, copy) NSString *userCognitoIdentityId;
 @property (nonatomic, readonly, copy) AVAsset *localAsset;
 
-- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL localAsset:(AVAsset *)localAsset;
+- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset;
 
 @end
 

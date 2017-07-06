@@ -33,8 +33,10 @@
 #import "CammentSDK.h"
 #import "CammentBuilder.h"
 #import "CMShowMetadata.h"
+#import "UserJoinedMessage.h"
+#import "CammentDeletedMessage.h"
 
-@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput>
+@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput>
 
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
 @property(nonatomic, strong) CMAuthInteractor *authInteractor;
@@ -47,6 +49,7 @@
 @property(nonatomic, assign) CMOnboardingAlertType currentOnboardingStep;
 
 @property(nonatomic) BOOL isCameraSessionConfigured;
+@property(nonatomic) BOOL onboardingWasStarted;
 @end
 
 @implementation CMCammentViewPresenter
@@ -57,6 +60,7 @@
     if (self) {
         self.show = metadata;
         self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
+        self.cammentsBlockNodePresenter.output = self;
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
         self.authInteractor = [CMAuthInteractor new];
         self.authInteractor.output = self;
@@ -108,7 +112,7 @@
             return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
                 [subscriber sendNext:@YES];
                 return nil;
-            }] delay:0.0f];
+            }] delay:0.5f];
         }] subscribeNext:^(id x) {
             if (!self.isCameraSessionConfigured) {
                 [self.output askForSetupPermissions];
@@ -144,7 +148,7 @@
 }
 
 - (void)checkIfNeedForOnboarding {
-    if (![CMStore instance].isOnboardingFinished) {
+    if (![CMStore instance].isOnboardingFinished && !self.onboardingWasStarted) {
         [self.output askForSetupPermissions];
     } else if (!self.isCameraSessionConfigured) {
         [self setupCameraSession];
@@ -159,6 +163,7 @@
 
 
 - (void)readyToShowOnboarding {
+    self.onboardingWasStarted = YES;
     [self runOnboarding];
 }
 
@@ -221,7 +226,7 @@
 
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
     if (asset) {
-        if (CMTimeGetSeconds(asset.duration) < 0.3) {return;}
+        if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
         NSString *groupUUID = [self.usersGroup uuid];
         Camment *camment = [[Camment alloc] initWithShowUuid:self.show.uuid
                                                userGroupUuid:groupUUID
@@ -229,6 +234,7 @@
                                                    remoteURL:nil
                                                     localURL:nil
                                                 thumbnailURL:nil
+                                       userCognitoIdentityId:[CMStore instance].cognitoUserId
                                                   localAsset:asset];
         [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
@@ -242,6 +248,9 @@
 }
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
+
+    AVAsset *asset = [AVAsset assetWithURL:url];
+    if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) { return; }
 
     RACSignal<UsersGroup *> *verifyUserGroup = nil;
 
@@ -264,7 +273,7 @@
                 build];
         return [self.interactor uploadCamment:cammentToUpload];
     }] deliverOnMainThread] subscribeNext:^(Camment *uploadedCamment) {
-        NSMutableArray<CammentsBlockItem *> *mutableCamments = (NSMutableArray *)[self.cammentsBlockNodePresenter.items mutableCopy];
+        NSMutableArray<CammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
         NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
             __block BOOL result = NO;
 
@@ -361,18 +370,24 @@
     BOOL shouldDisplayAlert = YES;
 
     switch (type) {
-        case CMOnboardingAlertNone:break;
-        case CMOnboardingAlertWouldYouLikeToChatAlert:break;
-        case CMOnboardingAlertWhatIsCammentTooltip:break;
-        case CMOnboardingAlertTapAndHoldToRecordTooltip:break;
+        case CMOnboardingAlertNone:
+            break;
+        case CMOnboardingAlertWouldYouLikeToChatAlert:
+            break;
+        case CMOnboardingAlertWhatIsCammentTooltip:
+            break;
+        case CMOnboardingAlertTapAndHoldToRecordTooltip:
+            break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
             shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertTapToPlayMaskCamment);
             break;
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
             shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertSwipeLeftToHideCammentsMaskTooltip);
             break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:break;
-        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:break;
+        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
+            break;
+        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
+            break;
         case CMOnboardingAlertTapToPlayCamment:
             shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertTapAndHoldToRecordMaskTooltip);
             break;
@@ -395,8 +410,10 @@
     switch (type) {
         case CMOnboardingAlertNone:
             break;
-        case CMOnboardingAlertWouldYouLikeToChatAlert:break;
-        case CMOnboardingAlertWhatIsCammentTooltip:break;
+        case CMOnboardingAlertWouldYouLikeToChatAlert:
+            break;
+        case CMOnboardingAlertWhatIsCammentTooltip:
+            break;
         case CMOnboardingAlertTapAndHoldToRecordTooltip:
             [self showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
             break;
@@ -409,7 +426,8 @@
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
             [CMStore instance].isOnboardingFinished = YES;
             break;
-        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:break;
+        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
+            break;
         case CMOnboardingAlertTapToPlayCamment:
             [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
             break;
@@ -420,6 +438,33 @@
     if (_currentOnboardingStep != type) {
         return;
     }
+}
+
+- (void)presentCammentOptionsDialog:(Camment *)camment {
+
+    CMCammentActionsMask actions = CMCammentActionsMaskNone;
+    if ([camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
+        actions = actions | CMCammentActionsMaskDelete;
+    }
+    [self.output presentCammentOptionsView:camment actions:actions];
+}
+
+- (void)deleteCammentAction:(Camment *)camment {
+    CammentsBlockItem *cammentsBlockItem = [CammentsBlockItem cammentWithCamment:camment];
+    [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
+    [self.interactor deleteCament:camment];
+}
+
+- (void)didReceiveUserJoinedMessage:(UserJoinedMessage *)message {
+    if ([message.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
+            ![message.joinedUser.cognitoUserId isEqualToString:[CMStore instance].cognitoUserId]) {
+        [self.output presentUserJoinedMessage:message];
+    }
+}
+
+- (void)didReceiveCammentDeletedMessage:(CammentDeletedMessage *)message {
+    CammentsBlockItem *cammentsBlockItem = [CammentsBlockItem cammentWithCamment:message.camment];
+    [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
 }
 
 @end

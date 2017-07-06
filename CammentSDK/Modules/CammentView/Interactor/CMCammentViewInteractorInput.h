@@ -16,4 +16,5 @@
 - (RACSignal<Camment *> *)uploadCamment:(Camment *)camment;
 - (RACSignal<UsersGroup *> *)createEmptyGroup;
 
+- (void)deleteCament:(Camment *)camment;
 @end

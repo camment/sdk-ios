@@ -19,14 +19,11 @@
 
  
 /**
- Request model for adding users to user groups.
+ 
  */
-@interface CMUserInAddToGroupRequest : AWSModel
+@interface CMAcceptInvitationRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *showUuid;
-
-
-@property (nonatomic, strong, nullable) NSArray *userFacebookIdList;
+@property (nonatomic, strong, nullable) NSString *invitationKey;
 
 
 @end

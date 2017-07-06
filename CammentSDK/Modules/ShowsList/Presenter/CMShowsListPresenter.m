@@ -112,7 +112,7 @@
     if (show) {
         UIViewController *viewController = (id) self.output;
         UIViewController *presentingViewController = viewController;
-        if (presentingViewController) {
+        if (presentingViewController.presentingViewController) {
             [presentingViewController dismissViewControllerAnimated:YES
                                                          completion:^{
                                                              [self didSelectShow:show];

@@ -183,6 +183,7 @@
     [[self.authService signIn]
             subscribeNext:^(NSString *cognitoUserId) {
                 [[CMStore instance] setCognitoUserId:cognitoUserId];
+                [[CMStore instance] setFacebookUserId:[FBSDKAccessToken currentAccessToken].userID];
                 User *currentUser = [[[UserBuilder new] withCognitoUserId:cognitoUserId] build];
                 [[CMStore instance] setCurrentUser:currentUser];
             }
@@ -212,6 +213,8 @@
         DDLogVerbose(@"FB profile not found");
         return;
     }
+
+    [CMStore instance].facebookUserId = profile.userID;
 
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
     if (profile.userID) {
@@ -278,29 +281,13 @@
     [listener connect];
     [listener.messageSubject subscribeNext:^(ServerMessage *message) {
         [message matchInvitation:^(Invitation *invitation) {
-            if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) {
-                [[[CMDevcammentClient defaultClient] usergroupsGroupUuidUsersGet:invitation.userGroupUuid] continueWithBlock:^id(AWSTask<id> *t) {
-
-                    Invitation *processedInvitation = invitation;
-                    if ([t.result isKindOfClass:[CMUserinfoList class]]) {
-                        CMUserinfoList *userinfoList = t.result;
-                        NSArray<CMUserinfo *> *items = [userinfoList.items.rac_sequence filter:^BOOL(CMUserinfo *info) {
-                            return [info.userCognitoIdentityId isEqualToString:invitation.invitationIssuer.cognitoUserId];
-                        }].array ?: @[];
-
-                        CMUserinfo *invitationIssuerInfo = [items firstObject];
-                        if (invitationIssuerInfo) {
-                            UserBuilder *userBuilder = [UserBuilder userFromExistingUser:invitation.invitationIssuer];
-                            userBuilder = [[userBuilder withUsername:invitationIssuerInfo.name] withUserPhoto:invitationIssuerInfo.picture];
-                            processedInvitation = [[[InvitationBuilder invitationFromExistingInvitation:invitation] withInvitationIssuer:[userBuilder build]] build];
-                        }
-                    }
-
-                    [self presentChatInvitation:processedInvitation];
-                    return nil;
-                }];
+            if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
+                    && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]) {
+                [self presentChatInvitation:invitation];
             }
         }                camment:^(Camment *camment) {
+        }             userJoined:^(UserJoinedMessage *userJoinedMessage) {
+        }         cammentDeleted:^(CammentDeletedMessage *cammentDeletedMessage) {
         }];
     }];
 }
@@ -319,6 +306,9 @@
             metadata.uuid = invitation.showUuid;
             [self.sdkDelegate didAcceptInvitationToShow:metadata];
         }
+        [[self acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
+            return nil;
+        }];
     }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -346,6 +336,14 @@
     });
 }
 
+- (AWSTask *)acceptInvitation:(Invitation *)invitation {
+    CMDevcammentClient *client = [CMDevcammentClient defaultClient];
+    CMAcceptInvitationRequest *invitationRequest = [CMAcceptInvitationRequest new];
+    invitationRequest.invitationKey = invitation.invitationKey;
+    return [client usergroupsGroupUuidInvitationsPut:invitation.userGroupUuid
+                                                body:invitationRequest];
+}
+
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     DDLogInfo(@"applicationDidBecomeActive hook has been installed");
     [FBSDKAppEvents activateApp];
@@ -353,6 +351,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     DDLogInfo(@"didFinishLaunchingWithOptions hook has been installed");
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
+                                     withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                     didFinishLaunchingWithOptions:launchOptions];
 }

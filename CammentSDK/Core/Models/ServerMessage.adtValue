@@ -1,5 +1,7 @@
 %type name="Camment"
 %type name="Invitation"
+%type name="UserJoinedMessage"
+%type name="CammentDeletedMessage"
 
 ServerMessage includes(RMBuilder) {
   invitation {
@@ -7,5 +9,11 @@ ServerMessage includes(RMBuilder) {
   }
   camment {
     Camment *camment
+  }
+  userJoined {
+    UserJoinedMessage *userJoinedMessage
+  }
+  cammentDeleted {
+    CammentDeletedMessage *cammentDeletedMessage
   }
 }

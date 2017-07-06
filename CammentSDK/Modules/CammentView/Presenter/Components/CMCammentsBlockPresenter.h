@@ -9,12 +9,22 @@
 #import "Camment.h"
 #import "CammentsBlockItem.h"
 
+
+@protocol CMCammentsBlockPresenterOutput<NSObject>
+
+- (void)presentCammentOptionsDialog:(Camment *)camment;
+
+@end
+
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate>
 
 @property (nonatomic, strong) NSArray<CammentsBlockItem *> *items;
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
+@property (nonatomic, weak) id<CMCammentsBlockPresenterOutput> output;
 
 - (void)playCamment:(NSString *)cammentId;
 
 - (void)insertNewItem:(CammentsBlockItem *)item completion:(void (^)())completion;
+
+- (void)deleteItem:(CammentsBlockItem *)blockItem;
 @end

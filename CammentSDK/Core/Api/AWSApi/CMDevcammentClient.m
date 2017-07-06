@@ -26,6 +26,7 @@
 #import "CMCammentInRequest.h"
 #import "CMCamment.h"
 #import "CMUsergroup.h"
+#import "CMAcceptInvitationRequest.h"
 #import "CMInvitationInRequest.h"
 #import "CMUserinfoList.h"
 #import "CMUserInAddToGroupRequest.h"
@@ -333,6 +334,29 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:nil
+                     responseClass:nil];
+}
+
+- (AWSTask *)usergroupsGroupUuidInvitationsPut:(NSString *)groupUuid body:(CMAcceptInvitationRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"PUT"
+                         URLString:@"/usergroups/{groupUuid}/invitations"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
                      responseClass:nil];
 }
 

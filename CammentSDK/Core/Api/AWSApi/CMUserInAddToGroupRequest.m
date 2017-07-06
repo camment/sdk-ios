@@ -20,6 +20,7 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
+             @"showUuid": @"showUuid",
              @"userFacebookIdList": @"userFacebookIdList"
              };
 }

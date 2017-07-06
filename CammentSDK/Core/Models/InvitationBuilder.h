@@ -17,6 +17,10 @@
 
 - (instancetype)withShowUuid:(NSString *)showUuid;
 
+- (instancetype)withInvitationKey:(NSString *)invitationKey;
+
+- (instancetype)withInvitedUserFacebookId:(NSString *)invitedUserFacebookId;
+
 - (instancetype)withInvitationIssuer:(User *)invitationIssuer;
 
 @end

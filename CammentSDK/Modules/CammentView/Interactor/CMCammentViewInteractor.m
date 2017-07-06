@@ -15,6 +15,7 @@
 #import "Camment.h"
 #import "CammentBuilder.h"
 #import "UsersGroup.h"
+#import "CMStore.h"
 
 NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camment-camments/uploads/%@.mp4";
 
@@ -84,6 +85,22 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 
         return nil;
     }];
+}
+
+- (void)deleteCament:(Camment *)camment {
+    NSString *cammentUuid = camment.uuid;
+    NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
+    if (!cammentUuid || !groupUuid) { return; }
+    [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
+                                                                            groupUuid:groupUuid]
+            continueWithBlock:^id(AWSTask<id> *t) {
+                if (t.error) {
+                    DDLogError(@"Error while camment deletion %@", t.error);
+                } else {
+                    DDLogVerbose(@"Camment has been deleted %@", camment);
+                }
+                return nil;
+            }];
 }
 
 @end

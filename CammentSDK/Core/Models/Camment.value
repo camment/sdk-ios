@@ -6,5 +6,6 @@ Camment includes(RMBuilder) {
   NSString* remoteURL
   NSString* localURL
   NSString* thumbnailURL
+  NSString* userCognitoIdentityId
   AVAsset* localAsset
 }

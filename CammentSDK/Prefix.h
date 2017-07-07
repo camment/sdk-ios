@@ -11,7 +11,12 @@
 
 #define LOG_LEVEL_DEF ddLogLevel
 #import <CocoaLumberjack/CocoaLumberjack.h>
+
+#ifdef DEBUG
 static const DDLogLevel ddLogLevel = DDLogLevelAll;
+#else
+static const DDLogLevel ddLogLevel = DDLogLevelError;
+#endif
 
 @class CammentSDK;
 

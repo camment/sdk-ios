@@ -158,6 +158,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     return self;
 }
 
+- (AWSTask *)privateGet {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/private"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
 - (AWSTask *)showsGet {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",

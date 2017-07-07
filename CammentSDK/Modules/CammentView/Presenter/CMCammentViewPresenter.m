@@ -43,6 +43,7 @@
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) CMShowMetadata *show;
 @property(nonatomic, strong) UsersGroup *usersGroup;
+@property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
 @property(nonatomic, assign) CMOnboardingAlertMaskType completedOnboardingSteps;
@@ -104,22 +105,28 @@
             }
 
             if (cammentRecordingState == CMCammentRecordingStateCancelled) {
+                [self.willStartRecordSignal dispose];
                 [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
                 [self.recorderInteractor cancelRecording];
                 return [RACSignal empty];
             }
 
-            return [[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+            return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
                 [subscriber sendNext:@YES];
                 return nil;
-            }] delay:0.5f];
+            }];
         }] subscribeNext:^(id x) {
             if (!self.isCameraSessionConfigured) {
                 [self.output askForSetupPermissions];
                 return;
             }
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
-            [self.recorderInteractor startRecording];
+                self.willStartRecordSignal =  [[[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+                    [subscriber sendCompleted];
+                    return nil;
+                }] delay:0.5] deliverOnMainThread] subscribeCompleted:^{
+                    [self.recorderInteractor startRecording];
+                }];
         }];
 
         [[RACSignal combineLatest:@[

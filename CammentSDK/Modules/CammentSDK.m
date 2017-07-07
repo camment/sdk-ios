@@ -56,7 +56,11 @@
     self = [super init];
     if (self) {
 
+#ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
+#else
+        [DDLog addLogger:[[DDFileLogger alloc] init]];
+#endif
 
         DDLogInfo(@"Camment SDK has started");
         [self setupTweaks];
@@ -132,6 +136,7 @@
         volumeTweak.stepValue = @10.0f;
         volumeTweak.maximumValue = @100.0f;
         volumeTweak.defaultValue = @30.0f;
+        volumeTweak.currentValue = @10.0f;
         volumeTweak.name = @"Volume (%)";
         [videoSettingsCollection addTweak:volumeTweak];
     }
@@ -140,6 +145,7 @@
 }
 
 - (void)configureWithApiKey:(NSString *)apiKey {
+    [CMStore instance].apiKey = apiKey;
     [self configure];
     [self launch];
     CMCammentIdentity *identity = [CMCammentAnonymousIdentity new];
@@ -257,6 +263,14 @@
 }
 
 - (void)launch {
+    [[[CMDevcammentClient defaultClient] privateGet] continueWithBlock:^id(AWSTask<id> *t) {
+        if (t.error) {
+            DDLogError(@"Incorrect CammentSDK API Key");
+        } else {
+            DDLogVerbose(@"CammentSDK API key verified");
+        }
+        return nil;
+    }];
 }
 
 - (void)configure {
@@ -268,6 +282,7 @@
                                              selector:@selector(updateUserInfo)
                                                  name:FBSDKProfileDidChangeNotification
                                                object:nil];
+    [[CMDevcammentClient defaultClient] setAPIKey:[CMStore instance].apiKey];
 }
 
 - (void)configureIoTListener:(NSString *)userId {
@@ -282,7 +297,8 @@
     [listener.messageSubject subscribeNext:^(ServerMessage *message) {
         [message matchInvitation:^(Invitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
-                    && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]) {
+                    && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]
+                    && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]){
                 [self presentChatInvitation:invitation];
             }
         }                camment:^(Camment *camment) {

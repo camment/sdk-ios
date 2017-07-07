@@ -182,6 +182,14 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  
+ return type: 
+ */
+- (AWSTask *)privateGet;
+
+/**
+ 
+ 
+ 
  return type: CMShowList *
  */
 - (AWSTask *)showsGet;

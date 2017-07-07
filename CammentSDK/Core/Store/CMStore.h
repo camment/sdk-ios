@@ -41,6 +41,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic, copy) NSString *facebookUserId;
 
+@property(nonatomic, copy) NSString *apiKey;
+
 + (CMStore *)instance;
 
 @end

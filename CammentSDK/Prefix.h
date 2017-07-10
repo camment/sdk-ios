@@ -18,6 +18,15 @@ static const DDLogLevel ddLogLevel = DDLogLevelAll;
 static const DDLogLevel ddLogLevel = DDLogLevelError;
 #endif
 
+#ifdef INTERNALSDK
+
+#define USE_INTERNAL_FEATURES 1
+
+#else
+
+#endif
+
+
 @class CammentSDK;
 
 #define CMLocalized(str) NSLocalizedStringFromTableInBundle(str, @"CammentSDK", [NSBundle bundleForClass:[CammentSDK class]], @"")

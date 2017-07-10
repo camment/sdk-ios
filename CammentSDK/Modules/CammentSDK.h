@@ -12,22 +12,27 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <CammentSDK/PublicHeader.h>
 
+#ifdef INTERNALSDK
+#import <CammentSDK/CMShowsListModule.h>
+#import <CammentSDK/CMPublicModuleInterface.h>
+#endif
+
 #import <CammentSDK/CMCammentIdentity.h>
 #import <CammentSDK/CMCammentAnonymousIdentity.h>
 #import <CammentSDK/CMCammentFacebookIdentity.h>
-#import <CammentSDK/CMShowsListModule.h>
-#import <CammentSDK/CMPublicModuleInterface.h>
 #import <CammentSDK/CMShowMetadata.h>
+#import <CammentSDK/CMCammentOverlayController.h>
+
 
 @protocol CMCammentSDKDelegate <NSObject>
 
-- (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata;
+- (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
 @end
 
 @interface CammentSDK: NSObject
 
-@property (nonatomic, weak) id<CMCammentSDKDelegate> sdkDelegate;
+@property (nonatomic, weak) id<CMCammentSDKDelegate> _Nullable sdkDelegate;
 
 + (CammentSDK * _Nonnull)instance;
 

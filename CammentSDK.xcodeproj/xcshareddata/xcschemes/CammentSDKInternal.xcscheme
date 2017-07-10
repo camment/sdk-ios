@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "959E09231EDC4D4600C1F0F9"
-               BuildableName = "CammentSDK-Universal"
-               BlueprintName = "CammentSDK-Universal"
+               BlueprintIdentifier = "958204F91F0F9AA700671280"
+               BuildableName = "CammentSDK.framework"
+               BlueprintName = "CammentSDKInternal"
                ReferencedContainer = "container:CammentSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,6 +29,15 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "958204F91F0F9AA700671280"
+            BuildableName = "CammentSDK.framework"
+            BlueprintName = "CammentSDKInternal"
+            ReferencedContainer = "container:CammentSDK.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -45,9 +54,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "959E09231EDC4D4600C1F0F9"
-            BuildableName = "CammentSDK-Universal"
-            BlueprintName = "CammentSDK-Universal"
+            BlueprintIdentifier = "958204F91F0F9AA700671280"
+            BuildableName = "CammentSDK.framework"
+            BlueprintName = "CammentSDKInternal"
             ReferencedContainer = "container:CammentSDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -63,9 +72,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "959E09231EDC4D4600C1F0F9"
-            BuildableName = "CammentSDK-Universal"
-            BlueprintName = "CammentSDK-Universal"
+            BlueprintIdentifier = "958204F91F0F9AA700671280"
+            BuildableName = "CammentSDK.framework"
+            BlueprintName = "CammentSDKInternal"
             ReferencedContainer = "container:CammentSDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

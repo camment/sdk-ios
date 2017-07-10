@@ -12,7 +12,6 @@
 #import "CMCammentViewWireframe.h"
 #import "Show.h"
 #import "CMStore.h"
-#import "CMShowMetadata.h"
 
 @interface CMCammentOverlayController ()
 @property(nonatomic, strong) CMCammentViewController *cammentViewController;

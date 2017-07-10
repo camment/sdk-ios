@@ -25,7 +25,11 @@ static CMServerListener *_instance = nil;
 @implementation CMServerListener
 
 + (CMServerListener *)instance {
-    return _instance;
+    if (_instance) {
+        return _instance;
+    }
+    
+    return [self instanceWithCredentials:[CMServerListenerCredentials defaultCredentials]];
 }
 
 + (CMServerListener *)instanceWithCredentials:(CMServerListenerCredentials *)credentials {
@@ -139,7 +143,7 @@ static CMServerListener *_instance = nil;
     ServerMessage *serverMessage = [[[CMServerMessageParser alloc] initWithMessageDictionary:jsonObject] parseMessage];
     if (!serverMessage) {return;}
 
-    NSLog(@"Got message %@", serverMessage);
+    DDLogVerbose(@"Got message %@", serverMessage);
     [_messageSubject sendNext:serverMessage];
 }
 

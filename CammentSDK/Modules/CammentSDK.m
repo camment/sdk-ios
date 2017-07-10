@@ -63,7 +63,11 @@
 #endif
 
         DDLogInfo(@"Camment SDK has started");
+        
+#ifdef INTERNALSDK
         [self setupTweaks];
+#endif
+        
     }
 
     return self;
@@ -141,7 +145,7 @@
         [videoSettingsCollection addTweak:volumeTweak];
     }
 
-    DDLogInfo(@"Tweaks hav been configured");
+    DDLogInfo(@"Tweaks have been configured");
 }
 
 - (void)configureWithApiKey:(NSString *)apiKey {

@@ -121,12 +121,12 @@
                 return;
             }
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
-                self.willStartRecordSignal =  [[[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-                    [subscriber sendCompleted];
-                    return nil;
-                }] delay:0.5] deliverOnMainThread] subscribeCompleted:^{
-                    [self.recorderInteractor startRecording];
-                }];
+            self.willStartRecordSignal =  [[[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+            [subscriber sendCompleted];
+            return nil;
+        }] delay:0.5] deliverOnMainThread] subscribeCompleted:^{
+            [self.recorderInteractor startRecording];
+        }];
         }];
 
         [[RACSignal combineLatest:@[
@@ -195,6 +195,7 @@
 }
 
 - (void)setupPresentationInstruction {
+#ifdef INTERNALSDK
     NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Demo"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
 
     id <CMPresentationBuilder> builder = nil;
@@ -210,6 +211,7 @@
         return;
     }
     self.presentationPlayerInteractor.instructions = [builder instructions];
+#endif
 }
 
 - (void)reloadCamments {

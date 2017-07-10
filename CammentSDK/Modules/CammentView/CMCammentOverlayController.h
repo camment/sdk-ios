@@ -5,10 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-
-@class CMCammentViewController;
-@class Show;
-@class CMShowMetadata;
+#import "CMShowMetadata.h"
 
 @protocol CMCammentOverlayControllerDelegate<NSObject>
 

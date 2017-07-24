@@ -467,27 +467,32 @@
 		9582061F1F0F9AA700671280 /* CammentDeletedMessage.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABC3C3DE3986AAF1305BD /* CammentDeletedMessage.h */; };
 		958206201F0F9AA700671280 /* CammentDeletedMessageBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFAB895C3582C855A5BF697 /* CammentDeletedMessageBuilder.h */; };
 		958206211F0F9AA700671280 /* CMServerMessageParser.h in Headers */ = {isa = PBXBuildFile; fileRef = 6FFABCD38EB8C45B2AD73632 /* CMServerMessageParser.h */; };
-		958206231F0F9AA700671280 /* teemu.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE561EFBC3FC00B7C546 /* teemu.mp4 */; };
-		958206241F0F9AA700671280 /* ubereats.gif in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE521EFBC37400B7C546 /* ubereats.gif */; };
-		958206251F0F9AA700671280 /* netflix-1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F31EE1652B00948B79 /* netflix-1.mp4 */; };
 		958206261F0F9AA700671280 /* awsiot-identity.p12 in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */; };
-		958206271F0F9AA700671280 /* netflix-3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F51EE1652B00948B79 /* netflix-3.mp4 */; };
-		958206281F0F9AA700671280 /* kokoro.gif in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE501EFBC37300B7C546 /* kokoro.gif */; };
-		958206291F0F9AA700671280 /* sushi.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A61EDF055C003AE18D /* sushi.gif */; };
-		9582062A1F0F9AA700671280 /* petteri.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE571EFBC3FC00B7C546 /* petteri.mp4 */; };
-		9582062B1F0F9AA700671280 /* wolt.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A71EDF055C003AE18D /* wolt.gif */; };
 		9582062C1F0F9AA700671280 /* Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 95CD2DE31ED84D0A00DB7660 /* Config.plist */; };
-		9582062D1F0F9AA700671280 /* netflix-2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F41EE1652B00948B79 /* netflix-2.mp4 */; };
-		9582062E1F0F9AA700671280 /* shakeshack.gif in Resources */ = {isa = PBXBuildFile; fileRef = 95CDEE511EFBC37300B7C546 /* shakeshack.gif */; };
 		9582062F1F0F9AA700671280 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A01EDEAF9A003AE18D /* Images.xcassets */; };
-		958206301F0F9AA700671280 /* burger.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A51EDF055C003AE18D /* burger.gif */; };
-		958206311F0F9AA700671280 /* ads.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB9479692BE245A168DB2 /* ads.gif */; };
-		958206321F0F9AA700671280 /* netflix-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB5CF2B01A24A1BC1230F /* netflix-4.gif */; };
 		958206331F0F9AA700671280 /* CammentSDK.strings in Resources */ = {isa = PBXBuildFile; fileRef = 955B50F81F0A34F000E0B7A2 /* CammentSDK.strings */; };
 		9582064A1F0FA5D200671280 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 958206491F0FA5D200671280 /* CMPublicModuleInterface.h */; };
 		9582064B1F0FA5D200671280 /* CMPublicModuleInterface.h in Headers */ = {isa = PBXBuildFile; fileRef = 958206491F0FA5D200671280 /* CMPublicModuleInterface.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9582064D1F0FA5E600671280 /* CMShowsListModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 9582064C1F0FA5E600671280 /* CMShowsListModule.h */; };
 		9582064E1F0FA5E600671280 /* CMShowsListModule.h in Headers */ = {isa = PBXBuildFile; fileRef = 9582064C1F0FA5E600671280 /* CMShowsListModule.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9590417B1F13822400216E40 /* kokoro.gif in Resources */ = {isa = PBXBuildFile; fileRef = 959041761F13822400216E40 /* kokoro.gif */; };
+		9590417C1F13822400216E40 /* petteri.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959041771F13822400216E40 /* petteri.mp4 */; };
+		9590417D1F13822400216E40 /* shakeshack.gif in Resources */ = {isa = PBXBuildFile; fileRef = 959041781F13822400216E40 /* shakeshack.gif */; };
+		9590417E1F13822400216E40 /* teemu.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959041791F13822400216E40 /* teemu.mp4 */; };
+		9590417F1F13822400216E40 /* ubereats.gif in Resources */ = {isa = PBXBuildFile; fileRef = 9590417A1F13822400216E40 /* ubereats.gif */; };
+		9594806B1F14CA760091972D /* kokoro.gif in Resources */ = {isa = PBXBuildFile; fileRef = 959041761F13822400216E40 /* kokoro.gif */; };
+		9594806C1F14CA760091972D /* petteri.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959041771F13822400216E40 /* petteri.mp4 */; };
+		9594806D1F14CA760091972D /* shakeshack.gif in Resources */ = {isa = PBXBuildFile; fileRef = 959041781F13822400216E40 /* shakeshack.gif */; };
+		9594806E1F14CA760091972D /* teemu.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959041791F13822400216E40 /* teemu.mp4 */; };
+		9594806F1F14CA760091972D /* ubereats.gif in Resources */ = {isa = PBXBuildFile; fileRef = 9590417A1F13822400216E40 /* ubereats.gif */; };
+		959480701F14CA760091972D /* burger.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A51EDF055C003AE18D /* burger.gif */; };
+		959480711F14CA760091972D /* sushi.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A61EDF055C003AE18D /* sushi.gif */; };
+		959480721F14CA760091972D /* wolt.gif in Resources */ = {isa = PBXBuildFile; fileRef = 954F48A71EDF055C003AE18D /* wolt.gif */; };
+		959480731F14CA760091972D /* netflix-1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F31EE1652B00948B79 /* netflix-1.mp4 */; };
+		959480741F14CA760091972D /* netflix-2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F41EE1652B00948B79 /* netflix-2.mp4 */; };
+		959480751F14CA760091972D /* netflix-3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 959311F51EE1652B00948B79 /* netflix-3.mp4 */; };
+		959480761F14CA760091972D /* netflix-4.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB5CF2B01A24A1BC1230F /* netflix-4.gif */; };
+		959480771F14CA760091972D /* ads.gif in Resources */ = {isa = PBXBuildFile; fileRef = 6FFAB9479692BE245A168DB2 /* ads.gif */; };
 		959E089A1EDC3F2000C1F0F9 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 95CD2C821ED843F600DB7660 /* AVFoundation.framework */; };
 		95CA1EFA1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h in Headers */ = {isa = PBXBuildFile; fileRef = 95CA1EBC1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.h */; };
 		95CA1EFB1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m in Sources */ = {isa = PBXBuildFile; fileRef = 95CA1EBD1EDC38D50024C4F6 /* NSURL+SCSaveToCameraRoll.m */; };
@@ -807,6 +812,11 @@
 		958206391F0F9AA800671280 /* CammentSDK copy2-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "CammentSDK copy2-Info.plist"; path = "/Users/alexfedosov/Projects/iOS/Sportacam/camment/CammentSDK/CammentSDK copy2-Info.plist"; sourceTree = "<absolute>"; };
 		958206491F0FA5D200671280 /* CMPublicModuleInterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CMPublicModuleInterface.h; path = PublicModule/CMPublicModuleInterface.h; sourceTree = "<group>"; };
 		9582064C1F0FA5E600671280 /* CMShowsListModule.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMShowsListModule.h; sourceTree = "<group>"; };
+		959041761F13822400216E40 /* kokoro.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = kokoro.gif; sourceTree = "<group>"; };
+		959041771F13822400216E40 /* petteri.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = petteri.mp4; sourceTree = "<group>"; };
+		959041781F13822400216E40 /* shakeshack.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = shakeshack.gif; sourceTree = "<group>"; };
+		959041791F13822400216E40 /* teemu.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = teemu.mp4; sourceTree = "<group>"; };
+		9590417A1F13822400216E40 /* ubereats.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = ubereats.gif; sourceTree = "<group>"; };
 		959311F31EE1652B00948B79 /* netflix-1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-1.mp4"; sourceTree = "<group>"; };
 		959311F41EE1652B00948B79 /* netflix-2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-2.mp4"; sourceTree = "<group>"; };
 		959311F51EE1652B00948B79 /* netflix-3.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "netflix-3.mp4"; sourceTree = "<group>"; };
@@ -937,11 +947,6 @@
 		95CD2DE11ED84D0A00DB7660 /* awsiot-identity.p12 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "awsiot-identity.p12"; sourceTree = "<group>"; };
 		95CD2DE31ED84D0A00DB7660 /* Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Config.plist; sourceTree = "<group>"; };
 		95CD2E1A1EDC0E0C00DB7660 /* CMShowsListModule.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMShowsListModule.m; sourceTree = "<group>"; };
-		95CDEE501EFBC37300B7C546 /* kokoro.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = kokoro.gif; path = ../../../../../../../../Downloads/kokoro.gif; sourceTree = "<group>"; };
-		95CDEE511EFBC37300B7C546 /* shakeshack.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = shakeshack.gif; path = ../../../../../../../../Downloads/shakeshack.gif; sourceTree = "<group>"; };
-		95CDEE521EFBC37400B7C546 /* ubereats.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = ubereats.gif; path = ../../../../../../../../Downloads/ubereats.gif; sourceTree = "<group>"; };
-		95CDEE561EFBC3FC00B7C546 /* teemu.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = teemu.mp4; path = ../../../../../../../../Downloads/teemu.mp4; sourceTree = "<group>"; };
-		95CDEE571EFBC3FC00B7C546 /* petteri.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; name = petteri.mp4; path = ../../../../../../../../Downloads/petteri.mp4; sourceTree = "<group>"; };
 		95EFB1C91EF7F893007AAB14 /* CMCammentAnonymousIdentity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CMCammentAnonymousIdentity.h; sourceTree = "<group>"; };
 		95EFB1CA1EF7F893007AAB14 /* CMCammentAnonymousIdentity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CMCammentAnonymousIdentity.m; sourceTree = "<group>"; };
 		9CCDED7691C7719413E5F30B /* CMCammentViewPresenterInput.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = CMCammentViewPresenterInput.h; sourceTree = "<group>"; };
@@ -1793,11 +1798,11 @@
 		95CDEE4F1EFBC35000B7C546 /* SB demo */ = {
 			isa = PBXGroup;
 			children = (
-				95CDEE571EFBC3FC00B7C546 /* petteri.mp4 */,
-				95CDEE561EFBC3FC00B7C546 /* teemu.mp4 */,
-				95CDEE501EFBC37300B7C546 /* kokoro.gif */,
-				95CDEE511EFBC37300B7C546 /* shakeshack.gif */,
-				95CDEE521EFBC37400B7C546 /* ubereats.gif */,
+				959041761F13822400216E40 /* kokoro.gif */,
+				959041771F13822400216E40 /* petteri.mp4 */,
+				959041781F13822400216E40 /* shakeshack.gif */,
+				959041791F13822400216E40 /* teemu.mp4 */,
+				9590417A1F13822400216E40 /* ubereats.gif */,
 			);
 			path = "SB demo";
 			sourceTree = "<group>";
@@ -2245,22 +2250,22 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				958206231F0F9AA700671280 /* teemu.mp4 in Resources */,
-				958206241F0F9AA700671280 /* ubereats.gif in Resources */,
-				958206251F0F9AA700671280 /* netflix-1.mp4 in Resources */,
+				9594806B1F14CA760091972D /* kokoro.gif in Resources */,
+				9594806C1F14CA760091972D /* petteri.mp4 in Resources */,
+				9594806D1F14CA760091972D /* shakeshack.gif in Resources */,
+				9594806E1F14CA760091972D /* teemu.mp4 in Resources */,
+				9594806F1F14CA760091972D /* ubereats.gif in Resources */,
+				959480701F14CA760091972D /* burger.gif in Resources */,
+				959480711F14CA760091972D /* sushi.gif in Resources */,
+				959480721F14CA760091972D /* wolt.gif in Resources */,
+				959480731F14CA760091972D /* netflix-1.mp4 in Resources */,
+				959480741F14CA760091972D /* netflix-2.mp4 in Resources */,
+				959480751F14CA760091972D /* netflix-3.mp4 in Resources */,
+				959480761F14CA760091972D /* netflix-4.gif in Resources */,
+				959480771F14CA760091972D /* ads.gif in Resources */,
 				958206261F0F9AA700671280 /* awsiot-identity.p12 in Resources */,
-				958206271F0F9AA700671280 /* netflix-3.mp4 in Resources */,
-				958206281F0F9AA700671280 /* kokoro.gif in Resources */,
-				958206291F0F9AA700671280 /* sushi.gif in Resources */,
-				9582062A1F0F9AA700671280 /* petteri.mp4 in Resources */,
-				9582062B1F0F9AA700671280 /* wolt.gif in Resources */,
 				9582062C1F0F9AA700671280 /* Config.plist in Resources */,
-				9582062D1F0F9AA700671280 /* netflix-2.mp4 in Resources */,
-				9582062E1F0F9AA700671280 /* shakeshack.gif in Resources */,
 				9582062F1F0F9AA700671280 /* Images.xcassets in Resources */,
-				958206301F0F9AA700671280 /* burger.gif in Resources */,
-				958206311F0F9AA700671280 /* ads.gif in Resources */,
-				958206321F0F9AA700671280 /* netflix-4.gif in Resources */,
 				958206331F0F9AA700671280 /* CammentSDK.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2269,9 +2274,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9590417F1F13822400216E40 /* ubereats.gif in Resources */,
+				9590417E1F13822400216E40 /* teemu.mp4 in Resources */,
 				95CD2DE41ED84D0A00DB7660 /* awsiot-identity.p12 in Resources */,
+				9590417C1F13822400216E40 /* petteri.mp4 in Resources */,
 				95CD2DE61ED84D0A00DB7660 /* Config.plist in Resources */,
+				9590417B1F13822400216E40 /* kokoro.gif in Resources */,
 				954F48A11EDEAF9A003AE18D /* Images.xcassets in Resources */,
+				9590417D1F13822400216E40 /* shakeshack.gif in Resources */,
 				955B50F61F0A34F000E0B7A2 /* CammentSDK.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -82,28 +82,47 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
         cammentToUpload = [[[CammentBuilder cammentFromExistingCamment:camment]
                 withUserGroupUuid:usersGroup.uuid]
                 build];
-        CMCammentPostingOperation *postingOperation = [[CMCammentPostingOperation alloc]
-                initWithCamment:cammentToUpload
-                cammentUploader:[CMCammentUploader instance]
-                  cammentClient:[CMDevcammentClient defaultClient]];
-
-        postingOperation.maxRetries = 5;
-
-        [postingOperation setPostingCompletionBlock:^(Camment *uploadedCamment, NSError *error, CMCammentPostingOperation *currentOperation) {
-            if (!error) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.output interactorDidUploadCamment:uploadedCamment];
-                });
-                return;
-            }
-        }];
-
-        [self.cammentPostingQueue addOperation:postingOperation];
-        [postingOperation start];
+        [self postCamment:cammentToUpload];
     } error:^(NSError *error) {
 
     }];
 }
+
+- (void)postCamment:(Camment *)camment {
+    [[[CMCammentUploader instance]uploadVideoAsset:[[NSURL alloc] initWithString:camment.localURL]
+                                       uuid:camment.uuid]
+     subscribeError:^(NSError *error) {
+
+     } completed:^{
+         CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
+         cammentInRequest.uuid = camment.uuid;
+         DDLogVerbose(@"Posting camment %@", camment);
+         
+         [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
+                                                         body:cammentInRequest]
+          continueWithBlock:^id(AWSTask<CMCamment *> *t) {
+              if (t.error) {
+
+              } else {
+                  CMCamment *cmCamment = t.result;
+                  Camment *uploadedCamment = [[[[[[[CammentBuilder cammentFromExistingCamment:camment]
+                                                   withUuid:cmCamment.uuid]
+                                                  withShowUuid:cmCamment.showUuid]
+                                                 withRemoteURL:cmCamment.url]
+                                                withUserGroupUuid:cmCamment.userGroupUuid]
+                                               withLocalURL:nil]
+                                              build];
+                  DDLogVerbose(@"Camment has been sent %@", uploadedCamment);
+                  dispatch_async(dispatch_get_main_queue(), ^{
+                      [self.output interactorDidUploadCamment:uploadedCamment];
+                  });
+              }
+
+              return nil;
+          }];
+     }];
+}
+
 
 - (void)deleteCament:(Camment *)camment {
     NSString *cammentUuid = camment.uuid;

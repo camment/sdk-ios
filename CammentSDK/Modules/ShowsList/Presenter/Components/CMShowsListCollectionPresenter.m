@@ -8,6 +8,8 @@
 #import "CMShow.h"
 #import "CMShowCellNode.h"
 #import "Show.h"
+#import "CMVideoShowCellNode.h"
+#import "CMHtmlShowCellNode.h"
 
 
 @implementation CMShowsListCollectionPresenter
@@ -26,9 +28,20 @@
 
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
     Show *show = self.shows[(NSUInteger) indexPath.row];
-    return ^ASCellNode * {
-        return [[CMShowCellNode alloc] initWithShow:show];
-    };
+
+    __block ASCellNodeBlock cellNodeBlock = nil;
+
+    [show.showType matchVideo:^(CMShow *show) {
+        cellNodeBlock = ^ASCellNode * {
+            return [[CMVideoShowCellNode alloc] initWithShow:show];
+        };
+    } html:^(NSString *webURL) {
+        cellNodeBlock = ^ASCellNode * {
+            return [[CMHtmlShowCellNode alloc] initWithShow:show];
+        };
+    }];
+
+    return cellNodeBlock;
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {

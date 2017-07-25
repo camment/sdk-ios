@@ -35,6 +35,7 @@
 #import "CMShowMetadata.h"
 #import "UserJoinedMessage.h"
 #import "CammentDeletedMessage.h"
+#import "RACSignal+SignalHelpers.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput>
 
@@ -43,6 +44,7 @@
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) CMShowMetadata *show;
 @property(nonatomic, strong) UsersGroup *usersGroup;
+@property(nonatomic, strong) NSMutableArray<Camment *> *notUploadedCamments;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
@@ -69,7 +71,7 @@
         self.usersGroup = [CMStore instance].activeGroup;
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
         self.currentOnboardingStep = CMOnboardingAlertNone;
-
+        self.notUploadedCamments = [NSMutableArray new];
         @weakify(self);
         [RACObserve([CMStore instance], activeGroup) subscribeNext:^(UsersGroup *group) {
             @strongify(self);
@@ -121,12 +123,12 @@
                 return;
             }
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
-            self.willStartRecordSignal =  [[[[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-            [subscriber sendCompleted];
-            return nil;
-        }] delay:0.5] deliverOnMainThread] subscribeCompleted:^{
-            [self.recorderInteractor startRecording];
-        }];
+            self.willStartRecordSignal = [[[[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+                [subscriber sendCompleted];
+                return nil;
+            }] delay:0.5] deliverOnMainThread] subscribeCompleted:^{
+                [self.recorderInteractor startRecording];
+            }];
         }];
 
         [[RACSignal combineLatest:@[
@@ -259,53 +261,43 @@
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
 
     AVAsset *asset = [AVAsset assetWithURL:url];
-    if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) { return; }
+    if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
-    RACSignal<UsersGroup *> *verifyUserGroup = nil;
+    Camment *cammentToUpload = [[[[[[CammentBuilder new] withUuid:uuid]
+            withLocalURL:url.absoluteString]
+            withShowUuid:self.show.uuid]
+            withUserGroupUuid:self.usersGroup ? self.usersGroup.uuid : nil]
+            build];
+    [self.interactor uploadCamment:cammentToUpload];
+}
 
-    if (self.usersGroup) {
-        verifyUserGroup = [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-            [subscriber sendNext:self.usersGroup];
-            return nil;
+- (void)interactorDidUploadCamment:(Camment *)uploadedCamment {
+    NSMutableArray<CammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
+    NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
+        __block BOOL result = NO;
+
+        [obj matchCamment:^(Camment *camment) {
+            result = [camment.uuid isEqualToString:uploadedCamment.uuid];
+        }             ads:^(Ads *ads) {
         }];
-    } else {
-        verifyUserGroup = [[self.interactor createEmptyGroup] doNext:^(UsersGroup *x) {
-            [[CMStore instance] setActiveGroup:x];
+
+        return result;
+    }];
+
+    if (index != NSNotFound) {
+        CammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
+        [cammentsBlockItem matchCamment:^(Camment *camment) {
+            mutableCamments[(NSUInteger) index] = [CammentsBlockItem cammentWithCamment:uploadedCamment];
+        }                           ads:^(Ads *ads) {
         }];
     }
-
-    [[[verifyUserGroup flattenMap:^RACSignal *(UsersGroup *groupToSend) {
-        Camment *cammentToUpload = [[[[[[CammentBuilder new] withUuid:uuid]
-                withLocalURL:url.absoluteString]
-                withShowUuid:self.show.uuid]
-                withUserGroupUuid:groupToSend.uuid]
-                build];
-        return [self.interactor uploadCamment:cammentToUpload];
-    }] deliverOnMainThread] subscribeNext:^(Camment *uploadedCamment) {
-        NSMutableArray<CammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
-        NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
-            __block BOOL result = NO;
-
-            [obj matchCamment:^(Camment *camment) {
-                result = [camment.uuid isEqualToString:uploadedCamment.uuid];
-            }             ads:^(Ads *ads) {
-            }];
-
-            return result;
-        }];
-
-        if (index != NSNotFound) {
-            CammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
-            [cammentsBlockItem matchCamment:^(Camment *camment) {
-                mutableCamments[(NSUInteger) index] = [CammentsBlockItem cammentWithCamment:uploadedCamment];
-            }                           ads:^(Ads *ads) {
-            }];
-        }
-        self.cammentsBlockNodePresenter.items = mutableCamments.copy;
-    }                               error:^(NSError *error) {
-
-    }];
+    self.cammentsBlockNodePresenter.items = mutableCamments.copy;
 }
+
+- (void)interactorFailedToUploadCamment:(Camment *)camment error:(NSError *)error {
+    DDLogError(@"Failed to upload camment %@ with error %@", camment, error);
+}
+
 
 - (void)didReceiveNewCamment:(Camment *)camment {
 

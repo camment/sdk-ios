@@ -9,4 +9,9 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMCammentViewInteractorOutput <NSObject>
+
+- (void)interactorDidUploadCamment:(Camment *)camment;
+
+- (void)interactorFailedToUploadCamment:(Camment *)camment error:(NSError *)error;
+
 @end

@@ -13,7 +13,8 @@
 
 @protocol CMCammentViewInteractorInput <NSObject>
 
-- (RACSignal<Camment *> *)uploadCamment:(Camment *)camment;
+- (void)uploadCamment:(Camment *)camment;
+
 - (RACSignal<UsersGroup *> *)createEmptyGroup;
 
 - (void)deleteCament:(Camment *)camment;

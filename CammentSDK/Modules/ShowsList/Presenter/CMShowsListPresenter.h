@@ -11,11 +11,12 @@
 #import "CMShowsListPresenterOutput.h"
 #import "CMShowsListInteractorInput.h"
 #import "CMShowsListInteractorOutput.h"
+#import "CMNetworkObservableObject.h"
 
 @class CMShowsListWireframe;
 @class CMShowsListCollectionPresenter;
 
-@interface CMShowsListPresenter : NSObject<CMShowsListPresenterInput, CMShowsListInteractorOutput>
+@interface CMShowsListPresenter : CMNetworkObservableObject<CMShowsListPresenterInput, CMShowsListInteractorOutput>
 
 @property (nonatomic, weak) id<CMShowsListPresenterOutput> output;
 @property (nonatomic) id<CMShowsListInteractorInput> interactor;

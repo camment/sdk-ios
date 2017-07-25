@@ -23,6 +23,8 @@ FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];
 #import <CammentSDK/CMShowMetadata.h>
 #import <CammentSDK/CMCammentOverlayController.h>
 
+@class CMConnectionReachability;
+
 
 @protocol CMCammentSDKDelegate <NSObject>
 

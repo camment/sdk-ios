@@ -12,7 +12,10 @@
 #import "CMDevcammentClient.h"
 
 @interface CMCammentUploader ()
+
 @property(nonatomic, copy) NSString *bucketName;
+@property(nonatomic, strong) AWSS3TransferManager *transferManager;
+
 @end
 
 @implementation CMCammentUploader
@@ -34,6 +37,7 @@
 
     if (self) {
         self.bucketName = [CMAppConfig instance].awsS3BucketName;
+        self.transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
     }
 
     return self;
@@ -43,7 +47,6 @@
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
 
         AWSS3TransferManagerUploadRequest *uploadRequest = [AWSS3TransferManagerUploadRequest new];
-
         uploadRequest.bucket = self.bucketName;
         NSString *fileKey = [NSString stringWithFormat:@"uploads/%@.mp4", uuid];
         uploadRequest.key = fileKey;
@@ -57,23 +60,23 @@
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
-        AWSS3TransferManager *transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
-        [[transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
+        
+        [[self.transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
-                    switch (task.error.code) {
-                        case AWSS3TransferManagerErrorCancelled:
-                        case AWSS3TransferManagerErrorPaused:
-                            break;
-
-                        default:
-                            NSLog(@"Error: %@", task.error);
-                            break;
+                    switch ((AWSS3TransferManagerErrorType)task.error.code) {
+                        case AWSS3TransferManagerErrorCancelled: break;
+                        case AWSS3TransferManagerErrorPaused: break;
+                        case AWSS3TransferManagerErrorUnknown:break;
+                        case AWSS3TransferManagerErrorCompleted:break;
+                        case AWSS3TransferManagerErrorInternalInConsistency:break;
+                        case AWSS3TransferManagerErrorMissingRequiredParameters:break;
+                        case AWSS3TransferManagerErrorInvalidParameters:break;
                     }
-                } else {
-                    // Unknown error.
-                    NSLog(@"Error: %@", task.error);
                 }
+
+                DDLogError(@"Uploading camment failed with error %@", task.error);
+
                 [subscriber sendError:task.error];
             }
 

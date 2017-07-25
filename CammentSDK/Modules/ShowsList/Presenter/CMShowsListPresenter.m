@@ -21,7 +21,9 @@
 #import <ReactiveObjC.h>
 
 @interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver, CMCammentSDKDelegate>
+
 @property(nonatomic, strong) CMShowsListCollectionPresenter *showsListCollectionPresenter;
+
 @end
 
 @implementation CMShowsListPresenter
@@ -44,10 +46,17 @@
     return self;
 }
 
+- (void)networkDidBecomeAvailable {
+    if ([CMStore instance].isSignedIn) {
+        [self.output setLoadingIndicator];
+        [self.interactor fetchShowList];
+    }
+}
+
 - (void)setupView {
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
-    [[RACObserve([CMStore instance], isSignedIn) deliverOnMainThread] subscribeNext:^(NSNumber * isSignedIn) {
+    [[RACObserve([CMStore instance], isSignedIn) deliverOnMainThread] subscribeNext:^(NSNumber *isSignedIn) {
         if (isSignedIn.boolValue) {
             [self.interactor fetchShowList];
         }
@@ -80,7 +89,7 @@
             __block BOOL webShow = NO;
             [value.showType matchVideo:^(CMShow *show) {
                 webShow = NO;
-            } html:^(NSString *webURL) {
+            }                     html:^(NSString *webURL) {
                 webShow = YES;
             }];
             return !webShow;
@@ -96,6 +105,7 @@
 }
 
 - (void)showListFetchingFailed:(NSError *)error {
+    //if (error.code = )
     DDLogError(@"Show list fetch error %@", error);
 }
 

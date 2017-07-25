@@ -16,11 +16,18 @@
 #import "CammentBuilder.h"
 #import "UsersGroup.h"
 #import "CMStore.h"
+#import "RACSignal+SignalHelpers.h"
+#import "CMCammentPostingOperation.h"
 
 NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camment-camments/uploads/%@.mp4";
 
 @interface CMCammentViewInteractor ()
+
 @property(nonatomic, strong) CMDevcammentClient *client;
+@property(nonatomic, strong) NSOperationQueue *cammentPostingQueue;
+
+@property(nonatomic, strong) NSMutableArray *cammentsToUpload;
+
 @end
 
 @implementation CMCammentViewInteractor
@@ -29,6 +36,10 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     self = [super init];
     if (self) {
         self.client = [CMDevcammentClient defaultClient];
+        self.cammentPostingQueue = [[NSOperationQueue alloc] init];
+        self.cammentPostingQueue.name = @"Camment posting queue";
+        self.cammentPostingQueue.maxConcurrentOperationCount = 1;
+        self.cammentPostingQueue.qualityOfService = NSOperationQualityOfServiceBackground;
     }
     return self;
 }
@@ -53,44 +64,51 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     }];
 }
 
-- (RACSignal<Camment *> *)uploadCamment:(Camment *)camment {
-    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        [[[CMCammentUploader instance] uploadVideoAsset:[[NSURL alloc] initWithString:camment.localURL]
-                                                   uuid:camment.uuid] subscribeCompleted:^{
-            CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
-            cammentInRequest.uuid = camment.uuid;
-            DDLogVerbose(@"Posting camment %@", camment);
+- (void)uploadCamment:(Camment *)camment {
 
-            [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
-                                                                            body:cammentInRequest]
-                    continueWithBlock:^id(AWSTask<CMCamment *> *t) {
-                        if (t.error) {
-                            [subscriber sendError:t.error];
-                        } else {
-                            CMCamment *cmCamment = t.result;
-                            Camment *uploadedCamment = [[[[[[[CammentBuilder cammentFromExistingCamment:camment]
-                                    withUuid:cmCamment.uuid]
-                                    withShowUuid:cmCamment.showUuid]
-                                    withRemoteURL:cmCamment.url]
-                                    withUserGroupUuid:cmCamment.userGroupUuid]
-                                    withLocalURL:nil]
-                                    build];
-                            DDLogVerbose(@"Camment has been sent %@", uploadedCamment);
-                            [subscriber sendNext:uploadedCamment];
-                            [subscriber sendCompleted];
-                        }
-                        return nil;
-                    }];
+    RACSignal<UsersGroup *> *createUserGroupIfNeededSignal = nil;
+
+    UsersGroup *group = [CMStore instance].activeGroup;
+    if (group) {
+        createUserGroupIfNeededSignal = [RACSignal signalWithNext:group];
+    } else {
+        createUserGroupIfNeededSignal = [[self createEmptyGroup] doNext:^(UsersGroup *x) {
+            [[CMStore instance] setActiveGroup:x];
+        }];
+    }
+
+    __block Camment *cammentToUpload = nil;
+    [createUserGroupIfNeededSignal subscribeNext:^(UsersGroup *usersGroup) {
+        cammentToUpload = [[[CammentBuilder cammentFromExistingCamment:camment]
+                withUserGroupUuid:usersGroup.uuid]
+                build];
+        CMCammentPostingOperation *postingOperation = [[CMCammentPostingOperation alloc]
+                initWithCamment:cammentToUpload
+                cammentUploader:[CMCammentUploader instance]
+                  cammentClient:[CMDevcammentClient defaultClient]];
+
+        postingOperation.maxRetries = 5;
+
+        [postingOperation setPostingCompletionBlock:^(Camment *uploadedCamment, NSError *error, CMCammentPostingOperation *currentOperation) {
+            if (!error) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.output interactorDidUploadCamment:uploadedCamment];
+                });
+                return;
+            }
         }];
 
-        return nil;
+        [self.cammentPostingQueue addOperation:postingOperation];
+        [postingOperation start];
+    } error:^(NSError *error) {
+
     }];
 }
 
 - (void)deleteCament:(Camment *)camment {
     NSString *cammentUuid = camment.uuid;
     NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
-    if (!cammentUuid || !groupUuid) { return; }
+    if (!cammentUuid || !groupUuid) {return;}
     [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
                                                                             groupUuid:groupUuid]
             continueWithBlock:^id(AWSTask<id> *t) {

@@ -28,6 +28,7 @@
 #import "CMInvitationViewController.h"
 #import "UserBuilder.h"
 #import "InvitationBuilder.h"
+#import "CMConnectionReachability.h"
 
 #import <FBTweak.h>
 #import <FBTweakStore.h>
@@ -35,7 +36,11 @@
 #import <FBTweakCategory.h>
 
 @interface CammentSDK ()
+
 @property(nonatomic, strong) CMCognitoAuthService *authService;
+@property(nonatomic) BOOL connectionAvailable;
+
+@property(nonatomic, strong) CMConnectionReachability *connectionReachibility;
 @end
 
 @implementation CammentSDK
@@ -63,14 +68,48 @@
 #endif
 
         DDLogInfo(@"Camment SDK has started");
-        
+
 #ifdef INTERNALSDK
         [self setupTweaks];
 #endif
-        
+
+        self.connectionAvailable = YES;
+        self.connectionReachibility = [CMConnectionReachability reachabilityForInternetConnection];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(reachabilityChanged:)
+                                                     name:kReachabilityChangedNotification
+                                                   object:nil];
+
+        [self updateInterfaceWithReachability:self.connectionReachibility];
+        [self.connectionReachibility startNotifier];
     }
 
     return self;
+}
+
+- (void)reachabilityChanged:(NSNotification *)reachabilityChanged {
+    CMConnectionReachability *curReach = [reachabilityChanged object];
+    if ([curReach isKindOfClass:[CMConnectionReachability class]]) {
+        [self updateInterfaceWithReachability:curReach];
+    }
+}
+
+- (void)updateInterfaceWithReachability:(CMConnectionReachability *)reachability {
+    NetworkStatus netStatus = [reachability currentReachabilityStatus];
+    BOOL connectionAvailable = netStatus != NotReachable;
+    if (connectionAvailable && connectionAvailable != self.connectionAvailable) {
+        connectionAvailable = YES;
+        if (![CMStore instance].isSignedIn) {
+            [self tryRestoreLastSession];
+        }
+    }
+
+    self.connectionAvailable = connectionAvailable;
+}
+
+- (void)dealloc {
+    [self.connectionReachibility stopNotifier];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)setupTweaks {
@@ -152,6 +191,10 @@
     [CMStore instance].apiKey = apiKey;
     [self configure];
     [self launch];
+    [self tryRestoreLastSession];
+}
+
+- (void)tryRestoreLastSession {
     CMCammentIdentity *identity = [CMCammentAnonymousIdentity new];
 
     FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
@@ -161,8 +204,8 @@
     }
 
     [self connectUserWithIdentity:identity
-                          success:nil
-                            error:nil];
+                          success:^{}
+                            error:^(NSError * error) {}];
 }
 
 - (void)connectUserWithIdentity:(CMCammentIdentity *)identity
@@ -302,7 +345,7 @@
         [message matchInvitation:^(Invitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
                     && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]
-                    && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]){
+                    && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]) {
                 [self presentChatInvitation:invitation];
             }
         }                camment:^(Camment *camment) {

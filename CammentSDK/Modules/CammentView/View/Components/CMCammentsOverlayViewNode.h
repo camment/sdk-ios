@@ -10,6 +10,7 @@
 @class CMCammentButton;
 @class CMCammentRecorderPreviewNode;
 @protocol CMContentViewerNode;
+@class CMCammentOverlayLayoutConfig;
 
 @protocol CMCammentsOverlayViewNodeDelegate<NSObject>
 
@@ -30,4 +31,5 @@
 
 @property(nonatomic, weak) id<CMCammentsOverlayViewNodeDelegate> delegate;
 
+- (instancetype)initWithLayoutConfig:(CMCammentOverlayLayoutConfig *)layoutConfig NS_DESIGNATED_INITIALIZER;
 @end

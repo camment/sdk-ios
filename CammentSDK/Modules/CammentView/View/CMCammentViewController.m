@@ -241,7 +241,11 @@
             break;
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
             frame = self.node.cammentButton.frame;
-            text = CMLocalized(@"help.swipe_down_to_invite");
+            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+                text = CMLocalized(@"help.swipe_up_to_invite");
+            } else {
+                text = CMLocalized(@"help.swipe_down_to_invite");
+            }
             direction = AMPopTipDirectionLeft;
             delay = 1;
             break;

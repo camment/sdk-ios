@@ -10,20 +10,38 @@
 #import "CMCammentButton.h"
 #import "CMCammentRecorderPreviewNode.h"
 #import "POPSpringAnimation.h"
+#import "CMCammentOverlayLayoutConfig.h"
 
 @interface CMCammentsOverlayViewNode ()
 
-@property (nonatomic, assign) CGFloat cammentButtonTopInset;
+@property (nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
 @property (nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
 
+@property(nonatomic, strong) CMCammentOverlayLayoutConfig *layoutConfig;
 @end
 
 @implementation CMCammentsOverlayViewNode
 
 - (instancetype)init {
-    self = [super init];
+    CMCammentOverlayLayoutConfig *layoutConfig = [CMCammentOverlayLayoutConfig new];
 
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionTopRight;
+        layoutConfig.cammentButtonLayoutVerticalInset = 20.0f;
+    } else {
+        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
+        layoutConfig.cammentButtonLayoutVerticalInset = 80.0f;
+    }
+    
+    return [self initWithLayoutConfig:layoutConfig];
+}
+
+
+- (instancetype)initWithLayoutConfig:(CMCammentOverlayLayoutConfig *)layoutConfig {
+    self = [super init];
+    
     if (self) {
+        self.layoutConfig = layoutConfig;
         self.showCammentsBlock = YES;
         _cammentsBlockNode = [CMCammentsBlockNode new];
         _cammentButton = [CMCammentButton new];
@@ -32,7 +50,7 @@
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
             return _contentView;
         }];
-        self.cammentButtonTopInset = 20.0f;
+        self.cammentButtonScreenSideVerticalInset = layoutConfig.cammentButtonLayoutVerticalInset;
         self.cammentPanDownGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleCammentButtonPanGesture:)];
         self.automaticallyManagesSubnodes = YES;
     }
@@ -64,13 +82,7 @@
     self.contentNode.style.width = ASDimensionMake(constrainedSize.max.width);
     self.contentNode.style.height = ASDimensionMake(constrainedSize.max.height);
 
-    ASInsetLayoutSpec *cammentButtonLayout = [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(
-                    self.cammentButtonTopInset,
-                    INFINITY,
-                    INFINITY,
-                    _showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2)
-                                child:_cammentButton];
+    ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
 
     CGFloat leftLayoutInset = 0.0f;
     _cammentsBlockNode.style.width = ASDimensionMake(120.0f);
@@ -110,6 +122,35 @@
     return cammentsBlockOverlay;
 }
 
+- (ASInsetLayoutSpec *)cammentButtonLayoutSpec:(CMCammentOverlayLayoutConfig *)layoutConfig {
+    ASInsetLayoutSpec *layoutSpec = nil;
+
+    switch (layoutConfig.cammentButtonLayoutPosition) {
+
+        case CMCammentOverlayLayoutPositionTopLeft:
+        case CMCammentOverlayLayoutPositionTopRight:
+            layoutSpec = [ASInsetLayoutSpec
+                    insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                            self.cammentButtonScreenSideVerticalInset,
+                            INFINITY,
+                            INFINITY,
+                            _showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2)
+                                        child:_cammentButton];
+            break;
+        case CMCammentOverlayLayoutPositionBottomLeft:
+        case CMCammentOverlayLayoutPositionBottomRight:
+            layoutSpec = [ASInsetLayoutSpec
+                    insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                            INFINITY,
+                            INFINITY,
+                            self.cammentButtonScreenSideVerticalInset,
+                            _showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2)
+                                        child:_cammentButton];
+            break;
+    }
+    return layoutSpec;
+}
+
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     UIView * snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
     snapshot.frame = self.cammentRecorderNode.view.bounds;
@@ -147,24 +188,46 @@
             || sender.state == UIGestureRecognizerStateFailed
             || sender.state == UIGestureRecognizerStateCancelled) {
 
-        _cammentButtonTopInset = 20.0f;
+        _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset;
         [self transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.cammentButton.view.superview];
-        if (translation.y > 0) {
-            _cammentButtonTopInset = 20.0f + translation.y;
-            [self setNeedsLayout];
-        }
 
-        if (translation.y > 20) {
-            [_cammentButton cancelLongPressGestureRecognizer];
-        }
+        switch (self.layoutConfig.cammentButtonLayoutPosition) {
 
-        if (translation.y > self.bounds.size.height / 3) {
-            [sender setEnabled:NO];
-            [_cammentButton cancelLongPressGestureRecognizer];
-            [_delegate handleShareAction];
-            [sender setEnabled:YES];
+            case CMCammentOverlayLayoutPositionTopLeft:
+            case CMCammentOverlayLayoutPositionTopRight:
+                if (translation.y > 0) {
+                    _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset + translation.y;
+                    [self setNeedsLayout];
+                }
+
+                if (translation.y > self.layoutConfig.cammentButtonLayoutVerticalInset) {
+                    [_cammentButton cancelLongPressGestureRecognizer];
+                }
+
+                // if pull down more then 1/3 of screen height
+                if (translation.y > self.bounds.size.height / 3) {
+                    [sender setEnabled:NO];
+                    [_cammentButton cancelLongPressGestureRecognizer];
+                    [_delegate handleShareAction];
+                    [sender setEnabled:YES];
+                }
+                break;
+            case CMCammentOverlayLayoutPositionBottomLeft:
+            case CMCammentOverlayLayoutPositionBottomRight:
+                if (translation.y < 0) {
+                    _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset - translation.y;
+                    [self setNeedsLayout];
+                }
+
+                if (-translation.y > self.bounds.size.height / 3) {
+                    [sender setEnabled:NO];
+                    [_cammentButton cancelLongPressGestureRecognizer];
+                    [_delegate handleShareAction];
+                    [sender setEnabled:YES];
+                }
+                break;
         }
     }
 }

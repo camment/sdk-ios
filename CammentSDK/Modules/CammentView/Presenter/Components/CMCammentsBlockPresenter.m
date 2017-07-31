@@ -150,7 +150,7 @@
 
 - (void)cammentCellDidHandleLongPressAction:(CMCammentCell *)cell {
     if (self.output && [self.output respondsToSelector:@selector(presentCammentOptionsDialog:)]) {
-        [self.output presentCammentOptionsDialog:cell.camment];
+        [self.output presentCammentOptionsDialog:cell];
     }
 }
 

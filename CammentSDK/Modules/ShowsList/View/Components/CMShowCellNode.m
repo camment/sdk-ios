@@ -14,8 +14,7 @@
     if (self) {
         _show = show;
 
-        self.neverShowPlaceholders = YES;
-        self.displaysAsynchronously = NO;
+        self.clipsToBounds = YES;
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -31,7 +30,7 @@
     contentNode.style.preferredLayoutSize = ASLayoutSizeMake(ASDimensionMakeWithFraction(1), ASDimensionMakeWithFraction(1));
     
     return [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 4, 4, 4)
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 0, 0, 0)
                                 child:[ASStackLayoutSpec
                                         stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                              spacing:4.0f

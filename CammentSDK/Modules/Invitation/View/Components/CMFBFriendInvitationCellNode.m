@@ -45,7 +45,6 @@
                               alignItems:ASStackLayoutAlignItemsCenter
                                 children:@[userPicInsetLayout, _nameTextNode]];
 
-
     return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(10, 10, 10, 40)
                                                   child:[ASWrapperLayoutSpec wrapperWithLayoutElement:stackLayoutSpec]];
 }

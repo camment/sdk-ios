@@ -31,7 +31,7 @@
 
     __block ASCellNodeBlock cellNodeBlock = nil;
 
-    [show.showType matchVideo:^(CMShow *show) {
+    [show.showType matchVideo:^(CMShow *underlyingShow) {
         cellNodeBlock = ^ASCellNode * {
             return [[CMVideoShowCellNode alloc] initWithShow:show];
         };
@@ -45,7 +45,7 @@
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    UIEdgeInsets result = UIEdgeInsetsMake(2.0f, 0.0f, 2.0f, 0.0f);
+    UIEdgeInsets result = UIEdgeInsetsMake(4.0f, 4.0f, 4.0f, 4.0f);
     return result;
 }
 
@@ -55,7 +55,16 @@
 }
 
 - (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CGSize result = CGSizeMake(collectionNode.bounds.size.width, collectionNode.bounds.size.width / 16 * 9);
+    
+    CGSize result;
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        CGFloat side = (collectionNode.bounds.size.width - 20)/ 3;
+        result = CGSizeMake(side, side);
+    } else {
+        result = CGSizeMake(collectionNode.bounds.size.width, collectionNode.bounds.size.width / 16 * 9);
+    }
+    
     return ASSizeRangeMake(result);
 }
 

@@ -9,6 +9,8 @@
 #ifndef Prefix_h
 #define Prefix_h
 
+#ifdef __OBJC__
+
 #define LOG_LEVEL_DEF ddLogLevel
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
@@ -30,5 +32,7 @@ static const DDLogLevel ddLogLevel = DDLogLevelError;
 @class CammentSDK;
 
 #define CMLocalized(str) NSLocalizedStringFromTableInBundle(str, @"CammentSDK", [NSBundle bundleForClass:[CammentSDK class]], @"")
+
+#endif
 
 #endif /* Prefix_h */

@@ -12,6 +12,7 @@
 @class UserJoinedMessage;
 @class Camment;
 @protocol CMCammentsBlockDelegate;
+@class CMCammentCell;
 
 typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
     CMCammentActionsMaskNone,
@@ -28,7 +29,7 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 
 - (void)askForSetupPermissions;
 
-- (void)presentCammentOptionsView:(Camment *)camment actions:(CMCammentActionsMask)actions;
+- (void)presentCammentOptionsView:(CMCammentCell *)camment actions:(CMCammentActionsMask)actions;
 
 - (void)presentUserJoinedMessage:(UserJoinedMessage *)message;
 @end

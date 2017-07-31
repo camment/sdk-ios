@@ -9,10 +9,11 @@
 #import "Camment.h"
 #import "CammentsBlockItem.h"
 
+@class CMCammentCell;
 
 @protocol CMCammentsBlockPresenterOutput<NSObject>
 
-- (void)presentCammentOptionsDialog:(Camment *)camment;
+- (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell;
 
 @end
 

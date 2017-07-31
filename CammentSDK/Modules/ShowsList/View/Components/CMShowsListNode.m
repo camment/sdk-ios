@@ -17,6 +17,7 @@
 - (instancetype)init {
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
     layout.minimumLineSpacing = 4.0f;
+    layout.minimumInteritemSpacing = 4.0f;
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];

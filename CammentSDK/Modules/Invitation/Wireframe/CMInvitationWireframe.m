@@ -50,6 +50,8 @@
     self.interactor = interactor;
 
     UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:view];
+
+    navigationController.modalPresentationStyle = UIModalPresentationFormSheet;
     [viewController presentViewController:navigationController animated:YES completion:nil];
 }
 

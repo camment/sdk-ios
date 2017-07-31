@@ -19,6 +19,7 @@
 #import "CMCammentRecorderInteractorInput.h"
 #import "Camment.h"
 #import "UserJoinedMessage.h"
+#import "CMCammentCell.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 
@@ -274,10 +275,12 @@
     [self.popTip hide];
 }
 
-- (void)presentCammentOptionsView:(Camment *)camment actions:(CMCammentActionsMask)actions {
+- (void)presentCammentOptionsView:(CMCammentCell *)cammentCell actions:(CMCammentActionsMask)actions {
     if (actions == 0) {
         return;
     }
+
+    Camment *camment = cammentCell.camment;
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
                                                                              message:@""
@@ -295,6 +298,19 @@
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
                                                       }]];
+    
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [alertController setModalPresentationStyle:UIModalPresentationPopover];
+        UIPopoverPresentationController *popPresenter = [alertController
+                                                              popoverPresentationController];
+        
+        ASCellNode *node = cammentCell;
+
+        popPresenter.permittedArrowDirections = UIPopoverArrowDirectionLeft;
+        popPresenter.sourceView = cammentCell.view;
+        popPresenter.sourceRect = cammentCell.view.bounds;
+    }
+    
     [self presentViewController:alertController animated:YES completion:nil];
 }
 

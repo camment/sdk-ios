@@ -8,6 +8,7 @@
 #endif
 
 #import "UserJoinedMessage.h"
+#import "CMCammentCell.h"
 
 @implementation UserJoinedMessage
 

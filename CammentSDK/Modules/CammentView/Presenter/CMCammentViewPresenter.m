@@ -36,6 +36,7 @@
 #import "UserJoinedMessage.h"
 #import "CammentDeletedMessage.h"
 #import "RACSignal+SignalHelpers.h"
+#import "CMCammentCell.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput>
 
@@ -442,14 +443,14 @@
     }
 }
 
-- (void)presentCammentOptionsDialog:(Camment *)camment {
+- (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
-    if ([camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
+    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }
-    [self.output presentCammentOptionsView:camment actions:actions];
+    [self.output presentCammentOptionsView:cammentCell actions:actions];
 }
 
 - (void)deleteCammentAction:(Camment *)camment {

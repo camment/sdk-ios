@@ -10,19 +10,19 @@
 
 @implementation CMPositionPresentationInstruction
 
-- (instancetype)initWithPosition:(NSUInteger)position item:(CammentsBlockItem *)item {
+- (instancetype)initWithPosition:(NSUInteger)position action:(id <CMPresentationActionInterface>)action {
     self = [super init];
 
     if (self) {
         self.position = position;
-        self.item = item;
+        self.action = action;
     }
 
     return self;
 }
 
-- (instancetype)initWithPosition:(NSUInteger)position item:(CammentsBlockItem *)item delay:(NSTimeInterval)delay {
-    self = [self initWithPosition:position item:item];
+- (instancetype)initWithPosition:(NSUInteger)position action:(id <CMPresentationActionInterface>)action delay:(NSTimeInterval)delay {
+    self = [self initWithPosition:position action:action];
     if (self) {
         self.delay = delay;
     }
@@ -37,13 +37,10 @@
 
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {
     [super runWithOutput:output];
+
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
                                  (int64_t)(self.delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-        [self.item matchCamment:^(Camment *camment) {
-            [output didReceiveNewCamment:camment];
-        } ads:^(Ads *ads) {
-            [output didReceiveNewAds:ads];
-        }];
+        [self.action runWithOutput:output];
     });
 }
 

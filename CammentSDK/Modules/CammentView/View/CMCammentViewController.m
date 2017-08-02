@@ -307,8 +307,6 @@
         [alertController setModalPresentationStyle:UIModalPresentationPopover];
         UIPopoverPresentationController *popPresenter = [alertController
                                                               popoverPresentationController];
-        
-        ASCellNode *node = cammentCell;
 
         popPresenter.permittedArrowDirections = UIPopoverArrowDirectionLeft;
         popPresenter.sourceView = cammentCell.view;
@@ -331,6 +329,11 @@
                                                       handler:^(UIAlertAction *action) {
                                                       }]];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)presentViewController:(UIViewController *)controller {
+    controller.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:controller animated:YES completion:nil];
 }
 
 @end

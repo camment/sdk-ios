@@ -5,11 +5,13 @@
 
 #import <Foundation/Foundation.h>
 #import "CMPresentationInstructionInterface.h"
-
+#import "CMPresentationActionInterface.h"
 
 @interface CMPresentationInstruction : NSObject<CMPresentationInstructionInterface>
 
-@property (nonatomic, assign) BOOL wasTriggered;
-@property (nonatomic, assign) BOOL shouldTriggerEveryTick;
+@property (nonatomic) id<CMPresentationActionInterface> action;
+@property (nonatomic) BOOL enabled;
+@property (nonatomic) BOOL wasTriggered;
+@property (nonatomic) BOOL shouldTriggerEveryTick;
 
 @end

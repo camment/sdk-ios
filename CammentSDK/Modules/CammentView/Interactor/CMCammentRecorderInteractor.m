@@ -43,7 +43,6 @@
     video.enabled = YES;
     video.size = CGSizeMake(270, 270);
     video.keepInputAffineTransform = YES;
-
     // Get the audio configuration object
     SCAudioConfiguration *audio = recorder.audioConfiguration;
     audio.enabled = YES;
@@ -62,7 +61,7 @@
 
 - (void)connectPreviewViewToRecorder:(SCImageView *)view {
     self.previewView = view;
-    [(SCFilterImageView *)view setFilter:recorder.videoConfiguration.filter];
+//    [(SCFilterImageView *)view setFilter:recorder.videoConfiguration.filter];
     recorder.mirrorOnFrontCamera = YES;
 
     if (![recorder startRunning]) {
@@ -102,8 +101,8 @@
     SCAssetExportSession *assetExportSession = [[SCAssetExportSession alloc] initWithAsset:asset];
     assetExportSession.outputUrl = _recorder.session.outputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
-
-    //assetExportSession.videoConfiguration.filter = [CMAutoFrameFilter new];
+//
+//    assetExportSession.videoConfiguration.filter = [CMAutoFrameFilter new];
     assetExportSession.videoConfiguration.preset = SCPresetMediumQuality;
     assetExportSession.audioConfiguration.preset = SCPresetLowQuality;
     [assetExportSession exportAsynchronouslyWithCompletionHandler: ^{

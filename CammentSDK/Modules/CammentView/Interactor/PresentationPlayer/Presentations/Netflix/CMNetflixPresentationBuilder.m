@@ -7,6 +7,7 @@
 #import "CMPresentationUtility.h"
 #import "CMPositionPresentationInstruction.h"
 #import "CMTimestampPresentationInstruction.h"
+#import "CMDisplayCammentPresentationAction.h"
 #import <FBTweak.h>
 #import <FBTweakStore.h>
 #import <FBTweakCollection.h>
@@ -35,13 +36,15 @@ const NSInteger cammentsCount = 4;
         NSTimeInterval timeInterval = [cammentDelayTweak.currentValue ?: cammentDelayTweak.defaultValue floatValue];
 
         if (i == 4) {
+            CammentsBlockItem *blockItem = [utility blockItemAdsWithLocalGif:cammentName url:@"https://www.ubereats.com"];
             [instructions addObject:[[CMTimestampPresentationInstruction alloc]
                     initWithTimestamp:timeInterval
-                                 item:[utility blockItemAdsWithLocalGif:cammentName url:@"https://www.ubereats.com"]]];
+                               action:[[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem]]];
         } else {
+            CammentsBlockItem *blockItem = [utility blockItemCammentWithLocalVideo:cammentName];
             [instructions addObject:[[CMTimestampPresentationInstruction alloc]
                     initWithTimestamp:timeInterval
-                                 item:[utility blockItemCammentWithLocalVideo:cammentName]]];
+                               action:[[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem]]];
         }
     }
     return instructions;

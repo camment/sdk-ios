@@ -259,6 +259,19 @@
 }
 
 - (void)updateUserInfo {
+
+    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+            initWithGraphPath:@"/me"
+                   parameters:@{@"fields" : @"email"}
+                   HTTPMethod:@"GET"];
+    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+            id result,
+            NSError *error) {
+        if (result && !error) {
+            [CMStore instance].email = (NSString *)[result valueForKey:@"email"];
+        }
+    }];
+
     UserBuilder *userBuilder = [CMStore instance].currentUser ? [UserBuilder userFromExistingUser:[CMStore instance].currentUser] : [UserBuilder new];
 
     FBSDKProfile *profile = [FBSDKProfile currentProfile];

@@ -4,6 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CMDisplayCammentPresentationAction.h"
 
 @class CammentsBlockItem;
 @protocol CMPresentationBuilder;
@@ -17,4 +18,7 @@ extern NSString * const kCMPresentationBuilderUtilityAnyShowUUID;
 - (CammentsBlockItem *)blockItemAdsWithLocalGif:(NSString *)filename url:(NSString *)url;
 - (CammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename;
 
+- (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalVideo:(NSString *)filename;
+
+- (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalGif:(NSString *)filename url:(NSString *)url;
 @end

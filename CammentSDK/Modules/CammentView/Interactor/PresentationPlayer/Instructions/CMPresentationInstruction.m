@@ -6,12 +6,23 @@
 #import "CMPresentationInstruction.h"
 #import "CMPresentationState.h"
 #import "CMPresentationInstructionOutput.h"
+#import "CMPresentationActionInterface.h"
 
 
 @implementation CMPresentationInstruction
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.enabled = YES;
+    }
+
+    return self;
+}
+
+
 - (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state {
-    return !_wasTriggered || _shouldTriggerEveryTick;
+    return (!_wasTriggered || _shouldTriggerEveryTick) && _enabled;
 }
 
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {

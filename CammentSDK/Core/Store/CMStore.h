@@ -43,6 +43,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic, copy) NSString *apiKey;
 
+@property(nonatomic, copy) NSString *email;
+
 + (CMStore *)instance;
 
 @end

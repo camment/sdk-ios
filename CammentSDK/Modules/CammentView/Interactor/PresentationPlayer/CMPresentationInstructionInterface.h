@@ -4,12 +4,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CMPresentationInstructionOutput.h"
+#import "CMPresentationRunableInterface.h"
 #import "CMPresentationState.h"
 
-@protocol CMPresentationInstructionInterface <NSObject>
+@protocol CMPresentationInstructionInterface <NSObject, CMPresentationRunableInterface>
 
 - (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state;
-- (void)runWithOutput:(id<CMPresentationInstructionOutput>)output;
 
 @end

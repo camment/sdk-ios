@@ -10,12 +10,12 @@
 
 @implementation CMTimestampPresentationInstruction
 
-- (instancetype)initWithTimestamp:(NSTimeInterval)timestamp item:(CammentsBlockItem *)item {
+- (instancetype)initWithTimestamp:(NSTimeInterval)timestamp action:(id <CMPresentationActionInterface>)action {
     self = [super init];
 
     if (self) {
         self.timestamp = timestamp;
-        self.item = item;
+        self.action = action;
     }
 
     return self;
@@ -28,11 +28,7 @@
 
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {
     [super runWithOutput:output];
-    [self.item matchCamment:^(Camment *camment) {
-        [output didReceiveNewCamment:camment];
-    } ads:^(Ads *ads) {
-        [output didReceiveNewAds:ads];
-    }];
+    [self.action runWithOutput:output];
 }
 
 

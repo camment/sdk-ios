@@ -13,9 +13,8 @@
 
 @property (nonatomic, assign) NSTimeInterval delay;
 @property (nonatomic, assign) NSUInteger position;
-@property (nonatomic, strong) CammentsBlockItem *item;
 
-- (instancetype)initWithPosition:(NSUInteger)position item:(CammentsBlockItem *)item;
-- (instancetype)initWithPosition:(NSUInteger)position item:(CammentsBlockItem *)item delay:(NSTimeInterval)delay;
+- (instancetype)initWithPosition:(NSUInteger)position action:(id <CMPresentationActionInterface>)action;
+- (instancetype)initWithPosition:(NSUInteger)position action:(id <CMPresentationActionInterface>)action delay:(NSTimeInterval)delay;
 
 @end

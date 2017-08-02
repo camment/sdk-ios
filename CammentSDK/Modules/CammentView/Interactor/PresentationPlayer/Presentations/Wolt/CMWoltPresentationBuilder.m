@@ -28,11 +28,11 @@ NSString * const tweakSettingWoltAdsDelayName = @"Ads delay";
     NSString *woltUrl = @"https://itunes.apple.com/fi/app/wolt/id943905271?mt=8";
     return @[
             [[CMPositionPresentationInstruction alloc]
-             initWithPosition:3 item:[utility blockItemAdsWithLocalGif:@"wolt" url:@""] delay: adsDelay.floatValue],
+                    initWithPosition:3 action:[utility displayCammentActionWithLocalGif:@"wolt" url:@""] delay:adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:5 item:[utility blockItemAdsWithLocalGif:@"burger" url:woltUrl] delay: adsDelay.floatValue],
+                    initWithPosition:5 action:[utility displayCammentActionWithLocalGif:@"burger" url:woltUrl] delay:adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:7 item:[utility blockItemAdsWithLocalGif:@"sushi" url:woltUrl] delay: adsDelay.floatValue],
+                    initWithPosition:7 action:[utility displayCammentActionWithLocalGif:@"sushi" url:woltUrl] delay:adsDelay.floatValue],
     ];
 }
 

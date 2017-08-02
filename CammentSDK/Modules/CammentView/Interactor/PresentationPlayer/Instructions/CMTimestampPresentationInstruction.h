@@ -12,7 +12,6 @@
 @interface CMTimestampPresentationInstruction: CMPresentationInstruction
 
 @property (nonatomic, assign) NSTimeInterval timestamp;
-@property (nonatomic, strong) CammentsBlockItem *item;
 
-- (instancetype)initWithTimestamp:(NSTimeInterval)timestamp item:(CammentsBlockItem *)item;
+- (instancetype)initWithTimestamp:(NSTimeInterval)timestamp action:(id <CMPresentationActionInterface>)action;
 @end

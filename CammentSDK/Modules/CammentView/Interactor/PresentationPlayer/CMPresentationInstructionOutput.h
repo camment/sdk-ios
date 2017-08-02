@@ -4,8 +4,13 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import "CMCammentsLoaderInteractorOutput.h"
 
+@protocol CMPresentationInstructionInterface;
+
 @protocol CMPresentationInstructionOutput <CMCammentsLoaderInteractorOutput>
+
+- (void)presentationInstruction:(id<CMPresentationInstructionInterface>)instruction presentsViewController:(UIViewController *)viewController;
 
 @end

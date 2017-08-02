@@ -10,6 +10,7 @@
 #import "CMNetflixPresentationBuilder.h"
 #import "CMSBPresentationBuilder.h"
 #import "CammentBuilder.h"
+#import "CMEmailSubscriptionPresentationBuilder.h"
 
 NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -20,7 +21,8 @@ NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
     return @[
             [CMWoltPresentationBuilder new],
             [CMNetflixPresentationBuilder new],
-            [CMSBPresentationBuilder new]
+            [CMSBPresentationBuilder new],
+            [CMEmailSubscriptionPresentationBuilder new]
     ];
 }
 
@@ -41,5 +43,14 @@ NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
     return [CammentsBlockItem cammentWithCamment:camment];
 }
 
+- (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalVideo:(NSString *)filename {
+    CammentsBlockItem *blockItem = [self blockItemCammentWithLocalVideo:filename];
+    return [[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem];
+}
+
+- (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalGif:(NSString *)filename url:(NSString *)url {
+    CammentsBlockItem *blockItem = [self blockItemAdsWithLocalGif:filename url:url];
+    return [[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem];
+}
 
 @end

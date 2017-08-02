@@ -32,4 +32,6 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 - (void)presentCammentOptionsView:(CMCammentCell *)camment actions:(CMCammentActionsMask)actions;
 
 - (void)presentUserJoinedMessage:(UserJoinedMessage *)message;
+
+- (void)presentViewController:(UIViewController *)controller;
 @end

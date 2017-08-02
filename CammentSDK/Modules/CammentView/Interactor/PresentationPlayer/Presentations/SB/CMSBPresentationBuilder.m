@@ -28,15 +28,15 @@ NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
     NSString *uberEatsAppUrl = @"https://itunes.apple.com/us/app/uber/id1058959277?mt=8";
     return @[
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:3 item:[utility blockItemCammentWithLocalVideo:@"petteri"] delay: adsDelay.floatValue],
+                    initWithPosition:3 action:[utility displayCammentActionWithLocalVideo:@"petteri"] delay:adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:4 item:[utility blockItemCammentWithLocalVideo:@"teemu"] delay: adsDelay.floatValue],
+                    initWithPosition:4 action:[utility displayCammentActionWithLocalVideo:@"teemu"] delay:adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:5 item:[utility blockItemAdsWithLocalGif:@"ubereats" url:@""] delay: adsDelay.floatValue],
+                    initWithPosition:5 action:[utility displayCammentActionWithLocalGif:@"ubereats" url:@""] delay:adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:7 item:[utility blockItemAdsWithLocalGif:@"shakeshack" url:uberEatsAppUrl] delay: adsDelay.floatValue],
+                    initWithPosition:7 action:[utility displayCammentActionWithLocalGif:@"shakeshack" url:uberEatsAppUrl] delay:adsDelay.floatValue],
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:9 item:[utility blockItemAdsWithLocalGif:@"kokoro" url:uberEatsAppUrl] delay: adsDelay.floatValue],
+                    initWithPosition:9 action:[utility displayCammentActionWithLocalGif:@"kokoro" url:uberEatsAppUrl] delay:adsDelay.floatValue],
     ];
 }
 

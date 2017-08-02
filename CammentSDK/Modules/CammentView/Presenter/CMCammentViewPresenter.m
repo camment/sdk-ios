@@ -471,4 +471,8 @@
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
 }
 
+- (void)presentationInstruction:(id <CMPresentationInstructionInterface>)instruction presentsViewController:(UIViewController *)viewController {
+    [self.output presentViewController:viewController];
+}
+
 @end

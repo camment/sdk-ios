@@ -12,7 +12,7 @@
 #import "CMAnalytics.h"
 #import "CMCognitoAuthService.h"
 #import "CMCognitoFacebookAuthProvider.h"
-#import "CMCamment.h"
+#import "CMAPICamment.h"
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
 #import "CMCammentFacebookIdentity.h"
@@ -23,7 +23,7 @@
 #import "ServerMessage.h"
 #import "UsersGroupBuilder.h"
 #import "UIViewController+topVisibleViewController.h"
-#import "CMDevcammentClient.h"
+#import "CMAPIDevcammentClient.h"
 #import "CMAppConfig.h"
 #import "CMInvitationViewController.h"
 #import "UserBuilder.h"
@@ -204,8 +204,10 @@
     }
 
     [self connectUserWithIdentity:identity
-                          success:^{}
-                            error:^(NSError * error) {}];
+                          success:^{
+                          }
+                            error:^(NSError *error) {
+                            }];
 }
 
 - (void)connectUserWithIdentity:(CMCammentIdentity *)identity
@@ -237,7 +239,10 @@
             subscribeNext:^(NSString *cognitoUserId) {
                 [[CMStore instance] setCognitoUserId:cognitoUserId];
                 [[CMStore instance] setFacebookUserId:[FBSDKAccessToken currentAccessToken].userID];
-                User *currentUser = [[[UserBuilder new] withCognitoUserId:cognitoUserId] build];
+                User *currentUser = [[[[UserBuilder new]
+                        withCognitoUserId:cognitoUserId]
+                        withStatus:CMUserStatusOnline]
+                        build];
                 [[CMStore instance] setCurrentUser:currentUser];
             }
                     error:^(NSError *error) {
@@ -262,13 +267,13 @@
 
     FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
             initWithGraphPath:@"/me"
-                   parameters:@{@"fields" : @"email"}
+                   parameters:@{@"fields": @"email"}
                    HTTPMethod:@"GET"];
     [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
             id result,
             NSError *error) {
         if (result && !error) {
-            [CMStore instance].email = (NSString *)[result valueForKey:@"email"];
+            [CMStore instance].email = (NSString *) [result valueForKey:@"email"];
         }
     }];
 
@@ -310,10 +315,10 @@
     NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
     if (!jsonString) {return;}
 
-    CMUserinfoInRequest *userinfoInRequest = [CMUserinfoInRequest new];
+    CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
     userinfoInRequest.userinfojson = jsonString;
 
-    CMDevcammentClient *client = [CMDevcammentClient defaultClient];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
         if (!t.error) {
             DDLogVerbose(@"User info has been updated with data %@", userInfo);
@@ -323,14 +328,6 @@
 }
 
 - (void)launch {
-    [[[CMDevcammentClient defaultClient] privateGet] continueWithBlock:^id(AWSTask<id> *t) {
-        if (t.error) {
-            DDLogError(@"Incorrect CammentSDK API Key");
-        } else {
-            DDLogVerbose(@"CammentSDK API key verified");
-        }
-        return nil;
-    }];
 }
 
 - (void)configure {
@@ -342,7 +339,7 @@
                                              selector:@selector(updateUserInfo)
                                                  name:FBSDKProfileDidChangeNotification
                                                object:nil];
-    [[CMDevcammentClient defaultClient] setAPIKey:[CMStore instance].apiKey];
+    [[CMAPIDevcammentClient defaultClient] setAPIKey:[CMStore instance].apiKey];
 }
 
 - (void)configureIoTListener:(NSString *)userId {
@@ -413,8 +410,8 @@
 }
 
 - (AWSTask *)acceptInvitation:(Invitation *)invitation {
-    CMDevcammentClient *client = [CMDevcammentClient defaultClient];
-    CMAcceptInvitationRequest *invitationRequest = [CMAcceptInvitationRequest new];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
+    CMAPIAcceptInvitationRequest *invitationRequest = [CMAPIAcceptInvitationRequest new];
     invitationRequest.invitationKey = invitation.invitationKey;
     return [client usergroupsGroupUuidInvitationsPut:invitation.userGroupUuid
                                                 body:invitationRequest];

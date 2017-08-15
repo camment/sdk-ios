@@ -9,7 +9,7 @@
 #import "CMStore.h"
 #import "RACSignal+SignalHelpers.h"
 #import "CMCammentUploader.h"
-#import "CMDevcammentClient.h"
+#import "CMAPIDevcammentClient.h"
 #import "CammentBuilder.h"
 #import <ReactiveObjC.h>
 
@@ -18,7 +18,7 @@
 @property(nonatomic) BOOL _finished;
 @property(nonatomic) BOOL _executing;
 @property(nonatomic, strong) CMCammentUploader *cammentUploader;
-@property(nonatomic, strong) CMDevcammentClient *cammentClient;
+@property(nonatomic, strong) CMAPIDevcammentClient *cammentClient;
 @property(nonatomic, strong) Camment *cammentToUpload;
 @property(nonatomic, strong) NSError *operationError;
 
@@ -30,7 +30,7 @@
 
 - (instancetype)initWithCamment:(Camment *)camment
                 cammentUploader:(CMCammentUploader *)cammentUploader
-                  cammentClient:(CMDevcammentClient *)cammentClient {
+                  cammentClient:(CMAPIDevcammentClient *)cammentClient {
     self = [super init];
 
     if (self) {
@@ -109,17 +109,17 @@
                 self.operationError = error;
                 [self completeOperation];
             } completed:^{
-        CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
+        CMAPICammentInRequest *cammentInRequest = [[CMAPICammentInRequest alloc] init];
         cammentInRequest.uuid = camment.uuid;
         DDLogVerbose(@"Posting camment %@", camment);
 
         [[self.cammentClient usergroupsGroupUuidCammentsPost:camment.userGroupUuid
                                                         body:cammentInRequest]
-                continueWithBlock:^id(AWSTask<CMCamment *> *t) {
+                continueWithBlock:^id(AWSTask<CMAPICamment *> *t) {
                     if (t.error) {
                         self.operationError = t.error;
                     } else {
-                        CMCamment *cmCamment = t.result;
+                        CMAPICamment *cmCamment = t.result;
                         Camment *uploadedCamment = [[[[[[[CammentBuilder cammentFromExistingCamment:camment]
                                 withUuid:cmCamment.uuid]
                                 withShowUuid:cmCamment.showUuid]

@@ -20,7 +20,7 @@
         self.backgroundColor = [UIColor whiteColor];
         self.isNoFriendsFound = NO;
 
-        self.tableNode = [ASTableNode new];
+        self.tableNode = [[ASTableNode alloc] initWithStyle:UITableViewStylePlain];
         self.noFriendsTextNode = [ASTextNode new];
         NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
         paragraphStyle.alignment = NSTextAlignmentCenter;
@@ -37,6 +37,10 @@
     }
 
     return self;
+}
+
+- (void)didLoad {
+    [super didLoad];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

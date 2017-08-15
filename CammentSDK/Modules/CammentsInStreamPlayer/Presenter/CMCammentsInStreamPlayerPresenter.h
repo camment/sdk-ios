@@ -11,7 +11,7 @@
 #import "CMCammentsInStreamPlayerPresenterOutput.h"
 
 @class CMCammentsInStreamPlayerWireframe;
-@class CMShow;
+@class CMAPIShow;
 
 @interface CMCammentsInStreamPlayerPresenter : NSObject<CMCammentsInStreamPlayerPresenterInput>
 

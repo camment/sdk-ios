@@ -10,8 +10,8 @@
 #import <ReactiveObjC.h>
 #import <AsyncDisplayKit/ASDisplayNode.h>
 #import "CMCammentUploader.h"
-#import "CMCammentInRequest.h"
-#import "CMDevcammentClient.h"
+#import "CMAPICammentInRequest.h"
+#import "CMAPIDevcammentClient.h"
 #import "Camment.h"
 #import "CammentBuilder.h"
 #import "UsersGroup.h"
@@ -23,7 +23,7 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 
 @interface CMCammentViewInteractor ()
 
-@property(nonatomic, strong) CMDevcammentClient *client;
+@property(nonatomic, strong) CMAPIDevcammentClient *client;
 @property(nonatomic, strong) NSOperationQueue *cammentPostingQueue;
 
 @property(nonatomic, strong) NSMutableArray *cammentsToUpload;
@@ -35,7 +35,7 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.client = [CMDevcammentClient defaultClient];
+        self.client = [CMAPIDevcammentClient defaultClient];
         self.cammentPostingQueue = [[NSOperationQueue alloc] init];
         self.cammentPostingQueue.name = @"Camment posting queue";
         self.cammentPostingQueue.maxConcurrentOperationCount = 1;
@@ -47,8 +47,8 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 - (RACSignal<UsersGroup *> *)createEmptyGroup {
     return [RACSignal<UsersGroup *> createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
         [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
-            if ([t.result isKindOfClass:[CMUsergroup class]]) {
-                CMUsergroup *group = t.result;
+            if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
+                CMAPIUsergroup *group = t.result;
                 UsersGroup *result = [[UsersGroup alloc] initWithUuid:group.uuid
                                                    ownerCognitoUserId:group.userCognitoIdentityId
                                                             timestamp:group.timestamp];
@@ -94,17 +94,17 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
      subscribeError:^(NSError *error) {
 
      } completed:^{
-         CMCammentInRequest *cammentInRequest = [[CMCammentInRequest alloc] init];
+         CMAPICammentInRequest *cammentInRequest = [[CMAPICammentInRequest alloc] init];
          cammentInRequest.uuid = camment.uuid;
          DDLogVerbose(@"Posting camment %@", camment);
          
-         [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
+         [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
                                                          body:cammentInRequest]
-          continueWithBlock:^id(AWSTask<CMCamment *> *t) {
+          continueWithBlock:^id(AWSTask<CMAPICamment *> *t) {
               if (t.error) {
 
               } else {
-                  CMCamment *cmCamment = t.result;
+                  CMAPICamment *cmCamment = t.result;
                   Camment *uploadedCamment = [[[[[[[CammentBuilder cammentFromExistingCamment:camment]
                                                    withUuid:cmCamment.uuid]
                                                   withShowUuid:cmCamment.showUuid]
@@ -128,7 +128,7 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     NSString *cammentUuid = camment.uuid;
     NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
     if (!cammentUuid || !groupUuid) {return;}
-    [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
+    [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
                                                                             groupUuid:groupUuid]
             continueWithBlock:^id(AWSTask<id> *t) {
                 if (t.error) {

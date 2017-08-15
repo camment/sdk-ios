@@ -5,7 +5,7 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMShowsListCollectionPresenter.h"
-#import "CMShow.h"
+#import "CMAPIShow.h"
 #import "CMShowCellNode.h"
 #import "Show.h"
 #import "CMVideoShowCellNode.h"
@@ -31,7 +31,7 @@
 
     __block ASCellNodeBlock cellNodeBlock = nil;
 
-    [show.showType matchVideo:^(CMShow *underlyingShow) {
+    [show.showType matchVideo:^(CMAPIShow *underlyingShow) {
         cellNodeBlock = ^ASCellNode * {
             return [[CMVideoShowCellNode alloc] initWithShow:show];
         };

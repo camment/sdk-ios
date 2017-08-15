@@ -8,7 +8,6 @@
 #endif
 
 #import "Camment.h"
-#import "CammentDeletedMessage.h"
 
 @implementation Camment
 

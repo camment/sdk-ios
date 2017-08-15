@@ -4,6 +4,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "CMUserStatus.h"
 
 @interface User : NSObject <NSCopying>
 
@@ -16,8 +17,9 @@
 @property (nonatomic, readonly, copy) NSString *email;
 @property (nonatomic, readonly, copy) NSString *visibility;
 @property (nonatomic, readonly, copy) NSString *userPhoto;
+@property (nonatomic, readonly) CMUserStatus status;
 
-- (instancetype)initWithUserId:(NSString *)userId cognitoUserId:(NSString *)cognitoUserId fbUserId:(NSString *)fbUserId username:(NSString *)username firstname:(NSString *)firstname lastname:(NSString *)lastname email:(NSString *)email visibility:(NSString *)visibility userPhoto:(NSString *)userPhoto;
+- (instancetype)initWithUserId:(NSString *)userId cognitoUserId:(NSString *)cognitoUserId fbUserId:(NSString *)fbUserId username:(NSString *)username firstname:(NSString *)firstname lastname:(NSString *)lastname email:(NSString *)email visibility:(NSString *)visibility userPhoto:(NSString *)userPhoto status:(CMUserStatus)status;
 
 @end
 

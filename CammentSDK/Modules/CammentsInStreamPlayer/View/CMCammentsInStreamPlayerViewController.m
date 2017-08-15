@@ -8,7 +8,7 @@
 
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentsInStreamPlayerViewController.h"
-#import "CMShow.h"
+#import "CMAPIShow.h"
 #import "Show.h"
 #import "CMCammentOverlayController.h"
 #import "CMVideoContentPlayerNode.h"
@@ -66,7 +66,7 @@
     [_cammentOverlayController addToParentViewController:self];
     [self.view addSubview:[_cammentOverlayController cammentView]];
 
-    [show.showType matchVideo:^(CMShow *matchedShow) {
+    [show.showType matchVideo:^(CMAPIShow *matchedShow) {
         self.contentViewerNode = [CMVideoContentPlayerNode new];
     } html:^(NSString *webURL) {
         self.contentViewerNode = [CMWebContentPlayerNode new];

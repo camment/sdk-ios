@@ -4,7 +4,7 @@
 //
 
 #import "CMShowCellNode.h"
-#import "CMShow.h"
+#import "CMAPIShow.h"
 #import "Show.h"
 
 @implementation CMShowCellNode
@@ -28,7 +28,7 @@
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     ASDisplayNode *contentNode = [self contentNode];
     contentNode.style.preferredLayoutSize = ASLayoutSizeMake(ASDimensionMakeWithFraction(1), ASDimensionMakeWithFraction(1));
-    
+
     return [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 0, 0, 0)
                                 child:[ASStackLayoutSpec

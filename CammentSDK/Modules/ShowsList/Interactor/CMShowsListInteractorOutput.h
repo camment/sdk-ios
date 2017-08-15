@@ -8,11 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
-@class CMShowList;
+@class CMAPIShowList;
 
 @protocol CMShowsListInteractorOutput <NSObject>
 
-- (void)showListDidFetched:(CMShowList *)list;
+- (void)showListDidFetched:(CMAPIShowList *)list;
 - (void)showListFetchingFailed:(NSError *)error;
 
 @end

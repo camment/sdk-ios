@@ -41,11 +41,13 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UISwipeGestureRecognizer *hideCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(hideCamments)];
+    UISwipeGestureRecognizer *hideCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                                      action:@selector(hideCamments)];
     hideCammentsBlockRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
     [self.node.view addGestureRecognizer:hideCammentsBlockRecognizer];
 
-    UISwipeGestureRecognizer *showCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showCamments)];
+    UISwipeGestureRecognizer *showCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
+                                                                                                      action:@selector(showCamments)];
     showCammentsBlockRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
     [self.node.view addGestureRecognizer:showCammentsBlockRecognizer];
 
@@ -66,15 +68,19 @@
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"setup.use_camment_chat")
                                                                              message:CMLocalized(@"setup.what_is_camment")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.sounds_fun") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self.presenter setupCameraSession];
-        [self updateCameraOrientation];
-        [self.presenter readyToShowOnboarding];
-    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.sounds_fun")
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          [self.presenter setupCameraSession];
+                                                          [self updateCameraOrientation];
+                                                          [self.presenter readyToShowOnboarding];
+                                                      }]];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [alertController dismissViewControllerAnimated:YES completion:nil];
-    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          [alertController dismissViewControllerAnimated:YES completion:nil];
+                                                      }]];
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
@@ -241,7 +247,7 @@
             break;
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
             frame = self.node.cammentButton.frame;
-            if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
                 text = CMLocalized(@"help.swipe_up_to_invite");
             } else {
                 text = CMLocalized(@"help.swipe_down_to_invite");
@@ -249,8 +255,7 @@
             direction = AMPopTipDirectionLeft;
             delay = 1;
             break;
-        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
-        {
+        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
             if (!node) {return;}
             frame = node.frame;
@@ -302,17 +307,17 @@
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
                                                       }]];
-    
-    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [alertController setModalPresentationStyle:UIModalPresentationPopover];
         UIPopoverPresentationController *popPresenter = [alertController
-                                                              popoverPresentationController];
+                popoverPresentationController];
 
         popPresenter.permittedArrowDirections = UIPopoverArrowDirectionLeft;
         popPresenter.sourceView = cammentCell.view;
         popPresenter.sourceRect = cammentCell.view.bounds;
     }
-    
+
     [self presentViewController:alertController animated:YES completion:nil];
 }
 

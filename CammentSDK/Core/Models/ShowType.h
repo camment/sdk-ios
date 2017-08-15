@@ -4,16 +4,16 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "CMShow.h"
+#import "CMAPIShow.h"
 
-typedef void (^ShowTypeVideoMatchHandler)(CMShow *show);
+typedef void (^ShowTypeVideoMatchHandler)(CMAPIShow *show);
 typedef void (^ShowTypeHtmlMatchHandler)(NSString *webURL);
 
 @interface ShowType : NSObject <NSCopying>
 
 + (instancetype)htmlWithWebURL:(NSString *)webURL;
 
-+ (instancetype)videoWithShow:(CMShow *)show;
++ (instancetype)videoWithShow:(CMAPIShow *)show;
 
 - (void)matchVideo:(ShowTypeVideoMatchHandler)videoMatchHandler html:(ShowTypeHtmlMatchHandler)htmlMatchHandler;
 

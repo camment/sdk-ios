@@ -1,3 +1,5 @@
+%type name=CMUserStatus file=CMUserStatus canForwardDeclare=false
+
 User includes(RMBuilder)  {
   NSString *userId
   NSString *cognitoUserId
@@ -8,4 +10,5 @@ User includes(RMBuilder)  {
   NSString *email
   NSString *visibility
   NSString *userPhoto
+  CMUserStatus(NSInteger) status
 }

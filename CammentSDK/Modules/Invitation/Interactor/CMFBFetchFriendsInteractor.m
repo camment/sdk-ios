@@ -53,7 +53,8 @@
                     return [[[[[UserBuilder new]
                             withUsername:value[@"name"]]
                             withFbUserId:value[@"id"]]
-                            withUserPhoto:[[@"https://graph.facebook.com/v2.5/" stringByAppendingString:value[@"id"]] stringByAppendingString:@"/picture?type=normal"]] build];
+                            withUserPhoto:[[@"https://graph.facebook.com/v2.5/" stringByAppendingString:value[@"id"]] stringByAppendingString:@"/picture?type=normal"]]
+                            build];
                 }].array;
                 [subscriber sendNext:users];
                 [subscriber sendCompleted];

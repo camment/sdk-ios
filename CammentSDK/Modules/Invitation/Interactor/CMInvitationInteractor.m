@@ -8,14 +8,14 @@
 
 #import "CMInvitationInteractor.h"
 #import "AWSTask.h"
-#import "CMDevcammentClient.h"
+#import "CMAPIDevcammentClient.h"
 #import "UsersGroup.h"
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
 #import "User.h"
 
 @interface CMInvitationInteractor ()
-@property(nonatomic, strong) CMDevcammentClient *client;
+@property(nonatomic, strong) CMAPIDevcammentClient *client;
 @end
 
 @implementation CMInvitationInteractor
@@ -23,15 +23,15 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.client = [CMDevcammentClient defaultClient];
+        self.client = [CMAPIDevcammentClient defaultClient];
     }
     return self;
 }
 
 - (AWSTask<UsersGroup *> *)createEmptyGroup {
     return [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[CMUsergroup class]]) {
-            CMUsergroup *group = t.result;
+        if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
+            CMAPIUsergroup *group = t.result;
             UsersGroup *result = [[UsersGroup alloc] initWithUuid:group.uuid
                                                ownerCognitoUserId:group.userCognitoIdentityId
                                                         timestamp:group.timestamp];
@@ -45,7 +45,7 @@
 }
 
 - (void)addUsers:(NSArray<User *> *)users group:(UsersGroup *)group showUuid:(NSString *)showUuid {
-    CMUserInAddToGroupRequest *usersParameter = [[CMUserInAddToGroupRequest alloc] init];
+    CMAPIUserInAddToGroupRequest *usersParameter = [[CMAPIUserInAddToGroupRequest alloc] init];
     usersParameter.showUuid = showUuid;
     usersParameter.userFacebookIdList = [users.rac_sequence map:^id(User *value) {
         return value.fbUserId;

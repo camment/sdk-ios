@@ -1,8 +1,8 @@
-%type name="CMShow"
+%type name="CMAPIShow"
 
 ShowType {
   video {
-     CMShow* show;
+     CMAPIShow* show;
   }
   html {
     NSString* webURL;

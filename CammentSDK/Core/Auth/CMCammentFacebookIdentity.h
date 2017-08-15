@@ -6,11 +6,15 @@
 #import <Foundation/Foundation.h>
 #import <CammentSDK/CMCammentIdentity.h>
 
+@class FBSDKAccessToken;
+
 
 @interface CMCammentFacebookIdentity: CMCammentIdentity
 
-@property (nonatomic, strong) id fbsdkAccessToken;
+@property (nonatomic, strong, readonly) id fbsdkAccessToken;
 
-+(CMCammentFacebookIdentity *)identityWithFBSDKAccessToken:(id)token;
+- (instancetype)initWithFBSDKtoken:(FBSDKAccessToken *)token NS_DESIGNATED_INITIALIZER;
+
++ (CMCammentFacebookIdentity *)identityWithFBSDKAccessToken:(id)token;
 
 @end

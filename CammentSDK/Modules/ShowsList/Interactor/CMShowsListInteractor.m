@@ -7,12 +7,12 @@
 //
 
 #import "CMShowsListInteractor.h"
-#import "CMDevcammentClient.h"
+#import "CMAPIDevcammentClient.h"
 
 @implementation CMShowsListInteractor
 
 - (void)fetchShowList {
-    [[[CMDevcammentClient defaultClient] showsGet] continueWithBlock:^id(AWSTask<id> *task) {
+    [[[CMAPIDevcammentClient defaultClient] showsGet] continueWithBlock:^id(AWSTask<id> *task) {
         if (task.error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output showListFetchingFailed:task.error];
@@ -20,9 +20,9 @@
             return nil;
         }
 
-        if ([task.result isKindOfClass:[CMShowList class]]) {
+        if ([task.result isKindOfClass:[CMAPIShowList class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output showListDidFetched:(CMShowList *)task.result];
+                [self.output showListDidFetched:(CMAPIShowList *)task.result];
             });
         } else {
             dispatch_async(dispatch_get_main_queue(), ^{

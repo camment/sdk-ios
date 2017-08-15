@@ -16,6 +16,7 @@
   NSString *_email;
   NSString *_visibility;
   NSString *_userPhoto;
+  CMUserStatus _status;
 }
 
 + (instancetype)user
@@ -25,21 +26,22 @@
 
 + (instancetype)userFromExistingUser:(User *)existingUser
 {
-  return [[[[[[[[[[UserBuilder user]
-                  withUserId:existingUser.userId]
-                 withCognitoUserId:existingUser.cognitoUserId]
-                withFbUserId:existingUser.fbUserId]
-               withUsername:existingUser.username]
-              withFirstname:existingUser.firstname]
-             withLastname:existingUser.lastname]
-            withEmail:existingUser.email]
-           withVisibility:existingUser.visibility]
-          withUserPhoto:existingUser.userPhoto];
+  return [[[[[[[[[[[UserBuilder user]
+                   withUserId:existingUser.userId]
+                  withCognitoUserId:existingUser.cognitoUserId]
+                 withFbUserId:existingUser.fbUserId]
+                withUsername:existingUser.username]
+               withFirstname:existingUser.firstname]
+              withLastname:existingUser.lastname]
+             withEmail:existingUser.email]
+            withVisibility:existingUser.visibility]
+           withUserPhoto:existingUser.userPhoto]
+          withStatus:existingUser.status];
 }
 
 - (User *)build
 {
-  return [[User alloc] initWithUserId:_userId cognitoUserId:_cognitoUserId fbUserId:_fbUserId username:_username firstname:_firstname lastname:_lastname email:_email visibility:_visibility userPhoto:_userPhoto];
+  return [[User alloc] initWithUserId:_userId cognitoUserId:_cognitoUserId fbUserId:_fbUserId username:_username firstname:_firstname lastname:_lastname email:_email visibility:_visibility userPhoto:_userPhoto status:_status];
 }
 
 - (instancetype)withUserId:(NSString *)userId
@@ -93,6 +95,12 @@
 - (instancetype)withUserPhoto:(NSString *)userPhoto
 {
   _userPhoto = [userPhoto copy];
+  return self;
+}
+
+- (instancetype)withStatus:(CMUserStatus)status
+{
+  _status = status;
   return self;
 }
 

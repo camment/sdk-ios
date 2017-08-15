@@ -7,7 +7,7 @@
 
 @class Camment;
 @class CMCammentUploader;
-@class CMDevcammentClient;
+@class CMAPIDevcammentClient;
 
 
 @interface CMCammentPostingOperation: NSOperation
@@ -16,7 +16,7 @@
 @property NSUInteger retryNumber;
 @property (copy) void (^postingCompletionBlock)(Camment *camment, NSError *error, CMCammentPostingOperation *operation);
 
-- (instancetype)initWithCamment:(Camment *)camment cammentUploader:(CMCammentUploader *)cammentUploader cammentClient:(CMDevcammentClient *)cammentClient;
+- (instancetype)initWithCamment:(Camment *)camment cammentUploader:(CMCammentUploader *)cammentUploader cammentClient:(CMAPIDevcammentClient *)cammentClient;
 
 - (void)completeOperation;
 

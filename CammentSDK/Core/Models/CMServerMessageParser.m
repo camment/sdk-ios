@@ -42,8 +42,11 @@
     } else if ([type isEqualToString:@"invitation"]) {
 
         NSDictionary *userJson = body[@"invitingUser"];
-        User *user = [[[[UserBuilder new] withCognitoUserId:userJson[@"userCognitoIdentityId"]]
-                withUsername:userJson[@"name"]] build];
+        User *user = [[[[[UserBuilder new]
+                withCognitoUserId:userJson[@"userCognitoIdentityId"]]
+                withUsername:userJson[@"name"]]
+                withStatus:CMUserStatusOnline]
+                build];
 
         Invitation *invitation = [[Invitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
                                                            userCognitoUuid:body[@"userCognitoIdentityId"]

@@ -9,7 +9,7 @@
 
 #import "CMCammentUploader.h"
 #import "CMAppConfig.h"
-#import "CMDevcammentClient.h"
+#import "CMAPIDevcammentClient.h"
 
 @interface CMCammentUploader ()
 

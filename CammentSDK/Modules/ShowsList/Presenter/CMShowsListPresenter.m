@@ -8,7 +8,7 @@
 
 #import "CMShowsListPresenter.h"
 #import "CMShowsListCollectionPresenter.h"
-#import "CMShowList.h"
+#import "CMAPIShowList.h"
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMShowsListWireframe.h"
 #import "Show.h"
@@ -63,8 +63,8 @@
     }];
 }
 
-- (void)showListDidFetched:(CMShowList *)list {
-    NSArray *shows = [list.items.rac_sequence map:^Show *(CMShow *value) {
+- (void)showListDidFetched:(CMAPIShowList *)list {
+    NSArray *shows = [list.items.rac_sequence map:^Show *(CMAPIShow *value) {
         return [[Show alloc] initWithUuid:value.uuid url:value.url showType:[ShowType videoWithShow:value]];
     }].array ?: @[];
 
@@ -75,7 +75,7 @@
     FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
 
     self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
-            [[Show alloc] initWithUuid:[(CMShow *) list.items.firstObject uuid]
+            [[Show alloc] initWithUuid:[(CMAPIShow *) list.items.firstObject uuid]
                                    url:webShowTweak.currentValue
                               showType:[ShowType htmlWithWebURL:webShowTweak.currentValue]]
     ]];
@@ -87,7 +87,7 @@
     if ([tweak.name isEqualToString:@"Web page url"]) {
         NSArray *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(Show *value) {
             __block BOOL webShow = NO;
-            [value.showType matchVideo:^(CMShow *show) {
+            [value.showType matchVideo:^(CMAPIShow *show) {
                 webShow = NO;
             }                     html:^(NSString *webURL) {
                 webShow = YES;
@@ -96,7 +96,7 @@
         }].array ?: @[];
 
         self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
-                [[Show alloc] initWithUuid:[(CMShow *) shows.firstObject uuid]
+                [[Show alloc] initWithUuid:[(CMAPIShow *) shows.firstObject uuid]
                                        url:tweak.currentValue
                                   showType:[ShowType htmlWithWebURL:tweak.currentValue]]
         ]];

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "CMUserStatus.h"
 
 @class User;
 
@@ -27,6 +28,8 @@
 - (instancetype)withVisibility:(NSString *)visibility;
 
 - (instancetype)withUserPhoto:(NSString *)userPhoto;
+
+- (instancetype)withStatus:(CMUserStatus)status;
 
 @end
 

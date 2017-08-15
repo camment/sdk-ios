@@ -27,8 +27,8 @@
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
 #import "CMCammentUploader.h"
-#import "CMCammentInRequest.h"
-#import "CMDevcammentClient.h"
+#import "CMAPICammentInRequest.h"
+#import "CMAPIDevcammentClient.h"
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
 #import "CammentBuilder.h"
@@ -45,7 +45,6 @@
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) CMShowMetadata *show;
 @property(nonatomic, strong) UsersGroup *usersGroup;
-@property(nonatomic, strong) NSMutableArray<Camment *> *notUploadedCamments;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
@@ -72,7 +71,6 @@
         self.usersGroup = [CMStore instance].activeGroup;
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
         self.currentOnboardingStep = CMOnboardingAlertNone;
-        self.notUploadedCamments = [NSMutableArray new];
         @weakify(self);
         [RACObserve([CMStore instance], activeGroup) subscribeNext:^(UsersGroup *group) {
             @strongify(self);

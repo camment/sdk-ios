@@ -24,3 +24,7 @@
 "group_message.join_desc" = "Maybe it would be polite to say hi with a camment?";
 
 "ok" = "OK";
+
+"user_status.online" = "Online";
+"user_status.offline" = "Offline";
+"user_status.busy" = "Busy";

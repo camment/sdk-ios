@@ -17,7 +17,7 @@ typedef NS_ENUM(NSUInteger, _ShowTypeSubtypes) {
 @implementation ShowType
 {
   _ShowTypeSubtypes _subtype;
-  CMShow *_video_show;
+  CMAPIShow *_video_show;
   NSString *_html_webURL;
 }
 
@@ -29,7 +29,7 @@ typedef NS_ENUM(NSUInteger, _ShowTypeSubtypes) {
   return object;
 }
 
-+ (instancetype)videoWithShow:(CMShow *)show
++ (instancetype)videoWithShow:(CMAPIShow *)show
 {
   ShowType *object = [[ShowType alloc] init];
   object->_subtype = _ShowTypeSubtypesvideo;

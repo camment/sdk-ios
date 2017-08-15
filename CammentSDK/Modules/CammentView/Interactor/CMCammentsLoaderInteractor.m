@@ -13,7 +13,7 @@
 #import "Camment.h"
 #import "CMServerListener.h"
 #import "CMServerListenerCredentials.h"
-#import "CMDevcammentClient.h"
+#import "CMAPIDevcammentClient.h"
 #import "ServerMessage.h"
 
 @interface CMCammentsLoaderInteractor ()
@@ -43,11 +43,11 @@
 
 - (void)fetchCachedCamments:(NSString *)groupUUID {
     if (!groupUUID) {return;}
-    [[[CMDevcammentClient defaultClient] usergroupsGroupUuidCammentsGet:groupUUID] continueWithBlock:^id(AWSTask<CMCammentList *> *t) {
+    [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsGet:groupUUID] continueWithBlock:^id(AWSTask<CMAPICammentList *> *t) {
 
-        if ([t.result isKindOfClass:[CMCammentList class]]) {
-            NSArray *camments = [(CMCammentList *) t.result items];
-            NSArray *result = [camments.rac_sequence map:^id(CMCamment *value) {
+        if ([t.result isKindOfClass:[CMAPICammentList class]]) {
+            NSArray *camments = [(CMAPICammentList *) t.result items];
+            NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
                 return [[Camment alloc] initWithShowUuid:value.showUuid
                                            userGroupUuid:value.userGroupUuid
                                                     uuid:value.uuid

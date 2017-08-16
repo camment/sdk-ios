@@ -4,17 +4,17 @@
 //
 
 #import "CMDisplayCammentPresentationAction.h"
-#import "CammentsBlockItem.h"
+#import "CMCammentsBlockItem.h"
 #import "CMCammentsLoaderInteractorOutput.h"
 #import "CMPresentationInstructionOutput.h"
 
 @interface CMDisplayCammentPresentationAction ()
-@property(nonatomic, strong) CammentsBlockItem *item;
+@property(nonatomic, strong) CMCammentsBlockItem *item;
 @end
 
 @implementation CMDisplayCammentPresentationAction
 
-- (instancetype)initWithItem:(CammentsBlockItem *)item {
+- (instancetype)initWithItem:(CMCammentsBlockItem *)item {
     self = [super init];
     if (self) {
         self.item = item;
@@ -24,9 +24,9 @@
 }
 
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {
-    [self.item matchCamment:^(Camment *camment) {
+    [self.item matchCamment:^(CMCamment *camment) {
         [output didReceiveNewCamment:camment];
-    } ads:^(Ads *ads) {
+    } ads:^(CMAds *ads) {
         [output didReceiveNewAds:ads];
     }];
 }

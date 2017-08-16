@@ -6,7 +6,7 @@
 #import "CMPositionPresentationInstruction.h"
 #import "CMPresentationState.h"
 #import "CMPresentationInstructionOutput.h"
-#import "CammentsBlockItem.h"
+#import "CMCammentsBlockItem.h"
 
 @implementation CMPositionPresentationInstruction
 

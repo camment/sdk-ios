@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class Ads;
+@class CMAds;
 @class CMAdsCell;
 
 
@@ -20,7 +20,7 @@
 @interface CMAdsCell: ASCellNode
 
 @property (nonatomic, weak) id<CMAdsCellDelegate> delegate;
-@property (nonatomic, strong) Ads *ads;
+@property (nonatomic, strong) CMAds *ads;
 
-- (instancetype)initWithAds:(Ads *)ads;
+- (instancetype)initWithAds:(CMAds *)ads;
 @end

@@ -1,0 +1,7 @@
+%type name="CMShowType"
+
+CMShow {
+    NSString *uuid
+    NSString *url
+    CMShowType *showType
+}

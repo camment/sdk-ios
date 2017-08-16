@@ -20,14 +20,14 @@
 #import "CMPresentationBuilder.h"
 #import "CMWoltPresentationBuilder.h"
 #import "CMPresentationUtility.h"
-#import "ServerMessage.h"
-#import "UsersGroupBuilder.h"
+#import "CMServerMessage.h"
+#import "CMUsersGroupBuilder.h"
 #import "UIViewController+topVisibleViewController.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMAppConfig.h"
 #import "CMInvitationViewController.h"
-#import "UserBuilder.h"
-#import "InvitationBuilder.h"
+#import "CMUserBuilder.h"
+#import "CMInvitationBuilder.h"
 #import "CMConnectionReachability.h"
 
 #import <FBTweak.h>
@@ -214,7 +214,7 @@
                         success:(void (^ _Nullable)())successBlock
                           error:(void (^ _Nullable)(NSError *error))errorBlock {
 
-    [self.authService refreshIdentity];
+    [self.authService signOut];
     if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
         [self.authService configureWithProvider:[CMCognitoFacebookAuthProvider new]];
         CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
@@ -239,7 +239,7 @@
             subscribeNext:^(NSString *cognitoUserId) {
                 [[CMStore instance] setCognitoUserId:cognitoUserId];
                 [[CMStore instance] setFacebookUserId:[FBSDKAccessToken currentAccessToken].userID];
-                User *currentUser = [[[[UserBuilder new]
+                CMUser *currentUser = [[[[CMUserBuilder new]
                         withCognitoUserId:cognitoUserId]
                         withStatus:CMUserStatusOnline]
                         build];
@@ -277,7 +277,7 @@
         }
     }];
 
-    UserBuilder *userBuilder = [CMStore instance].currentUser ? [UserBuilder userFromExistingUser:[CMStore instance].currentUser] : [UserBuilder new];
+    CMUserBuilder *userBuilder = [CMStore instance].currentUser ? [CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] : [CMUserBuilder new];
 
     FBSDKProfile *profile = [FBSDKProfile currentProfile];
     if (!profile) {
@@ -321,7 +321,7 @@
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
         if (!t.error) {
-            DDLogVerbose(@"User info has been updated with data %@", userInfo);
+            DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
         }
         return nil;
     }];
@@ -351,28 +351,28 @@
 
     CMServerListener *listener = [CMServerListener instanceWithCredentials:credentials];
     [listener connect];
-    [listener.messageSubject subscribeNext:^(ServerMessage *message) {
-        [message matchInvitation:^(Invitation *invitation) {
+    [listener.messageSubject subscribeNext:^(CMServerMessage *message) {
+        [message matchInvitation:^(CMInvitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
                     && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]
                     && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]) {
                 [self presentChatInvitation:invitation];
             }
-        }                camment:^(Camment *camment) {
-        }             userJoined:^(UserJoinedMessage *userJoinedMessage) {
-        }         cammentDeleted:^(CammentDeletedMessage *cammentDeletedMessage) {
+        }                camment:^(CMCamment *camment) {
+        }             userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
+        }         cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
         }];
     }];
 }
 
-- (void)presentChatInvitation:(Invitation *)invitation {
+- (void)presentChatInvitation:(CMInvitation *)invitation {
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
     NSString *username = invitation.invitationIssuer.username ?: @"Your friend";
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User invited you to a private chat"), username]
                                                                              message:CMLocalized(@"Would you like to join the conversation?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        UsersGroup *usersGroup = [[[UsersGroupBuilder new] withUuid:invitation.userGroupUuid] build];
+        CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:invitation.userGroupUuid] build];
         [[CMStore instance] setActiveGroup:usersGroup];
         if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
             CMShowMetadata *metadata = [CMShowMetadata new];
@@ -409,7 +409,7 @@
     });
 }
 
-- (AWSTask *)acceptInvitation:(Invitation *)invitation {
+- (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     CMAPIAcceptInvitationRequest *invitationRequest = [CMAPIAcceptInvitationRequest new];
     invitationRequest.invitationKey = invitation.invitationKey;

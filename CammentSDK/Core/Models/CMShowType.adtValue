@@ -1,0 +1,10 @@
+%type name="CMAPIShow"
+
+CMShowType {
+  video {
+     CMAPIShow* show;
+  }
+  html {
+    NSString* webURL;
+  }
+}

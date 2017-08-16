@@ -7,17 +7,17 @@
 //
 
 #import "CMCammentsInStreamPlayerPresenter.h"
-#import "Show.h"
+#import "CMShow.h"
 
 @interface CMCammentsInStreamPlayerPresenter ()
 
-@property(nonatomic, strong) Show *show;
+@property(nonatomic, strong) CMShow *show;
 
 @end
 
 @implementation CMCammentsInStreamPlayerPresenter
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShow:(CMShow *)show {
     self = [super init];
 
     if (self) {

@@ -4,7 +4,7 @@
 //
 
 #import "CMAdsCell.h"
-#import "Ads.h"
+#import "CMAds.h"
 #import "CMAdsNode.h"
 #import "UIColorMacros.h"
 
@@ -17,7 +17,7 @@
 
 @implementation CMAdsCell
 
-- (instancetype)initWithAds:(Ads *)ads {
+- (instancetype)initWithAds:(CMAds *)ads {
     self = [super init];
     if (self) {
         self.ads = ads;

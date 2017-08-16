@@ -5,7 +5,7 @@
 
 #import <CammentSDK/CammentSDK.h>
 #import "CMInvitationListPresenter.h"
-#import "User.h"
+#import "CMUser.h"
 #import "CMFBFriendInvitationCellNode.h"
 #import "CMFBFetchFrinedsInteractorInput.h"
 #import "CMInvitationHeaderView.h"
@@ -42,7 +42,7 @@
 }
 
 - (void)tableNode:(ASTableNode *)tableNode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = self.items[(NSUInteger) indexPath.row];
+    CMUser *user = self.items[(NSUInteger) indexPath.row];
 
     if (user.status == CMUserStatusBusy) {
         [tableNode deselectRowAtIndexPath:indexPath animated:YES];
@@ -65,7 +65,7 @@
     self.isFetchingNextPage = YES;
 
     [context beginBatchFetching];
-    [[self.interactor fetchFriendList:NO] subscribeNext:^(NSArray<User *> *x) {
+    [[self.interactor fetchFriendList:NO] subscribeNext:^(NSArray<CMUser *> *x) {
         [self appendUsersList:x];
         self.isFetchingNextPage = NO;
         [context completeBatchFetching:![self.interactor isFinished]];
@@ -84,20 +84,20 @@
 }
 
 - (ASCellNodeBlock)tableNode:(ASTableNode *)tableNode nodeBlockForRowAtIndexPath:(NSIndexPath *)indexPath {
-    User *user = [self userForIndexPath:indexPath];
+    CMUser *user = [self userForIndexPath:indexPath];
     BOOL selected = [self.selectedUsersId containsObject:user.fbUserId];
     return ^ASCellNode * {
         return [[CMFBFriendInvitationCellNode alloc] initWithUser:user selected:selected];
     };
 }
 
-- (void)setUsersList:(NSArray<User *> *)users {
+- (void)setUsersList:(NSArray<CMUser *> *)users {
     self.items = [NSArray arrayWithArray:users];
     _selectedUsersId = [NSMutableArray new];
     [_tableNode reloadData];
 }
 
-- (void)appendUsersList:(NSArray<User *> *)users {
+- (void)appendUsersList:(NSArray<CMUser *> *)users {
     self.items = [_items arrayByAddingObjectsFromArray:users];
 
     TLIndexPathSectionInfo *onlineSection = [[TLIndexPathSectionInfo alloc]
@@ -195,7 +195,7 @@
     }];
 }
 
-- (User *)userForIndexPath:(NSIndexPath *)indexPath {
+- (CMUser *)userForIndexPath:(NSIndexPath *)indexPath {
     return [self.dataModel itemAtIndexPath:indexPath];
 };
 
@@ -229,7 +229,7 @@
     return CMUserStatusOffline;
 };
 
-- (NSArray <User *> *)filteredUsersForSection:(CMInvitationListSection)section {
+- (NSArray <CMUser *> *)filteredUsersForSection:(CMInvitationListSection)section {
     CMUserStatus userStatus = [self userStatusForSection:section];
     return [self.items filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"status = %d", userStatus]];
 };

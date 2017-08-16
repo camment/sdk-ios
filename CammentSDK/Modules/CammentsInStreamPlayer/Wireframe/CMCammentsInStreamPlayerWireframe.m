@@ -12,7 +12,7 @@
 
 @implementation CMCammentsInStreamPlayerWireframe
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShow:(CMShow *)show {
     self = [super init];
     if (self) {
         self.show = show;

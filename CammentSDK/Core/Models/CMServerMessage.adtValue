@@ -1,0 +1,19 @@
+%type name="CMCamment"
+%type name="CMInvitation"
+%type name="CMUserJoinedMessage"
+%type name="CMCammentDeletedMessage"
+
+CMServerMessage includes(RMBuilder) {
+  invitation {
+    CMInvitation *invitation
+  }
+  camment {
+    CMCamment *camment
+  }
+  userJoined {
+    CMUserJoinedMessage *userJoinedMessage
+  }
+  cammentDeleted {
+    CMCammentDeletedMessage *cammentDeletedMessage
+  }
+}

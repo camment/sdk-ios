@@ -18,7 +18,7 @@
 #import "CMLoadingHUD.h"
 
 @class CMCammentViewWireframe;
-@class Show;
+@class CMShow;
 @class CMShowMetadata;
 
 @interface CMCammentViewPresenter : NSObject<

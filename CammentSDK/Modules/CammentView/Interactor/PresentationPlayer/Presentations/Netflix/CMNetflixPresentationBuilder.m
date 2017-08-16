@@ -36,12 +36,12 @@ const NSInteger cammentsCount = 4;
         NSTimeInterval timeInterval = [cammentDelayTweak.currentValue ?: cammentDelayTweak.defaultValue floatValue];
 
         if (i == 4) {
-            CammentsBlockItem *blockItem = [utility blockItemAdsWithLocalGif:cammentName url:@"https://www.ubereats.com"];
+            CMCammentsBlockItem *blockItem = [utility blockItemAdsWithLocalGif:cammentName url:@"https://www.ubereats.com"];
             [instructions addObject:[[CMTimestampPresentationInstruction alloc]
                     initWithTimestamp:timeInterval
                                action:[[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem]]];
         } else {
-            CammentsBlockItem *blockItem = [utility blockItemCammentWithLocalVideo:cammentName];
+            CMCammentsBlockItem *blockItem = [utility blockItemCammentWithLocalVideo:cammentName];
             [instructions addObject:[[CMTimestampPresentationInstruction alloc]
                     initWithTimestamp:timeInterval
                                action:[[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem]]];

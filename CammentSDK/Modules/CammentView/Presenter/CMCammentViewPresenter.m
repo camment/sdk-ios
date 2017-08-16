@@ -15,7 +15,7 @@
 #import "CMPresentationInstructionOutput.h"
 #import "CMPresentationPlayerInteractor.h"
 #import "CMCammentsBlockPresenter.h"
-#import "Show.h"
+#import "CMShow.h"
 #import "CMStore.h"
 #import "CMCammentRecorderInteractorInput.h"
 #import "CMPresentationState.h"
@@ -31,10 +31,10 @@
 #import "CMAPIDevcammentClient.h"
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
-#import "CammentBuilder.h"
+#import "CMCammentBuilder.h"
 #import "CMShowMetadata.h"
-#import "UserJoinedMessage.h"
-#import "CammentDeletedMessage.h"
+#import "CMUserJoinedMessage.h"
+#import "CMCammentDeletedMessage.h"
 #import "RACSignal+SignalHelpers.h"
 #import "CMCammentCell.h"
 
@@ -44,7 +44,7 @@
 @property(nonatomic, strong) CMAuthInteractor *authInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) CMShowMetadata *show;
-@property(nonatomic, strong) UsersGroup *usersGroup;
+@property(nonatomic, strong) CMUsersGroup *usersGroup;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
@@ -72,7 +72,7 @@
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
         self.currentOnboardingStep = CMOnboardingAlertNone;
         @weakify(self);
-        [RACObserve([CMStore instance], activeGroup) subscribeNext:^(UsersGroup *group) {
+        [RACObserve([CMStore instance], activeGroup) subscribeNext:^(CMUsersGroup *group) {
             @strongify(self);
             self.usersGroup = group;
         }];
@@ -219,9 +219,9 @@
     [_cammentsBlockNodePresenter.collectionNode reloadData];
 }
 
-- (void)didFetchCamments:(NSArray<Camment *> *)camments {
-    _cammentsBlockNodePresenter.items = [camments.rac_sequence map:^id(Camment *value) {
-        return [CammentsBlockItem cammentWithCamment:value];
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments {
+    _cammentsBlockNodePresenter.items = [camments.rac_sequence map:^id(CMCamment *value) {
+        return [CMCammentsBlockItem cammentWithCamment:value];
     }].array;
     [self reloadCamments];
 }
@@ -238,7 +238,7 @@
     if (asset) {
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
         NSString *groupUUID = [self.usersGroup uuid];
-        Camment *camment = [[Camment alloc] initWithShowUuid:self.show.uuid
+        CMCamment *camment = [[CMCamment alloc] initWithShowUuid:self.show.uuid
                                                userGroupUuid:groupUUID
                                                         uuid:uuid
                                                    remoteURL:nil
@@ -246,7 +246,7 @@
                                                 thumbnailURL:nil
                                        userCognitoIdentityId:[CMStore instance].cognitoUserId
                                                   localAsset:asset];
-        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment]
+        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
                                                 if (self.isOnboardingRunning) {
                                                     dispatch_async(dispatch_get_main_queue(), ^{
@@ -262,7 +262,7 @@
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
-    Camment *cammentToUpload = [[[[[[CammentBuilder new] withUuid:uuid]
+    CMCamment *cammentToUpload = [[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
             withShowUuid:self.show.uuid]
             withUserGroupUuid:self.usersGroup ? self.usersGroup.uuid : nil]
@@ -270,42 +270,42 @@
     [self.interactor uploadCamment:cammentToUpload];
 }
 
-- (void)interactorDidUploadCamment:(Camment *)uploadedCamment {
-    NSMutableArray<CammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
-    NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
+- (void)interactorDidUploadCamment:(CMCamment *)uploadedCamment {
+    NSMutableArray<CMCammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
+    NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CMCammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
         __block BOOL result = NO;
 
-        [obj matchCamment:^(Camment *camment) {
+        [obj matchCamment:^(CMCamment *camment) {
             result = [camment.uuid isEqualToString:uploadedCamment.uuid];
-        }             ads:^(Ads *ads) {
+        }             ads:^(CMAds *ads) {
         }];
 
         return result;
     }];
 
     if (index != NSNotFound) {
-        CammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
-        [cammentsBlockItem matchCamment:^(Camment *camment) {
-            mutableCamments[(NSUInteger) index] = [CammentsBlockItem cammentWithCamment:uploadedCamment];
-        }                           ads:^(Ads *ads) {
+        CMCammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
+        [cammentsBlockItem matchCamment:^(CMCamment *camment) {
+            mutableCamments[(NSUInteger) index] = [CMCammentsBlockItem cammentWithCamment:uploadedCamment];
+        }                           ads:^(CMAds *ads) {
         }];
     }
     self.cammentsBlockNodePresenter.items = mutableCamments.copy;
 }
 
-- (void)interactorFailedToUploadCamment:(Camment *)camment error:(NSError *)error {
+- (void)interactorFailedToUploadCamment:(CMCamment *)camment error:(NSError *)error {
     DDLogError(@"Failed to upload camment %@ with error %@", camment, error);
 }
 
 
-- (void)didReceiveNewCamment:(Camment *)camment {
+- (void)didReceiveNewCamment:(CMCamment *)camment {
 
-    NSArray *filteredItemsArray = [self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CammentsBlockItem *value) {
+    NSArray *filteredItemsArray = [self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *value) {
         __block BOOL result = NO;
 
-        [value matchCamment:^(Camment *mathedCamment) {
+        [value matchCamment:^(CMCamment *mathedCamment) {
             result = [camment.uuid isEqualToString:mathedCamment.uuid];
-        }               ads:^(Ads *ads) {
+        }               ads:^(CMAds *ads) {
         }];
 
         return result;
@@ -319,13 +319,13 @@
                     &&
                     isNewItem
             ) {
-        [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem cammentWithCamment:camment] completion:^{
+        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment] completion:^{
         }];
     }
 }
 
-- (void)didReceiveNewAds:(Ads *)ads {
-    [self.cammentsBlockNodePresenter insertNewItem:[CammentsBlockItem adsWithAds:ads] completion:^{
+- (void)didReceiveNewAds:(CMAds *)ads {
+    [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem adsWithAds:ads] completion:^{
     }];
 }
 
@@ -451,21 +451,21 @@
     [self.output presentCammentOptionsView:cammentCell actions:actions];
 }
 
-- (void)deleteCammentAction:(Camment *)camment {
-    CammentsBlockItem *cammentsBlockItem = [CammentsBlockItem cammentWithCamment:camment];
+- (void)deleteCammentAction:(CMCamment *)camment {
+    CMCammentsBlockItem *cammentsBlockItem = [CMCammentsBlockItem cammentWithCamment:camment];
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
     [self.interactor deleteCament:camment];
 }
 
-- (void)didReceiveUserJoinedMessage:(UserJoinedMessage *)message {
+- (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {
     if ([message.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
             ![message.joinedUser.cognitoUserId isEqualToString:[CMStore instance].cognitoUserId]) {
         [self.output presentUserJoinedMessage:message];
     }
 }
 
-- (void)didReceiveCammentDeletedMessage:(CammentDeletedMessage *)message {
-    CammentsBlockItem *cammentsBlockItem = [CammentsBlockItem cammentWithCamment:message.camment];
+- (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message {
+    CMCammentsBlockItem *cammentsBlockItem = [CMCammentsBlockItem cammentWithCamment:message.camment];
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
 }
 

@@ -8,13 +8,13 @@
 #import "CMShowsListCollectionPresenterOutput.h"
 
 @class ASCollectionNode;
-@class Show;
+@class CMShow;
 
 @interface CMShowsListCollectionPresenter: NSObject <CMShowsListNodeDelegate>
 
 @property (nonatomic, weak) id<CMShowsListCollectionPresenterOutput> output;
 
-@property (nonatomic, strong) NSArray<Show *> *shows;
+@property (nonatomic, strong) NSArray<CMShow *> *shows;
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
 
 @end

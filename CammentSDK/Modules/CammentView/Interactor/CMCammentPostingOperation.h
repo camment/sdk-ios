@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class Camment;
+@class CMCamment;
 @class CMCammentUploader;
 @class CMAPIDevcammentClient;
 
@@ -14,9 +14,9 @@
 
 @property NSUInteger maxRetries;
 @property NSUInteger retryNumber;
-@property (copy) void (^postingCompletionBlock)(Camment *camment, NSError *error, CMCammentPostingOperation *operation);
+@property (copy) void (^postingCompletionBlock)(CMCamment *camment, NSError *error, CMCammentPostingOperation *operation);
 
-- (instancetype)initWithCamment:(Camment *)camment cammentUploader:(CMCammentUploader *)cammentUploader cammentClient:(CMAPIDevcammentClient *)cammentClient;
+- (instancetype)initWithCamment:(CMCamment *)camment cammentUploader:(CMCammentUploader *)cammentUploader cammentClient:(CMAPIDevcammentClient *)cammentClient;
 
 - (void)completeOperation;
 

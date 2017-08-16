@@ -6,11 +6,11 @@
 #import <Foundation/Foundation.h>
 #import "CMPresentationActionInterface.h"
 
-@class CammentsBlockItem;
+@class CMCammentsBlockItem;
 
 
 @interface CMDisplayCammentPresentationAction : NSObject<CMPresentationActionInterface>
 
-- (instancetype)initWithItem:(CammentsBlockItem *)item;
+- (instancetype)initWithItem:(CMCammentsBlockItem *)item;
 
 @end

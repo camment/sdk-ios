@@ -6,8 +6,8 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMCammentsBlockNode.h"
-#import "Camment.h"
-#import "CammentsBlockItem.h"
+#import "CMCamment.h"
+#import "CMCammentsBlockItem.h"
 
 @class CMCammentCell;
 
@@ -19,13 +19,13 @@
 
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate>
 
-@property (nonatomic, strong) NSArray<CammentsBlockItem *> *items;
+@property (nonatomic, strong) NSArray<CMCammentsBlockItem *> *items;
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
 @property (nonatomic, weak) id<CMCammentsBlockPresenterOutput> output;
 
 - (void)playCamment:(NSString *)cammentId;
 
-- (void)insertNewItem:(CammentsBlockItem *)item completion:(void (^)())completion;
+- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion;
 
-- (void)deleteItem:(CammentsBlockItem *)blockItem;
+- (void)deleteItem:(CMCammentsBlockItem *)blockItem;
 @end

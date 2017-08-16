@@ -1,0 +1,6 @@
+%type name="CMUser"
+
+CMUserJoinedMessage includes(RMBuilder) {
+  NSString* userGroupUuid
+  CMUser* joinedUser
+}

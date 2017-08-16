@@ -12,9 +12,9 @@
 #import <UIKit/UIKit.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class Ads;
+@class CMAds;
 
 
 @interface CMAdsNode: ASDisplayNode
-- (instancetype)initWithAds:(Ads *)ads;
+- (instancetype)initWithAds:(CMAds *)ads;
 @end

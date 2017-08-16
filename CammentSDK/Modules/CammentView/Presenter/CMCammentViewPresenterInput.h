@@ -13,7 +13,7 @@
 #import "CMOnboardingAlertType.h"
 
 @class SCImageView;
-@class Camment;
+@class CMCamment;
 
 @protocol CMCammentViewPresenterInput <NSObject>
 
@@ -35,5 +35,5 @@
 
 - (void)setupCameraSession;
 
-- (void)deleteCammentAction:(Camment *)camment;
+- (void)deleteCammentAction:(CMCamment *)camment;
 @end

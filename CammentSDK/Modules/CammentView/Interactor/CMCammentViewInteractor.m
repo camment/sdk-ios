@@ -12,9 +12,9 @@
 #import "CMCammentUploader.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIDevcammentClient.h"
-#import "Camment.h"
-#import "CammentBuilder.h"
-#import "UsersGroup.h"
+#import "CMCamment.h"
+#import "CMCammentBuilder.h"
+#import "CMUsersGroup.h"
 #import "CMStore.h"
 #import "RACSignal+SignalHelpers.h"
 #import "CMCammentPostingOperation.h"
@@ -44,12 +44,12 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     return self;
 }
 
-- (RACSignal<UsersGroup *> *)createEmptyGroup {
-    return [RACSignal<UsersGroup *> createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+- (RACSignal<CMUsersGroup *> *)createEmptyGroup {
+    return [RACSignal<CMUsersGroup *> createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
         [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
             if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
                 CMAPIUsergroup *group = t.result;
-                UsersGroup *result = [[UsersGroup alloc] initWithUuid:group.uuid
+                CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
                                                    ownerCognitoUserId:group.userCognitoIdentityId
                                                             timestamp:group.timestamp];
                 DDLogVerbose(@"Created new group %@", result);
@@ -64,22 +64,22 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     }];
 }
 
-- (void)uploadCamment:(Camment *)camment {
+- (void)uploadCamment:(CMCamment *)camment {
 
-    RACSignal<UsersGroup *> *createUserGroupIfNeededSignal = nil;
+    RACSignal<CMUsersGroup *> *createUserGroupIfNeededSignal = nil;
 
-    UsersGroup *group = [CMStore instance].activeGroup;
+    CMUsersGroup *group = [CMStore instance].activeGroup;
     if (group) {
         createUserGroupIfNeededSignal = [RACSignal signalWithNext:group];
     } else {
-        createUserGroupIfNeededSignal = [[self createEmptyGroup] doNext:^(UsersGroup *x) {
+        createUserGroupIfNeededSignal = [[self createEmptyGroup] doNext:^(CMUsersGroup *x) {
             [[CMStore instance] setActiveGroup:x];
         }];
     }
 
-    __block Camment *cammentToUpload = nil;
-    [createUserGroupIfNeededSignal subscribeNext:^(UsersGroup *usersGroup) {
-        cammentToUpload = [[[CammentBuilder cammentFromExistingCamment:camment]
+    __block CMCamment *cammentToUpload = nil;
+    [createUserGroupIfNeededSignal subscribeNext:^(CMUsersGroup *usersGroup) {
+        cammentToUpload = [[[CMCammentBuilder cammentFromExistingCamment:camment]
                 withUserGroupUuid:usersGroup.uuid]
                 build];
         [self postCamment:cammentToUpload];
@@ -88,7 +88,7 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     }];
 }
 
-- (void)postCamment:(Camment *)camment {
+- (void)postCamment:(CMCamment *)camment {
     [[[CMCammentUploader instance]uploadVideoAsset:[[NSURL alloc] initWithString:camment.localURL]
                                        uuid:camment.uuid]
      subscribeError:^(NSError *error) {
@@ -105,7 +105,7 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 
               } else {
                   CMAPICamment *cmCamment = t.result;
-                  Camment *uploadedCamment = [[[[[[[CammentBuilder cammentFromExistingCamment:camment]
+                  CMCamment *uploadedCamment = [[[[[[[CMCammentBuilder cammentFromExistingCamment:camment]
                                                    withUuid:cmCamment.uuid]
                                                   withShowUuid:cmCamment.showUuid]
                                                  withRemoteURL:cmCamment.url]
@@ -124,7 +124,7 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 }
 
 
-- (void)deleteCament:(Camment *)camment {
+- (void)deleteCament:(CMCamment *)camment {
     NSString *cammentUuid = camment.uuid;
     NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
     if (!cammentUuid || !groupUuid) {return;}

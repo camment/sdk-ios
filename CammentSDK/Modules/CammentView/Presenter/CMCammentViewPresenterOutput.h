@@ -9,8 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "CMOnboardingAlertType.h"
 
-@class UserJoinedMessage;
-@class Camment;
+@class CMUserJoinedMessage;
+@class CMCamment;
 @protocol CMCammentsBlockDelegate;
 @class CMCammentCell;
 
@@ -31,7 +31,7 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 
 - (void)presentCammentOptionsView:(CMCammentCell *)camment actions:(CMCammentActionsMask)actions;
 
-- (void)presentUserJoinedMessage:(UserJoinedMessage *)message;
+- (void)presentUserJoinedMessage:(CMUserJoinedMessage *)message;
 
 - (void)presentViewController:(UIViewController *)controller;
 @end

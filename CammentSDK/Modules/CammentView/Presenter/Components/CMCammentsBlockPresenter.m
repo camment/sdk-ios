@@ -44,13 +44,13 @@
 }
 
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
-    CammentsBlockItem *item = self.items[(NSUInteger) indexPath.row];
+    CMCammentsBlockItem *item = self.items[(NSUInteger) indexPath.row];
     return ^ASCellNode * {
         __block ASCellNode *node;
-        [item matchCamment:^(Camment *camment) {
+        [item matchCamment:^(CMCamment *camment) {
             node = [[CMCammentCell alloc] initWithCamment:camment];
             [(CMCammentCell*)node setDelegate:self];
-        } ads:^(Ads *ads) {
+        } ads:^(CMAds *ads) {
             node = [[CMAdsCell alloc] initWithAds:ads];
             [(CMAdsCell *)node setDelegate:self];
         }];
@@ -89,18 +89,18 @@
 }
 
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    CammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
-    [cammentsBlockItem matchCamment:^(Camment *camment) {
+    CMCammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
+    [cammentsBlockItem matchCamment:^(CMCamment *camment) {
         BOOL shouldPlay = ![camment.uuid isEqualToString: [[CMStore instance] playingCammentId]];
         [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.uuid : kCMStoreCammentIdIfNotPlaying];
-    } ads:^(Ads *ads) {
+    } ads:^(CMAds *ads) {
         [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:ads.openURL]
                                            options:@{}
                                  completionHandler:nil];
     }];
 }
 
-- (void)insertNewItem:(CammentsBlockItem *)item completion:(void (^)())completion {
+- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion {
     [self.updatesQueue addOperationWithBlock:^{
         [_collectionNode performBatchAnimated:YES updates:^{
             self.items = [@[item] arrayByAddingObjectsFromArray:[_items copy]];
@@ -119,10 +119,10 @@
 
     __block CGSize result = CGSizeZero;
 
-    CammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
-    [cammentsBlockItem matchCamment:^(Camment *camment) {
+    CMCammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
+    [cammentsBlockItem matchCamment:^(CMCamment *camment) {
         result = camment.uuid == [CMStore instance].playingCammentId ? CGSizeMake(90.0f, 90.0f) : CGSizeMake(45.0f, 45.0f);
-    } ads:^(Ads *ads) {
+    } ads:^(CMAds *ads) {
         result = CGSizeMake(45.0f, 45.0f);
     }];
 
@@ -154,15 +154,15 @@
     }
 }
 
-- (void)deleteItem:(CammentsBlockItem *)blockItem {
+- (void)deleteItem:(CMCammentsBlockItem *)blockItem {
     for (NSUInteger i = 0; i < self.items.count; i++) {
-        CammentsBlockItem *item = self.items[i];
-        [blockItem matchCamment:^(Camment *camment) {
-            [item matchCamment:^(Camment *itemCamment) {
+        CMCammentsBlockItem *item = self.items[i];
+        [blockItem matchCamment:^(CMCamment *camment) {
+            [item matchCamment:^(CMCamment *itemCamment) {
                 if ([camment.uuid isEqualToString:itemCamment.uuid])
                     [self removeItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
-            } ads:^(Ads *ads) {}];
-        } ads:^(Ads *ads) {}];
+            } ads:^(CMAds *ads) {}];
+        } ads:^(CMAds *ads) {}];
     }
 }
 

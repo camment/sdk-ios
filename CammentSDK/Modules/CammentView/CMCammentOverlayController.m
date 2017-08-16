@@ -10,7 +10,7 @@
 #import <AsyncDisplayKit/ASCollectionNode.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMCammentViewWireframe.h"
-#import "Show.h"
+#import "CMShow.h"
 #import "CMStore.h"
 
 @interface CMCammentOverlayController ()

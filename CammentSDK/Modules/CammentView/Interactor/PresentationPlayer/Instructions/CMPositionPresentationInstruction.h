@@ -7,7 +7,7 @@
 #import "CMPresentationInstructionInterface.h"
 #import "CMPresentationInstruction.h"
 
-@class CammentsBlockItem;
+@class CMCammentsBlockItem;
 
 @interface CMPositionPresentationInstruction : CMPresentationInstruction
 

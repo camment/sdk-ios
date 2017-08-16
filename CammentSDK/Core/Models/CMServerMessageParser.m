@@ -4,10 +4,10 @@
 //
 
 #import "CMServerMessageParser.h"
-#import "ServerMessage.h"
-#import "UserBuilder.h"
-#import "UserJoinedMessageBuilder.h"
-#import "CammentBuilder.h"
+#import "CMServerMessage.h"
+#import "CMUserBuilder.h"
+#import "CMUserJoinedMessageBuilder.h"
+#import "CMCammentBuilder.h"
 
 
 @implementation CMServerMessageParser {
@@ -21,15 +21,15 @@
     return self;
 }
 
-- (ServerMessage *)parseMessage {
+- (CMServerMessage *)parseMessage {
 
     NSString *type = self.messageDictionary[@"type"];
     NSDictionary *body = self.messageDictionary[@"body"];
 
-    ServerMessage *serverMessage = nil;
+    CMServerMessage *serverMessage = nil;
 
     if ([type isEqualToString:@"camment"]) {
-        Camment *camment = [[Camment alloc] initWithShowUuid:body[@"showUuid"]
+        CMCamment *camment = [[CMCamment alloc] initWithShowUuid:body[@"showUuid"]
                                                userGroupUuid:body[@"userGroupUuid"]
                                                         uuid:body[@"uuid"]
                                                    remoteURL:body[@"url"]
@@ -37,37 +37,37 @@
                                                 thumbnailURL:body[@"thumbnail"]
                                        userCognitoIdentityId:body[@"userCognitoIdentityId"]
                                                   localAsset:nil];
-        serverMessage = [ServerMessage cammentWithCamment:camment];
+        serverMessage = [CMServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"invitation"]) {
 
         NSDictionary *userJson = body[@"invitingUser"];
-        User *user = [[[[[UserBuilder new]
+        CMUser *user = [[[[[CMUserBuilder new]
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withUsername:userJson[@"name"]]
                 withStatus:CMUserStatusOnline]
                 build];
 
-        Invitation *invitation = [[Invitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
+        CMInvitation *invitation = [[CMInvitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
                                                            userCognitoUuid:body[@"userCognitoIdentityId"]
                                                                   showUuid:body[@"showUuid"]
                                                              invitationKey:body[@"key"]
                                                      invitedUserFacebookId:body[@"userFacebookId"]
                                                           invitationIssuer:user];
-        serverMessage = [ServerMessage invitationWithInvitation:invitation];
+        serverMessage = [CMServerMessage invitationWithInvitation:invitation];
     } else if ([type isEqualToString:@"new-user-in-group"]) {
         NSDictionary *userJson = body[@"user"];
-        User *user = [[[[[[UserBuilder new] withCognitoUserId:userJson[@"userCognitoIdentityId"]]
+        CMUser *user = [[[[[[CMUserBuilder new] withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
                 withUserPhoto:userJson[@"picture"]] build];
-        UserJoinedMessage *userJoinedMessage = [[[[UserJoinedMessageBuilder new]
+        CMUserJoinedMessage *userJoinedMessage = [[[[CMUserJoinedMessageBuilder new]
                 withUserGroupUuid:body[@"groupUuid"]]
                 withJoinedUser:user] build];
 
-        serverMessage = [ServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage];
+        serverMessage = [CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage];
     }else if ([type isEqualToString:@"camment-deleted"]) {
-        Camment *camment = [[Camment alloc] initWithShowUuid:body[@"showUuid"]
+        CMCamment *camment = [[CMCamment alloc] initWithShowUuid:body[@"showUuid"]
                                                userGroupUuid:body[@"userGroupUuid"]
                                                         uuid:body[@"uuid"]
                                                    remoteURL:body[@"url"]
@@ -75,7 +75,7 @@
                                                 thumbnailURL:body[@"thumbnail"]
                                        userCognitoIdentityId:body[@"userCognitoIdentityId"]
                                                   localAsset:nil];
-        serverMessage = [ServerMessage cammentDeletedWithCammentDeletedMessage:[[CammentDeletedMessage alloc] initWithCamment:camment]];
+        serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     }
 
     return serverMessage;

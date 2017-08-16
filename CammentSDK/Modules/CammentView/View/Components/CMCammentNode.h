@@ -6,14 +6,14 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class Camment;
+@class CMCamment;
 
 
 @interface CMCammentNode: ASDisplayNode
 
-@property(nonatomic, copy) Camment *camment;
+@property(nonatomic, copy) CMCamment *camment;
 
-- (instancetype)initWithCamment:(Camment *)camment;
+- (instancetype)initWithCamment:(CMCamment *)camment;
 - (void)playCamment;
 - (void)stopCamment;
 

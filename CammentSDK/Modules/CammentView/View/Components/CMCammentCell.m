@@ -5,7 +5,7 @@
 
 #import "CMCammentCell.h"
 #import "CMCammentNode.h"
-#import "Camment.h"
+#import "CMCamment.h"
 #import "UIColorMacros.h"
 
 @interface CMCammentCell ()
@@ -14,7 +14,7 @@
 
 @implementation CMCammentCell
 
-- (instancetype)initWithCamment:(Camment *)camment {
+- (instancetype)initWithCamment:(CMCamment *)camment {
     self = [super init];
     if (self) {
         _camment = camment;

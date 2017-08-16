@@ -5,7 +5,7 @@
 
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMStore.h"
-#import "Show.h"
+#import "CMShow.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
 
 

@@ -8,7 +8,7 @@
 
 
 @class CMCammentNode;
-@class Camment;
+@class CMCamment;
 @class CMCammentCell;
 
 @protocol CMCammentCellDelegate<NSObject>
@@ -23,7 +23,7 @@
 @property (nonatomic, assign) BOOL expanded;
 @property (nonatomic, weak) id<CMCammentCellDelegate> delegate;
 
-@property(nonatomic, strong, readonly) Camment *camment;
+@property(nonatomic, strong, readonly) CMCamment *camment;
 
-- (instancetype)initWithCamment:(Camment *)camment;
+- (instancetype)initWithCamment:(CMCamment *)camment;
 @end

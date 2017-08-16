@@ -9,6 +9,6 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMInvitationInteractorOutput <NSObject>
-- (void)didInviteUsersToTheGroup:(UsersGroup *)group;
+- (void)didInviteUsersToTheGroup:(CMUsersGroup *)group;
 - (void)didFailToInviteUsersWithError:(NSError *)error;
 @end

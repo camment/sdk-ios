@@ -1,0 +1,11 @@
+%type name="CMCamment"
+%type name="CMAds"
+
+CMCammentsBlockItem {
+  camment {
+    CMCamment *camment
+  }
+  ads {
+    CMAds *ads
+  }
+}

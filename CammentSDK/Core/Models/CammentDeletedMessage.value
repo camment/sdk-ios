@@ -1,5 +1,0 @@
-%type name="Camment"
-
-CammentDeletedMessage includes(RMBuilder) {
-  Camment* camment
-}

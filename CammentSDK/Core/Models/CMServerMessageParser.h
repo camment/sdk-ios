@@ -5,7 +5,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class ServerMessage;
+@class CMServerMessage;
 
 
 @interface CMServerMessageParser : NSObject
@@ -13,6 +13,6 @@
 @property(nonatomic, strong) NSDictionary *messageDictionary;
 
 - (instancetype)initWithMessageDictionary:(NSDictionary *)messageDictionary;
-- (ServerMessage *)parseMessage;
+- (CMServerMessage *)parseMessage;
 
 @end

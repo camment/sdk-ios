@@ -10,8 +10,8 @@
 
 @protocol CMCammentViewInteractorOutput <NSObject>
 
-- (void)interactorDidUploadCamment:(Camment *)camment;
+- (void)interactorDidUploadCamment:(CMCamment *)camment;
 
-- (void)interactorFailedToUploadCamment:(Camment *)camment error:(NSError *)error;
+- (void)interactorFailedToUploadCamment:(CMCamment *)camment error:(NSError *)error;
 
 @end

@@ -4,8 +4,8 @@
 //
 
 #import "CMFBFetchFriendsInteractor.h"
-#import "User.h"
-#import "UserBuilder.h"
+#import "CMUser.h"
+#import "CMUserBuilder.h"
 #import <ReactiveObjC.h>
 #import <FBSDKGraphRequest.h>
 
@@ -21,7 +21,7 @@
 @implementation CMFBFetchFriendsInteractor {
 
 }
-- (RACSignal<NSArray<User *> *> *)fetchFriendList:(BOOL)resetPaginationContext {
+- (RACSignal<NSArray<CMUser *> *> *)fetchFriendList:(BOOL)resetPaginationContext {
 
     if (resetPaginationContext) {
         self.isFinished = NO;
@@ -49,8 +49,8 @@
                 self.cursorAfter = [cursors valueForKey:@"after"];
                 self.isFinished = self.cursorAfter == nil;
 
-                NSArray<User *> *users = [friends.rac_sequence map:^User *(NSDictionary *value) {
-                    return [[[[[UserBuilder new]
+                NSArray<CMUser *> *users = [friends.rac_sequence map:^CMUser *(NSDictionary *value) {
+                    return [[[[[CMUserBuilder new]
                             withUsername:value[@"name"]]
                             withFbUserId:value[@"id"]]
                             withUserPhoto:[[@"https://graph.facebook.com/v2.5/" stringByAppendingString:value[@"id"]] stringByAppendingString:@"/picture?type=normal"]]

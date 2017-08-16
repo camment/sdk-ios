@@ -4,7 +4,7 @@
 //
 
 #import "CMVideoShowCellNode.h"
-#import "Show.h"
+#import "CMShow.h"
 
 
 @interface CMVideoShowCellNode ()
@@ -13,7 +13,7 @@
 
 @implementation CMVideoShowCellNode
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShow:(CMShow *)show {
     self = [super initWithShow:show];
     if (self) {
         self.videoThumbnailNode = [ASVideoNode new];

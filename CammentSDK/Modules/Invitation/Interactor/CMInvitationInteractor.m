@@ -9,10 +9,10 @@
 #import "CMInvitationInteractor.h"
 #import "AWSTask.h"
 #import "CMAPIDevcammentClient.h"
-#import "UsersGroup.h"
+#import "CMUsersGroup.h"
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
-#import "User.h"
+#import "CMUser.h"
 
 @interface CMInvitationInteractor ()
 @property(nonatomic, strong) CMAPIDevcammentClient *client;
@@ -28,11 +28,11 @@
     return self;
 }
 
-- (AWSTask<UsersGroup *> *)createEmptyGroup {
+- (AWSTask<CMUsersGroup *> *)createEmptyGroup {
     return [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
         if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
             CMAPIUsergroup *group = t.result;
-            UsersGroup *result = [[UsersGroup alloc] initWithUuid:group.uuid
+            CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
                                                ownerCognitoUserId:group.userCognitoIdentityId
                                                         timestamp:group.timestamp];
             DDLogVerbose(@"Created new group %@", result);
@@ -44,10 +44,10 @@
     }];
 }
 
-- (void)addUsers:(NSArray<User *> *)users group:(UsersGroup *)group showUuid:(NSString *)showUuid {
+- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
     CMAPIUserInAddToGroupRequest *usersParameter = [[CMAPIUserInAddToGroupRequest alloc] init];
     usersParameter.showUuid = showUuid;
-    usersParameter.userFacebookIdList = [users.rac_sequence map:^id(User *value) {
+    usersParameter.userFacebookIdList = [users.rac_sequence map:^id(CMUser *value) {
         return value.fbUserId;
     }].array ?: @[];
 
@@ -57,8 +57,8 @@
     }
 
     [[groupTask continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[UsersGroup class]]) {
-            UsersGroup *usersGroup = t.result;
+        if ([t.result isKindOfClass:[CMUsersGroup class]]) {
+            CMUsersGroup *usersGroup = t.result;
             return [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid body:usersParameter] continueWithBlock:^id(AWSTask<id> *t) {
                 return [AWSTask taskWithResult:usersGroup];
             }];
@@ -67,9 +67,9 @@
             return [AWSTask taskWithError:t.error];
         }
     }] continueWithBlock:^id(AWSTask<id> *t) {
-        if (!t.error && [t.result isKindOfClass:[UsersGroup class]]) {
+        if (!t.error && [t.result isKindOfClass:[CMUsersGroup class]]) {
             DDLogVerbose(@"Invited users %@", users);
-            UsersGroup *usersGroup = t.result;
+            CMUsersGroup *usersGroup = t.result;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output didInviteUsersToTheGroup:usersGroup];
             });

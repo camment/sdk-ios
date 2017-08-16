@@ -7,10 +7,10 @@
 #import <AsyncDisplayKit/ASCellNode.h>
 
 
-@class User;
+@class CMUser;
 
 @interface CMFBFriendInvitationCellNode : ASCellNode
 
 
-- (instancetype)initWithUser:(User *)user selected:(BOOL)selected;
+- (instancetype)initWithUser:(CMUser *)user selected:(BOOL)selected;
 @end

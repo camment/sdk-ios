@@ -10,11 +10,11 @@
 #import <AWSIoT/AWSIoT.h>
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentsLoaderInteractor.h"
-#import "Camment.h"
+#import "CMCamment.h"
 #import "CMServerListener.h"
 #import "CMServerListenerCredentials.h"
 #import "CMAPIDevcammentClient.h"
-#import "ServerMessage.h"
+#import "CMServerMessage.h"
 
 @interface CMCammentsLoaderInteractor ()
 @property(nonatomic, strong) RACDisposable *disposable;
@@ -25,15 +25,15 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.disposable = [[[[CMServerListener instance] messageSubject] deliverOnMainThread] subscribeNext:^(ServerMessage *_Nullable message) {
+        self.disposable = [[[[CMServerListener instance] messageSubject] deliverOnMainThread] subscribeNext:^(CMServerMessage *_Nullable message) {
             [message
-                    matchInvitation:^(Invitation *invitation) {
+                    matchInvitation:^(CMInvitation *invitation) {
                     }
-                            camment:^(Camment *camment) {
+                            camment:^(CMCamment *camment) {
                                 [self.output didReceiveNewCamment:camment];
-                            } userJoined:^(UserJoinedMessage *userJoinedMessage) {
+                            } userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
                         [self.output didReceiveUserJoinedMessage:userJoinedMessage];
-                    } cammentDeleted:^(CammentDeletedMessage *cammentDeletedMessage) {
+                    } cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
                         [self.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
                     }];
         }];
@@ -48,7 +48,7 @@
         if ([t.result isKindOfClass:[CMAPICammentList class]]) {
             NSArray *camments = [(CMAPICammentList *) t.result items];
             NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
-                return [[Camment alloc] initWithShowUuid:value.showUuid
+                return [[CMCamment alloc] initWithShowUuid:value.showUuid
                                            userGroupUuid:value.userGroupUuid
                                                     uuid:value.uuid
                                                remoteURL:value.url

@@ -17,8 +17,8 @@
 #import "MBProgressHUD.h"
 #import "CammentSDK.h"
 #import "CMCammentRecorderInteractorInput.h"
-#import "Camment.h"
-#import "UserJoinedMessage.h"
+#import "CMCamment.h"
+#import "CMUserJoinedMessage.h"
 #import "CMCammentCell.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
@@ -289,7 +289,7 @@
         return;
     }
 
-    Camment *camment = cammentCell.camment;
+    CMCamment *camment = cammentCell.camment;
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
                                                                              message:@""
@@ -321,8 +321,8 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)presentUserJoinedMessage:(UserJoinedMessage *)message {
-    User *user = message.joinedUser;
+- (void)presentUserJoinedMessage:(CMUserJoinedMessage *)message {
+    CMUser *user = message.joinedUser;
     if (!user || !user.username) {return;}
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"group_message.join_title"), user.username]

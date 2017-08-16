@@ -1,7 +1,0 @@
-%type name="ShowType"
-
-Show {
-    NSString *uuid
-    NSString *url
-    ShowType *showType
-}

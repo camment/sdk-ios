@@ -1,4 +1,0 @@
-Ads {
-  NSString* URL
-  NSString* openURL
-}

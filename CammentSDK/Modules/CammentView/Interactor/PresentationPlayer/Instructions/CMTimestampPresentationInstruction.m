@@ -4,7 +4,7 @@
 //
 
 #import "CMTimestampPresentationInstruction.h"
-#import "CammentsBlockItem.h"
+#import "CMCammentsBlockItem.h"
 #import "CMPresentationState.h"
 #import "CMPresentationInstructionOutput.h"
 

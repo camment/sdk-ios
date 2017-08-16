@@ -5,7 +5,7 @@
 
 #import <AsyncDisplayKit/ASDisplayNode.h>
 #import "CMHtmlShowCellNode.h"
-#import "Show.h"
+#import "CMShow.h"
 
 
 @interface CMHtmlShowCellNode ()
@@ -14,7 +14,7 @@
 
 @implementation CMHtmlShowCellNode
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShow:(CMShow *)show {
     self = [super initWithShow:show];
     if (self) {
         NSString *url = self.show.url;

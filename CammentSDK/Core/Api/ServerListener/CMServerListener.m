@@ -11,13 +11,13 @@
 #import "CMServerListenerCredentials.h"
 #import "CMAppConfig.h"
 #import "CMStore.h"
-#import "ServerMessage.h"
-#import "CammentBuilder.h"
-#import "User.h"
-#import "UserBuilder.h"
+#import "CMServerMessage.h"
+#import "CMCammentBuilder.h"
+#import "CMUser.h"
+#import "CMUserBuilder.h"
 #import "AWSMobileAnalyticsMonetizationEventBuilder.h"
-#import "UserJoinedMessage.h"
-#import "UserJoinedMessageBuilder.h"
+#import "CMUserJoinedMessage.h"
+#import "CMUserJoinedMessageBuilder.h"
 #import "CMServerMessageParser.h"
 
 static CMServerListener *_instance = nil;
@@ -140,7 +140,7 @@ static CMServerListener *_instance = nil;
 
     DDLogVerbose(@"server message %@", jsonObject);
 
-    ServerMessage *serverMessage = [[[CMServerMessageParser alloc] initWithMessageDictionary:jsonObject] parseMessage];
+    CMServerMessage *serverMessage = [[[CMServerMessageParser alloc] initWithMessageDictionary:jsonObject] parseMessage];
     if (!serverMessage) {return;}
 
     DDLogVerbose(@"Got message %@", serverMessage);

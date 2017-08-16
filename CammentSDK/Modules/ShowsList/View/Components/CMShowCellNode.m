@@ -5,11 +5,11 @@
 
 #import "CMShowCellNode.h"
 #import "CMAPIShow.h"
-#import "Show.h"
+#import "CMShow.h"
 
 @implementation CMShowCellNode
 
-- (instancetype)initWithShow:(Show *)show {
+- (instancetype)initWithShow:(CMShow *)show {
     self = [super init];
     if (self) {
         _show = show;

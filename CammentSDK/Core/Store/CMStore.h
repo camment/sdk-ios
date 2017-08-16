@@ -4,10 +4,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "User.h"
-#import "UsersGroup.h"
+#import "CMUser.h"
+#import "CMUsersGroup.h"
 
-@class Show;
+@class CMShow;
 @class CMShowMetadata;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
@@ -29,7 +29,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property (nonatomic, assign) CMCammentRecordingState cammentRecordingState;
 
-@property (nonatomic, copy) UsersGroup *activeGroup;
+@property (nonatomic, copy) CMUsersGroup *activeGroup;
 
 @property(nonatomic, copy) NSString *cognitoUserId;
 
@@ -37,7 +37,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic) CMShowMetadata *currentShowMetadata;
 
-@property(nonatomic, strong) User *currentUser;
+@property(nonatomic, strong) CMUser *currentUser;
 
 @property(nonatomic, copy) NSString *facebookUserId;
 

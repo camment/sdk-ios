@@ -1,0 +1,5 @@
+%type name="CMCamment"
+
+CMCammentDeletedMessage includes(RMBuilder) {
+  CMCamment* camment
+}

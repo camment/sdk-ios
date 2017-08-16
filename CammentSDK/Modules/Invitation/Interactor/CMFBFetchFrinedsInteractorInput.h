@@ -6,11 +6,11 @@
 #import <Foundation/Foundation.h>
 #import <ReactiveObjC.h>
 
-@class User;
+@class CMUser;
 
 @protocol CMFBFetchFrinedsInteractorInput <NSObject>
 
-- (RACSignal<NSArray<User *> *> *)fetchFriendList:(BOOL)resetPaginationContext;
+- (RACSignal<NSArray<CMUser *> *> *)fetchFriendList:(BOOL)resetPaginationContext;
 - (BOOL)isFinished;
 
 @end

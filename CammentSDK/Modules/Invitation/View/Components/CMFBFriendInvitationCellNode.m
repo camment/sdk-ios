@@ -5,7 +5,7 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMFBFriendInvitationCellNode.h"
-#import "User.h"
+#import "CMUser.h"
 
 @interface CMFBFriendInvitationCellNode ()
 @property(nonatomic, strong) ASTextNode *nameTextNode;
@@ -14,7 +14,7 @@
 
 @implementation CMFBFriendInvitationCellNode
 
-- (instancetype)initWithUser:(User *)user selected:(BOOL)selected {
+- (instancetype)initWithUser:(CMUser *)user selected:(BOOL)selected {
     self = [super init];
     if (self) {
         self.nameTextNode = [ASTextNode new];

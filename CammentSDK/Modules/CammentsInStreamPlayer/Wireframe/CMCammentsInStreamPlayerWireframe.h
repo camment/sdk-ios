@@ -13,11 +13,11 @@
 #import "CMCammentsLoaderInteractor.h"
 #import "CMCammentsInStreamPlayerViewController.h"
 
-@class Show;
+@class CMShow;
 
 @interface CMCammentsInStreamPlayerWireframe : NSObject
 
-@property (nonatomic, strong) Show *show;
+@property (nonatomic, strong) CMShow *show;
 
 @property (nonatomic, weak) CMCammentsInStreamPlayerViewController *view;
 @property (nonatomic, weak) CMCammentsInStreamPlayerPresenter *presenter;
@@ -28,7 +28,7 @@
 
 - (void)presentInWindow:(UIWindow *)window;
 
-- (instancetype)initWithShow:(Show *)show;
+- (instancetype)initWithShow:(CMShow *)show;
 
 - (void)presentInViewController:(UIViewController *)viewController;
 - (void)pushInNavigationController:(UINavigationController *)navigationController;

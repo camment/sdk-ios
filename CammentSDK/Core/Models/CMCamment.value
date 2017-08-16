@@ -1,0 +1,11 @@
+%type name="AVAsset" library="AVFoundation" file="AVAsset"
+CMCamment includes(RMBuilder) {
+  NSString* showUuid
+  NSString* userGroupUuid
+  NSString* uuid
+  NSString* remoteURL
+  NSString* localURL
+  NSString* thumbnailURL
+  NSString* userCognitoIdentityId
+  AVAsset* localAsset
+}

@@ -4,11 +4,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CammentsBlockItem.h"
+#import "CMCammentsBlockItem.h"
 
 @interface CMPresentationState : NSObject
 
 @property (nonatomic, assign) NSTimeInterval timestamp;
-@property (nonatomic, strong) NSArray<CammentsBlockItem *> *items;
+@property (nonatomic, strong) NSArray<CMCammentsBlockItem *> *items;
 
 @end

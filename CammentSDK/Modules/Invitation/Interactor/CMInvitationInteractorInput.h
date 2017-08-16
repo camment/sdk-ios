@@ -8,12 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@class User;
+@class CMUser;
 
-@class UsersGroup;
+@class CMUsersGroup;
 
 @protocol CMInvitationInteractorInput <NSObject>
 
-- (void)addUsers:(NSArray<User *> *)users group:(UsersGroup *)group showUuid:(NSString *)showUuid;
+- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid;
 
 @end

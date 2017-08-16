@@ -5,7 +5,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import "CMCammentNode.h"
-#import "Camment.h"
+#import "CMCamment.h"
 #import "CMStore.h"
 
 @interface CMCammentNode () <ASVideoNodeDelegate>
@@ -14,7 +14,7 @@
 
 @implementation CMCammentNode
 
-- (instancetype)initWithCamment:(Camment *)camment {
+- (instancetype)initWithCamment:(CMCamment *)camment {
     self = [super init];
     if (self) {
 

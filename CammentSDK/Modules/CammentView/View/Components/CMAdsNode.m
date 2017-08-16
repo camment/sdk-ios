@@ -4,13 +4,13 @@
 //
 
 #import "CMAdsNode.h"
-#import "Ads.h"
+#import "CMAds.h"
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <Texture/AsyncDisplayKit/ASPINRemoteImageDownloader.h>
 
 @interface CMAdsNode ()
 
-@property(nonatomic, strong) Ads *ads;
+@property(nonatomic, strong) CMAds *ads;
 @property(nonatomic, strong) ASNetworkImageNode *adsPlayerNode;
 @property(nonatomic, strong) ASPINRemoteImageDownloader *downloader;
 
@@ -18,7 +18,7 @@
 
 @implementation CMAdsNode
 
-- (instancetype)initWithAds:(Ads *)ads {
+- (instancetype)initWithAds:(CMAds *)ads {
     self = [super init];
     if (self) {
 

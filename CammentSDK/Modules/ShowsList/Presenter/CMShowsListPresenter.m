@@ -11,7 +11,7 @@
 #import "CMAPIShowList.h"
 #import "CMCammentsInStreamPlayerWireframe.h"
 #import "CMShowsListWireframe.h"
-#import "Show.h"
+#import "CMShow.h"
 #import "CMStore.h"
 #import "CammentSDK.h"
 #import <FBTweak.h>
@@ -64,8 +64,8 @@
 }
 
 - (void)showListDidFetched:(CMAPIShowList *)list {
-    NSArray *shows = [list.items.rac_sequence map:^Show *(CMAPIShow *value) {
-        return [[Show alloc] initWithUuid:value.uuid url:value.url showType:[ShowType videoWithShow:value]];
+    NSArray *shows = [list.items.rac_sequence map:^CMShow *(CMAPIShow *value) {
+        return [[CMShow alloc] initWithUuid:value.uuid url:value.url showType:[CMShowType videoWithShow:value]];
     }].array ?: @[];
 
     FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
@@ -75,9 +75,9 @@
     FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
 
     self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
-            [[Show alloc] initWithUuid:[(CMAPIShow *) list.items.firstObject uuid]
+            [[CMShow alloc] initWithUuid:[(CMAPIShow *) list.items.firstObject uuid]
                                    url:webShowTweak.currentValue
-                              showType:[ShowType htmlWithWebURL:webShowTweak.currentValue]]
+                              showType:[CMShowType htmlWithWebURL:webShowTweak.currentValue]]
     ]];
     [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
@@ -85,7 +85,7 @@
 
 - (void)tweakDidChange:(FBTweak *)tweak {
     if ([tweak.name isEqualToString:@"Web page url"]) {
-        NSArray *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(Show *value) {
+        NSArray *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(CMShow *value) {
             __block BOOL webShow = NO;
             [value.showType matchVideo:^(CMAPIShow *show) {
                 webShow = NO;
@@ -96,9 +96,9 @@
         }].array ?: @[];
 
         self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
-                [[Show alloc] initWithUuid:[(CMAPIShow *) shows.firstObject uuid]
+                [[CMShow alloc] initWithUuid:[(CMAPIShow *) shows.firstObject uuid]
                                        url:tweak.currentValue
-                                  showType:[ShowType htmlWithWebURL:tweak.currentValue]]
+                                  showType:[CMShowType htmlWithWebURL:tweak.currentValue]]
         ]];
         [self.showsListCollectionPresenter.collectionNode reloadData];
     }
@@ -109,16 +109,16 @@
     DDLogError(@"Show list fetch error %@", error);
 }
 
-- (void)didSelectShow:(Show *)show {
+- (void)didSelectShow:(CMShow *)show {
     CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
     [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
 }
 
 - (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata {
-    NSArray<Show *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(Show *value) {
+    NSArray<CMShow *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(CMShow *value) {
         return [value.uuid isEqualToString:metadata.uuid];
     }].array ?: @[];
-    Show *show = shows.firstObject;
+    CMShow *show = shows.firstObject;
     if (show) {
         UIViewController *viewController = (id) self.output;
         UIViewController *presentingViewController = viewController;

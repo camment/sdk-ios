@@ -10,8 +10,8 @@
 #import "CMInvitationWireframe.h"
 #import "CMInvitationListPresenter.h"
 #import "CMStore.h"
-#import "User.h"
-#import "Show.h"
+#import "CMUser.h"
+#import "CMShow.h"
 #import "CMShowMetadata.h"
 
 @interface CMInvitationPresenter ()
@@ -42,10 +42,10 @@
 
 - (void)inviteAction {
     [self.output showLoadingHUD];
-    NSArray *users = [self.listPresenter.items.rac_sequence filter:^BOOL(User *user) {
+    NSArray *users = [self.listPresenter.items.rac_sequence filter:^BOOL(CMUser *user) {
         return [self.listPresenter.selectedUsersId containsObject:user.fbUserId];
     }].array;
-    User *currentUser = [CMStore instance].currentUser;
+    CMUser *currentUser = [CMStore instance].currentUser;
     if (currentUser) {
         users = [users arrayByAddingObject:currentUser];
     }
@@ -54,7 +54,7 @@
                      showUuid:[CMStore instance].currentShowMetadata.uuid];
 }
 
-- (void)didInviteUsersToTheGroup:(UsersGroup *)group {
+- (void)didInviteUsersToTheGroup:(CMUsersGroup *)group {
     [self.output hideLoadingHUD];
     [self.wireframe.view.navigationController dismissViewControllerAnimated:YES completion:^{
         dispatch_async(dispatch_get_main_queue(), ^{

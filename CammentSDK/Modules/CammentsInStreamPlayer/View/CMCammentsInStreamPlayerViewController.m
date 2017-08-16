@@ -9,7 +9,7 @@
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentsInStreamPlayerViewController.h"
 #import "CMAPIShow.h"
-#import "Show.h"
+#import "CMShow.h"
 #import "CMCammentOverlayController.h"
 #import "CMVideoContentPlayerNode.h"
 #import "CMWebContentPlayerNode.h"
@@ -52,7 +52,7 @@
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 
-- (void)startShow:(Show *)show {
+- (void)startShow:(CMShow *)show {
     if (_cammentOverlayController) {
         [_cammentOverlayController removeFromParentViewController];
         [[_cammentOverlayController cammentView] removeFromSuperview];

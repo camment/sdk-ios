@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import "CMPresentationInstruction.h"
 
-@class CammentsBlockItem;
+@class CMCammentsBlockItem;
 
 
 @interface CMTimestampPresentationInstruction: CMPresentationInstruction

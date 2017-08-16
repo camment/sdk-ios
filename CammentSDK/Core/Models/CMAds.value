@@ -1,0 +1,4 @@
+CMAds {
+  NSString* URL
+  NSString* openURL
+}

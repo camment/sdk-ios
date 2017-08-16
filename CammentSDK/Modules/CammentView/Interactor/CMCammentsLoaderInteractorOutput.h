@@ -8,18 +8,18 @@
 
 #import <Foundation/Foundation.h>
 
-@class Camment;
-@class Ads;
-@class UserJoinedMessage;
-@class CammentDeletedMessage;
+@class CMCamment;
+@class CMAds;
+@class CMUserJoinedMessage;
+@class CMCammentDeletedMessage;
 
 @protocol CMCammentsLoaderInteractorOutput <NSObject>
 
-- (void)didFetchCamments:(NSArray<Camment *> *)camments;
-- (void)didReceiveNewCamment:(Camment *)camment;
-- (void)didReceiveNewAds:(Ads *)ads;
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments;
+- (void)didReceiveNewCamment:(CMCamment *)camment;
+- (void)didReceiveNewAds:(CMAds *)ads;
 
-- (void)didReceiveUserJoinedMessage:(UserJoinedMessage *)message;
+- (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message;
 
-- (void)didReceiveCammentDeletedMessage:(CammentDeletedMessage *)message;
+- (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message;
 @end

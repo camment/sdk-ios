@@ -1,0 +1,15 @@
+%type name="CMUser"
+%type name="CMCamment"
+
+CMPost {
+  NSInteger postId
+  NSString* uuid
+  NSString* desc
+  NSString* createdAt
+  NSString* thumbnail
+  NSArray<CMCamment* > *camments
+  CMUser* user
+  BOOL liked
+  NSInteger totalLikes
+  NSInteger totalCamments
+}

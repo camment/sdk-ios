@@ -77,6 +77,7 @@
 
 - (void)signOut {
     [_credentialsProvider clearCredentials];
+    [_credentialsProvider clearKeychain];
 }
 
 - (BOOL)isSignedIn {

@@ -7,6 +7,7 @@
 #import "CMStore.h"
 #import "CMShow.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
+#import "GVUserDefaults.h"
 
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
@@ -23,6 +24,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             _instance.cammentRecordingState = CMCammentRecordingStateNotRecording;
             _instance.isConnected = NO;
             _instance.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
+            _instance.reloadActiveGroupSubject = [RACSubject new];
 
             [RACObserve(_instance, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
                 [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;

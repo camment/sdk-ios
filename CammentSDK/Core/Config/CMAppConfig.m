@@ -7,6 +7,7 @@
 
 NSString* const CMS3TransferManagerName = @"defaultTransferManager";
 NSString* const CMIotManagerName = @"defaultIotManager";
+NSString* const CMAPIClientName = @"defaultApiClient";
 
 @implementation CMAppConfig
 

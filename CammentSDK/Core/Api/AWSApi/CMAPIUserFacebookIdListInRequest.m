@@ -14,9 +14,9 @@
  */
  
 
-#import "CMAPIUserInAddToGroupRequest.h"
+#import "CMAPIUserFacebookIdListInRequest.h"
 
-@implementation CMAPIUserInAddToGroupRequest
+@implementation CMAPIUserFacebookIdListInRequest
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{

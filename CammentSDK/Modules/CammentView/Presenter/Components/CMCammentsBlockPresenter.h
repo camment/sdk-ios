@@ -28,4 +28,5 @@
 - (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion;
 
 - (void)deleteItem:(CMCammentsBlockItem *)blockItem;
+- (void)reloadItems:(NSArray<CMCammentsBlockItem *> *)newItems animated:(BOOL)animated;
 @end

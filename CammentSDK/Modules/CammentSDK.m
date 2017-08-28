@@ -29,6 +29,8 @@
 #import "CMUserBuilder.h"
 #import "CMInvitationBuilder.h"
 #import "CMConnectionReachability.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "AWSTask.h"
 
 #import <FBTweak.h>
 #import <FBTweakStore.h>
@@ -214,8 +216,8 @@
                         success:(void (^ _Nullable)())successBlock
                           error:(void (^ _Nullable)(NSError *error))errorBlock {
 
-    [self.authService signOut];
     if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
+        [self.authService signOut];
         [self.authService configureWithProvider:[CMCognitoFacebookAuthProvider new]];
         CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
         [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
@@ -237,6 +239,7 @@
                         error:(void (^ _Nullable)(NSError *error))errorBlock {
     [[self.authService signIn]
             subscribeNext:^(NSString *cognitoUserId) {
+                NSLog(@"%@", cognitoUserId);
                 [[CMStore instance] setCognitoUserId:cognitoUserId];
                 [[CMStore instance] setFacebookUserId:[FBSDKAccessToken currentAccessToken].userID];
                 CMUser *currentUser = [[[[CMUserBuilder new]
@@ -318,7 +321,7 @@
     CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
     userinfoInRequest.userinfojson = jsonString;
 
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
         if (!t.error) {
             DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
@@ -339,7 +342,7 @@
                                              selector:@selector(updateUserInfo)
                                                  name:FBSDKProfileDidChangeNotification
                                                object:nil];
-    [[CMAPIDevcammentClient defaultClient] setAPIKey:[CMStore instance].apiKey];
+    [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
 }
 
 - (void)configureIoTListener:(NSString *)userId {
@@ -372,8 +375,8 @@
                                                                              message:CMLocalized(@"Would you like to join the conversation?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:invitation.userGroupUuid] build];
-        [[CMStore instance] setActiveGroup:usersGroup];
+        [self handleUserJoinedToGroup:invitation.userGroupUuid];
+
         if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
             CMShowMetadata *metadata = [CMShowMetadata new];
             metadata.uuid = invitation.showUuid;
@@ -410,11 +413,20 @@
 }
 
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
+    if (invitation.invitationKey == nil) { return [AWSTask taskWithError:[NSError errorWithDomain:@"tv.camment.ios" code:0 userInfo:nil]]; }
+
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     CMAPIAcceptInvitationRequest *invitationRequest = [CMAPIAcceptInvitationRequest new];
     invitationRequest.invitationKey = invitation.invitationKey;
     return [client usergroupsGroupUuidInvitationsPut:invitation.userGroupUuid
                                                 body:invitationRequest];
+}
+
+- (void)handleUserJoinedToGroup:(NSString *)groupId {
+    DDLogInfo(@"Join group id %@", groupId);
+    CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
+    [[CMStore instance] setActiveGroup:usersGroup];
+    [[[CMStore instance] reloadActiveGroupSubject] sendNext:@YES];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -432,7 +444,23 @@
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
-    DDLogInfo(@"openURL hook has been installed");
+    NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
+
+    if ([urlComponents.scheme isEqualToString:@"camment"]
+            && [urlComponents.host isEqualToString:@"group"])
+    {
+        NSString *groupUuid = [urlComponents.path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
+        if (groupUuid.length > 0) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentChatInvitation:[[[[CMInvitationBuilder alloc] init]
+                        withUserGroupUuid:groupUuid]
+                        build]];
+            });
+
+            return YES;
+        }
+    }
+
     return [[FBSDKApplicationDelegate sharedInstance] application:application
                                                           openURL:url
                                                 sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]

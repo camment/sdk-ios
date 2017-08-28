@@ -72,9 +72,16 @@
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
         self.currentOnboardingStep = CMOnboardingAlertNone;
         @weakify(self);
-        [RACObserve([CMStore instance], activeGroup) subscribeNext:^(CMUsersGroup *group) {
+        [[RACObserve([CMStore instance], activeGroup) deliverOnMainThread] subscribeNext:^(CMUsersGroup *group) {
             @strongify(self);
             self.usersGroup = group;
+        }];
+
+        [[[[CMStore instance] reloadActiveGroupSubject] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+            @strongify(self);
+            if (shouldReload.boolValue) {
+                [self updateChatWithActiveGroup];
+            }
         }];
 
         [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
@@ -181,8 +188,7 @@
 }
 
 - (void)updateChatWithActiveGroup {
-    _cammentsBlockNodePresenter.items = @[];
-    [self reloadCamments];
+    [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
     [self.loaderInteractor fetchCachedCamments:self.usersGroup.uuid];
     [self setupPresentationInstruction];
 }
@@ -215,15 +221,12 @@
 #endif
 }
 
-- (void)reloadCamments {
-    [_cammentsBlockNodePresenter.collectionNode reloadData];
-}
 
 - (void)didFetchCamments:(NSArray<CMCamment *> *)camments {
-    _cammentsBlockNodePresenter.items = [camments.rac_sequence map:^id(CMCamment *value) {
+    NSArray<CMCamment *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
         return [CMCammentsBlockItem cammentWithCamment:value];
     }].array;
-    [self reloadCamments];
+    [self.cammentsBlockNodePresenter reloadItems:items animated:YES];
 }
 
 - (void)playCamment:(NSString *)cammentId {

@@ -17,6 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <AWSAPIGateway/AWSAPIGateway.h>
 
+#import "CMAPIDeeplink.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
@@ -24,10 +25,10 @@
 #import "CMAPICammentInRequest.h"
 #import "CMAPICamment.h"
 #import "CMAPIUsergroup.h"
+#import "CMAPIUserFacebookIdListInRequest.h"
 #import "CMAPIAcceptInvitationRequest.h"
-#import "CMAPIInvitationInRequest.h"
 #import "CMAPIUserinfoList.h"
-#import "CMAPIUserInAddToGroupRequest.h"
+#import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
 
 
@@ -182,11 +183,20 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param deeplinkHash 
+ 
+ return type: CMAPIDeeplink *
+ */
+- (AWSTask *)deferredDeeplinkDeeplinkHashGet:( NSString *)deeplinkHash;
+
+/**
+ 
+ 
  @param fbAccessToken 
  
  return type: CMAPIFacebookFriendList *
  */
-- (AWSTask *)meFbFriendsGet:( NSString *)fbAccessToken;
+- (AWSTask *)meFbFriendsGet:(nullable NSString *)fbAccessToken;
 
 /**
  
@@ -267,9 +277,9 @@ NS_ASSUME_NONNULL_BEGIN
  @param groupUuid 
  @param body 
  
- return type: 
+ return type: CMAPIDeeplink *
  */
-- (AWSTask *)usergroupsGroupUuidInvitationsPut:( NSString *)groupUuid body:( CMAPIAcceptInvitationRequest *)body;
+- (AWSTask *)usergroupsGroupUuidDeeplinkPost:( NSString *)groupUuid body:( CMAPIUserFacebookIdListInRequest *)body;
 
 /**
  
@@ -279,7 +289,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidInvitationsPost:( NSString *)groupUuid body:( CMAPIInvitationInRequest *)body;
+- (AWSTask *)usergroupsGroupUuidInvitationsPut:( NSString *)groupUuid body:( CMAPIAcceptInvitationRequest *)body;
 
 /**
  
@@ -298,13 +308,13 @@ NS_ASSUME_NONNULL_BEGIN
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid body:( CMAPIUserInAddToGroupRequest *)body;
+- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid body:( CMAPIUserFacebookIdListInRequest *)body;
 
 /**
  
  
  
- return type: 
+ return type: CMAPIUserinfo *
  */
 - (AWSTask *)userinfoGet;
 

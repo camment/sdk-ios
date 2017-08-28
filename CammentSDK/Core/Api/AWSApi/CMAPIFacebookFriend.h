@@ -26,7 +26,7 @@
 @property (nonatomic, strong, nullable) NSString *name;
 
 
-@property (nonatomic, strong, nullable) NSNumber *_id;
+@property (nonatomic, strong, nullable) NSString *_id;
 
 
 @end

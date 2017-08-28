@@ -100,27 +100,31 @@
 - (void)appendUsersList:(NSArray<CMUser *> *)users {
     self.items = [_items arrayByAddingObjectsFromArray:users];
 
-    TLIndexPathSectionInfo *onlineSection = [[TLIndexPathSectionInfo alloc]
-            initWithItems:[self filteredUsersForSection:CMInvitationListSectionOnline]
-                     name:CMLocalized(@"user_status.online")];
+    // I'll keep it for future when we will split all the users
+    // for sections by online status
+//    TLIndexPathSectionInfo *onlineSection = [[TLIndexPathSectionInfo alloc]
+//            initWithItems:[self filteredUsersForSection:CMInvitationListSectionOnline]
+//                     name:CMLocalized(@"user_status.online")];
+//
+//    TLIndexPathSectionInfo *busySection = [[TLIndexPathSectionInfo alloc]
+//            initWithItems:[self filteredUsersForSection:CMInvitationListSectionBusy]
+//                     name:CMLocalized(@"user_status.busy")];
+//
+//    TLIndexPathSectionInfo *offlineSection = [[TLIndexPathSectionInfo alloc]
+//            initWithItems:[self filteredUsersForSection:CMInvitationListSectionOffline]
+//                     name:CMLocalized(@"user_status.offline")];
+//
+//    NSMutableArray<TLIndexPathSectionInfo *> *sections = [[NSMutableArray alloc] init];
+//
+//    if (onlineSection.numberOfObjects > 0) [sections addObject:onlineSection];
+//    if (busySection.numberOfObjects > 0) [sections addObject:busySection];
+//    if (offlineSection.numberOfObjects > 0) [sections addObject:offlineSection];
+//
+//    TLIndexPathDataModel *dataModel = [[TLIndexPathDataModel alloc]
+//            initWithSectionInfos:sections
+//               identifierKeyPath:nil];
 
-    TLIndexPathSectionInfo *busySection = [[TLIndexPathSectionInfo alloc]
-            initWithItems:[self filteredUsersForSection:CMInvitationListSectionBusy]
-                     name:CMLocalized(@"user_status.busy")];
-
-    TLIndexPathSectionInfo *offlineSection = [[TLIndexPathSectionInfo alloc]
-            initWithItems:[self filteredUsersForSection:CMInvitationListSectionOffline]
-                     name:CMLocalized(@"user_status.offline")];
-
-    NSMutableArray<TLIndexPathSectionInfo *> *sections = [[NSMutableArray alloc] init];
-
-    if (onlineSection.numberOfObjects > 0) [sections addObject:onlineSection];
-    if (busySection.numberOfObjects > 0) [sections addObject:busySection];
-    if (offlineSection.numberOfObjects > 0) [sections addObject:offlineSection];
-
-    TLIndexPathDataModel *dataModel = [[TLIndexPathDataModel alloc]
-            initWithSectionInfos:sections
-               identifierKeyPath:nil];
+    TLIndexPathDataModel *dataModel = [[TLIndexPathDataModel alloc] initWithItems:_items];
     [self updateDataModel:dataModel];
 }
 

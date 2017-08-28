@@ -8,11 +8,12 @@
 
 #import "CMShowsListInteractor.h"
 #import "CMAPIDevcammentClient.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
 
 @implementation CMShowsListInteractor
 
 - (void)fetchShowList {
-    [[[CMAPIDevcammentClient defaultClient] showsGet] continueWithBlock:^id(AWSTask<id> *task) {
+    [[[CMAPIDevcammentClient defaultAPIClient] showsGet] continueWithBlock:^id(AWSTask<id> *task) {
         if (task.error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output showListFetchingFailed:task.error];

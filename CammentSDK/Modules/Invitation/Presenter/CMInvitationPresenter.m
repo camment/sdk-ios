@@ -49,19 +49,40 @@
     if (currentUser) {
         users = [users arrayByAddingObject:currentUser];
     }
-    [self.interactor addUsers:users 
-                        group:[CMStore instance].activeGroup 
-                     showUuid:[CMStore instance].currentShowMetadata.uuid];
+    [self.interactor addUsers:users group:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid usingDeeplink:YES];
 }
 
-- (void)didInviteUsersToTheGroup:(CMUsersGroup *)group {
+- (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink {
     [self.output hideLoadingHUD];
-    [self.wireframe.view.navigationController dismissViewControllerAnimated:YES completion:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self showSuccessInvitationMessage];
-        });
-    }];
+
+    if (usedDeeplink) {
+        [self.wireframe.view.navigationController dismissViewControllerAnimated:YES completion:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showShareDeeplinkDialog:group.invitationLink];
+            });
+        }];
+    } else {
+        [self.wireframe.view.navigationController dismissViewControllerAnimated:YES completion:^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showSuccessInvitationMessage];
+            });
+        }];
+    }
+
     [[CMStore instance] setActiveGroup:group];
+}
+
+- (void)showShareDeeplinkDialog:(NSString *)link {
+    NSString *textToShare = @"Hey, join our private chat!";
+    NSURL *url = [NSURL URLWithString:link];
+
+    NSArray *objectsToShare = @[textToShare, url];
+
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+
+    [self.wireframe.parentViewController presentViewController:activityVC
+                                                      animated:YES
+                                                    completion:nil];
 }
 
 - (void)didFailToInviteUsersWithError:(NSError *)error {

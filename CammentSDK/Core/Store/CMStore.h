@@ -4,6 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ReactiveObjC.h>
 #import "CMUser.h"
 #import "CMUsersGroup.h"
 
@@ -44,6 +45,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property(nonatomic, copy) NSString *apiKey;
 
 @property(nonatomic, copy) NSString *email;
+
+@property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 
 + (CMStore *)instance;
 

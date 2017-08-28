@@ -15,6 +15,7 @@
 #import "CMServerListenerCredentials.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMServerMessage.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
 
 @interface CMCammentsLoaderInteractor ()
 @property(nonatomic, strong) RACDisposable *disposable;
@@ -43,7 +44,7 @@
 
 - (void)fetchCachedCamments:(NSString *)groupUUID {
     if (!groupUUID) {return;}
-    [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsGet:groupUUID] continueWithBlock:^id(AWSTask<CMAPICammentList *> *t) {
+    [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID] continueWithBlock:^id(AWSTask<CMAPICammentList *> *t) {
 
         if ([t.result isKindOfClass:[CMAPICammentList class]]) {
             NSArray *camments = [(CMAPICammentList *) t.result items];

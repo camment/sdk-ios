@@ -14,19 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIDeeplink.h"
 
- 
-/**
- Request model for adding users to user groups.
- */
-@interface CMAPIUserInAddToGroupRequest : AWSModel
+@implementation CMAPIDeeplink
 
-@property (nonatomic, strong, nullable) NSString *showUuid;
-
-
-@property (nonatomic, strong, nullable) NSArray *userFacebookIdList;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"url": @"url"
+             };
+}
 
 @end

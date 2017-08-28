@@ -39,7 +39,14 @@
             AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:_camment.localAsset];
             CMTime time = CMTimeMake(1, 1);
             CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
+            if (imageRef == nil) { return; }
+
             CIImage * ciimage = [[CIImage alloc] initWithCGImage:imageRef];
+            if (ciimage == nil) {
+                CGImageRelease(imageRef);
+                return;
+            }
+
             CIFilter * filter = [CIFilter filterWithName:@"CIColorControls"
                                      withInputParameters:
                                              @{
@@ -50,7 +57,9 @@
             CIImage * grayscale  = [filter outputImage];
             UIImage *thumbnail = [UIImage imageWithCIImage:grayscale];
             CGImageRelease(imageRef);
-            [_videoPlayerNode setImage:thumbnail];
+            if (thumbnail) {
+                [_videoPlayerNode setImage:thumbnail];
+            }
         }
         return;
     }

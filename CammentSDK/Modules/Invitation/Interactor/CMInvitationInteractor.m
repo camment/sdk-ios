@@ -13,6 +13,8 @@
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
 #import "CMUser.h"
+#import "CMUsersGroupBuilder.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
 
 @interface CMInvitationInteractor ()
 @property(nonatomic, strong) CMAPIDevcammentClient *client;
@@ -23,7 +25,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.client = [CMAPIDevcammentClient defaultClient];
+        self.client = [CMAPIDevcammentClient defaultAPIClient];
     }
     return self;
 }
@@ -33,8 +35,9 @@
         if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
             CMAPIUsergroup *group = t.result;
             CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
-                                               ownerCognitoUserId:group.userCognitoIdentityId
-                                                        timestamp:group.timestamp];
+                                                   ownerCognitoUserId:group.userCognitoIdentityId
+                                                            timestamp:group.timestamp
+                                                       invitationLink:nil];
             DDLogVerbose(@"Created new group %@", result);
             return [AWSTask taskWithResult:result];
         } else {
@@ -44,10 +47,9 @@
     }];
 }
 
-- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
-    CMAPIUserInAddToGroupRequest *usersParameter = [[CMAPIUserInAddToGroupRequest alloc] init];
-    usersParameter.showUuid = showUuid;
-    usersParameter.userFacebookIdList = [users.rac_sequence map:^id(CMUser *value) {
+- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid usingDeeplink:(BOOL)shouldUseDeeplink {
+
+    NSArray *usersFbIds = [users.rac_sequence map:^id(CMUser *value) {
         return value.fbUserId;
     }].array ?: @[];
 
@@ -59,9 +61,32 @@
     [[groupTask continueWithBlock:^id(AWSTask<id> *t) {
         if ([t.result isKindOfClass:[CMUsersGroup class]]) {
             CMUsersGroup *usersGroup = t.result;
-            return [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid body:usersParameter] continueWithBlock:^id(AWSTask<id> *t) {
-                return [AWSTask taskWithResult:usersGroup];
-            }];
+
+            CMAPIUserFacebookIdListInRequest *userFacebookIdListInRequest = [CMAPIUserFacebookIdListInRequest new];
+            userFacebookIdListInRequest.showUuid = showUuid;
+            userFacebookIdListInRequest.userFacebookIdList = usersFbIds;
+
+            AWSTask *invitationTask;
+
+            if (shouldUseDeeplink) {
+
+                invitationTask = [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid
+                                                                          body:userFacebookIdListInRequest]
+                        continueWithBlock:^id(AWSTask<CMAPIDeeplink *> *deepLinkResult) {
+                            CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
+                            CMUsersGroup *updatedUsersGroup = usersGroup;
+                            if ([deepLinkResult.result isKindOfClass:[CMAPIDeeplink class]]) {
+                                updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.result.url] build];
+                            }
+                            return [AWSTask taskWithResult:updatedUsersGroup];
+                        }];
+            } else {
+                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid body:userFacebookIdListInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+                    return [AWSTask taskWithResult:usersGroup];
+                }];
+            }
+
+            return invitationTask;
         } else {
             DDLogError(@"%@", t.error);
             return [AWSTask taskWithError:t.error];
@@ -71,7 +96,7 @@
             DDLogVerbose(@"Invited users %@", users);
             CMUsersGroup *usersGroup = t.result;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didInviteUsersToTheGroup:usersGroup];
+                [self.output didInviteUsersToTheGroup:usersGroup usingDeeplink:shouldUseDeeplink];
             });
         } else {
             DDLogError(@"%@", t.error);

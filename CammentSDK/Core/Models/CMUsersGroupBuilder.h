@@ -16,5 +16,7 @@
 
 - (instancetype)withTimestamp:(NSString *)timestamp;
 
+- (instancetype)withInvitationLink:(NSString *)invitationLink;
+
 @end
 

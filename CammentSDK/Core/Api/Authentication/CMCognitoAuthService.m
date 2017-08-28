@@ -9,6 +9,9 @@
 #import "CMAppConfig.h"
 #import "AWSS3TransferManager.h"
 #import "AWSIoTDataManager.h"
+#import "CMAPIDevcammentClient.h"
+#import "CMStore.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
 
 @interface CMCognitoAuthService ()
 
@@ -28,6 +31,8 @@
         AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
         [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
         [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
+        [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
+        [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
     }
 
     return self;
@@ -40,8 +45,12 @@
                                 identityProviderManager:provider];
     
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1 credentialsProvider:_credentialsProvider];
+
     AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
     [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
+    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
+    [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
+    [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
 }
 
 - (RACSignal *)signIn {

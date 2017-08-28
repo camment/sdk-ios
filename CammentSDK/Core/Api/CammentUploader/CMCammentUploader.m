@@ -51,9 +51,7 @@
         NSString *fileKey = [NSString stringWithFormat:@"uploads/%@.mp4", uuid];
         uploadRequest.key = fileKey;
         uploadRequest.body = url;
-        uploadRequest.metadata = @{
-                @"ContentType": @"video/mp4"
-        };
+        uploadRequest.contentType = @"video/mp4";
         uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
         uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
         uploadRequest.storageClass = AWSS3StorageClassStandardIa;

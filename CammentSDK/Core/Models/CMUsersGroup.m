@@ -11,12 +11,13 @@
 
 @implementation CMUsersGroup
 
-- (instancetype)initWithUuid:(NSString *)uuid ownerCognitoUserId:(NSString *)ownerCognitoUserId timestamp:(NSString *)timestamp
+- (instancetype)initWithUuid:(NSString *)uuid ownerCognitoUserId:(NSString *)ownerCognitoUserId timestamp:(NSString *)timestamp invitationLink:(NSString *)invitationLink
 {
   if ((self = [super init])) {
     _uuid = [uuid copy];
     _ownerCognitoUserId = [ownerCognitoUserId copy];
     _timestamp = [timestamp copy];
+    _invitationLink = [invitationLink copy];
   }
 
   return self;
@@ -29,14 +30,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t uuid: %@; \n\t ownerCognitoUserId: %@; \n\t timestamp: %@; \n", [super description], _uuid, _ownerCognitoUserId, _timestamp];
+  return [NSString stringWithFormat:@"%@ - \n\t uuid: %@; \n\t ownerCognitoUserId: %@; \n\t timestamp: %@; \n\t invitationLink: %@; \n", [super description], _uuid, _ownerCognitoUserId, _timestamp, _invitationLink];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_uuid hash], [_ownerCognitoUserId hash], [_timestamp hash]};
+  NSUInteger subhashes[] = {[_uuid hash], [_ownerCognitoUserId hash], [_timestamp hash], [_invitationLink hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 3; ++ii) {
+  for (int ii = 1; ii < 4; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -59,7 +60,8 @@
   return
     (_uuid == object->_uuid ? YES : [_uuid isEqual:object->_uuid]) &&
     (_ownerCognitoUserId == object->_ownerCognitoUserId ? YES : [_ownerCognitoUserId isEqual:object->_ownerCognitoUserId]) &&
-    (_timestamp == object->_timestamp ? YES : [_timestamp isEqual:object->_timestamp]);
+    (_timestamp == object->_timestamp ? YES : [_timestamp isEqual:object->_timestamp]) &&
+    (_invitationLink == object->_invitationLink ? YES : [_invitationLink isEqual:object->_invitationLink]);
 }
 
 @end

@@ -7,6 +7,7 @@
 
 extern NSString* const CMS3TransferManagerName;
 extern NSString* const CMIotManagerName;
+extern NSString* const CMAPIClientName;
 
 @interface CMAppConfig : NSObject
 

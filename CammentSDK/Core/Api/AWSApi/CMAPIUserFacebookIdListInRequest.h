@@ -19,17 +19,14 @@
 
  
 /**
- Invitation object model in POST requests.
+ Request model for sending facebook id lists (usually can contain show uuid also).
  */
-@interface CMAPIInvitationInRequest : AWSModel
+@interface CMAPIUserFacebookIdListInRequest : AWSModel
 
 @property (nonatomic, strong, nullable) NSString *showUuid;
 
 
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSArray *users;
+@property (nonatomic, strong, nullable) NSArray *userFacebookIdList;
 
 
 @end

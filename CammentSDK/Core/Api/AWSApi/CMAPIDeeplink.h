@@ -14,16 +14,16 @@
  */
  
 
-#import "CMAPIInvitationInRequest.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMAPIInvitationInRequest
+ 
+/**
+ Deeplink object model.
+ */
+@interface CMAPIDeeplink : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"showUuid": @"showUuid",
-             @"uuid": @"uuid",
-             @"users": @"users"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *url;
+
 
 @end

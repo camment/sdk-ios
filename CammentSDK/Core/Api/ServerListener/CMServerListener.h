@@ -17,15 +17,12 @@
 @property (nonatomic, readonly) CMServerListenerCredentials *credentials;
 @property (nonatomic, readonly) RACSubject<CMServerMessage *> *messageSubject;
 
+- (void)renewCredentials:(CMServerListenerCredentials *)credentials;
+
 - (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials;
 
 - (void)connect;
 
 + (CMServerListener *)instance;
-
-+ (CMServerListener *)instanceWithCredentials:(CMServerListenerCredentials *)credentials;
-
-- (void)refreshCredentials:(CMServerListenerCredentials *)credentials;
-
 
 @end

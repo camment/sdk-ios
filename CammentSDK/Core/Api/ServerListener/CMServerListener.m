@@ -25,38 +25,26 @@ static CMServerListener *_instance = nil;
 @implementation CMServerListener
 
 + (CMServerListener *)instance {
-    if (_instance) {
-        return _instance;
-    }
-    
-    return [self instanceWithCredentials:[CMServerListenerCredentials defaultCredentials]];
-}
-
-+ (CMServerListener *)instanceWithCredentials:(CMServerListenerCredentials *)credentials {
-
-    @synchronized (self) {
-        if (_instance == nil) {
-            _instance = [[self alloc] initWithCredentials:credentials];
-        } else {
-            [_instance refreshCredentials:credentials];
-        }
-    }
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instance = [[self alloc] initWithCredentials:[CMServerListenerCredentials defaultCredentials]];
+    });
 
     return _instance;
 }
 
-- (void)refreshCredentials:(CMServerListenerCredentials *)credentials {
-    DDLogVerbose(@"Refreshing iot credentials with id %@", credentials.clientId);
-    _credentials = credentials;
+- (void)renewCredentials:(CMServerListenerCredentials *)credentials {
     [_dataManager disconnect];
+    _credentials = credentials;
+    _dataManager = [AWSIoTDataManager IoTDataManagerForKey:CMIotManagerName];
     _isConnected = NO;
+    [self connect];
 }
 
 - (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials {
     self = [super init];
     if (self) {
         _credentials = credentials;
-        _dataManager = [AWSIoTDataManager IoTDataManagerForKey:CMIotManagerName];
         _messageSubject = [RACSubject new];
         _isConnected = NO;
     }
@@ -74,16 +62,20 @@ static CMServerListener *_instance = nil;
     NSData *certData = [NSData dataWithContentsOfFile:identityPath];
     if (!certData) {return NO;}
 
+    [AWSIoTManager deleteCertificate];
     return [AWSIoTManager importIdentityFromPKCS12Data:certData
                                             passPhrase:_credentials.passPhrase
                                          certificateId:_credentials.certificateId];
 }
 
 - (void)connect {
-    if (_isConnected) {return;}
+    if (_isConnected) { return; }
     [CMStore instance].isConnected = NO;
 
-    [self importIdentity];
+    if (![self importIdentity]) {
+        DDLogError(@"Couldn't import iot certificate");
+    }
+
     BOOL initialized = [_dataManager connectWithClientId:_credentials.clientId
                                             cleanSession:YES
                                            certificateId:_credentials.certificateId

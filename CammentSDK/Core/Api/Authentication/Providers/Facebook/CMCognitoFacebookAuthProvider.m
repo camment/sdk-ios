@@ -11,14 +11,16 @@
 
 - (AWSTask<NSDictionary<NSString *, NSString *> *> *)logins {
     FBSDKAccessToken* fbToken = [FBSDKAccessToken currentAccessToken];
-    if(fbToken){
+    NSDictionary *logins;
+
+    if(fbToken) {
         NSString *token = fbToken.tokenString;
-        return [AWSTask taskWithResult: @{ AWSIdentityProviderFacebook : token }];
-    }else{
-        return [AWSTask taskWithError:[NSError errorWithDomain:@"Facebook Login"
-                                                          code:-1
-                                                      userInfo:@{@"error":@"No current Facebook access token"}]];
+        logins = token ? @{ AWSIdentityProviderFacebook : token } : @{};
+    } else {
+        logins = @{};
     }
+
+    return [AWSTask taskWithResult: logins];
 }
 
 @end

@@ -197,13 +197,10 @@
 }
 
 - (void)tryRestoreLastSession {
-    CMCammentIdentity *identity = [CMCammentAnonymousIdentity new];
 
     FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
     [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-    if ([CMStore instance].isFBConnected) {
-        identity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:token];
-    }
+    CMCammentIdentity *identity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:token];
 
     [self connectUserWithIdentity:identity
                           success:^{
@@ -217,15 +214,12 @@
                           error:(void (^ _Nullable)(NSError *error))errorBlock {
 
     if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
-        [self.authService signOut];
         [self.authService configureWithProvider:[CMCognitoFacebookAuthProvider new]];
         CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
         [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
         [self signInUserWithSuccess:successBlock error:errorBlock];
-    } else if ([identity isKindOfClass:[CMCammentAnonymousIdentity class]]) {
-        [self signInUserWithSuccess:successBlock error:errorBlock];
     } else {
-        DDLogError(@"Trying to connect unknown idenity %@", [identity class]);
+        DDLogError(@"Trying to connect unknown identity %@", [identity class]);
         if (errorBlock) {
             errorBlock([NSError
                     errorWithDomain:@"tv.camment.ios"
@@ -334,6 +328,8 @@
 }
 
 - (void)configure {
+    [[AWSDDLog sharedInstance] setLogLevel:AWSDDLogLevelAll];
+    [AWSDDLog addLogger:AWSDDTTYLogger.sharedInstance];
     [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
     [[CMAnalytics instance] configureAWSMobileAnalytics];
     self.authService = [[CMCognitoAuthService alloc] init];
@@ -346,14 +342,11 @@
 }
 
 - (void)configureIoTListener:(NSString *)userId {
-    CMServerListenerCredentials *credentials =
-            [[CMServerListenerCredentials alloc] initWithClientId:userId
-                                                          keyFile:@"awsiot-identity"
-                                                       passPhrase:@"8uT$BwY+x=DF,M"
-                                                    certificateId:nil];
 
-    CMServerListener *listener = [CMServerListener instanceWithCredentials:credentials];
-    [listener connect];
+    CMServerListenerCredentials *credentials = [CMServerListenerCredentials defaultCredentials];
+
+    CMServerListener *listener = [CMServerListener instance];
+    [listener renewCredentials:credentials];
     [listener.messageSubject subscribeNext:^(CMServerMessage *message) {
         [message matchInvitation:^(CMInvitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]

@@ -9,8 +9,6 @@
 
 @interface CMCognitoAuthService: NSObject
 
-- (instancetype)init;
-
 - (void)configureWithProvider:(id <AWSIdentityProviderManager>)provider;
 
 - (RACSignal *)signIn;

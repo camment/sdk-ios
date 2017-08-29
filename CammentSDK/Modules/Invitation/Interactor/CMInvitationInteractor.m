@@ -81,9 +81,11 @@
                             return [AWSTask taskWithResult:updatedUsersGroup];
                         }];
             } else {
-                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid body:userFacebookIdListInRequest] continueWithBlock:^id(AWSTask<id> *t) {
-                    return [AWSTask taskWithResult:usersGroup];
-                }];
+                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid
+                                                                       body:userFacebookIdListInRequest]
+                        continueWithBlock:^id(AWSTask<id> *t) {
+                            return [AWSTask taskWithResult:usersGroup];
+                        }];
             }
 
             return invitationTask;

@@ -6,6 +6,5 @@
 #import <Foundation/Foundation.h>
 #import "CMShowCellNode.h"
 
-
 @interface CMVideoShowCellNode : CMShowCellNode
 @end

@@ -14,6 +14,8 @@
 #import "CMShow.h"
 #import "CMStore.h"
 #import "CammentSDK.h"
+#import "GVUserDefaults.h"
+#import "GVUserDefaults+CammentSDKConfig.h"
 #import <FBTweak.h>
 #import <FBTweakCategory.h>
 #import <FBTweakCollection.h>
@@ -49,23 +51,31 @@
 - (void)networkDidBecomeAvailable {
     if ([CMStore instance].isSignedIn) {
         [self.output setLoadingIndicator];
-        [self.interactor fetchShowList];
+        [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     }
 }
 
 - (void)setupView {
+    [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
     [[RACObserve([CMStore instance], isSignedIn) deliverOnMainThread] subscribeNext:^(NSNumber *isSignedIn) {
         if (isSignedIn.boolValue) {
-            [self.interactor fetchShowList];
+            [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
     }];
 }
 
+- (void)updateShows:(NSString *)passcode {
+    [[GVUserDefaults standardUserDefaults] setBroadcasterPasscode:passcode];
+    [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
+    [self.output setLoadingIndicator];
+    [self.interactor fetchShowList:passcode];
+}
+
 - (void)showListDidFetched:(CMAPIShowList *)list {
     NSArray *shows = [list.items.rac_sequence map:^CMShow *(CMAPIShow *value) {
-        return [[CMShow alloc] initWithUuid:value.uuid url:value.url showType:[CMShowType videoWithShow:value]];
+        return [[CMShow alloc] initWithUuid:value.uuid url:value.url thumbnail:value.thumbnail showType:[CMShowType videoWithShow:value]];
     }].array ?: @[];
 
     FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
@@ -76,8 +86,9 @@
 
     self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
             [[CMShow alloc] initWithUuid:[(CMAPIShow *) list.items.firstObject uuid]
-                                   url:webShowTweak.currentValue
-                              showType:[CMShowType htmlWithWebURL:webShowTweak.currentValue]]
+                                     url:webShowTweak.currentValue
+                               thumbnail:nil
+                                showType:[CMShowType htmlWithWebURL:webShowTweak.currentValue]]
     ]];
     [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
@@ -97,8 +108,9 @@
 
         self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
                 [[CMShow alloc] initWithUuid:[(CMAPIShow *) shows.firstObject uuid]
-                                       url:tweak.currentValue
-                                  showType:[CMShowType htmlWithWebURL:tweak.currentValue]]
+                                         url:tweak.currentValue
+                                   thumbnail:nil
+                                    showType:[CMShowType htmlWithWebURL:tweak.currentValue]]
         ]];
         [self.showsListCollectionPresenter.collectionNode reloadData];
     }

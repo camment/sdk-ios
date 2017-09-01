@@ -19,17 +19,11 @@
 
  
 /**
- Show object model.
+ Passcode for validation.
  */
-@interface CMAPIShow : AWSModel
+@interface CMAPIPasscodeInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *thumbnail;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *url;
+@property (nonatomic, strong, nullable) NSString *passcode;
 
 
 @end

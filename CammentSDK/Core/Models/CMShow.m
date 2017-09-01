@@ -11,11 +11,12 @@
 
 @implementation CMShow
 
-- (instancetype)initWithUuid:(NSString *)uuid url:(NSString *)url showType:(CMShowType *)showType
+- (instancetype)initWithUuid:(NSString *)uuid url:(NSString *)url thumbnail:(NSString *)thumbnail showType:(CMShowType *)showType
 {
   if ((self = [super init])) {
     _uuid = [uuid copy];
     _url = [url copy];
+    _thumbnail = [thumbnail copy];
     _showType = [showType copy];
   }
 
@@ -29,14 +30,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t uuid: %@; \n\t url: %@; \n\t showType: %@; \n", [super description], _uuid, _url, _showType];
+  return [NSString stringWithFormat:@"%@ - \n\t uuid: %@; \n\t url: %@; \n\t thumbnail: %@; \n\t showType: %@; \n", [super description], _uuid, _url, _thumbnail, _showType];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_uuid hash], [_url hash], [_showType hash]};
+  NSUInteger subhashes[] = {[_uuid hash], [_url hash], [_thumbnail hash], [_showType hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 3; ++ii) {
+  for (int ii = 1; ii < 4; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -59,6 +60,7 @@
   return
     (_uuid == object->_uuid ? YES : [_uuid isEqual:object->_uuid]) &&
     (_url == object->_url ? YES : [_url isEqual:object->_url]) &&
+    (_thumbnail == object->_thumbnail ? YES : [_thumbnail isEqual:object->_thumbnail]) &&
     (_showType == object->_showType ? YES : [_showType isEqual:object->_showType]);
 }
 

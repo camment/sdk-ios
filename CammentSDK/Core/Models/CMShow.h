@@ -10,9 +10,10 @@
 
 @property (nonatomic, readonly, copy) NSString *uuid;
 @property (nonatomic, readonly, copy) NSString *url;
+@property (nonatomic, readonly, copy) NSString *thumbnail;
 @property (nonatomic, readonly, copy) CMShowType *showType;
 
-- (instancetype)initWithUuid:(NSString *)uuid url:(NSString *)url showType:(CMShowType *)showType;
+- (instancetype)initWithUuid:(NSString *)uuid url:(NSString *)url thumbnail:(NSString *)thumbnail showType:(CMShowType *)showType;
 
 @end
 

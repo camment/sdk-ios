@@ -20,7 +20,9 @@
 #import <AWSCore/AWSSignature.h>
 #import <AWSCore/AWSSynchronizedMutableDictionary.h>
 
+#import "CMAPIError.h"
 #import "CMAPIDeeplink.h"
+#import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
@@ -182,6 +184,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIDeeplink class]];
 }
 
+- (AWSTask *)demoValidatePasscodePost:(CMAPIPasscodeInRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/demo/validate-passcode"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:nil];
+}
+
 - (AWSTask *)meFbFriendsGet:(NSString *)fbAccessToken {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -204,14 +228,14 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIFacebookFriendList class]];
 }
 
-- (AWSTask *)showsGet {
+- (AWSTask *)showsGet:(NSString *)passcode {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      
+                                      @"passcode": passcode
                                       };
     NSDictionary *pathParameters = @{
                                      

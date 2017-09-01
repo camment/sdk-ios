@@ -25,5 +25,4 @@
 
 @property (nonatomic, strong, nullable) NSString *invitationKey;
 
-
 @end

@@ -18,18 +18,9 @@
 #import <AWSCore/AWSCore.h>
 
  
-/**
- Show object model.
- */
-@interface CMAPIShow : AWSModel
+@interface CMAPIError : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *thumbnail;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *url;
+@property (nonatomic, strong, nullable) NSString *message;
 
 
 @end

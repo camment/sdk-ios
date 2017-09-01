@@ -14,22 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIError.h"
 
- 
-/**
- Show object model.
- */
-@interface CMAPIShow : AWSModel
+@implementation CMAPIError
 
-@property (nonatomic, strong, nullable) NSString *thumbnail;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *url;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"message": @"message"
+             };
+}
 
 @end

@@ -10,6 +10,6 @@
 
 @protocol CMShowsListInteractorInput <NSObject>
 
-- (void)fetchShowList;
+- (void)fetchShowList:(NSString *)passcode;
 
 @end

@@ -9,10 +9,12 @@
 @implementation GVUserDefaults (CammentSDKConfig)
 
 @dynamic isOnboardingFinished;
+@dynamic broadcasterPasscode;
 
 - (NSDictionary *)setupDefaults {
     return @{
-            @"isOnboardingFinished": @NO
+            @"isOnboardingFinished": @NO,
+            @"broadcasterPasscode": @""
     };
 }
 

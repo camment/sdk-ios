@@ -31,16 +31,21 @@
 #import "CMConnectionReachability.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "AWSTask.h"
+#import "CMAuthInteractor.h"
+#import "MBProgressHUD.h"
 
 #import <FBTweak.h>
 #import <FBTweakStore.h>
 #import <FBTweakCollection.h>
 #import <FBTweakCategory.h>
 
-@interface CammentSDK ()
+@interface CammentSDK ()<CMAuthInteractorOutput>
 
 @property(nonatomic, strong) CMCognitoAuthService *authService;
 @property(nonatomic) BOOL connectionAvailable;
+@property(nonatomic) id<CMAuthInteractorInput> authInteractor;
+
+@property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
 
 @property(nonatomic, strong) CMConnectionReachability *connectionReachibility;
 @end
@@ -74,6 +79,10 @@
 #ifdef INTERNALSDK
         [self setupTweaks];
 #endif
+        self.authInteractor = [CMAuthInteractor new];
+        [(CMAuthInteractor *)self.authInteractor setOutput:self];
+        self.onSignedInOperationsQueue = [[NSOperationQueue alloc] init];
+        self.onSignedInOperationsQueue.maxConcurrentOperationCount = 1;
 
         self.connectionAvailable = YES;
         self.connectionReachibility = [CMConnectionReachability reachabilityForInternetConnection];
@@ -368,14 +377,34 @@
                                                                              message:CMLocalized(@"Would you like to join the conversation?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [self handleUserJoinedToGroup:invitation.userGroupUuid];
-
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
-            CMShowMetadata *metadata = [CMShowMetadata new];
-            metadata.uuid = invitation.showUuid;
-            [self.sdkDelegate didAcceptInvitationToShow:metadata];
-        }
         [[self acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (!t.error) {
+                    [self handleUserJoinedToGroup:invitation.userGroupUuid];
+
+                    if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
+                        CMShowMetadata *metadata = [CMShowMetadata new];
+                        metadata.uuid = invitation.showUuid;
+                        [self.sdkDelegate didAcceptInvitationToShow:metadata];
+                    }
+
+                    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[rootViewController topVisibleViewController].view animated:YES];
+                    hud.removeFromSuperViewOnHide = YES;
+                    hud.mode = MBProgressHUDModeText;
+                    hud.label.text = CMLocalized(@"You have joined the private chat!");
+                    [hud hideAnimated:YES afterDelay:2];
+
+                } else {
+                    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+                    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:[rootViewController topVisibleViewController].view animated:YES];
+                    hud.removeFromSuperViewOnHide = YES;
+                    hud.mode = MBProgressHUDModeText;
+                    hud.label.text = CMLocalized(@"You are not allowed to join this group");
+                    [hud hideAnimated:YES afterDelay:2];
+                }
+            });
             return nil;
         }];
     }]];
@@ -405,8 +434,45 @@
     });
 }
 
+- (void)presentLoginSuggestion:(NSString *)reason {
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"Login with your Facebook account?")
+                                                                             message:reason
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.authInteractor signInWithFacebookProvider:rootViewController.topVisibleViewController];
+        });
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+        [self.onSignedInOperationsQueue cancelAllOperations];
+    }]];
+
+    UIViewController *presentedViewController = [rootViewController topVisibleViewController];
+
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if ([presentedViewController isKindOfClass:[CMInvitationViewController class]] && presentedViewController.beingPresented) {
+            [presentedViewController dismissViewControllerAnimated:YES
+                                                        completion:^{
+                                                            [presentedViewController presentViewController:alertController
+                                                                                                  animated:YES
+                                                                                                completion:nil];
+                                                        }];
+        } else {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [presentedViewController presentViewController:alertController
+                                                      animated:YES
+                                                    completion:nil];
+            });
+        }
+    });
+}
+
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
-    if (invitation.invitationKey == nil) { return [AWSTask taskWithError:[NSError errorWithDomain:@"tv.camment.ios" code:0 userInfo:nil]]; }
+    if (invitation.invitationKey == nil) {return [AWSTask taskWithError:[NSError errorWithDomain:@"tv.camment.ios" code:0 userInfo:nil]];}
 
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     CMAPIAcceptInvitationRequest *invitationRequest = [CMAPIAcceptInvitationRequest new];
@@ -440,14 +506,14 @@
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
 
     if ([urlComponents.scheme isEqualToString:@"camment"]
-            && [urlComponents.host isEqualToString:@"group"])
-    {
+            && [urlComponents.host isEqualToString:@"group"]) {
         NSString *groupUuid = [urlComponents.path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
         if (groupUuid.length > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self presentChatInvitation:[[[[CMInvitationBuilder alloc] init]
+                CMInvitation *invitation = [[[[CMInvitationBuilder alloc] init]
                         withUserGroupUuid:groupUuid]
-                        build]];
+                        build];
+                [self verifyInvitation:invitation];
             });
 
             return YES;
@@ -459,6 +525,38 @@
                                                 sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
                                                        annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
     ];
+}
+
+- (void)verifyInvitation:(CMInvitation *)invitation {
+    if ([CMStore instance].isFBConnected) {
+        NSString *invitationKey = [NSString stringWithFormat:@"%@#%@", invitation.userGroupUuid, [CMStore instance].facebookUserId];
+        CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder invitationFromExistingInvitation:invitation] withInvitationKey:invitationKey] build];
+        [self presentChatInvitation:invitationWithUpdatedKey];
+    } else {
+        [self.onSignedInOperationsQueue setSuspended:YES];
+        @weakify(self);
+        [self.onSignedInOperationsQueue addOperationWithBlock:^{
+            @strongify(self);
+            [self verifyInvitation:invitation];
+        }];
+        [self presentLoginSuggestion:@"You will join the group right after this"];
+    }
+}
+
+- (void)authInteractorDidSignedIn {
+    CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
+    [[CammentSDK instance] connectUserWithIdentity:fbIdentity
+                                           success:^{
+                                               dispatch_async(dispatch_get_main_queue(), ^{
+                                                   [self.onSignedInOperationsQueue setSuspended:NO];
+                                               });
+                                           }
+                                             error:^(NSError *error) {
+                                             }];
+}
+
+- (void)authInteractorFailedToSignIn:(NSError *)error {
+
 }
 
 @end

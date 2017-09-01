@@ -13,4 +13,5 @@
 
 - (void)setupView;
 
+- (void)updateShows:(NSString *)passcode;
 @end

@@ -14,22 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIPasscodeInRequest.h"
 
- 
-/**
- Show object model.
- */
-@interface CMAPIShow : AWSModel
+@implementation CMAPIPasscodeInRequest
 
-@property (nonatomic, strong, nullable) NSString *thumbnail;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *url;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"passcode": @"passcode"
+             };
+}
 
 @end

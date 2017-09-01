@@ -17,4 +17,6 @@
 - (void)setLoadingIndicator;
 
 - (void)hideLoadingIndicator;
+
+- (void)setCurrentBroadcasterPasscode:(NSString *)passcode;
 @end

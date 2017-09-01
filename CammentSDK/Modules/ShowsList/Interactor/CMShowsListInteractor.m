@@ -12,8 +12,8 @@
 
 @implementation CMShowsListInteractor
 
-- (void)fetchShowList {
-    [[[CMAPIDevcammentClient defaultAPIClient] showsGet] continueWithBlock:^id(AWSTask<id> *task) {
+- (void)fetchShowList:(NSString *)passcode {
+    [[[CMAPIDevcammentClient defaultAPIClient] showsGet:passcode ?: @""] continueWithBlock:^id(AWSTask<id> *task) {
         if (task.error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output showListFetchingFailed:task.error];

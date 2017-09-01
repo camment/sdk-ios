@@ -3,5 +3,6 @@
 CMShow {
     NSString *uuid
     NSString *url
+    NSString *thumbnail
     CMShowType *showType
 }

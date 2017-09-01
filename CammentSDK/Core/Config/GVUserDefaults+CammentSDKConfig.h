@@ -9,5 +9,6 @@
 @interface GVUserDefaults (CammentSDKConfig)
 
 @property (nonatomic) BOOL isOnboardingFinished;
+@property (nonatomic) NSString *broadcasterPasscode;
 
 @end

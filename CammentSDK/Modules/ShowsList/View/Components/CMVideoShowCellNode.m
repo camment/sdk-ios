@@ -3,12 +3,13 @@
 // Copyright (c) 2017 Camment. All rights reserved.
 //
 
+#import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMVideoShowCellNode.h"
 #import "CMShow.h"
 
 
 @interface CMVideoShowCellNode ()
-@property(nonatomic, strong) ASVideoNode *videoThumbnailNode;
+@property(nonatomic, strong) ASNetworkImageNode *videoThumbnailNode;
 @end
 
 @implementation CMVideoShowCellNode
@@ -28,9 +29,9 @@
 
     NSURL *url = [[NSURL alloc] initWithString:self.show.url];
     if (url) {
-        _videoThumbnailNode.gravity = AVLayerVideoGravityResizeAspectFill;
+        _videoThumbnailNode.contentMode = UIViewContentModeScaleAspectFill;
         _videoThumbnailNode.backgroundColor = [UIColor grayColor];
-        _videoThumbnailNode.asset = [AVAsset assetWithURL:url];
+        [_videoThumbnailNode setURL:[[NSURL alloc] initWithString:self.show.thumbnail] resetToDefault:YES];
     }
 }
 

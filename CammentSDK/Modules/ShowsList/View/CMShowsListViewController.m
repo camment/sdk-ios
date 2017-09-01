@@ -14,6 +14,9 @@
 #import <FBTweakStore.h>
 
 @interface CMShowsListViewController () <ASCollectionDelegate, FBTweakViewControllerDelegate>
+
+@property (nonatomic, strong) NSString *broadcasterPasscode;
+
 @end
 
 @implementation CMShowsListViewController
@@ -28,10 +31,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
+    UIBarButtonItem *tweaksButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                             target:self
                                                                             action:@selector(showTweaks)];
-    self.navigationItem.rightBarButtonItem = button;
+    self.navigationItem.leftBarButtonItem = tweaksButton;
+    
+    UIBarButtonItem *passCodeButton = [[UIBarButtonItem alloc] initWithTitle:@"Passcode"
+                                                                       style:UIBarButtonItemStylePlain
+                                                                            target:self
+                                                                            action:@selector(showPasscodeAlert)];
+    self.navigationItem.rightBarButtonItem = passCodeButton;
     
     [[RACObserve([CMStore instance], isConnected) deliverOnMainThread] subscribeNext:^(NSNumber *isConnected) {
         self.title = isConnected.boolValue ? @"Shows" : @"...Connecting";
@@ -41,6 +50,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+}
+
+- (void)setCurrentBroadcasterPasscode:(NSString *)passcode {
+    self.broadcasterPasscode = passcode;
 }
 
 - (void)setLoadingIndicator {
@@ -76,5 +89,24 @@
 - (void)tweakViewControllerPressedDone:(FBTweakViewController *)tweakViewController {
     [tweakViewController dismissViewControllerAnimated:YES completion:NULL];
 }
+
+- (void)showPasscodeAlert {
+    UIAlertController *alertViewController = [UIAlertController alertControllerWithTitle:@"Enter passcode" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+    [alertViewController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.text = self.broadcasterPasscode;
+    }];
+    
+    UIAlertAction *okAction = [UIAlertAction actionWithTitle:@"OK"
+                                                       style:UIAlertActionStyleDefault
+                                                     handler:^(UIAlertAction *action) {
+                                                         UITextField *textField = [alertViewController.textFields firstObject];
+                                                         NSString *passcode = textField.text;
+                                                         self.broadcasterPasscode = passcode;
+                                                         [[self presenter] updateShows:passcode];
+                                                     }];
+    [alertViewController addAction:okAction];
+    [self presentViewController:alertViewController animated:YES completion:nil];
+}
+
 
 @end

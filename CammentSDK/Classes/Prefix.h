@@ -23,7 +23,7 @@
 
 #ifdef POD_CONFIGURATION_BETA
     #define INTERNALSDK
-#end
+#endif
 
 #ifdef INTERNALSDK
     #define USE_INTERNAL_FEATURES

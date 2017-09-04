@@ -1376,7 +1376,7 @@
 		6FFAB97E499C2FB563CBF76F /* CMCammentBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentBuilder.m; sourceTree = "<group>"; };
 		6FFAB97E8EEE8830E5BF6801 /* CMCamment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCamment.m; sourceTree = "<group>"; };
 		6FFAB9A4AC60752EAA237D1E /* GVUserDefaults+CammentSDKConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "GVUserDefaults+CammentSDKConfig.m"; sourceTree = "<group>"; };
-		6FFAB9AB370A1CD346DE1247 /* CammentSDK.podspec */ = {isa = PBXFileReference; lastKnownFileType = file.podspec; path = CammentSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		6FFAB9AB370A1CD346DE1247 /* CammentSDK.podspec */ = {isa = PBXFileReference; fileEncoding = 1; lastKnownFileType = file.podspec; path = CammentSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6FFAB9C270C2469AD8BC2A15 /* CMCammentRecorderInteractor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMCammentRecorderInteractor.m; sourceTree = "<group>"; };
 		6FFAB9C4A335998ED663B1A5 /* CMAdsCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAdsCell.m; sourceTree = "<group>"; };
 		6FFAB9CBD3DFCB679EBB9ECB /* CMInvitationBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CMInvitationBuilder.h; sourceTree = "<group>"; };

@@ -1,0 +1,16 @@
+PODS:
+  - CammentSDK (0.1.0)
+
+DEPENDENCIES:
+  - CammentSDK (from `../`)
+
+EXTERNAL SOURCES:
+  CammentSDK:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  CammentSDK: dd60bd99e155a318c7f91f07c8aca65be6dc5f38
+
+PODFILE CHECKSUM: 8fbe11b61a2856000e6bc88a9d4e6b292181e088
+
+COCOAPODS: 1.1.1

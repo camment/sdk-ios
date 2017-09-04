@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'CammentSDK_Example' do
+  pod 'CammentSDK', :path => '../'
+
+  target 'CammentSDK_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

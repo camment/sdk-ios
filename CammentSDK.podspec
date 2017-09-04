@@ -1,52 +1,65 @@
 #
-#  Be sure to run `pod spec lint CammentSDK.podspec' to ensure this is a
-#  valid spec and to remove all comments including this before submitting the spec.
+# Be sure to run `pod lib lint CammentSDKLib.podspec' to ensure this is a
+# valid spec before submitting.
 #
-#  To learn more about Podspec attributes see http://docs.cocoapods.org/specification.html
-#  To see working Podspecs in the CocoaPods repo see https://github.com/CocoaPods/Specs/
+# Any lines starting with a # are optional, but their use is encouraged
+# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 
 Pod::Spec.new do |s|
+s.name             = 'CammentSDK'
+s.version          = '0.1.1'
+s.summary          = 'A short description of CammentSDK'
+s.platform = :ios
 
-  s.name         = "CammentSDK"
-  s.version      = "0.0.1"
-  s.summary      = "The SDK for camment.tv"
+# This description is used to generate tags and improve search results.
+#   * Think: What does it do? Why did you write it? What is the focus?
+#   * Try to keep it short, snappy and to the point.
+#   * Write the description between the DESC delimiters below.
+#   * Finally, don't worry about the indent, CocoaPods strips it!
 
-  s.description  = <<-DESC
-  		            The SDK for camment.tv
-                   DESC
+s.description      = <<-DESC
+TODO: Add long description of the pod here.
+DESC
 
-  s.homepage     = "https://camment.tv"
-  s.license      = 'Apache License, Version 2.0'
-  s.author       = { "Alexander Fedosov" => "alex@sportacam.com" }
-  s.platform     = :ios, '8.1'
-  s.source       = { :git => "https://github.com/camment/CammentSDK.git", :tag => "v0.0.1" }
-  s.source_files  = 'CammentSDK/**/*.{h,m}', 'SCRecorder-2.7.0/Library/Sources/**/*.{h,m}'
-  s.resources     = 'CammentSDK/Assets/*'
-  s.requires_arc = true
-  s.frameworks = 'AVFoundation', 'UIKit', 'ImageIO', 'VideoToolbox'
-  s.dependency  'PINRemoteImage', '= 3.0.0-beta.9'
-  s.dependency  'AMPopTip', '1.5'
-  s.dependency  'PINCache'
-  s.dependency  'FLAnimatedImage'
-  s.dependency  'Texture'
-  s.dependency  'AWSCognito'
-  s.dependency  'AWSCognitoIdentityProvider'
-  s.dependency  'AWSIoT'
-  s.dependency  'AWSMobileAnalytics'
-  s.dependency  'AWSS3'
-  s.dependency  'AWSAPIGateway'
-  s.dependency  'FBSDKCoreKit'
-  s.dependency  'FBSDKLoginKit'
-  s.dependency  'FBSDKMessengerShareKit'
-  s.dependency  'ReactiveObjC'
-  s.dependency  'pop'
-  s.dependency  'MBProgressHUD'
-  s.dependency  'Tweaks'
-  s.dependency  'Fabric'
-  s.dependency  'Crashlytics'
-  s.dependency  'DateTools'
-  s.dependency  'CocoaLumberjack'
-  s.dependency  'GVUserDefaults'
-  s.dependency  'TLIndexPathTools'
+s.homepage         = 'https://github.com/alexfedosov/CammentSDK'
+# s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
+s.license          = { :type => 'MIT', :file => 'LICENSE' }
+s.author           = { 'alexfedosov' => 'alexander.a.fedosov@gmail.com' }
+s.source           = { :git => 'https://github.com/alexfedosov/CammentSDK.git', :tag => s.version.to_s }
+# s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+
+s.ios.deployment_target = '8.1'
+
+s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
+
+s.source_files = 'CammentSDK/Classes/**/*'
+
+s.resource_bundles = {
+'CammentSDK' => ['CammentSDK/Assets/**/*']
+}
+
+s.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
+
+s.frameworks = 'AVFoundation', 'UIKit', 'ImageIO', 'VideoToolbox'
+s.dependency  'AMPopTip', '1.5'
+s.dependency  'Texture'
+s.dependency  'FLAnimatedImage'
+s.dependency  'AWSCognito'
+s.dependency  'AWSCognitoIdentityProvider'
+s.dependency  'AWSIoT'
+s.dependency  'AWSMobileAnalytics'
+s.dependency  'AWSS3'
+s.dependency  'AWSAPIGateway'
+s.dependency  'FBSDKCoreKit'
+s.dependency  'FBSDKLoginKit'
+s.dependency  'FBSDKMessengerShareKit'
+s.dependency  'ReactiveObjC'
+s.dependency  'pop'
+s.dependency  'MBProgressHUD'
+s.dependency  'Tweaks'
+s.dependency  'DateTools'
+s.dependency  'CocoaLumberjack'
+s.dependency  'GVUserDefaults'
+s.dependency  'TLIndexPathTools'
 end

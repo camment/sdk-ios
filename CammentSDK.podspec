@@ -33,7 +33,7 @@ s.ios.deployment_target = '8.1'
 
 s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
 
-s.source_files = 'CammentSDK/Classes/**/*'
+s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
 
 s.resource_bundles = {
 'CammentSDK' => ['CammentSDK/Assets/**/*']

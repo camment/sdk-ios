@@ -13,7 +13,8 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   _CMServerMessageSubtypesinvitation,
   _CMServerMessageSubtypescamment,
   _CMServerMessageSubtypesuserJoined,
-  _CMServerMessageSubtypescammentDeleted
+  _CMServerMessageSubtypescammentDeleted,
+  _CMServerMessageSubtypesmembershipRequest
 };
 
 @implementation CMServerMessage
@@ -23,6 +24,7 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   CMCamment *_camment_camment;
   CMUserJoinedMessage *_userJoined_userJoinedMessage;
   CMCammentDeletedMessage *_cammentDeleted_cammentDeletedMessage;
+  CMMembershipRequestMessage *_membershipRequest_membershipRequestMessage;
 }
 
 + (instancetype)cammentDeletedWithCammentDeletedMessage:(CMCammentDeletedMessage *)cammentDeletedMessage
@@ -46,6 +48,14 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   CMServerMessage *object = [[CMServerMessage alloc] init];
   object->_subtype = _CMServerMessageSubtypesinvitation;
   object->_invitation_invitation = invitation;
+  return object;
+}
+
++ (instancetype)membershipRequestWithMembershipRequestMessage:(CMMembershipRequestMessage *)membershipRequestMessage
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesmembershipRequest;
+  object->_membershipRequest_membershipRequestMessage = membershipRequestMessage;
   return object;
 }
 
@@ -81,14 +91,18 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
       return [NSString stringWithFormat:@"%@ - cammentDeleted \n\t cammentDeletedMessage: %@; \n", [super description], _cammentDeleted_cammentDeletedMessage];
       break;
     }
+    case _CMServerMessageSubtypesmembershipRequest: {
+      return [NSString stringWithFormat:@"%@ - membershipRequest \n\t membershipRequestMessage: %@; \n", [super description], _membershipRequest_membershipRequestMessage];
+      break;
+    }
   }
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {_subtype, [_invitation_invitation hash], [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash]};
+  NSUInteger subhashes[] = {_subtype, [_invitation_invitation hash], [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash], [_membershipRequest_membershipRequestMessage hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 5; ++ii) {
+  for (int ii = 1; ii < 6; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -113,10 +127,11 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
     (_invitation_invitation == object->_invitation_invitation ? YES : [_invitation_invitation isEqual:object->_invitation_invitation]) &&
     (_camment_camment == object->_camment_camment ? YES : [_camment_camment isEqual:object->_camment_camment]) &&
     (_userJoined_userJoinedMessage == object->_userJoined_userJoinedMessage ? YES : [_userJoined_userJoinedMessage isEqual:object->_userJoined_userJoinedMessage]) &&
-    (_cammentDeleted_cammentDeletedMessage == object->_cammentDeleted_cammentDeletedMessage ? YES : [_cammentDeleted_cammentDeletedMessage isEqual:object->_cammentDeleted_cammentDeletedMessage]);
+    (_cammentDeleted_cammentDeletedMessage == object->_cammentDeleted_cammentDeletedMessage ? YES : [_cammentDeleted_cammentDeletedMessage isEqual:object->_cammentDeleted_cammentDeletedMessage]) &&
+    (_membershipRequest_membershipRequestMessage == object->_membershipRequest_membershipRequestMessage ? YES : [_membershipRequest_membershipRequestMessage isEqual:object->_membershipRequest_membershipRequestMessage]);
 }
 
-- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler camment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler
+- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler camment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler
 {
   switch (_subtype) {
     case _CMServerMessageSubtypesinvitation: {
@@ -133,6 +148,10 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
     }
     case _CMServerMessageSubtypescammentDeleted: {
       cammentDeletedMatchHandler(_cammentDeleted_cammentDeletedMessage);
+      break;
+    }
+    case _CMServerMessageSubtypesmembershipRequest: {
+      membershipRequestMatchHandler(_membershipRequest_membershipRequestMessage);
       break;
     }
   }

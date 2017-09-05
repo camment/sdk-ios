@@ -3,22 +3,16 @@
 // Copyright (c) 2017 Camment. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import <ReactiveObjC/ReactiveObjC.h>
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "CammentSDK.h"
 #import "CMStore.h"
 #import "CMAnalytics.h"
 #import "CMCognitoAuthService.h"
 #import "CMCognitoFacebookAuthProvider.h"
-#import "CMAPICamment.h"
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
-#import "CMCammentFacebookIdentity.h"
-#import "CMCammentAnonymousIdentity.h"
 #import "CMPresentationBuilder.h"
-#import "CMWoltPresentationBuilder.h"
 #import "CMPresentationUtility.h"
 #import "CMServerMessage.h"
 #import "CMUsersGroupBuilder.h"
@@ -30,20 +24,24 @@
 #import "CMInvitationBuilder.h"
 #import "CMConnectionReachability.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
-#import "AWSTask.h"
 #import "CMAuthInteractor.h"
 #import "MBProgressHUD.h"
 
 #import "FBTweak.h"
 #import "FBTweakStore.h"
 #import "FBTweakCollection.h"
-#import "FBTweakCategory.h"
+#import "CMInvitationInteractorInput.h"
+#import "CMGroupManagementInteractorInput.h"
+#import "CMGroupManagementInteractor.h"
+#import "CMServerMessage+TypeMatching.h"
 
-@interface CammentSDK ()<CMAuthInteractorOutput>
+@interface CammentSDK ()<CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
 
 @property(nonatomic, strong) CMCognitoAuthService *authService;
 @property(nonatomic) BOOL connectionAvailable;
+
 @property(nonatomic) id<CMAuthInteractorInput> authInteractor;
+@property(nonatomic) id<CMGroupManagementInteractorInput> groupManagmentInteractor;
 
 @property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
 
@@ -81,6 +79,10 @@
 #endif
         self.authInteractor = [CMAuthInteractor new];
         [(CMAuthInteractor *)self.authInteractor setOutput:self];
+
+        self.groupManagmentInteractor = [CMGroupManagementInteractor new];
+        [(CMGroupManagementInteractor *)self.groupManagmentInteractor setOutput:self];
+
         self.onSignedInOperationsQueue = [[NSOperationQueue alloc] init];
         self.onSignedInOperationsQueue.maxConcurrentOperationCount = 1;
 
@@ -357,17 +359,25 @@
     CMServerListener *listener = [CMServerListener instance];
     [listener renewCredentials:credentials];
     [listener.messageSubject subscribeNext:^(CMServerMessage *message) {
+
         [message matchInvitation:^(CMInvitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
                     && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]
                     && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]) {
                 [self presentChatInvitation:invitation];
             }
-        }                camment:^(CMCamment *camment) {
-        }             userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
-        }         cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
         }];
+
+        [message matchMembershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
+            [self presentMembershipRequestAlert:membershipRequestMessage.group
+                                    joiningUser:membershipRequestMessage.joiningUser];
+        }];
+
     }];
+}
+
+- (void)presentMembershipRequestAlert:(CMUsersGroup *)group joiningUser:(CMUser *)user {
+
 }
 
 - (void)presentChatInvitation:(CMInvitation *)invitation {
@@ -558,5 +568,9 @@
 - (void)authInteractorFailedToSignIn:(NSError *)error {
 
 }
+
+#pragma mark Handle group management
+
+
 
 @end

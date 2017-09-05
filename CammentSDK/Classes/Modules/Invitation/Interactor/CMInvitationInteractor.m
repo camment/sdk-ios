@@ -83,7 +83,7 @@
             } else {
                 invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid
                                                                        body:userFacebookIdListInRequest]
-                        continueWithBlock:^id(AWSTask<id> *t) {
+                        continueWithBlock:^id(AWSTask<id> *task) {
                             return [AWSTask taskWithResult:usersGroup];
                         }];
             }
@@ -107,6 +107,23 @@
             });
         }
 
+        return nil;
+    }];
+}
+
+- (void)getDeeplink:(CMUsersGroup *)group {
+
+    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
+
+    [groupTask continueWithBlock:^id(AWSTask<id> *t) {
+        if ([t.result isKindOfClass:[CMUsersGroup class]]) {
+            CMUsersGroup *usersGroup = t.result;
+
+            //get deeplink from backend here
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didInviteUsersToTheGroup:usersGroup usingDeeplink:true];
+            });
+        }
         return nil;
     }];
 }

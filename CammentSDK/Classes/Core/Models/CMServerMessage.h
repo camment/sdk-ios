@@ -8,11 +8,13 @@
 #import "CMInvitation.h"
 #import "CMUserJoinedMessage.h"
 #import "CMCammentDeletedMessage.h"
+#import "CMMembershipRequestMessage.h"
 
 typedef void (^CMServerMessageInvitationMatchHandler)(CMInvitation *invitation);
 typedef void (^CMServerMessageCammentMatchHandler)(CMCamment *camment);
 typedef void (^CMServerMessageUserJoinedMatchHandler)(CMUserJoinedMessage *userJoinedMessage);
 typedef void (^CMServerMessageCammentDeletedMatchHandler)(CMCammentDeletedMessage *cammentDeletedMessage);
+typedef void (^CMServerMessageMembershipRequestMatchHandler)(CMMembershipRequestMessage *membershipRequestMessage);
 
 @interface CMServerMessage : NSObject <NSCopying>
 
@@ -22,9 +24,11 @@ typedef void (^CMServerMessageCammentDeletedMatchHandler)(CMCammentDeletedMessag
 
 + (instancetype)invitationWithInvitation:(CMInvitation *)invitation;
 
++ (instancetype)membershipRequestWithMembershipRequestMessage:(CMMembershipRequestMessage *)membershipRequestMessage;
+
 + (instancetype)userJoinedWithUserJoinedMessage:(CMUserJoinedMessage *)userJoinedMessage;
 
-- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler camment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler;
+- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler camment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler;
 
 @end
 

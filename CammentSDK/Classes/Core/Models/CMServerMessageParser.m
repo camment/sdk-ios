@@ -8,6 +8,8 @@
 #import "CMUserBuilder.h"
 #import "CMUserJoinedMessageBuilder.h"
 #import "CMCammentBuilder.h"
+#import "CMMembershipRequestMessageBuilder.h"
+#import "CMUsersGroupBuilder.h"
 
 
 @implementation CMServerMessageParser {
@@ -30,13 +32,13 @@
 
     if ([type isEqualToString:@"camment"]) {
         CMCamment *camment = [[CMCamment alloc] initWithShowUuid:body[@"showUuid"]
-                                               userGroupUuid:body[@"userGroupUuid"]
-                                                        uuid:body[@"uuid"]
-                                                   remoteURL:body[@"url"]
-                                                    localURL:nil
-                                                thumbnailURL:body[@"thumbnail"]
-                                       userCognitoIdentityId:body[@"userCognitoIdentityId"]
-                                                  localAsset:nil];
+                                                   userGroupUuid:body[@"userGroupUuid"]
+                                                            uuid:body[@"uuid"]
+                                                       remoteURL:body[@"url"]
+                                                        localURL:nil
+                                                    thumbnailURL:body[@"thumbnail"]
+                                           userCognitoIdentityId:body[@"userCognitoIdentityId"]
+                                                      localAsset:nil];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"invitation"]) {
@@ -49,11 +51,11 @@
                 build];
 
         CMInvitation *invitation = [[CMInvitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
-                                                           userCognitoUuid:body[@"userCognitoIdentityId"]
-                                                                  showUuid:body[@"showUuid"]
-                                                             invitationKey:body[@"key"]
-                                                     invitedUserFacebookId:body[@"userFacebookId"]
-                                                          invitationIssuer:user];
+                                                               userCognitoUuid:body[@"userCognitoIdentityId"]
+                                                                      showUuid:body[@"showUuid"]
+                                                                 invitationKey:body[@"key"]
+                                                         invitedUserFacebookId:body[@"userFacebookId"]
+                                                              invitationIssuer:user];
         serverMessage = [CMServerMessage invitationWithInvitation:invitation];
     } else if ([type isEqualToString:@"new-user-in-group"]) {
         NSDictionary *userJson = body[@"user"];
@@ -66,16 +68,28 @@
                 withJoinedUser:user] build];
 
         serverMessage = [CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage];
-    }else if ([type isEqualToString:@"camment-deleted"]) {
+    } else if ([type isEqualToString:@"camment-deleted"]) {
         CMCamment *camment = [[CMCamment alloc] initWithShowUuid:body[@"showUuid"]
-                                               userGroupUuid:body[@"userGroupUuid"]
-                                                        uuid:body[@"uuid"]
-                                                   remoteURL:body[@"url"]
-                                                    localURL:nil
-                                                thumbnailURL:body[@"thumbnail"]
-                                       userCognitoIdentityId:body[@"userCognitoIdentityId"]
-                                                  localAsset:nil];
+                                                   userGroupUuid:body[@"userGroupUuid"]
+                                                            uuid:body[@"uuid"]
+                                                       remoteURL:body[@"url"]
+                                                        localURL:nil
+                                                    thumbnailURL:body[@"thumbnail"]
+                                           userCognitoIdentityId:body[@"userCognitoIdentityId"]
+                                                      localAsset:nil];
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
+    } else if ([type isEqualToString:@"membership-request"]) {
+        NSDictionary *userJson = body[@"joiningUser"];
+        CMUser *user = [[[[[[CMUserBuilder new] withCognitoUserId:userJson[@"userCognitoIdentityId"]]
+                withFbUserId:userJson[@"facebookId"]]
+                withUsername:userJson[@"name"]]
+                withUserPhoto:userJson[@"picture"]] build];
+        CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:nil] build];
+        CMMembershipRequestMessage *membershipRequestMessage = [[[[CMMembershipRequestMessageBuilder new]
+                withGroup:group]
+                withJoiningUser:user]
+                build];
+        serverMessage = [CMServerMessage membershipRequestWithMembershipRequestMessage:membershipRequestMessage];
     }
 
     return serverMessage;

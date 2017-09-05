@@ -9,6 +9,7 @@
 @class CMServerListenerCredentials;
 @class RACSubject;
 @class CMServerMessage;
+@class CMUsersGroup;
 
 @interface CMServerListener : NSObject
 
@@ -22,6 +23,10 @@
 - (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials;
 
 - (void)connect;
+
+- (void)subscribeToGroup:(CMUsersGroup *)group;
+
+- (void)unsubscribeFromGroup:(CMUsersGroup *)group;
 
 + (CMServerListener *)instance;
 

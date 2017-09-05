@@ -38,10 +38,11 @@
 #import "RACSignal+SignalHelpers.h"
 #import "CMCammentCell.h"
 
-@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput>
+@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
 
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
 @property(nonatomic, strong) CMAuthInteractor *authInteractor;
+@property(nonatomic, strong) CMInvitationInteractor *invitationInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) CMShowMetadata *show;
 @property(nonatomic, strong) CMUsersGroup *usersGroup;
@@ -65,8 +66,13 @@
         self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
         self.cammentsBlockNodePresenter.output = self;
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
+
         self.authInteractor = [CMAuthInteractor new];
         self.authInteractor.output = self;
+
+        self.invitationInteractor = [CMInvitationInteractor new];
+        self.invitationInteractor.output = self;
+
         self.presentationPlayerInteractor.instructionOutput = self;
         self.usersGroup = [CMStore instance].activeGroup;
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
@@ -336,11 +342,16 @@
     FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
     [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
     if ([CMStore instance].isFBConnected) {
-        [[CMInvitationWireframe new] presentInViewController:self.wireframe.parentViewController];
+        [self getInvitationDeeplink];
     } else {
         [self.output showLoadingHUD];
         [_authInteractor signInWithFacebookProvider:(id) self.output];
     }
+}
+
+- (void)getInvitationDeeplink {
+    [self.output showLoadingHUD];
+    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup];
 }
 
 - (void)authInteractorDidSignedIn {
@@ -476,4 +487,26 @@
     [self.output presentViewController:viewController];
 }
 
+- (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink {
+    if (usedDeeplink) {
+        [self showShareDeeplinkDialog:group.invitationLink];
+    }
+}
+
+- (void)didFailToInviteUsersWithError:(NSError *)error {
+
+}
+
+- (void)showShareDeeplinkDialog:(NSString *)link {
+    NSString *textToShare = @"Hey, join our private chat!";
+    NSURL *url = [NSURL URLWithString:link];
+
+    NSArray *objectsToShare = @[textToShare, url];
+
+    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+
+    [self.wireframe.controller presentViewController:activityVC
+                                            animated:YES
+                                          completion:nil];
+}
 @end

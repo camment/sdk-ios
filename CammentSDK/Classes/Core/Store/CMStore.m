@@ -8,6 +8,8 @@
 #import "CMShow.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "GVUserDefaults.h"
+#import "CMServerListener.h"
+#import "AWSIoTDataManager.h"
 
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";

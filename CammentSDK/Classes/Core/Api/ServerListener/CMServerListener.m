@@ -19,6 +19,7 @@
 #import "CMUserJoinedMessage.h"
 #import "CMUserJoinedMessageBuilder.h"
 #import "CMServerMessageParser.h"
+#import "CMUsersGroup.h"
 
 static CMServerListener *_instance = nil;
 
@@ -119,6 +120,25 @@ static CMServerListener *_instance = nil;
                    messageCallback:^(NSData *data) {
                        [self processMessage:data];
                    }];
+    if (_credentials.clientId) {
+        [_dataManager subscribeToTopic:[NSString stringWithFormat:@"camment/user/%@", _credentials.clientId]
+                                   QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
+                       messageCallback:^(NSData *data) {
+                           [self processMessage:data];
+                       }];
+    }
+}
+
+- (void)subscribeToGroup:(CMUsersGroup *)group {
+    [_dataManager subscribeToTopic:[NSString stringWithFormat:@"camment/group/%@",group.uuid]
+                               QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
+                   messageCallback:^(NSData *data) {
+                       [self processMessage:data];
+                   }];
+}
+
+- (void)unsubscribeFromGroup:(CMUsersGroup *)group {
+    [_dataManager unsubscribeTopic:[NSString stringWithFormat:@"camment/group/%@",group.uuid]];
 }
 
 - (void)processMessage:(NSData *)messageData {

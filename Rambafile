@@ -2,8 +2,8 @@
 company: Camment
 
 ### Xcode project settings
-project_name: CammentSDK
-xcodeproj_path: CammentSDK.xcodeproj
+project_name: Pods
+xcodeproj_path: ../camment/Pods/Pods.xcodeproj
 prefix: CM
 
 ### Code generation settings section
@@ -11,17 +11,16 @@ prefix: CM
 project_target: CammentSDK
 
 # The file path for new modules
-project_file_path: CammentSDK/Modules
+project_file_path: CammentSDK/Classes/Modules
 
 # The Xcode group path to new modules
-project_group_path: CammentSDK/Modules
+project_group_path: Development Pods/CammentSDK/Modules
 
 ### Dependencies settings section
 
 cartfile_path: Cartfile
 
 ### Templates
-templates:
 templates:
 - {name: CMViperModule, local: 'RambaTemplates/CMViperModule'}
 #- {name: local_template_name, local: 'absolute/file/path'}

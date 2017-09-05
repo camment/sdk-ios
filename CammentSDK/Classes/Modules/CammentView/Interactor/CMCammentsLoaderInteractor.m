@@ -27,16 +27,19 @@
     self = [super init];
     if (self) {
         self.disposable = [[[[CMServerListener instance] messageSubject] deliverOnMainThread] subscribeNext:^(CMServerMessage *_Nullable message) {
-            [message
-                    matchInvitation:^(CMInvitation *invitation) {
+            [message matchInvitation:^(CMInvitation *invitation) {
                     }
-                            camment:^(CMCamment *camment) {
-                                [self.output didReceiveNewCamment:camment];
-                            } userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
-                        [self.output didReceiveUserJoinedMessage:userJoinedMessage];
-                    } cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
-                        [self.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
-                    }];
+                             camment:^(CMCamment *camment) {
+                                 [self.output didReceiveNewCamment:camment];
+                             }
+                          userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
+                              [self.output didReceiveUserJoinedMessage:userJoinedMessage];
+                          }
+                      cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
+                          [self.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
+                      }
+                   membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
+                   }];
         }];
     }
     return self;
@@ -50,13 +53,13 @@
             NSArray *camments = [(CMAPICammentList *) t.result items];
             NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
                 return [[CMCamment alloc] initWithShowUuid:value.showUuid
-                                           userGroupUuid:value.userGroupUuid
-                                                    uuid:value.uuid
-                                               remoteURL:value.url
-                                                localURL:nil
-                                            thumbnailURL:value.thumbnail
-                                   userCognitoIdentityId:value.userCognitoIdentityId
-                                              localAsset:nil];
+                                             userGroupUuid:value.userGroupUuid
+                                                      uuid:value.uuid
+                                                 remoteURL:value.url
+                                                  localURL:nil
+                                              thumbnailURL:value.thumbnail
+                                     userCognitoIdentityId:value.userCognitoIdentityId
+                                                localAsset:nil];
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_output didFetchCamments:result];
@@ -66,7 +69,7 @@
     }];
 }
 
--(void)dealloc {
+- (void)dealloc {
 
 }
 

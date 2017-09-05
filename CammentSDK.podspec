@@ -43,13 +43,19 @@ s.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/In
 
 s.frameworks = [
   'Foundation',
+  'SystemConfiguration',
+  'MobileCoreServices',
+  'QuartzCore',
+  'Accelerate',
+  'CoreData',
   'AVFoundation',
   'UIKit',
   'ImageIO',
   'VideoToolbox',
   'MessageUI',
   'AssetsLibrary',
-  'CoreImage'
+  'CoreImage',
+  'CoreGraphics'
 ]
 
 s.dependency  'AMPopTip', '1.5'

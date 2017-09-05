@@ -40,7 +40,7 @@ s.resource_bundles = {
 }
 
 s.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
-s.library = 'sqlite3'
+s.library = 'libsqlite3', 'libz'
 s.frameworks = [
   'Foundation',
   'SystemConfiguration',

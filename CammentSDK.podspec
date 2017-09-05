@@ -26,7 +26,7 @@ s.homepage         = 'https://github.com/alexfedosov/CammentSDK'
 # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'alexfedosov' => 'alexander.a.fedosov@gmail.com' }
-s.source           = { :git => 'https://github.com/alexfedosov/CammentSDK.git', :tag => s.version.to_s }
+s.source           = { :git => 'https://bitbucket.org/sportacam/sportacam-ios-sdk', :branch => 'develop' }
 # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
 s.ios.deployment_target = '8.1'
@@ -41,7 +41,17 @@ s.resource_bundles = {
 
 s.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
 
-s.frameworks = 'AVFoundation', 'UIKit', 'ImageIO', 'VideoToolbox'
+s.frameworks = [
+  'Foundation',
+  'AVFoundation',
+  'UIKit',
+  'ImageIO',
+  'VideoToolbox',
+  'MessageUI',
+  'AssetsLibrary',
+  'CoreImage'
+]
+
 s.dependency  'AMPopTip', '1.5'
 s.dependency  'Texture'
 s.dependency  'FLAnimatedImage'

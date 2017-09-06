@@ -19,11 +19,11 @@
 
  
 /**
- Invitation key is &lt;groupUuid&gt;#&lt;userFacebookId&gt;.
+ Request model when showUuid is sent.
  */
-@interface CMAPIAcceptInvitationRequest : AWSModel
+@interface CMAPIShowUuid : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *invitationKey;
+@property (nonatomic, strong, nullable) NSString *showUuid;
 
 
 @end

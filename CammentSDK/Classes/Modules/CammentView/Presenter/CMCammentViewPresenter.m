@@ -351,7 +351,7 @@
 
 - (void)getInvitationDeeplink {
     [self.output showLoadingHUD];
-    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup];
+    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:nil];
 }
 
 - (void)authInteractorDidSignedIn {
@@ -488,6 +488,7 @@
 }
 
 - (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink {
+    [self.output hideLoadingHUD];
     if (usedDeeplink) {
         [self showShareDeeplinkDialog:group.invitationLink];
     }
@@ -505,7 +506,7 @@
 
     UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
 
-    [self.wireframe.controller presentViewController:activityVC
+    [self.wireframe.parentViewController presentViewController:activityVC
                                             animated:YES
                                           completion:nil];
 }

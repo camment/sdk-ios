@@ -1,0 +1,5 @@
+%type name="CMUsersGroup"
+
+CMMembershipAcceptedMessage includes(RMBuilder) {
+  CMUsersGroup *group
+}

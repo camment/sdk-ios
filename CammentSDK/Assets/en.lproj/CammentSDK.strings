@@ -6,6 +6,7 @@
 "Would you like to join the conversation?" = "Would you like to join the conversation?";
 "Join" = "Join";
 "No" = "No";
+"Yes" = "Yes";
 "Login" = "Login";
 
 "help.tap_and_hold_to_record" = "Tap & hold to record a mini video (camment)";
@@ -32,3 +33,4 @@
 
 "Login with your Facebook account?" = "Login with your Facebook account?";
 "You are not allowed to join this group" = "You are not allowed to join this group";
+"User wants to join the group" = "%@ wants to join your group";

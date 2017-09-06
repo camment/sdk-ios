@@ -62,31 +62,31 @@
         if ([t.result isKindOfClass:[CMUsersGroup class]]) {
             CMUsersGroup *usersGroup = t.result;
 
-            CMAPIUserFacebookIdListInRequest *userFacebookIdListInRequest = [CMAPIUserFacebookIdListInRequest new];
-            userFacebookIdListInRequest.showUuid = showUuid;
-            userFacebookIdListInRequest.userFacebookIdList = usersFbIds;
+//            CMAPIUserFacebookIdListInRequest *userFacebookIdListInRequest = [CMAPIUserFacebookIdListInRequest new];
+//            userFacebookIdListInRequest.showUuid = showUuid;
+//            userFacebookIdListInRequest.userFacebookIdList = usersFbIds;
 
-            AWSTask *invitationTask;
+            AWSTask *invitationTask = nil;
 
-            if (shouldUseDeeplink) {
-
-                invitationTask = [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid
-                                                                          body:userFacebookIdListInRequest]
-                        continueWithBlock:^id(AWSTask<CMAPIDeeplink *> *deepLinkResult) {
-                            CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
-                            CMUsersGroup *updatedUsersGroup = usersGroup;
-                            if ([deepLinkResult.result isKindOfClass:[CMAPIDeeplink class]]) {
-                                updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.result.url] build];
-                            }
-                            return [AWSTask taskWithResult:updatedUsersGroup];
-                        }];
-            } else {
-                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid
-                                                                       body:userFacebookIdListInRequest]
-                        continueWithBlock:^id(AWSTask<id> *task) {
-                            return [AWSTask taskWithResult:usersGroup];
-                        }];
-            }
+//            if (shouldUseDeeplink) {
+//
+//                invitationTask = [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid
+//                                                                          body:userFacebookIdListInRequest]
+//                        continueWithBlock:^id(AWSTask<CMAPIDeeplink *> *deepLinkResult) {
+//                            CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
+//                            CMUsersGroup *updatedUsersGroup = usersGroup;
+//                            if ([deepLinkResult.result isKindOfClass:[CMAPIDeeplink class]]) {
+//                                updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.result.url] build];
+//                            }
+//                            return [AWSTask taskWithResult:updatedUsersGroup];
+//                        }];
+//            } else {
+//                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid
+//                                                                       body:userFacebookIdListInRequest]
+//                        continueWithBlock:^id(AWSTask<id> *task) {
+//                            return [AWSTask taskWithResult:usersGroup];
+//                        }];
+//            }
 
             return invitationTask;
         } else {
@@ -111,7 +111,7 @@
     }];
 }
 
-- (void)getDeeplink:(CMUsersGroup *)group {
+- (void)getDeeplink:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
 
     AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
 
@@ -119,10 +119,24 @@
         if ([t.result isKindOfClass:[CMUsersGroup class]]) {
             CMUsersGroup *usersGroup = t.result;
 
-            //get deeplink from backend here
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didInviteUsersToTheGroup:usersGroup usingDeeplink:true];
-            });
+            CMAPIShowUuid *cmapiShowUuid = [CMAPIShowUuid new];
+            cmapiShowUuid.showUuid = showUuid;
+            return [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid] continueWithBlock:^id(AWSTask<id> *t) {
+
+                if (![t.result isKindOfClass:[CMAPIDeeplink class]]) {
+                    return nil;
+                }
+
+                CMAPIDeeplink *deepLinkResult = t.result;
+
+                CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
+                CMUsersGroup *updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.url] build];
+
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.output didInviteUsersToTheGroup:updatedUsersGroup usingDeeplink:true];
+                });
+                return nil;
+            }];
         }
         return nil;
     }];

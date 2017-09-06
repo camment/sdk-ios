@@ -10,6 +10,7 @@
 #import "CMCammentBuilder.h"
 #import "CMMembershipRequestMessageBuilder.h"
 #import "CMUsersGroupBuilder.h"
+#import "CMMembershipAcceptedMessageBuilder.h"
 
 
 @implementation CMServerMessageParser {
@@ -44,7 +45,8 @@
     } else if ([type isEqualToString:@"invitation"]) {
 
         NSDictionary *userJson = body[@"invitingUser"];
-        CMUser *user = [[[[[CMUserBuilder new]
+        CMUser *user = [[[[[[CMUserBuilder new]
+                withUserId:userJson[@"userCognitoIdentityId"]]
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withUsername:userJson[@"name"]]
                 withStatus:CMUserStatusOnline]
@@ -59,7 +61,9 @@
         serverMessage = [CMServerMessage invitationWithInvitation:invitation];
     } else if ([type isEqualToString:@"new-user-in-group"]) {
         NSDictionary *userJson = body[@"user"];
-        CMUser *user = [[[[[[CMUserBuilder new] withCognitoUserId:userJson[@"userCognitoIdentityId"]]
+        CMUser *user = [[[[[[[CMUserBuilder new]
+                withUserId:userJson[@"userCognitoIdentityId"]]
+                withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
                 withUserPhoto:userJson[@"picture"]] build];
@@ -80,16 +84,24 @@
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     } else if ([type isEqualToString:@"membership-request"]) {
         NSDictionary *userJson = body[@"joiningUser"];
-        CMUser *user = [[[[[[CMUserBuilder new] withCognitoUserId:userJson[@"userCognitoIdentityId"]]
+        CMUser *user = [[[[[[[CMUserBuilder new]
+                withUserId:userJson[@"userCognitoIdentityId"]]
+                withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
                 withUserPhoto:userJson[@"picture"]] build];
-        CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:nil] build];
+        CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
         CMMembershipRequestMessage *membershipRequestMessage = [[[[CMMembershipRequestMessageBuilder new]
                 withGroup:group]
                 withJoiningUser:user]
                 build];
         serverMessage = [CMServerMessage membershipRequestWithMembershipRequestMessage:membershipRequestMessage];
+    } else if ([type isEqualToString:@"membership-accepted"]) {
+        CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
+        CMMembershipAcceptedMessage *membershipAcceptedMessage = [[[CMMembershipAcceptedMessageBuilder new]
+                withGroup:group]
+                build];
+        serverMessage = [CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:membershipAcceptedMessage];
     }
 
     return serverMessage;

@@ -14,16 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIShowUuid.h"
 
- 
-/**
- Invitation key is &lt;groupUuid&gt;#&lt;userFacebookId&gt;.
- */
-@interface CMAPIAcceptInvitationRequest : AWSModel
+@implementation CMAPIShowUuid
 
-@property (nonatomic, strong, nullable) NSString *invitationKey;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"showUuid": @"showUuid"
+             };
+}
 
 @end

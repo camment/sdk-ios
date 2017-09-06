@@ -23,6 +23,12 @@
 
 #ifdef POD_CONFIGURATION_BETA
     #define INTERNALSDK
+    #define INTERNALBUILD
+#endif
+
+#ifdef POD_CONFIGURATION_DEBUG
+    #define INTERNALSDK
+    #define INTERNALBUILD
 #endif
 
 #ifdef INTERNALSDK

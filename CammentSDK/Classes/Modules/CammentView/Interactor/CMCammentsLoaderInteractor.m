@@ -39,7 +39,8 @@
                           [self.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
                       }
                    membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
-                   }];
+                   }
+                  membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}];
         }];
     }
     return self;

@@ -59,7 +59,7 @@ s.frameworks = [
 ]
 
 s.dependency  'AMPopTip', '1.5'
-s.dependency  'Texture'
+s.dependency  'Texture', '2.3.4'
 s.dependency  'FLAnimatedImage'
 s.dependency  'AWSCognito'
 s.dependency  'AWSCognitoIdentityProvider'

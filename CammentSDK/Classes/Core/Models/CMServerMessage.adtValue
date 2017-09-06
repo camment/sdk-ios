@@ -3,6 +3,7 @@
 %type name="CMUserJoinedMessage"
 %type name="CMCammentDeletedMessage"
 %type name="CMMembershipRequestMessage"
+%type name="CMMembershipAcceptedMessage"
 
 CMServerMessage includes(RMBuilder) {
   invitation {
@@ -19,5 +20,8 @@ CMServerMessage includes(RMBuilder) {
   }
   membershipRequest {
     CMMembershipRequestMessage *membershipRequestMessage
+  }
+  membershipAccepted {
+    CMMembershipAcceptedMessage *membershipAcceptedMessage
   }
 }

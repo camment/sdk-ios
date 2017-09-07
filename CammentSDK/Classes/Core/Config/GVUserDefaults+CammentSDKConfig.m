@@ -10,11 +10,13 @@
 
 @dynamic isOnboardingFinished;
 @dynamic broadcasterPasscode;
+@dynamic isInstallationDeeplinkChecked;
 
 - (NSDictionary *)setupDefaults {
     return @{
             @"isOnboardingFinished": @NO,
-            @"broadcasterPasscode": @""
+            @"broadcasterPasscode": @"",
+            @"isInstallationDeeplinkChecked": @"NO",
     };
 }
 

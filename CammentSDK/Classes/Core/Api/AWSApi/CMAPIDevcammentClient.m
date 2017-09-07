@@ -162,17 +162,41 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     return self;
 }
 
-- (AWSTask *)deferredDeeplinkDeeplinkHashGet:(NSString *)deeplinkHash {
+- (AWSTask *)deferredDeeplinkGet:(NSString *)deeplinkHash os:(NSString *)os {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      
+                                      @"deeplinkHash": deeplinkHash,
+                                     @"os": os
                                       };
     NSDictionary *pathParameters = @{
-                                     @"deeplinkHash": deeplinkHash
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/deferred-deeplink"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMAPIDeeplink class]];
+}
+
+- (AWSTask *)deferredDeeplinkDeeplinkHashGet:(NSString *)deeplinkHash os:(NSString *)os {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      @"os": os
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"deeplinkHash": deeplinkHash,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"GET"

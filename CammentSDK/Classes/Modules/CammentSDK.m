@@ -34,14 +34,17 @@
 #import "CMGroupManagementInteractorInput.h"
 #import "CMGroupManagementInteractor.h"
 #import "CMServerMessage+TypeMatching.h"
+#import "NSString+MD5.h"
+#import "GVUserDefaults.h"
+#import "GVUserDefaults+CammentSDKConfig.h"
 
-@interface CammentSDK ()<CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
+@interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
 
 @property(nonatomic, strong) CMCognitoAuthService *authService;
 @property(nonatomic) BOOL connectionAvailable;
 
-@property(nonatomic) id<CMAuthInteractorInput> authInteractor;
-@property(nonatomic) id<CMGroupManagementInteractorInput> groupManagmentInteractor;
+@property(nonatomic) id <CMAuthInteractorInput> authInteractor;
+@property(nonatomic) id <CMGroupManagementInteractorInput> groupManagmentInteractor;
 
 @property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
 
@@ -79,10 +82,10 @@
         [self setupTweaks];
 #endif
         self.authInteractor = [CMAuthInteractor new];
-        [(CMAuthInteractor *)self.authInteractor setOutput:self];
+        [(CMAuthInteractor *) self.authInteractor setOutput:self];
 
         self.groupManagmentInteractor = [CMGroupManagementInteractor new];
-        [(CMGroupManagementInteractor *)self.groupManagmentInteractor setOutput:self];
+        [(CMGroupManagementInteractor *) self.groupManagmentInteractor setOutput:self];
 
         self.onSignedInOperationsQueue = [[NSOperationQueue alloc] init];
         self.onSignedInOperationsQueue.maxConcurrentOperationCount = 1;
@@ -205,22 +208,28 @@
     [CMStore instance].apiKey = apiKey;
     [self configure];
     [self launch];
-    [self tryRestoreLastSession];
+    @weakify(self);
+    [[self tryRestoreLastSession] subscribeCompleted:^{
+        @strongify(self);
+        [self checkIfDeferredDeepLinkExists];
+    }];
 }
 
-- (void)tryRestoreLastSession {
+- (RACSignal *)tryRestoreLastSession {
+    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+        FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
+        [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
+        CMCammentIdentity *identity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:token];
 
-    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-    CMCammentIdentity *identity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:token];
-
-    [self connectUserWithIdentity:identity
-     
-                          success:^{
-                          }
-                            error:^(NSError *error) {
-                                
-                            }];
+        [self connectUserWithIdentity:identity
+                              success:^{
+                                  [subscriber sendCompleted];
+                              }
+                                error:^(NSError *error) {
+                                    [subscriber sendError:error];
+                                }];
+        return nil;
+    }];
 }
 
 - (void)connectUserWithIdentity:(CMCammentIdentity *)identity
@@ -386,7 +395,7 @@
 
 - (void)presentMembershipAcceptedAlert:(CMUsersGroup *)group {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self handleUserJoinedToGroup:group.uuid];
+        [self joinUserToGroup:group.uuid];
 
         if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
             CMShowMetadata *metadata = [CMShowMetadata new];
@@ -413,6 +422,7 @@
                                                                              message:CMLocalized(@"Do you accept the join request?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [self joinUserToGroup:group.uuid];
         [self.groupManagmentInteractor replyWithJoiningPermissionForUser:user
                                                                    group:group
                                                          isAllowedToJoin:YES];
@@ -538,7 +548,7 @@
                                                 body:invitationRequest];
 }
 
-- (void)handleUserJoinedToGroup:(NSString *)groupId {
+- (void)joinUserToGroup:(NSString *)groupId {
     DDLogInfo(@"Join group id %@", groupId);
     CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
     [[CMStore instance] setActiveGroup:usersGroup];
@@ -569,9 +579,26 @@
     ];
 }
 
-//- (void)verifyDefferedDeepLink {
-//    [[CMAPIDevcammentClient defaultAPIClient] deferredDeeplinkDeeplinkHashGet:<#(NSString *)deeplinkHash#>]
-//}
+- (void)checkIfDeferredDeepLinkExists {
+    GVUserDefaults *userDefaults = [GVUserDefaults standardUserDefaults];
+    if (userDefaults.isInstallationDeeplinkChecked) {return;}
+    userDefaults.isInstallationDeeplinkChecked = YES;
+
+    NSString *systemVersion = [[[UIDevice currentDevice] systemVersion] stringByReplacingOccurrencesOfString:@"." withString:@"_"];
+    NSString *deeplinkHash = [NSString stringWithFormat:@"iOS|%@", systemVersion];
+    [[[CMAPIDevcammentClient defaultAPIClient] deferredDeeplinkGet:deeplinkHash
+                                                                os:@"ios"]
+            continueWithBlock:^id(AWSTask<id> *task) {
+                if ([task.result isKindOfClass:[CMAPIDeeplink class]]) {
+                    CMAPIDeeplink *deeplink = task.result;
+                    NSURL *deeplinkURL = deeplink.url ? [[NSURL alloc] initWithString:deeplink.url] : nil;
+                    if (deeplinkURL) {
+                        [self verifyURL:deeplinkURL];
+                    }
+                }
+                return nil;
+            }];
+}
 
 - (void)verifyURL:(NSURL *)url {
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
@@ -595,7 +622,9 @@
     if ([CMStore instance].isFBConnected) {
         //for external invitations key should be nil for now
         NSString *invitationKey = nil;
-        CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder invitationFromExistingInvitation:invitation] withInvitationKey:invitationKey] build];
+        CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder
+                                                    invitationFromExistingInvitation:invitation]
+                                                   withInvitationKey:invitationKey] build];
         [self presentChatInvitation:invitationWithUpdatedKey];
     } else {
         [self.onSignedInOperationsQueue setSuspended:YES];
@@ -625,7 +654,6 @@
 }
 
 #pragma mark Handle group management
-
 
 
 @end

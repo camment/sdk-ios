@@ -499,15 +499,30 @@
 }
 
 - (void)showShareDeeplinkDialog:(NSString *)link {
-    NSString *textToShare = @"Hey, join our private chat!";
-    NSURL *url = [NSURL URLWithString:link];
 
-    NSArray *objectsToShare = @[textToShare, url];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"Send the invitation link")]
+                                                                             message:CMLocalized(@"Invite users by sharing the invitation link via channel of your choice")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *textToShare = @"Hey, join our private chat!";
+        NSURL *url = [NSURL URLWithString:link];
 
-    UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+        NSArray *objectsToShare = @[textToShare, url];
 
-    [self.wireframe.parentViewController presentViewController:activityVC
-                                            animated:YES
-                                          completion:nil];
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+
+        [self.wireframe.parentViewController presentViewController:activityVC
+                                                          animated:YES
+                                                        completion:nil];
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+
+    }]];
+
+    [self.wireframe.parentViewController presentViewController:alertController
+                                                      animated:YES
+                                                    completion:nil];
 }
+
 @end

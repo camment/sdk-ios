@@ -26,6 +26,7 @@
 "group_message.join_desc" = "Maybe it would be polite to say hi with a camment?";
 
 "ok" = "OK";
+"cancel" = "Cancel";
 
 "user_status.online" = "Online";
 "user_status.offline" = "Offline";
@@ -34,3 +35,6 @@
 "Login with your Facebook account?" = "Login with your Facebook account?";
 "You are not allowed to join this group" = "You are not allowed to join this group";
 "User wants to join the group" = "%@ wants to join your group";
+
+"Send the invitation link" = "Send the invitation link";
+"Invite users by sharing the invitation link via channel of your choice" = "Invite users by sharing the invitation link via channel of your choice";

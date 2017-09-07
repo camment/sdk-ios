@@ -186,10 +186,21 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param deeplinkHash 
+ @param os 
  
  return type: CMAPIDeeplink *
  */
-- (AWSTask *)deferredDeeplinkDeeplinkHashGet:( NSString *)deeplinkHash;
+- (AWSTask *)deferredDeeplinkGet:(nullable NSString *)deeplinkHash os:(nullable NSString *)os;
+
+/**
+ 
+ 
+ @param deeplinkHash 
+ @param os 
+ 
+ return type: CMAPIDeeplink *
+ */
+- (AWSTask *)deferredDeeplinkDeeplinkHashGet:( NSString *)deeplinkHash os:(nullable NSString *)os;
 
 /**
  

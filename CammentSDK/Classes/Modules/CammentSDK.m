@@ -37,6 +37,7 @@
 #import "NSString+MD5.h"
 #import "GVUserDefaults.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
+#import "AWSIotDataManager.h"
 
 @interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
 
@@ -79,7 +80,7 @@
         DDLogInfo(@"Camment SDK has started");
 
 #ifdef INTERNALSDK
-        [self setupTweaks];
+        [[CMStore instance] setupTweaks];
 #endif
         self.authInteractor = [CMAuthInteractor new];
         [(CMAuthInteractor *) self.authInteractor setOutput:self];
@@ -129,89 +130,28 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)setupTweaks {
-    FBTweakStore *store = [FBTweakStore sharedInstance];
-
-    FBTweakCategory *presentationCategory = [store tweakCategoryWithName:@"Predefined stuff"];
-    if (!presentationCategory) {
-        presentationCategory = [[FBTweakCategory alloc] initWithName:@"Predefined stuff"];
-        [store addTweakCategory:presentationCategory];
-    }
-
-    FBTweakCollection *presentationsCollection = [presentationCategory tweakCollectionWithName:@"Demo"];
-    if (!presentationsCollection) {
-        presentationsCollection = [[FBTweakCollection alloc] initWithName:@"Demo"];
-        [presentationCategory addTweakCollection:presentationsCollection];
-    }
-
-    NSArray<id <CMPresentationBuilder>> *presentations = [CMPresentationUtility activePresentations];
-
-    FBTweak *showTweak = [presentationsCollection tweakWithIdentifier:@"Scenario"];
-    if (!showTweak) {
-        showTweak = [[FBTweak alloc] initWithIdentifier:@"Scenario"];
-        showTweak.possibleValues = [@[@"None"] arrayByAddingObjectsFromArray:[presentations.rac_sequence map:^id(id <CMPresentationBuilder> value) {
-            return [value presentationName];
-        }].array];
-        showTweak.defaultValue = @"None";
-        showTweak.name = @"Choose demo scenario";
-        [presentationsCollection addTweak:showTweak];
-    }
-
-    for (id <CMPresentationBuilder> presentation in presentations) {
-        [presentation configureTweaks:presentationCategory];
-    }
-
-    FBTweakCollection *webSettingCollection = [presentationCategory tweakCollectionWithName:@"Web settings"];
-    if (!webSettingCollection) {
-        webSettingCollection = [[FBTweakCollection alloc] initWithName:@"Web settings"];
-        [presentationCategory addTweakCollection:webSettingCollection];
-    }
-
-    NSString *tweakName = @"Web page url";
-    FBTweak *cammentDelayTweak = [webSettingCollection tweakWithIdentifier:tweakName];
-    if (!cammentDelayTweak) {
-        cammentDelayTweak = [[FBTweak alloc] initWithIdentifier:tweakName];
-        cammentDelayTweak.defaultValue = @"http://aftonbladet.se";
-        cammentDelayTweak.currentValue = @"http://aftonbladet.se";
-        cammentDelayTweak.name = tweakName;
-        [webSettingCollection addTweak:cammentDelayTweak];
-    }
-
-    FBTweakCategory *settingsCategory = [store tweakCategoryWithName:@"Settings"];
-    if (!settingsCategory) {
-        settingsCategory = [[FBTweakCategory alloc] initWithName:@"Settings"];
-        [store addTweakCategory:settingsCategory];
-    }
-
-    FBTweakCollection *videoSettingsCollection = [presentationCategory tweakCollectionWithName:@"Video player settings"];
-    if (!videoSettingsCollection) {
-        videoSettingsCollection = [[FBTweakCollection alloc] initWithName:@"Video player settings"];
-        [settingsCategory addTweakCollection:videoSettingsCollection];
-    }
-
-    FBTweak *volumeTweak = [presentationsCollection tweakWithIdentifier:@"Volume"];
-    if (!volumeTweak) {
-        volumeTweak = [[FBTweak alloc] initWithIdentifier:@"Volume"];
-        volumeTweak.minimumValue = @.0f;
-        volumeTweak.stepValue = @10.0f;
-        volumeTweak.maximumValue = @100.0f;
-        volumeTweak.defaultValue = @30.0f;
-        volumeTweak.currentValue = @10.0f;
-        volumeTweak.name = @"Volume (%)";
-        [videoSettingsCollection addTweak:volumeTweak];
-    }
-
-    DDLogInfo(@"Tweaks have been configured");
-}
-
 - (void)configureWithApiKey:(NSString *)apiKey {
     [CMStore instance].apiKey = apiKey;
     [self configure];
     [self launch];
     @weakify(self);
-    [[self tryRestoreLastSession] subscribeCompleted:^{
+    
+    [[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread] subscribeNext:^(NSNumber *isOfflineMode) {
         @strongify(self);
-        [self checkIfDeferredDeepLinkExists];
+        if (isOfflineMode.boolValue) {
+            [self.connectionReachibility stopNotifier];
+            
+            CMServerListener *listener = [CMServerListener instance];
+            [self.iotSubscriptionDisposable dispose];
+            [[listener dataManager] disconnect];
+            
+            return;
+        } else {
+            [self.connectionReachibility startNotifier];
+            [[self tryRestoreLastSession] subscribeCompleted:^{
+                [self checkIfDeferredDeepLinkExists];
+            }];
+        }
     }];
 }
 

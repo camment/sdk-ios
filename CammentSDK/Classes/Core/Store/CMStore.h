@@ -7,6 +7,7 @@
 #import "ReactiveObjC.h"
 #import "CMUser.h"
 #import "CMUsersGroup.h"
+#import "FBTweak.h"
 
 @class CMShow;
 @class CMShowMetadata;
@@ -19,7 +20,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
     CMCammentRecordingStateFinished,
     CMCammentRecordingStateCancelled
 };
-@interface CMStore: NSObject
+@interface CMStore: NSObject <FBTweakObserver>
 
 @property (nonatomic, assign) BOOL isSignedIn;
 @property (nonatomic, assign) BOOL isFBConnected;
@@ -48,6 +49,9 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 
+@property(nonatomic) BOOL isOfflineMode;
+
 + (CMStore *)instance;
 
+- (void)setupTweaks;
 @end

@@ -13,4 +13,5 @@
 - (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink;
 - (void)didFailToInviteUsersWithError:(NSError *)error;
 
+- (void)didFailToGetInvitationLink:(NSError *)error;
 @end

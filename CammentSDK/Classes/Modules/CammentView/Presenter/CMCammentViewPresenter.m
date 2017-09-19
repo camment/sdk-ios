@@ -368,7 +368,7 @@
 
 - (void)getInvitationDeeplink {
     [self.output showLoadingHUD];
-    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:nil];
+    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:self.show.uuid];
 }
 
 - (void)authInteractorDidSignedIn {
@@ -515,6 +515,22 @@
 - (void)didFailToInviteUsersWithError:(NSError *)error {
 
 }
+
+- (void)didFailToGetInvitationLink:(NSError *)error {
+    [self.output hideLoadingHUD];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"Ooops")]
+                                                                             message:CMLocalized(@"Couldn't get the invitation link. Check your internet connection and try again.")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+
+    }]];
+
+    [self.wireframe.parentViewController presentViewController:alertController
+                                                      animated:YES
+                                                    completion:nil];
+}
+
 
 - (void)runBotCammentAction:(CMBotAction *)action {
     [self.botRegistry runAction:action];

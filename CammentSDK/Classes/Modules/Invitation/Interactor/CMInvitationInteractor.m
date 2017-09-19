@@ -31,7 +31,12 @@
 }
 
 - (AWSTask<CMUsersGroup *> *)createEmptyGroup {
-    return [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
+    AWSTask * task = [self.client usergroupsPost];
+    if (!task) {
+        return [AWSTask taskWithError:nil];
+    }
+    
+    return [task continueWithBlock:^id(AWSTask<id> *t) {
         if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
             CMAPIUsergroup *group = t.result;
             CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
@@ -116,29 +121,43 @@
     AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
 
     [groupTask continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[CMUsersGroup class]]) {
-            CMUsersGroup *usersGroup = t.result;
+        if (t.error || ![t.result isKindOfClass:[CMUsersGroup class]]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didFailToGetInvitationLink:t.error];
+            });
+            return nil;
+        }
+        CMUsersGroup *usersGroup = t.result;
 
-            CMAPIShowUuid *cmapiShowUuid = [CMAPIShowUuid new];
-            cmapiShowUuid.showUuid = showUuid;
-            return [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid] continueWithBlock:^id(AWSTask<id> *t) {
+        CMAPIShowUuid *cmapiShowUuid = [CMAPIShowUuid new];
+        cmapiShowUuid.showUuid = showUuid;
+        AWSTask *getDeeplinkTask = [self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid];
+        if (!getDeeplinkTask) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didFailToGetInvitationLink:nil];
+            });
+            return nil;
+        }
+        
+        return [getDeeplinkTask continueWithBlock:^id(AWSTask<id> *t) {
 
-                if (![t.result isKindOfClass:[CMAPIDeeplink class]]) {
-                    return nil;
-                }
-
-                CMAPIDeeplink *deepLinkResult = t.result;
-
-                CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
-                CMUsersGroup *updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.url] build];
-
+            if (t.error || ![t.result isKindOfClass:[CMAPIDeeplink class]]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
-                    [self.output didInviteUsersToTheGroup:updatedUsersGroup usingDeeplink:true];
+                    [self.output didFailToGetInvitationLink:t.error];
                 });
                 return nil;
-            }];
-        }
-        return nil;
+            }
+
+            CMAPIDeeplink *deepLinkResult = t.result;
+
+            CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
+            CMUsersGroup *updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.url] build];
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didInviteUsersToTheGroup:updatedUsersGroup usingDeeplink:true];
+            });
+            return nil;
+        }];
     }];
 }
 

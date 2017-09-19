@@ -9,7 +9,7 @@
 
 
 @interface CMVideoShowCellNode ()
-@property(nonatomic, strong) ASNetworkImageNode *videoThumbnailNode;
+@property(nonatomic, strong) ASVideoNode *videoThumbnailNode;
 @end
 
 @implementation CMVideoShowCellNode
@@ -19,6 +19,7 @@
     if (self) {
         self.videoThumbnailNode = [ASVideoNode new];
         self.videoThumbnailNode.enabled = NO;
+        self.videoThumbnailNode.gravity = AVLayerVideoGravityResizeAspectFill;
     }
 
     return self;
@@ -27,11 +28,20 @@
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
 
-    NSURL *url = [[NSURL alloc] initWithString:self.show.url];
-    if (url) {
-        _videoThumbnailNode.contentMode = UIViewContentModeScaleAspectFill;
-        _videoThumbnailNode.backgroundColor = [UIColor grayColor];
-        [_videoThumbnailNode setURL:[[NSURL alloc] initWithString:self.show.thumbnail] resetToDefault:YES];
+    _videoThumbnailNode.contentMode = UIViewContentModeScaleAspectFill;
+    _videoThumbnailNode.backgroundColor = [UIColor grayColor];
+    
+    BOOL hasThumbnails = self.show.thumbnail != nil;
+    NSString *previewURL = hasThumbnails ? self.show.thumbnail : self.show.url;
+    if (!previewURL) { return; }
+    
+    NSURL *url = [[NSURL alloc] initWithString:previewURL];
+    if (!url) { return;}
+
+    if (hasThumbnails) {
+        [_videoThumbnailNode setURL:url resetToDefault:YES];
+    } else {
+        [_videoThumbnailNode setAssetURL:url];
     }
 }
 

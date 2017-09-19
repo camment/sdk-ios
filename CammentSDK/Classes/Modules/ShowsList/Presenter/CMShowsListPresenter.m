@@ -59,14 +59,24 @@
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
-    [[RACObserve([CMStore instance], isSignedIn) deliverOnMainThread] subscribeNext:^(NSNumber *isSignedIn) {
-        if (isSignedIn.boolValue) {
+    
+    NSArray *updateShowsListSignals = @[
+                                        RACObserve([CMStore instance], isSignedIn),
+                                        RACObserve([CMStore instance], isConnected),
+                                        RACObserve([CMStore instance], isOfflineMode)
+                                        ];
+    [[[RACSignal combineLatest:updateShowsListSignals] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
+        NSNumber *isSignedIn = tuple.first;
+        NSNumber *isOfflineMode = tuple.third;
+        
+        if (isSignedIn.boolValue || isOfflineMode.boolValue) {
             [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
     }];
 }
 
 - (void)updateShows:(NSString *)passcode {
+    [self.output hideLoadingIndicator];
     [[GVUserDefaults standardUserDefaults] setBroadcasterPasscode:passcode];
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
@@ -78,18 +88,33 @@
         return [[CMShow alloc] initWithUuid:value.uuid url:value.url thumbnail:value.thumbnail showType:[CMShowType videoWithShow:value]];
     }].array ?: @[];
 
-    FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
-            tweakCollectionWithName:@"Web settings"];
+#ifdef USE_INTERNAL_FEATURES
+    NSString *demoWebShowUrl;
 
-    NSString *tweakName = @"Web page url";
-    FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
+    if ([CMStore instance].isOfflineMode) {
+        demoWebShowUrl = [NSURL fileURLWithPath:[[NSBundle cammentSDKBundle]
+                pathForResource:@"page"
+                         ofType:@"htm"
+                    inDirectory:@"www"]].absoluteString;
+    } else {
+        FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
+                tweakCollectionWithName:@"Web settings"];
 
-    self.showsListCollectionPresenter.shows = [shows arrayByAddingObjectsFromArray:@[
-            [[CMShow alloc] initWithUuid:[(CMAPIShow *) list.items.firstObject uuid]
-                                     url:webShowTweak.currentValue
+        NSString *tweakName = @"Web page url";
+        FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
+
+        demoWebShowUrl = webShowTweak.currentValue;
+    }
+
+    shows = [shows arrayByAddingObjectsFromArray:@[
+            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
+                                     url:demoWebShowUrl
                                thumbnail:nil
-                                showType:[CMShowType htmlWithWebURL:webShowTweak.currentValue]]
+                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
     ]];
+#endif
+
+    self.showsListCollectionPresenter.shows = shows;
     [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
 }
@@ -127,6 +152,8 @@
 }
 
 - (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata {
+    if (!metadata || !metadata.uuid || metadata.uuid.length == 0) { return; }
+
     NSArray<CMShow *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(CMShow *value) {
         return [value.uuid isEqualToString:metadata.uuid];
     }].array ?: @[];

@@ -279,6 +279,10 @@
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
 
+    if ([CMStore instance].isOfflineMode) {
+        return;
+    }
+    
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
@@ -471,7 +475,8 @@
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
-    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
+    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]
+        || [CMStore instance].cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil ) {
         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }
@@ -528,6 +533,7 @@
 
         UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
 
+        activityVC.popoverPresentationController.sourceView = self.wireframe.parentViewController.view;
         [self.wireframe.parentViewController presentViewController:activityVC
                                                           animated:YES
                                                         completion:nil];

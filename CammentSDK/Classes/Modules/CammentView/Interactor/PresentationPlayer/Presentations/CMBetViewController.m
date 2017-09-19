@@ -10,12 +10,26 @@
 @property(nonatomic, strong) UIWebView *webView;
 @property(nonatomic, strong) NSDictionary<NSString *, NSArray<id<CMPresentationRunableInterface>> *> * actions;
 @property(nonatomic, weak) id <CMPresentationInstructionOutput> output;
-
+@property(nonatomic, strong) NSString *subject;
 @end
 
 @implementation CMBetViewController {
 
 }
+
+- (instancetype)initWithSubject:(NSString *)subject {
+    self = [super init];
+    if (self) {
+        self.subject = subject;
+    }
+
+    return self;
+}
+
++ (instancetype)controllerWithSubject:(NSString *)subject {
+    return [[self alloc] initWithSubject:subject];
+}
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -23,6 +37,7 @@
     self.webView = [[UIWebView alloc] init];
     NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"bettingform" ofType:@"html"];
     NSString *html = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:NULL];
+    html = [html stringByReplacingOccurrencesOfString:@"${subject}" withString:self.subject];
     [self.webView loadHTMLString:html baseURL:nil];
     self.webView.delegate = self;
     [self.view addSubview:_webView];

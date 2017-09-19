@@ -6,5 +6,7 @@
 #import "CMPresentationBuilder.h"
 
 
+static NSString *const kCMBettingDemoTweakBettingSubjectIdentifier = @"bettingSubject";
+
 @interface CMBettingPresentationBuilder : NSObject<CMPresentationBuilder>
 @end

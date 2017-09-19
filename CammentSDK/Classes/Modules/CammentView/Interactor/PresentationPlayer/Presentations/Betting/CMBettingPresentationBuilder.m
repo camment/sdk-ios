@@ -11,6 +11,8 @@
 #import "FBTweakCollection.h"
 #import "CMBetViewController.h"
 #import "CMPresentationPlayerBot.h"
+#import "FBTweak.h"
+#import "FBTweakStore.h"
 
 NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings";
 
@@ -34,8 +36,12 @@ NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings
                     ]]
     ];
 
+    FBTweakCategory *category = [[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"];
+    FBTweakCollection *settingCollection = [category tweakCollectionWithName:tweakSettingsBettingDemoCollectionName];
+    FBTweak *bettingSubject = [settingCollection tweakWithIdentifier:kCMBettingDemoTweakBettingSubjectIdentifier];
+
     CMPositionPresentationInstruction *showSubscribeFormInstruction = [[CMPositionPresentationInstruction alloc] initWithPosition:0 action:
-            [[CMDisplayViewControllerPresentationAction alloc] initWithPresentationController:[CMBetViewController new]
+                                                                       [[CMDisplayViewControllerPresentationAction alloc] initWithPresentationController:[[CMBetViewController alloc] initWithSubject:bettingSubject.currentValue ?: bettingSubject.defaultValue]
                                                                                       actions:@{
                                                                                               @"bet": subscribeInstructions
                                                                                       }]
@@ -61,6 +67,13 @@ NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings
     if (!settingCollection) {
         settingCollection = [[FBTweakCollection alloc] initWithName:tweakSettingsBettingDemoCollectionName];
         [category addTweakCollection:settingCollection];
+    }
+
+    FBTweak *bettingSubject = [settingCollection tweakWithIdentifier:kCMBettingDemoTweakBettingSubjectIdentifier];
+    if (!bettingSubject) {
+        bettingSubject = [[FBTweak alloc] initWithIdentifier:kCMBettingDemoTweakBettingSubjectIdentifier];
+        bettingSubject.defaultValue = @"How much would you bet on touchdown in next 5 minutes?";
+        [settingCollection addTweak:bettingSubject];
     }
 }
 

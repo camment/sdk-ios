@@ -7,4 +7,9 @@
 
 
 @interface CMBetViewController : UIViewController<CMPresentableByPresentationAction>
+
+- (instancetype)initWithSubject:(NSString *)subject;
++ (instancetype)controllerWithSubject:(NSString *)subject;
+
+
 @end

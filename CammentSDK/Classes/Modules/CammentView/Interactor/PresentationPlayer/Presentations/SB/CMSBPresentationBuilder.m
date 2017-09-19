@@ -10,6 +10,7 @@
 #import "FBTweakCollection.h"
 #import "CMTimestampPresentationInstruction.h"
 #import "CMPositionPresentationInstruction.h"
+#import "CMAdsDemoBot.h"
 
 NSString * const tweakSettingsSBCollectionName = @"Super Bowl settings";
 NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
@@ -58,6 +59,12 @@ NSString * const tweakSettingSBAdsDelayName = @"Ads delay";
         delayTweak.name = @"Delay between camments";
         [superbowlSettingCollection addTweak:delayTweak];
     }
+}
+
+- (NSArray<id <CMBot>> *)bots {
+    return @[
+            [CMAdsDemoBot new]
+    ];
 }
 
 @end

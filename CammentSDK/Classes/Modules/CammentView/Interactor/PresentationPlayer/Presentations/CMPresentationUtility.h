@@ -8,6 +8,7 @@
 
 @class CMCammentsBlockItem;
 @protocol CMPresentationBuilder;
+@class CMBotAction;
 
 extern NSString * const kCMPresentationBuilderUtilityAnyShowUUID;
 
@@ -16,6 +17,9 @@ extern NSString * const kCMPresentationBuilderUtilityAnyShowUUID;
 + (NSArray<id<CMPresentationBuilder>> *)activePresentations;
 
 - (CMCammentsBlockItem *)blockItemAdsWithLocalGif:(NSString *)filename url:(NSString *)url;
+
+- (CMCammentsBlockItem *)blockItemBotAction:(NSString *)filename action:(CMBotAction *)action;
+
 - (CMCammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename;
 
 - (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalVideo:(NSString *)filename;

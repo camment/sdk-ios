@@ -14,7 +14,7 @@
 @protocol CMCammentsBlockPresenterOutput<NSObject>
 
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell;
-
+- (void)runBotCammentAction:(CMBotAction *)action;
 @end
 
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate>

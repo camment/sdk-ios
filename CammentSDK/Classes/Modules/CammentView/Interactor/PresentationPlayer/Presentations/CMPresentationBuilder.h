@@ -6,10 +6,13 @@
 #import <Foundation/Foundation.h>
 #import "FBTweakCategory.h"
 
+@protocol CMBot;
+
 @protocol CMPresentationBuilder <NSObject>
 
 - (NSString *)presentationName;
 - (NSArray *)instructions;
+- (NSArray<id<CMBot>> *)bots;
 - (void)configureTweaks:(FBTweakCategory *)category;
 
 @end

@@ -10,6 +10,7 @@
 #import "FBTweakStore.h"
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
+#import "CMAdsDemoBot.h"
 
 NSString * const tweakSettingsWoltCollectionName = @"Wolt settings";
 NSString * const tweakSettingWoltAdsDelayName = @"Ads delay";
@@ -56,5 +57,10 @@ NSString * const tweakSettingWoltAdsDelayName = @"Ads delay";
     }
 }
 
+- (NSArray<id <CMBot>> *)bots {
+    return @[
+            [CMAdsDemoBot new]
+    ];
+}
 
 @end

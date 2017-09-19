@@ -21,10 +21,8 @@
     [super viewDidLoad];
 
     self.webView = [[UIWebView alloc] init];
-    NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"emailform" ofType:@"html"];
+    NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"bettingform" ofType:@"html"];
     NSString *html = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:NULL];
-    html = [html stringByReplacingOccurrencesOfString:@"${email}" withString:[CMStore instance].email ?: @""];
-
     [self.webView loadHTMLString:html baseURL:nil];
     self.webView.delegate = self;
     [self.view addSubview:_webView];
@@ -54,8 +52,8 @@
         return NO;
     }
 
-    if ([url hasPrefix:@"action://subscribe"]) {
-        NSArray<id <CMPresentationRunableInterface>> *runable= self.actions[@"subscribe"];
+    if ([url hasPrefix:@"action://bet"]) {
+        NSArray<id <CMPresentationRunableInterface>> *runable= self.actions[@"bet"];
         [self dismissViewControllerAnimated:YES completion:^{
             for (id<CMPresentationRunableInterface> r in runable) {
                 [r runWithOutput:self.output];

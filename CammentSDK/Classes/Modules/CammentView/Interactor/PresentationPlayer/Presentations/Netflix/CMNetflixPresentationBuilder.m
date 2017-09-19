@@ -74,5 +74,8 @@ const NSInteger cammentsCount = 4;
     }
 }
 
+- (NSArray<id <CMBot>> *)bots {
+    return @[];
+}
 
 @end

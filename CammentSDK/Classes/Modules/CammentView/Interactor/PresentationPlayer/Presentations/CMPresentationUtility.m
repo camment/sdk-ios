@@ -12,6 +12,8 @@
 #import "CMCammentBuilder.h"
 #import "CMEmailSubscriptionPresentationBuilder.h"
 #import "CMBettingPresentationBuilder.h"
+#import "CMAdsDemoBot.h"
+#import "CMBotAction.h"
 
 NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -29,15 +31,26 @@ NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 }
 
 - (CMCammentsBlockItem *)blockItemAdsWithLocalGif:(NSString *)filename url:(NSString *)url {
-    CMBotCamment *cmBotCamment = [self botCammentWithLocalGif:filename url:url];
+    CMBotAction *action = [CMBotAction new];
+    action.botUuid = kCMAdsDemoBotUUID;
+    action.action = kCMAdsDemoBotOpenURLAction;
+    action.params = @{
+            kCMAdsDemoBotURLParam: url ?: @""
+    };
+    CMBotCamment *cmBotCamment = [self botCammentWithLocalGif:filename action:action];
     return [CMCammentsBlockItem botCammentWithBotCamment:cmBotCamment];
 }
 
-- (CMBotCamment *)botCammentWithLocalGif:(NSString *)filename url:(NSString *)url {
+- (CMCammentsBlockItem *)blockItemBotAction:(NSString *)filename action:(CMBotAction *)action{
+    CMBotCamment *cmBotCamment = [self botCammentWithLocalGif:filename action:action];
+    return [CMCammentsBlockItem botCammentWithBotCamment:cmBotCamment];
+}
+
+- (CMBotCamment *)botCammentWithLocalGif:(NSString *)filename action:(CMBotAction *)action {
     NSString *filepath = [[NSBundle cammentSDKBundle] pathForResource:filename ofType:@"gif"];
     NSURL *pathUrl = [NSURL fileURLWithPath:filepath];
     return [[CMBotCamment alloc] initWithURL:pathUrl.absoluteString
-                                     openURL:url];
+                                   botAction:action];
 }
 
 - (CMCammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename {

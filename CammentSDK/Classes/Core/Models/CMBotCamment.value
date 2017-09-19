@@ -1,4 +1,6 @@
+%type name="CMBotAction"
+
 CMBotCamment {
   NSString* URL
-  NSString* openURL
+  CMBotAction *botAction;
 }

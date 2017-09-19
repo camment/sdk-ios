@@ -31,7 +31,7 @@
 }
 
 - (BOOL)shouldBeTriggeredForState:(CMPresentationState *)state {
-    BOOL shouldTriggered = (state.items.count + 1) == _position;
+    BOOL shouldTriggered = (state.items.count + 1) >= _position;
     return [super shouldBeTriggeredForState:state] && shouldTriggered;
 }
 

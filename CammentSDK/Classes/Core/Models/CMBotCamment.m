@@ -11,11 +11,11 @@
 
 @implementation CMBotCamment
 
-- (instancetype)initWithURL:(NSString *)URL openURL:(NSString *)openURL
+- (instancetype)initWithURL:(NSString *)URL botAction:(CMBotAction *)botAction
 {
   if ((self = [super init])) {
     _URL = [URL copy];
-    _openURL = [openURL copy];
+    _botAction = [botAction copy];
   }
 
   return self;
@@ -28,12 +28,12 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t URL: %@; \n\t openURL: %@; \n", [super description], _URL, _openURL];
+  return [NSString stringWithFormat:@"%@ - \n\t URL: %@; \n\t botAction: %@; \n", [super description], _URL, _botAction];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_URL hash], [_openURL hash]};
+  NSUInteger subhashes[] = {[_URL hash], [_botAction hash]};
   NSUInteger result = subhashes[0];
   for (int ii = 1; ii < 2; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
@@ -57,7 +57,7 @@
   }
   return
     (_URL == object->_URL ? YES : [_URL isEqual:object->_URL]) &&
-    (_openURL == object->_openURL ? YES : [_openURL isEqual:object->_openURL]);
+    (_botAction == object->_botAction ? YES : [_botAction isEqual:object->_botAction]);
 }
 
 @end

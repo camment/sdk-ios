@@ -10,6 +10,7 @@
 #import "CMEmailSubscriptionViewController.h"
 #import "FBTweakCollection.h"
 #import "CMBetViewController.h"
+#import "CMPresentationPlayerBot.h"
 
 NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings";
 
@@ -26,37 +27,31 @@ NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings
     NSArray *subscribeInstructions = @[
             [[CMPositionPresentationInstruction alloc] initWithPosition:1 action:
                     [[CMDisplayAlertViewControllerPresentationAction alloc] initWithTitle:@"Done!"
-                                                                                  message:@"You will get amazing camments in just a few seconds"
+                                                                                  message:@"Let's see how lucky you are"
                                                                                   actions:@{
                                                                                           @"Ok": @[]
                                                                                   }
-                    ]],
-            [[CMPositionPresentationInstruction alloc] initWithPosition:1
-                                                                 action:[[CMDisplayCammentPresentationAction alloc] initWithItem:[utility blockItemCammentWithLocalVideo:@"netflix-1"]]
-                                                                  delay:2],
-            [[CMPositionPresentationInstruction alloc] initWithPosition:0
-                                                                 action:[[CMDisplayCammentPresentationAction alloc] initWithItem:[utility blockItemCammentWithLocalVideo:@"netflix-2"]]
-                                                                  delay:4],
-            [[CMPositionPresentationInstruction alloc] initWithPosition:0
-                                                                 action:[[CMDisplayCammentPresentationAction alloc] initWithItem:[utility blockItemCammentWithLocalVideo:@"netflix-3"]]
-                                                                  delay:6],
+                    ]]
     ];
 
     CMPositionPresentationInstruction *showSubscribeFormInstruction = [[CMPositionPresentationInstruction alloc] initWithPosition:0 action:
             [[CMDisplayViewControllerPresentationAction alloc] initWithPresentationController:[CMBetViewController new]
                                                                                       actions:@{
-                                                                                              @"subscribe": subscribeInstructions
+                                                                                              @"bet": subscribeInstructions
                                                                                       }]
     ];
+    CMBotAction *action = [CMBotAction new];
+    action.botUuid = kCMPresentationPlayerBotUUID;
+    action.action = kCMPresentationPlayerBotPlayAction;
+    action.params = @{
+            kCMPresentationPlayerBotRunableParam : showSubscribeFormInstruction
+    };
+
+    CMCammentsBlockItem *betBlockItem = [utility blockItemBotAction:@"bet" action:action];
     return @[
-            [[CMPositionPresentationInstruction alloc] initWithPosition:1 action:
-                    [[CMDisplayAlertViewControllerPresentationAction alloc] initWithTitle:@"Subscribe to our newsletter"
-                                                                                  message:@"And you will get camments from Ben's wedding"
-                                                                                  actions:@{
-                                                                                          @"Subscribe": showSubscribeFormInstruction,
-                                                                                          @"Maybe later": @[]
-                                                                                  }
-                    ]]
+            [[CMPositionPresentationInstruction alloc] initWithPosition:1
+                                                                 action:[[CMDisplayCammentPresentationAction alloc] initWithItem:betBlockItem]]
+
     ];
 }
 
@@ -66,6 +61,12 @@ NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings
         settingCollection = [[FBTweakCollection alloc] initWithName:tweakSettingsBettingDemoCollectionName];
         [category addTweakCollection:settingCollection];
     }
+}
+
+- (NSArray<id <CMBot>> *)bots {
+    return @[
+            [CMPresentationPlayerBot new]
+    ];
 }
 
 @end

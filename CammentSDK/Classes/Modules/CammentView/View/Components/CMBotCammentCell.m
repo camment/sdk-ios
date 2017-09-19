@@ -7,6 +7,7 @@
 #import "CMBotCamment.h"
 #import "CMBotCammentNode.h"
 #import "UIColorMacros.h"
+#import "CMAdsDemoBot.h"
 
 
 @interface CMBotCammentCell ()
@@ -37,7 +38,9 @@
         self.adsTextNode.shadowOpacity = 1.0f;
         self.adsTextNode.shadowColor = UIColor.blackColor.CGColor;
         self.adsTextNode.shadowOffset = CGSizeMake(.0f, .0f);
-        [self.adsTextNode setAttributedText:[[NSAttributedString alloc] initWithString:@"AD"
+#warning make it better
+        NSString *cellTag = botCamment.botAction.botUuid == kCMAdsDemoBotUUID ? @"AD" : @"BOT";
+        [self.adsTextNode setAttributedText:[[NSAttributedString alloc] initWithString:cellTag
                                                                             attributes:@{
                                                                                          NSFontAttributeName: [UIFont systemFontOfSize:9.0f],
                                                                                          NSForegroundColorAttributeName: [UIColor whiteColor]

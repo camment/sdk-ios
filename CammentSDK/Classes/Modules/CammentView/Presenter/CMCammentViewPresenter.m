@@ -37,6 +37,7 @@
 #import "CMCammentDeletedMessage.h"
 #import "RACSignal+SignalHelpers.h"
 #import "CMCammentCell.h"
+#import "CMBotRegistry.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
 
@@ -54,6 +55,8 @@
 
 @property(nonatomic) BOOL isCameraSessionConfigured;
 @property(nonatomic) BOOL onboardingWasStarted;
+
+@property(nonatomic) CMBotRegistry *botRegistry;
 @end
 
 @implementation CMCammentViewPresenter
@@ -77,6 +80,10 @@
         self.usersGroup = [CMStore instance].activeGroup;
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
         self.currentOnboardingStep = CMOnboardingAlertNone;
+
+        self.botRegistry = [CMBotRegistry new];
+        [self.botRegistry updateBotsOutputInterface:self];
+
         @weakify(self);
         [[RACObserve([CMStore instance], activeGroup) deliverOnMainThread] subscribeNext:^(CMUsersGroup *group) {
             @strongify(self);
@@ -224,6 +231,12 @@
         return;
     }
     self.presentationPlayerInteractor.instructions = [builder instructions];
+    @weakify(self);
+    [[[builder bots].rac_sequence map:^id(id <CMBot> bot) {
+        @strongify(self);
+        [self.botRegistry addBot:bot];
+        return nil;
+    }] array];
 #endif
 }
 
@@ -248,10 +261,10 @@
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
         NSString *groupUUID = [self.usersGroup uuid];
         CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
-        CMCamment *camment = [[[[[cammentBuilder
+        CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
                 withShowUuid:self.show.uuid]
                 withUserGroupUuid:groupUUID]
-                withUserGroupUuid:[CMStore instance].cognitoUserId]
+                withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
                 withLocalAsset:asset] build];
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
@@ -269,10 +282,11 @@
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
-    CMCamment *cammentToUpload = [[[[[[CMCammentBuilder new] withUuid:uuid]
+    CMCamment *cammentToUpload = [[[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
             withShowUuid:self.show.uuid]
             withUserGroupUuid:self.usersGroup ? self.usersGroup.uuid : nil]
+            withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
             build];
     [self.interactor uploadCamment:cammentToUpload];
 }
@@ -495,6 +509,10 @@
 
 - (void)didFailToInviteUsersWithError:(NSError *)error {
 
+}
+
+- (void)runBotCammentAction:(CMBotAction *)action {
+    [self.botRegistry runAction:action];
 }
 
 - (void)showShareDeeplinkDialog:(NSString *)link {

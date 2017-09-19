@@ -93,11 +93,8 @@
     [cammentsBlockItem matchCamment:^(CMCamment *camment) {
         BOOL shouldPlay = ![camment.uuid isEqualToString:[[CMStore instance] playingCammentId]];
         [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.uuid : kCMStoreCammentIdIfNotPlaying];
-    }                           botCamment:^(CMBotCamment *ads) {
-#warning handle bot camment action here
-        [[UIApplication sharedApplication] openURL:[[NSURL alloc] initWithString:ads.openURL]
-                                           options:@{}
-                                 completionHandler:nil];
+    }                           botCamment:^(CMBotCamment *botCamment) {
+        [self.output runBotCammentAction:botCamment.botAction];
     }];
 }
 

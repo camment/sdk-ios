@@ -67,4 +67,8 @@ NSString *const tweakSettingsEmailsSubscriptionCollectionName = @"Email subscrip
     }
 }
 
+- (NSArray<id <CMBot>> *)bots {
+    return @[];
+}
+
 @end

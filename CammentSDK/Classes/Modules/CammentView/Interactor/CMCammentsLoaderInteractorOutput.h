@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @class CMCamment;
-@class CMAds;
+@class CMBotCamment;
 @class CMUserJoinedMessage;
 @class CMCammentDeletedMessage;
 
@@ -17,7 +17,7 @@
 
 - (void)didFetchCamments:(NSArray<CMCamment *> *)camments;
 - (void)didReceiveNewCamment:(CMCamment *)camment;
-- (void)didReceiveNewAds:(CMAds *)ads;
+- (void)didReceiveNewBotCamment:(CMBotCamment *)ads;
 
 - (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message;
 

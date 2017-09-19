@@ -26,8 +26,8 @@
 - (void)runWithOutput:(id <CMPresentationInstructionOutput>)output {
     [self.item matchCamment:^(CMCamment *camment) {
         [output didReceiveNewCamment:camment];
-    } ads:^(CMAds *ads) {
-        [output didReceiveNewAds:ads];
+    } botCamment:^(CMBotCamment *botCamment) {
+        [output didReceiveNewBotCamment:botCamment];
     }];
 }
 

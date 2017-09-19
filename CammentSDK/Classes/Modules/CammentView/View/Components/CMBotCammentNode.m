@@ -3,22 +3,22 @@
 // Copyright (c) 2017 Camment. All rights reserved.
 //
 
-#import "CMAdsNode.h"
-#import "CMAds.h"
+#import "CMBotCammentNode.h"
+#import "CMBotCamment.h"
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #import <AsyncDisplayKit/ASPINRemoteImageDownloader.h>
 
-@interface CMAdsNode ()
+@interface CMBotCammentNode ()
 
-@property(nonatomic, strong) CMAds *ads;
+@property(nonatomic, strong) CMBotCamment *ads;
 @property(nonatomic, strong) ASNetworkImageNode *adsPlayerNode;
 @property(nonatomic, strong) ASPINRemoteImageDownloader *downloader;
 
 @end
 
-@implementation CMAdsNode
+@implementation CMBotCammentNode
 
-- (instancetype)initWithAds:(CMAds *)ads {
+- (instancetype)initWithAds:(CMBotCamment *)ads {
     self = [super init];
     if (self) {
 

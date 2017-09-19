@@ -1,4 +1,4 @@
-CMAds {
+CMBotCamment {
   NSString* URL
   NSString* openURL
 }

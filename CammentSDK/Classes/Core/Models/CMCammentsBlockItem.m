@@ -11,21 +11,21 @@
 
 typedef NS_ENUM(NSUInteger, _CMCammentsBlockItemSubtypes) {
   _CMCammentsBlockItemSubtypescamment,
-  _CMCammentsBlockItemSubtypesads
+  _CMCammentsBlockItemSubtypesbotCamment
 };
 
 @implementation CMCammentsBlockItem
 {
   _CMCammentsBlockItemSubtypes _subtype;
   CMCamment *_camment_camment;
-  CMAds *_ads_ads;
+  CMBotCamment *_botCamment_botCamment;
 }
 
-+ (instancetype)adsWithAds:(CMAds *)ads
++ (instancetype)botCammentWithBotCamment:(CMBotCamment *)botCamment
 {
   CMCammentsBlockItem *object = [[CMCammentsBlockItem alloc] init];
-  object->_subtype = _CMCammentsBlockItemSubtypesads;
-  object->_ads_ads = ads;
+  object->_subtype = _CMCammentsBlockItemSubtypesbotCamment;
+  object->_botCamment_botCamment = botCamment;
   return object;
 }
 
@@ -49,8 +49,8 @@ typedef NS_ENUM(NSUInteger, _CMCammentsBlockItemSubtypes) {
       return [NSString stringWithFormat:@"%@ - camment \n\t camment: %@; \n", [super description], _camment_camment];
       break;
     }
-    case _CMCammentsBlockItemSubtypesads: {
-      return [NSString stringWithFormat:@"%@ - ads \n\t ads: %@; \n", [super description], _ads_ads];
+    case _CMCammentsBlockItemSubtypesbotCamment: {
+      return [NSString stringWithFormat:@"%@ - botCamment \n\t botCamment: %@; \n", [super description], _botCamment_botCamment];
       break;
     }
   }
@@ -58,7 +58,7 @@ typedef NS_ENUM(NSUInteger, _CMCammentsBlockItemSubtypes) {
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {_subtype, [_camment_camment hash], [_ads_ads hash]};
+  NSUInteger subhashes[] = {_subtype, [_camment_camment hash], [_botCamment_botCamment hash]};
   NSUInteger result = subhashes[0];
   for (int ii = 1; ii < 3; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
@@ -83,18 +83,18 @@ typedef NS_ENUM(NSUInteger, _CMCammentsBlockItemSubtypes) {
   return
     _subtype == object->_subtype &&
     (_camment_camment == object->_camment_camment ? YES : [_camment_camment isEqual:object->_camment_camment]) &&
-    (_ads_ads == object->_ads_ads ? YES : [_ads_ads isEqual:object->_ads_ads]);
+    (_botCamment_botCamment == object->_botCamment_botCamment ? YES : [_botCamment_botCamment isEqual:object->_botCamment_botCamment]);
 }
 
-- (void)matchCamment:(CMCammentsBlockItemCammentMatchHandler)cammentMatchHandler ads:(CMCammentsBlockItemAdsMatchHandler)adsMatchHandler
+- (void)matchCamment:(CMCammentsBlockItemCammentMatchHandler)cammentMatchHandler botCamment:(CMCammentsBlockItemBotCammentMatchHandler)botCammentMatchHandler
 {
   switch (_subtype) {
     case _CMCammentsBlockItemSubtypescamment: {
       cammentMatchHandler(_camment_camment);
       break;
     }
-    case _CMCammentsBlockItemSubtypesads: {
-      adsMatchHandler(_ads_ads);
+    case _CMCammentsBlockItemSubtypesbotCamment: {
+      botCammentMatchHandler(_botCamment_botCamment);
       break;
     }
   }

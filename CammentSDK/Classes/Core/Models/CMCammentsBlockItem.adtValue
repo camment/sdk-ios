@@ -1,11 +1,11 @@
 %type name="CMCamment"
-%type name="CMAds"
+%type name="CMBotCamment"
 
 CMCammentsBlockItem {
   camment {
     CMCamment *camment
   }
-  ads {
-    CMAds *ads
+  botCamment {
+    CMBotCamment *botCamment
   }
 }

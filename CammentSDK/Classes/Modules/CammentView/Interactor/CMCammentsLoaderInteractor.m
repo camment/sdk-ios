@@ -51,7 +51,7 @@
     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID] continueWithBlock:^id(AWSTask<CMAPICammentList *> *t) {
 
         if ([t.result isKindOfClass:[CMAPICammentList class]]) {
-            NSArray *camments = [(CMAPICammentList *) t.result items];
+            NSArray *camments = [t.result items];
             NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
                 return [[CMCamment alloc] initWithShowUuid:value.showUuid
                                              userGroupUuid:value.userGroupUuid
@@ -60,7 +60,10 @@
                                                   localURL:nil
                                               thumbnailURL:value.thumbnail
                                      userCognitoIdentityId:value.userCognitoIdentityId
-                                                localAsset:nil];
+                                                localAsset:nil
+                                               isMadeByBot:NO
+                                                   botUuid:nil
+                                                 botAction:nil];
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_output didFetchCamments:result];

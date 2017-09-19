@@ -3,25 +3,25 @@
 // Copyright (c) 2017 Camment. All rights reserved.
 //
 
-#import "CMAdsCell.h"
-#import "CMAds.h"
-#import "CMAdsNode.h"
+#import "CMBotCammentCell.h"
+#import "CMBotCamment.h"
+#import "CMBotCammentNode.h"
 #import "UIColorMacros.h"
 
 
-@interface CMAdsCell ()
-@property(nonatomic, strong) CMAdsNode* adsNode;
+@interface CMBotCammentCell ()
+@property(nonatomic, strong) CMBotCammentNode* botCammentNode;
 @property(nonatomic, strong) ASTextNode* adsTextNode;
 @property(nonatomic, strong) ASButtonNode *closeButtonNode;
 @end
 
-@implementation CMAdsCell
+@implementation CMBotCammentCell
 
-- (instancetype)initWithAds:(CMAds *)ads {
+- (instancetype)initWithBotCamment:(CMBotCamment *)botCamment {
     self = [super init];
     if (self) {
-        self.ads = ads;
-        self.adsNode = [[CMAdsNode alloc] initWithAds:ads];
+        self.botCamment = botCamment;
+        self.botCammentNode = [[CMBotCammentNode alloc] initWithAds:botCamment];
         
         self.closeButtonNode = [ASButtonNode new];
         [self.closeButtonNode setImage:[UIImage imageNamed:@"close_ads_button"
@@ -42,10 +42,10 @@
                                                                                          NSFontAttributeName: [UIFont systemFontOfSize:9.0f],
                                                                                          NSForegroundColorAttributeName: [UIColor whiteColor]
                                                                                          }]];
-        self.adsNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
-        self.adsNode.borderWidth = 2.0f;
-        self.adsNode.cornerRadius = 4.0f;
-        self.adsNode.clipsToBounds = YES;
+        self.botCammentNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
+        self.botCammentNode.borderWidth = 2.0f;
+        self.botCammentNode.cornerRadius = 4.0f;
+        self.botCammentNode.clipsToBounds = YES;
         
         self.clipsToBounds = NO;
         self.automaticallyManagesSubnodes = YES;
@@ -55,8 +55,8 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    self.adsNode.style.preferredSize = CGSizeMake(45.0f, 45.0f);
-    self.adsNode.style.layoutPosition = CGPointMake(.0f, .0f);
+    self.botCammentNode.style.preferredSize = CGSizeMake(45.0f, 45.0f);
+    self.botCammentNode.style.layoutPosition = CGPointMake(.0f, .0f);
     
     self.closeButtonNode.style.preferredSize = CGSizeMake(30, 30);
     self.closeButtonNode.style.layoutPosition = CGPointMake(-15.0f, -12.0f);
@@ -65,13 +65,13 @@
     self.adsTextNode.style.height = ASDimensionMake(30.0f);
     self.adsTextNode.style.layoutPosition = CGPointMake(45.0f, 0.0f);
     
-    ASAbsoluteLayoutSpec *absoluteLayoutSpec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit children:@[_adsNode, _closeButtonNode, _adsTextNode]];
+    ASAbsoluteLayoutSpec *absoluteLayoutSpec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit children:@[_botCammentNode, _closeButtonNode, _adsTextNode]];
     return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, .0f, -40.0f) child:absoluteLayoutSpec];
 }
 
 - (void)didTapOnCloseButton {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(adsCellDidTapOnCloseButton:)]) {
-        [self.delegate adsCellDidTapOnCloseButton:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(botCammentCellDidTapOnCloseButton:)]) {
+        [self.delegate botCammentCellDidTapOnCloseButton:self];
     }
 }
 

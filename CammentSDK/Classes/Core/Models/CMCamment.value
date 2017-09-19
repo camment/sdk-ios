@@ -8,4 +8,7 @@ CMCamment includes(RMBuilder) {
   NSString* thumbnailURL
   NSString* userCognitoIdentityId
   AVAsset* localAsset
+  BOOL isMadeByBot
+  NSString *botUuid
+  NSString *botAction
 }

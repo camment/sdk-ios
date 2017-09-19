@@ -247,14 +247,12 @@
     if (asset) {
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
         NSString *groupUUID = [self.usersGroup uuid];
-        CMCamment *camment = [[CMCamment alloc] initWithShowUuid:self.show.uuid
-                                               userGroupUuid:groupUUID
-                                                        uuid:uuid
-                                                   remoteURL:nil
-                                                    localURL:nil
-                                                thumbnailURL:nil
-                                       userCognitoIdentityId:[CMStore instance].cognitoUserId
-                                                  localAsset:asset];
+        CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
+        CMCamment *camment = [[[[[cammentBuilder
+                withShowUuid:self.show.uuid]
+                withUserGroupUuid:groupUUID]
+                withUserGroupUuid:[CMStore instance].cognitoUserId]
+                withLocalAsset:asset] build];
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
                                                 if (self.isOnboardingRunning) {
@@ -286,7 +284,7 @@
 
         [obj matchCamment:^(CMCamment *camment) {
             result = [camment.uuid isEqualToString:uploadedCamment.uuid];
-        }             ads:^(CMAds *ads) {
+        }             botCamment:^(CMBotCamment *ads) {
         }];
 
         return result;
@@ -296,7 +294,7 @@
         CMCammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
         [cammentsBlockItem matchCamment:^(CMCamment *camment) {
             mutableCamments[(NSUInteger) index] = [CMCammentsBlockItem cammentWithCamment:uploadedCamment];
-        }                           ads:^(CMAds *ads) {
+        }                           botCamment:^(CMBotCamment *ads) {
         }];
     }
     self.cammentsBlockNodePresenter.items = mutableCamments.copy;
@@ -314,7 +312,7 @@
 
         [value matchCamment:^(CMCamment *mathedCamment) {
             result = [camment.uuid isEqualToString:mathedCamment.uuid];
-        }               ads:^(CMAds *ads) {
+        }               botCamment:^(CMBotCamment *ads) {
         }];
 
         return result;
@@ -333,9 +331,10 @@
     }
 }
 
-- (void)didReceiveNewAds:(CMAds *)ads {
-    [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem adsWithAds:ads] completion:^{
-    }];
+- (void)didReceiveNewBotCamment:(CMBotCamment *)botCamment {
+    [self.cammentsBlockNodePresenter
+            insertNewItem:[CMCammentsBlockItem botCammentWithBotCamment:botCamment]
+               completion:^{}];
 }
 
 - (void)inviteFriendsAction {

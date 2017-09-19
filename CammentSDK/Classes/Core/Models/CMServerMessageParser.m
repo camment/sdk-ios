@@ -39,7 +39,10 @@
                                                         localURL:nil
                                                     thumbnailURL:body[@"thumbnail"]
                                            userCognitoIdentityId:body[@"userCognitoIdentityId"]
-                                                      localAsset:nil];
+                                                      localAsset:nil
+                                                     isMadeByBot:NO
+                                                         botUuid:nil
+                                                       botAction:nil];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"invitation"]) {
@@ -80,7 +83,10 @@
                                                         localURL:nil
                                                     thumbnailURL:body[@"thumbnail"]
                                            userCognitoIdentityId:body[@"userCognitoIdentityId"]
-                                                      localAsset:nil];
+                                                      localAsset:nil
+                                                     isMadeByBot:NO
+                                                         botUuid:nil
+                                                       botAction:nil];
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     } else if ([type isEqualToString:@"membership-request"]) {
         NSDictionary *userJson = body[@"joiningUser"];

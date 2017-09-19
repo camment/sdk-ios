@@ -27,5 +27,11 @@
 
 - (instancetype)withLocalAsset:(AVAsset *)localAsset;
 
+- (instancetype)withIsMadeByBot:(BOOL)isMadeByBot;
+
+- (instancetype)withBotUuid:(NSString *)botUuid;
+
+- (instancetype)withBotAction:(NSString *)botAction;
+
 @end
 

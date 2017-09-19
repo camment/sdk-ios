@@ -11,8 +11,9 @@
 #import "CMSBPresentationBuilder.h"
 #import "CMCammentBuilder.h"
 #import "CMEmailSubscriptionPresentationBuilder.h"
+#import "CMBettingPresentationBuilder.h"
 
-NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
+NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
 @implementation CMPresentationUtility {
 
@@ -22,25 +23,35 @@ NSString * const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
             [CMWoltPresentationBuilder new],
             [CMNetflixPresentationBuilder new],
             [CMSBPresentationBuilder new],
-            [CMEmailSubscriptionPresentationBuilder new]
+            [CMEmailSubscriptionPresentationBuilder new],
+            [CMBettingPresentationBuilder new]
     ];
 }
 
 - (CMCammentsBlockItem *)blockItemAdsWithLocalGif:(NSString *)filename url:(NSString *)url {
+    CMBotCamment *cmBotCamment = [self botCammentWithLocalGif:filename url:url];
+    return [CMCammentsBlockItem botCammentWithBotCamment:cmBotCamment];
+}
+
+- (CMBotCamment *)botCammentWithLocalGif:(NSString *)filename url:(NSString *)url {
     NSString *filepath = [[NSBundle cammentSDKBundle] pathForResource:filename ofType:@"gif"];
     NSURL *pathUrl = [NSURL fileURLWithPath:filepath];
-    CMCammentsBlockItem *ads = [CMCammentsBlockItem adsWithAds:[[CMAds alloc] initWithURL:pathUrl.absoluteString
-                                                                            openURL:url]];
-    return ads;
+    return [[CMBotCamment alloc] initWithURL:pathUrl.absoluteString
+                                     openURL:url];
 }
 
 - (CMCammentsBlockItem *)blockItemCammentWithLocalVideo:(NSString *)filename {
+    CMCamment *camment = [self cammentWithLocalVideo:filename];
+    return [CMCammentsBlockItem cammentWithCamment:camment];
+}
+
+- (CMCamment *)cammentWithLocalVideo:(NSString *)filename {
     NSString *filepath = [[NSBundle cammentSDKBundle] pathForResource:filename ofType:@"mp4"];
     CMCamment *camment = [[[[[CMCammentBuilder new]
             withShowUuid:kCMPresentationBuilderUtilityAnyShowUUID]
             withUuid:[NSUUID new].UUIDString.lowercaseString]
             withLocalURL:filepath] build];
-    return [CMCammentsBlockItem cammentWithCamment:camment];
+    return camment;
 }
 
 - (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalVideo:(NSString *)filename {

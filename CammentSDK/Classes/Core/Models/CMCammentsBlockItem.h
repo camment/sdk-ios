@@ -5,18 +5,18 @@
 
 #import <Foundation/Foundation.h>
 #import "CMCamment.h"
-#import "CMAds.h"
+#import "CMBotCamment.h"
 
 typedef void (^CMCammentsBlockItemCammentMatchHandler)(CMCamment *camment);
-typedef void (^CMCammentsBlockItemAdsMatchHandler)(CMAds *ads);
+typedef void (^CMCammentsBlockItemBotCammentMatchHandler)(CMBotCamment *botCamment);
 
 @interface CMCammentsBlockItem : NSObject <NSCopying>
 
-+ (instancetype)adsWithAds:(CMAds *)ads;
++ (instancetype)botCammentWithBotCamment:(CMBotCamment *)botCamment;
 
 + (instancetype)cammentWithCamment:(CMCamment *)camment;
 
-- (void)matchCamment:(CMCammentsBlockItemCammentMatchHandler)cammentMatchHandler ads:(CMCammentsBlockItemAdsMatchHandler)adsMatchHandler;
+- (void)matchCamment:(CMCammentsBlockItemCammentMatchHandler)cammentMatchHandler botCamment:(CMCammentsBlockItemBotCammentMatchHandler)botCammentMatchHandler;
 
 @end
 

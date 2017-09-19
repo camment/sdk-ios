@@ -16,8 +16,11 @@
 @property (nonatomic, readonly, copy) NSString *thumbnailURL;
 @property (nonatomic, readonly, copy) NSString *userCognitoIdentityId;
 @property (nonatomic, readonly, copy) AVAsset *localAsset;
+@property (nonatomic, readonly) BOOL isMadeByBot;
+@property (nonatomic, readonly, copy) NSString *botUuid;
+@property (nonatomic, readonly, copy) NSString *botAction;
 
-- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset;
+- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset isMadeByBot:(BOOL)isMadeByBot botUuid:(NSString *)botUuid botAction:(NSString *)botAction;
 
 @end
 

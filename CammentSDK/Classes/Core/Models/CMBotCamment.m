@@ -1,15 +1,15 @@
 /**
  * This file is generated using the remodel generation script.
- * The name of the input file is CMAds.value
+ * The name of the input file is CMBotCamment.value
  */
 
 #if  ! __has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-#import "CMAds.h"
+#import "CMBotCamment.h"
 
-@implementation CMAds
+@implementation CMBotCamment
 
 - (instancetype)initWithURL:(NSString *)URL openURL:(NSString *)openURL
 {
@@ -48,7 +48,7 @@
   return result;
 }
 
-- (BOOL)isEqual:(CMAds *)object
+- (BOOL)isEqual:(CMBotCamment *)object
 {
   if (self == object) {
     return YES;

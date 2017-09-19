@@ -50,7 +50,8 @@ NSString *const tweakSettingsBettingDemoCollectionName = @"Betting demo settings
     CMCammentsBlockItem *betBlockItem = [utility blockItemBotAction:@"bet" action:action];
     return @[
             [[CMPositionPresentationInstruction alloc] initWithPosition:1
-                                                                 action:[[CMDisplayCammentPresentationAction alloc] initWithItem:betBlockItem]]
+                                                                 action:[[CMDisplayCammentPresentationAction alloc]
+                                                                         initWithItem:betBlockItem] delay:1]
 
     ];
 }

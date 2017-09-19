@@ -10,6 +10,7 @@
 #import "CMGroupsListNode.h"
 
 @interface CMGroupsListNode ()
+
 @end
 
 @implementation CMGroupsListNode
@@ -18,6 +19,8 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.tableNode = [ASTableNode new];
+        self.tableNode.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -25,7 +28,7 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-  return [super layoutSpecThatFits:constrainedSize];
+  return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero child:_tableNode];
 }
 
 @end

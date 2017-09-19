@@ -35,6 +35,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    self.view.backgroundColor = [UIColor blackColor];
     UISwipeGestureRecognizer *dismissViewControllerGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController)];
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
@@ -43,9 +44,13 @@
     [self.presenter setupView];
 }
 
--(void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    [[_cammentOverlayController cammentView] setFrame:self.view.bounds];
+-(void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+    CGRect cammentViewFrame = self.view.bounds;
+    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
+        cammentViewFrame = CGRectMake(.0f, 20.0f, cammentViewFrame.size.width, cammentViewFrame.size.height - 20.0f);
+    }
+    [[_cammentOverlayController cammentView] setFrame:cammentViewFrame];
 }
 
 - (void)dismissViewController {
@@ -102,4 +107,7 @@
     }
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleLightContent;
+}
 @end

@@ -11,6 +11,8 @@
 #import "CMCammentRecorderPreviewNode.h"
 #import "POPSpringAnimation.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMGroupsListNode.h"
+#import "ASDimension.h"
 
 @interface CMCammentsOverlayViewNode ()
 
@@ -44,6 +46,7 @@
         self.layoutConfig = layoutConfig;
         self.showCammentsBlock = YES;
         _cammentsBlockNode = [CMCammentsBlockNode new];
+        _groupsListNode = [CMGroupsListNode new];
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
         _contentView = [UIView new];
@@ -84,11 +87,34 @@
 
     ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
 
-    CGFloat leftLayoutInset = 0.0f;
+    _groupsListNode.style.width = ASDimensionMake(240.0f);
     _cammentsBlockNode.style.width = ASDimensionMake(120.0f);
+
+    ASStackLayoutSpec *leftColumnStack = [ASStackLayoutSpec
+            stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
+                                 spacing:.0f
+                          justifyContent:ASStackLayoutJustifyContentStart
+                              alignItems:ASStackLayoutAlignItemsStart
+                                children:@[
+                                        _groupsListNode,
+                                        _cammentsBlockNode
+                                ]
+    ];
+
+    leftColumnStack.style.width = ASDimensionMake(_groupsListNode.style.width.value + _cammentsBlockNode.style.width.value);
+    CGFloat leftLayoutInset = 0.0f;
+    CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value;
+    if (_showCammentsBlock) {
+        leftColumnStackOffset = -_groupsListNode.style.width.value;
+    }
+
+    if (_showGroupsListNode) {
+        leftColumnStackOffset = .0f;
+    }
+
     ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, _showCammentsBlock ? .0f : -_cammentsBlockNode.style.width.value, 0.0f, INFINITY)
-                                child:_cammentsBlockNode];
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
+                                child:leftColumnStack];
 
     CGFloat cammentRecorderNodeWidth = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.width;
     CGFloat cammentRecorderNodeHeight = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.height;
@@ -103,6 +129,9 @@
                                 child:_cammentRecorderNode];
     _cammentsBlockNode.style.height = ASDimensionMake(
             [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
+    _groupsListNode.style.height = ASDimensionMake(
+            [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
+
     ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
             stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                  spacing:.0f
@@ -173,6 +202,7 @@
                 MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
+        self.groupsListNode.frame = [context finalFrameForNode:self.groupsListNode];
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];
         self.cammentsBlockNode.frame = cammentBlockFinalFrame;

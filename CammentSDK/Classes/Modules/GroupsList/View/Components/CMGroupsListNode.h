@@ -12,4 +12,6 @@
 
 @interface CMGroupsListNode: ASDisplayNode
 
+@property (nonatomic, strong) ASTableNode *tableNode;
+
 @end

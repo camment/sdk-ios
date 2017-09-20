@@ -9,4 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMGroupsListPresenterOutput <NSObject>
+
+- (void)reloadData;
+- (void)endRefreshing;
+
 @end

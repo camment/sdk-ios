@@ -11,6 +11,27 @@
 
 @implementation CMGroupsListWireframe
 
+- (void)addToViewController:(UIViewController *)viewController {
+    self.parentViewController = viewController;
+
+    CMGroupsListViewController *view = [CMGroupsListViewController new];
+    CMGroupsListPresenter *presenter = [CMGroupsListPresenter new];
+    CMGroupsListInteractor *interactor = [CMGroupsListInteractor new];
+
+    view.presenter = presenter;
+    presenter.interactor = interactor;
+    presenter.output = view;
+    presenter.wireframe = self;
+    interactor.output = presenter;
+
+    self.view = view;
+    self.presenter = presenter;
+    self.interactor = interactor;
+
+    [viewController addChildViewController:view];
+    [view didMoveToParentViewController:viewController];
+}
+
 - (void)presentInWindow:(UIWindow *)window; {
     CMGroupsListViewController *view = [CMGroupsListViewController new];
     CMGroupsListPresenter *presenter = [CMGroupsListPresenter new];

@@ -47,9 +47,8 @@
 -(void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     CGRect cammentViewFrame = self.view.bounds;
-    if (UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation)) {
-        cammentViewFrame = CGRectMake(.0f, 20.0f, cammentViewFrame.size.width, cammentViewFrame.size.height - 20.0f);
-    }
+    CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
+    cammentViewFrame = CGRectMake(.0f, statusBarHeight, cammentViewFrame.size.width, cammentViewFrame.size.height - statusBarHeight);
     [[_cammentOverlayController cammentView] setFrame:cammentViewFrame];
 }
 

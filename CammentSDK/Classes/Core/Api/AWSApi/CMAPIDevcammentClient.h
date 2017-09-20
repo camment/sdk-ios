@@ -21,6 +21,7 @@
 #import "CMAPIDeeplink.h"
 #import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
+#import "CMAPIUsergroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
@@ -195,16 +196,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param deeplinkHash 
- @param os 
- 
- return type: CMAPIDeeplink *
- */
-- (AWSTask *)deferredDeeplinkDeeplinkHashGet:( NSString *)deeplinkHash os:(nullable NSString *)os;
-
-/**
- 
- 
  @param body 
  
  return type: 
@@ -219,6 +210,14 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIFacebookFriendList *
  */
 - (AWSTask *)meFbFriendsGet:(nullable NSString *)fbAccessToken;
+
+/**
+ 
+ 
+ 
+ return type: CMAPIUsergroupList *
+ */
+- (AWSTask *)meGroupsGet;
 
 /**
  

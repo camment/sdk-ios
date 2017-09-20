@@ -6,10 +6,14 @@
 //  Copyright 2017 Camment. All rights reserved.
 //
 
+#import "ASCollectionNode.h"
+#import "ASTableNode.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMGroupsListNode.h"
 
 @interface CMGroupsListNode ()
+
+
 
 @end
 
@@ -27,8 +31,13 @@
     return self;
 }
 
+- (void)didLoad {
+    [super didLoad];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.tableNode.view addSubview:self.refreshControl];
+}
+
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero child:_tableNode];
 }
-
 @end

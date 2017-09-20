@@ -25,7 +25,7 @@
 @property(nonatomic, strong) UIView* contentView;
 @property(nonatomic, strong, readonly) ASDisplayNode* contentNode;
 @property(nonatomic, strong, readonly) CMCammentsBlockNode *cammentsBlockNode;
-@property(nonatomic, strong, readonly) CMGroupsListNode *groupsListNode;
+@property(nonatomic, strong) ASDisplayNode *groupsListNode;
 @property(nonatomic, strong, readonly) CMCammentRecorderPreviewNode *cammentRecorderNode;
 @property(nonatomic, strong, readonly) CMCammentButton *cammentButton;
 @property(nonatomic, assign) BOOL showCammentsBlock;

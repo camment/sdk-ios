@@ -12,6 +12,7 @@
 #import "CMCammentRecorderInteractor.h"
 #import "CMCammentsLoaderInteractor.h"
 #import "CMShowMetadata.h"
+#import "CMGroupsListWireframe.h"
 
 
 @implementation CMCammentViewWireframe
@@ -31,6 +32,7 @@
     CMCammentViewInteractor *interactor = [CMCammentViewInteractor new];
 
     view.presenter = presenter;
+    view.groupListWireframe = [CMGroupsListWireframe new];
     presenter.interactor = interactor;
     presenter.output = view;
     presenter.wireframe = self;

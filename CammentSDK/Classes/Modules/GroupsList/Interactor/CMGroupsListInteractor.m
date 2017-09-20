@@ -7,7 +7,43 @@
 //
 
 #import "CMGroupsListInteractor.h"
+#import "CMAPIDevcammentClient.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "NSArray+RACSequenceAdditions.h"
+#import "RACSequence.h"
+#import "CMUsersGroupBuilder.h"
 
 @implementation CMGroupsListInteractor
+
+- (void)fetchUserGroups {
+    AWSTask * task = [[CMAPIDevcammentClient defaultAPIClient] meGroupsGet];
+    if (!task) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.output didFailToFetchUserGroups:nil];
+        });
+        return;
+    }
+
+    [task continueWithBlock:^id(AWSTask<CMAPIUsergroupList *> *t) {
+        if (t.error || ![t.result isKindOfClass:[CMAPIUsergroupList class]]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.output didFailToFetchUserGroups:t.error];
+            });
+            return nil;
+        }
+
+        NSArray<CMAPIUsergroupListItem *> *apiGroups = t.result.items;
+        NSArray *groups = [[apiGroups rac_sequence] map:^id(CMAPIUsergroupListItem *data) {
+            return [[[[CMUsersGroupBuilder new]
+                    withUuid:data.groupUuid]
+                      withTimestamp:data.timestamp] build];
+        }].array;
+
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.output didFetchUserGroups:groups];
+        });
+        return nil;
+    }];
+}
 
 @end

@@ -29,10 +29,13 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    self.groupNameNode.style.height = ASDimensionMake(44.0f);
-
+    self.groupNameNode.style.minHeight = ASDimensionMake(14.0f);
+    ASCenterLayoutSpec *centerLayoutSpec = [ASCenterLayoutSpec
+            centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringY
+                                   sizingOptions:ASCenterLayoutSpecSizingOptionDefault
+                                           child:_groupNameNode];
     return [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 20, 0, INFINITY)
-                                child:self.groupNameNode];
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(10, 20, 10, 10.0f)
+                                child:centerLayoutSpec];
 }
 @end

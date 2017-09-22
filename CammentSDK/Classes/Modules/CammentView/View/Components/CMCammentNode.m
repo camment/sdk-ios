@@ -84,7 +84,7 @@
         NSLog(@"Coudn't play camment in background thread!");
         return;
     }
-
+    [_videoPlayerNode.player pause];
     [_videoPlayerNode.player seekToTime:kCMTimeZero];
     [_videoPlayerNode play];
 }

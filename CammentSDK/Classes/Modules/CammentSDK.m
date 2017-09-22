@@ -502,7 +502,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     DDLogInfo(@"didFinishLaunchingWithOptions hook has been installed");
-    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryAmbient
+    [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord
                                      withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     return [[FBSDKApplicationDelegate sharedInstance] application:application

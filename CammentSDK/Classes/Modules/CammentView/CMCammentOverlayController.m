@@ -31,7 +31,10 @@
         self.cammentViewController = [viewWireframe controller];
         self.wireframe = viewWireframe;
 
-        [RACObserve(store, cammentRecordingState) subscribeNext:^(id x) {
+        @weakify(self);
+        [[[RACObserve(store, cammentRecordingState) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
+            @strongify(self);
+            if (!self) { return; }
             CMCammentRecordingState recordingState = (CMCammentRecordingState) [(NSNumber *)x integerValue];
             if (recordingState == CMCammentRecordingStateRecording) {
                 if (self.overlayDelegate && [self.overlayDelegate respondsToSelector:@selector(cammentOverlayDidStartRecording)]) {
@@ -44,7 +47,9 @@
             }
         }];
 
-        [RACObserve(store, playingCammentId) subscribeNext:^(id x) {
+        [[[RACObserve(store, playingCammentId) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
+            @strongify(self);
+            if (!self) { return; }
             if (![(NSString *)x isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
                 if (self.overlayDelegate && [self.overlayDelegate respondsToSelector:@selector(cammentOverlayDidStartPlaying)]) {
                     [self.overlayDelegate cammentOverlayDidStartPlaying];
@@ -57,6 +62,10 @@
         }];
     }
     return self;
+}
+
+- (void)dealloc {
+    
 }
 
 - (void)addToParentViewController:(UIViewController *)viewController {

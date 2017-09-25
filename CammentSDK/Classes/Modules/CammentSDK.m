@@ -318,7 +318,9 @@
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
                     && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]
                     && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]) {
-                [self presentChatInvitation:invitation];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentChatInvitation:invitation];
+                });
             }
         }];
 
@@ -565,15 +567,21 @@
         CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder
                                                     invitationFromExistingInvitation:invitation]
                                                    withInvitationKey:invitationKey] build];
-        [self presentChatInvitation:invitationWithUpdatedKey];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentChatInvitation:invitationWithUpdatedKey];
+        });
     } else {
         [self.onSignedInOperationsQueue setSuspended:YES];
         @weakify(self);
         [self.onSignedInOperationsQueue addOperationWithBlock:^{
             @strongify(self);
-            [self verifyInvitation:invitation];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self verifyInvitation:invitation];
+            });
         }];
-        [self presentLoginSuggestion:@"You will join the group right after this"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentLoginSuggestion:@"You will join the group right after this"];
+        });
     }
 }
 

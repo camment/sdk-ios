@@ -356,6 +356,7 @@
 }
 
 - (void)inviteFriendsAction {
+    [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
     FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
     [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
     if ([CMStore instance].isFBConnected) {

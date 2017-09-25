@@ -6,7 +6,6 @@
 //  Copyright 2017 Sportacam. All rights reserved.
 //
 
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import "CMAuthInteractor.h"
 #import "CMStore.h"
 #import "CMCognitoAuthService.h"
@@ -14,12 +13,15 @@
 @implementation CMAuthInteractor
 
 - (void)signInWithFacebookProvider:(UIViewController *)viewController {
-    FBSDKLoginManager *manager = [FBSDKLoginManager new];
-    manager.loginBehavior = FBSDKLoginBehaviorSystemAccount;
+    self.manager = [FBSDKLoginManager new];
 
-    [manager logInWithReadPermissions:@[@"public_profile", @"user_friends", @"email", @"read_custom_friendlists"]
+    @weakify(self);
+    [self.manager logInWithReadPermissions:@[@"public_profile", @"user_friends", @"email", @"read_custom_friendlists"]
                    fromViewController:viewController
                               handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
+                                  @strongify(self);
+                                  if (!self) { return; }
+                                  
                                   if (error) {
                                       [self.output authInteractorFailedToSignIn:error];
                                       return;

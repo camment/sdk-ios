@@ -22,6 +22,7 @@
 @property (nonatomic, weak) UIViewController *parentViewController;
 @property (nonatomic, weak) UINavigationController *parentNavigationController;
 
+- (void)addToViewController:(UIViewController *)viewController;
 - (void)presentInWindow:(UIWindow *)window;
 - (void)presentInViewController:(UIViewController *)viewController;
 - (void)pushInNavigationController:(UINavigationController *)navigationController;

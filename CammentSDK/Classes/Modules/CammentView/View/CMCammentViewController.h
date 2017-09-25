@@ -16,8 +16,11 @@
 #import "CMLoadingHUD.h"
 #import "CMCammentViewNode.h"
 
+@class CMGroupsListWireframe;
+
 @interface CMCammentViewController : ASViewController<CMCammentViewNode *><CMCammentViewPresenterOutput, CMCammentsOverlayViewNodeDelegate>
 
 @property (nonatomic, strong) id<CMCammentViewPresenterInput> presenter;
+@property (nonatomic, strong) CMGroupsListWireframe *groupListWireframe;
 
 @end

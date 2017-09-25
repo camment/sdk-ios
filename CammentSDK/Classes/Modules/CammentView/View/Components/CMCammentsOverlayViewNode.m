@@ -11,10 +11,13 @@
 #import "CMCammentRecorderPreviewNode.h"
 #import "POPSpringAnimation.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMGroupsListNode.h"
+#import "ASDimension.h"
 
 @interface CMCammentsOverlayViewNode ()
 
 @property (nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
+@property (nonatomic, assign) CGFloat groupsSidebarWidth;
 @property (nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
 
 @property(nonatomic, strong) CMCammentOverlayLayoutConfig *layoutConfig;
@@ -24,7 +27,7 @@
 
 - (instancetype)init {
     CMCammentOverlayLayoutConfig *layoutConfig = [CMCammentOverlayLayoutConfig new];
-
+    self.groupsSidebarWidth = 240.0f;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionTopRight;
         layoutConfig.cammentButtonLayoutVerticalInset = 20.0f;
@@ -44,6 +47,7 @@
         self.layoutConfig = layoutConfig;
         self.showCammentsBlock = YES;
         _cammentsBlockNode = [CMCammentsBlockNode new];
+        _groupsListNode = [ASDisplayNode new];
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
         _contentView = [UIView new];
@@ -72,26 +76,22 @@
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
+- (void)setGroupsListNode:(ASDisplayNode *)groupsListNode {
+    _groupsListNode = groupsListNode;
+    [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
 - (void)didLoad {
     [super didLoad];
     [self.cammentButton.view addGestureRecognizer:_cammentPanDownGestureRecognizer];
 }
 
-- (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-
-    self.contentNode.style.width = ASDimensionMake(constrainedSize.max.width);
-    self.contentNode.style.height = ASDimensionMake(constrainedSize.max.height);
-
-    ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
-
-    CGFloat leftLayoutInset = 0.0f;
+- (ASLayoutSpec *)cammentBlockLayoutSpecThatFits:(ASSizeRange)constrainedSize {
     _cammentsBlockNode.style.width = ASDimensionMake(120.0f);
-    ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, _showCammentsBlock ? .0f : -_cammentsBlockNode.style.width.value, 0.0f, INFINITY)
-                                child:_cammentsBlockNode];
 
     CGFloat cammentRecorderNodeWidth = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.width;
     CGFloat cammentRecorderNodeHeight = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.height;
+
     _cammentRecorderNode.style.width = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeWidth : 1.0f);
     _cammentRecorderNode.style.height = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeHeight : .0f);
     ASInsetLayoutSpec *cammentRecorderNodeInsetsLayout = [ASInsetLayoutSpec
@@ -101,17 +101,70 @@
                     _showCammentRecorderNode ? 4.0f : .0f,
                     INFINITY)
                                 child:_cammentRecorderNode];
-    _cammentsBlockNode.style.height = ASDimensionMake(
-            [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
+
     ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
             stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                  spacing:.0f
                           justifyContent:ASStackLayoutJustifyContentStart
                               alignItems:ASStackLayoutAlignItemsStretch
-                                children:@[cammentRecorderNodeInsetsLayout, cammentsBlockLayout]];
+                                children:@[cammentRecorderNodeInsetsLayout,
+                                        [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
+                                                                               child:_cammentsBlockNode]]];
+    return stackLayoutSpec;
+}
+
+- (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+
+    self.contentNode.style.width = ASDimensionMake(constrainedSize.max.width);
+    self.contentNode.style.height = ASDimensionMake(constrainedSize.max.height);
+
+    ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
+    ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
+
+    _groupsListNode.style.width = ASDimensionMake(self.groupsSidebarWidth);
+    camentBlockLayoutSpec.style.width = ASDimensionMake(150.0f);
+
+    ASStackLayoutSpec *leftColumnStack = [ASStackLayoutSpec
+            stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
+                                 spacing:.0f
+                          justifyContent:ASStackLayoutJustifyContentStart
+                              alignItems:ASStackLayoutAlignItemsStart
+                                children:@[
+                                        _groupsListNode,
+                                        camentBlockLayoutSpec
+                                ]
+    ];
+
+    leftColumnStack.style.width = ASDimensionMake(_groupsListNode.style.width.value + camentBlockLayoutSpec.style.width.value);
+    CGFloat leftLayoutInset = 0.0f;
+    CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value;
+    if (_showCammentsBlock) {
+        leftColumnStackOffset = -_groupsListNode.style.width.value;
+    }
+
+    if (_showGroupsListNode) {
+        leftColumnStackOffset = .0f;
+    }
+
+    ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
+                                child:leftColumnStack];
+
+    _cammentsBlockNode.style.height = ASDimensionMake(
+            [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
+    _groupsListNode.style.height = ASDimensionMake(
+            [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
+
+    ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
+            stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
+                                 spacing:.0f
+                          justifyContent:ASStackLayoutJustifyContentStart
+                              alignItems:ASStackLayoutAlignItemsStretch
+                                children:@[cammentsBlockLayout]];
+
     stackLayoutSpec.style.height = self.contentNode.style.height;
     ASInsetLayoutSpec *stackLayoutInsetSpec = [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(4.0f, leftLayoutInset, .0f, INFINITY)
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftLayoutInset, .0f, INFINITY)
                                 child:stackLayoutSpec];
 
     ASOverlayLayoutSpec *cammentButtonOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:self.contentNode
@@ -134,7 +187,9 @@
                             self.cammentButtonScreenSideVerticalInset,
                             INFINITY,
                             INFINITY,
-                            _showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2)
+                            _showGroupsListNode ?
+                                    - _groupsSidebarWidth + _cammentButton.style.width.value * 2
+                                    : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
             break;
         case CMCammentOverlayLayoutPositionBottomLeft:
@@ -144,7 +199,9 @@
                             INFINITY,
                             INFINITY,
                             self.cammentButtonScreenSideVerticalInset,
-                            _showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2)
+                            _showGroupsListNode ?
+                                    - _groupsSidebarWidth + _cammentButton.style.width.value * 2
+                                    : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
             break;
     }
@@ -173,6 +230,7 @@
                 MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
+        self.groupsListNode.frame = [context finalFrameForNode:self.groupsListNode];
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];
         self.cammentsBlockNode.frame = cammentBlockFinalFrame;

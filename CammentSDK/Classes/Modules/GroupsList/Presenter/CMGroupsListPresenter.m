@@ -8,11 +8,61 @@
 
 #import "CMGroupsListPresenter.h"
 #import "CMGroupsListWireframe.h"
+#import "CMUsersGroup.h"
+#import "CMStore.h"
+#import "RACSubject.h"
+
+@interface CMGroupsListPresenter ()
+@property(nonatomic, strong) NSArray *groups;
+@end
 
 @implementation CMGroupsListPresenter
 
-- (void)setupView {
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.groups = [NSArray new];
+        @weakify(self);
+        [[RACObserve([CMStore instance], activeGroup) deliverOnMainThread] subscribeNext:^(CMUsersGroup *activeGroup) {
+            @strongify(self);
+            if (!self) { return; }
+            [self reloadGroups];
+        }];
+    }
+    
+    return self;
+}
 
+- (void)setupView {
+    [self reloadGroups];
+}
+
+- (NSInteger)groupsCount {
+    return [self.groups count];
+}
+
+- (CMUsersGroup *)groupAtIndex:(NSInteger)index {
+    return self.groups[(NSUInteger) index];
+}
+
+- (void)openGroupAtIndex:(NSInteger)index {
+    CMUsersGroup *group = [self groupAtIndex:index];
+    [[CMStore instance] setActiveGroup:group];
+    [[[CMStore instance] reloadActiveGroupSubject] sendNext:@(YES)];
+}
+
+- (void)reloadGroups {
+    [self.interactor fetchUserGroups];
+}
+
+- (void)didFetchUserGroups:(NSArray *)groups {
+    self.groups = [NSArray arrayWithArray:groups];
+    [self.output reloadData];
+    [self.output endRefreshing];
+}
+
+- (void)didFailToFetchUserGroups:(NSError *)error {
+    [self.output endRefreshing];
 }
 
 @end

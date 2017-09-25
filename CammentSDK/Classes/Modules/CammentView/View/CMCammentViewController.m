@@ -20,11 +20,12 @@
 #import "CMCamment.h"
 #import "CMUserJoinedMessage.h"
 #import "CMCammentCell.h"
+#import "CMGroupsListWireframe.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 
 @property CMOnboardingAlertType currentOnboardingAlert;
-@property(nonatomic, strong) AMPopTip *popTip;
+@property (nonatomic, strong) AMPopTip *popTip;
 
 @end
 
@@ -53,6 +54,9 @@
 
     self.node.cammentButton.delegate = self;
     self.node.delegate = self;
+
+    [self.groupListWireframe addToViewController:self];
+    self.node.groupsListNode = self.groupListWireframe.view.node;
 
     [self setupBindings];
     [self.presenter setupView];
@@ -159,6 +163,14 @@
 }
 
 - (void)hideCamments {
+    if (self.node.showGroupsListNode) {
+        self.node.showGroupsListNode = NO;
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
+        }];
+        [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+        return;
+    }
+
     if (self.node.showCammentsBlock) {
         self.node.showCammentsBlock = NO;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
@@ -168,6 +180,14 @@
 }
 
 - (void)showCamments {
+    if (self.node.showCammentsBlock) {
+        self.node.showGroupsListNode = YES;
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
+        }];
+        [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+        return;
+    }
+
     if (!self.node.showCammentsBlock) {
         self.node.showCammentsBlock = YES;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{

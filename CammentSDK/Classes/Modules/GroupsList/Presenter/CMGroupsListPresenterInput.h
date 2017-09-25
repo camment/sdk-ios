@@ -9,8 +9,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMUsersGroup;
+
 @protocol CMGroupsListPresenterInput <NSObject>
 
 - (void)setupView;
 
+- (NSInteger)groupsCount;
+
+- (CMUsersGroup *)groupAtIndex:(NSInteger)index;
+
+- (void)openGroupAtIndex:(NSInteger)index;
+
+- (void)reloadGroups;
 @end

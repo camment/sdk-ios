@@ -123,5 +123,8 @@
     [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
+- (UIStatusBarStyle)preferredStatusBarStyle {
+    return UIStatusBarStyleDefault;
+}
 
 @end

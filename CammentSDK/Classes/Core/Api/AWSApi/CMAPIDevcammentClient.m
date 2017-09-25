@@ -24,6 +24,7 @@
 #import "CMAPIDeeplink.h"
 #import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
+#import "CMAPIUsergroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
@@ -185,29 +186,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIDeeplink class]];
 }
 
-- (AWSTask *)deferredDeeplinkDeeplinkHashGet:(NSString *)deeplinkHash os:(NSString *)os {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      @"os": os
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"deeplinkHash": deeplinkHash,
-                                     
-                                     };
-    
-    return [self invokeHTTPRequest:@"GET"
-                         URLString:@"/deferred-deeplink/{deeplinkHash}"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:[CMAPIDeeplink class]];
-}
-
 - (AWSTask *)demoValidatePasscodePost:(CMAPIPasscodeInRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -250,6 +228,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                   headerParameters:headerParameters
                               body:nil
                      responseClass:[CMAPIFacebookFriendList class]];
+}
+
+- (AWSTask *)meGroupsGet {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/me/groups"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMAPIUsergroupList class]];
 }
 
 - (AWSTask *)showsGet:(NSString *)passcode {

@@ -6,10 +6,15 @@
 //  Copyright 2017 Camment. All rights reserved.
 //
 
+#import "ASCollectionNode.h"
+#import "ASTableNode.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMGroupsListNode.h"
 
 @interface CMGroupsListNode ()
+
+
+
 @end
 
 @implementation CMGroupsListNode
@@ -18,14 +23,21 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
+        self.tableNode = [ASTableNode new];
+        self.tableNode.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;
     }
 
     return self;
 }
 
-- (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-  return [super layoutSpecThatFits:constrainedSize];
+- (void)didLoad {
+    [super didLoad];
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.tableNode.view addSubview:self.refreshControl];
 }
 
+- (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+  return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero child:_tableNode];
+}
 @end

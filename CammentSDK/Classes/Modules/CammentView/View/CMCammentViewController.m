@@ -103,9 +103,9 @@
     self.popTip.edgeMargin = 14.0f;
     self.popTip.popoverColor = UIColorFromRGB(0x9B9B9B);
     self.popTip.radius = 8.0f;
-    self.popTip.shouldDismissOnSwipeOutside = NO;
+    self.popTip.shouldDismissOnSwipeOutside = YES;
     self.popTip.shouldDismissOnTap = YES;
-    self.popTip.shouldDismissOnTapOutside = NO;
+    self.popTip.shouldDismissOnTapOutside = YES;
     self.popTip.actionFloatOffset = 3.0f;
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

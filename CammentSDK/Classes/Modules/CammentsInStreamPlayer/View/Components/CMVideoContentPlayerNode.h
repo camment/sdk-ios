@@ -9,6 +9,7 @@
 
 @interface CMVideoContentPlayerNode : ASDisplayNode<CMContentViewerNode>
 
+@property (nonatomic, strong) NSDate *startsAt;
 
 - (void)setMuted:(BOOL)muted;
 

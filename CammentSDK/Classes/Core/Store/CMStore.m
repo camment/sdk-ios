@@ -33,6 +33,10 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             _instance.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
             _instance.reloadActiveGroupSubject = [RACSubject new];
 
+            // 28 September 2017, 21:00
+            _instance.scheduledDate = [NSDate dateWithTimeIntervalSince1970:1506621600];
+            _instance.scheduledShowUuid = @"2765bc3b-c714-437f-be9d-5914cbfbb000";
+
             [RACObserve(_instance, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
                 [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
             }];

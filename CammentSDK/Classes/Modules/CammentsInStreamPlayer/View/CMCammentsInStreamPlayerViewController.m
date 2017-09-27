@@ -14,6 +14,8 @@
 #import "CMVideoContentPlayerNode.h"
 #import "CMWebContentPlayerNode.h"
 #import "CMShowMetadata.h"
+#import "CMStore.h"
+#import "DateTools.h"
 
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate>
 
@@ -62,6 +64,26 @@
         [[_cammentOverlayController cammentView] removeFromSuperview];
     }
 
+    if ([show.uuid isEqualToString:[CMStore instance].scheduledShowUuid]
+            && [[NSDate date] isEarlierThan:[CMStore instance].scheduledDate]) {
+
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@"Not ready yet.."
+                                                                                 message:[NSString stringWithFormat:@"Stream starts at %@", [[CMStore instance].scheduledDate formattedDateWithFormat:@"HH:mm"]]
+                                                                          preferredStyle:UIAlertControllerStyleAlert];
+
+        [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Ok") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self dismissViewControllerAnimated:YES completion:nil];
+            });
+        }]];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self presentViewController:alertController animated:YES completion:nil];
+        });
+        
+        return;
+    }
+
     CMShowMetadata *metadata = [CMShowMetadata new];
     metadata.uuid = show.uuid;
 
@@ -72,6 +94,9 @@
 
     [show.showType matchVideo:^(CMAPIShow *matchedShow) {
         self.contentViewerNode = [CMVideoContentPlayerNode new];
+        if ([show.uuid isEqualToString:[CMStore instance].scheduledShowUuid]) {
+            [(CMVideoContentPlayerNode *)self.contentViewerNode setStartsAt:[CMStore instance].scheduledDate];
+        }
     } html:^(NSString *webURL) {
         self.contentViewerNode = [CMWebContentPlayerNode new];
     }];

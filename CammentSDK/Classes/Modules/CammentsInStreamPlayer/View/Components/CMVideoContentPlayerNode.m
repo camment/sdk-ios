@@ -73,4 +73,19 @@
     [self.videoPlayerNode.videoNode.player setVolume:lowVolume ? value : 1];
 }
 
+- (BOOL)videoPlayerNode:(ASVideoPlayerNode*)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
+    if (state != ASVideoNodePlayerStatePlaying) { return YES; }
+    
+    if (self.startsAt) {
+        self.videoPlayerNode.userInteractionEnabled = NO;
+        NSTimeInterval seekInSec = [[NSDate date] timeIntervalSinceDate:self.startsAt];
+        if (seekInSec > 0) {
+            [self.videoPlayerNode.videoNode.player
+             seekToTime:CMTimeMakeWithSeconds(seekInSec, self.videoPlayerNode.videoNode.periodicTimeObserverTimescale)];
+        }
+    }
+    
+    return YES;
+}
+
 @end

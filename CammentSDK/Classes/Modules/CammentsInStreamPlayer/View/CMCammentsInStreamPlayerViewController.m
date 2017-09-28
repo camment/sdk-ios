@@ -63,10 +63,6 @@
 }
 
 - (void)startShow:(CMShow *)show {
-    if (!self.countDownSignalDisposable) {
-        [CMStore instance].scheduledDate = [NSDate dateWithTimeIntervalSinceNow:10];
-    }
-
 
     CMShowMetadata *metadata = [CMShowMetadata new];
     metadata.uuid = show.uuid;

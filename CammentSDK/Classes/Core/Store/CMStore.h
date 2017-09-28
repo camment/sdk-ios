@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic) BOOL isOfflineMode;
 
-@property(nonatomic, copy) NSString *scheduledShowUuid;
+@property(nonatomic, copy) NSString *scheduledShowsPasscode;
 @property(nonatomic, copy) NSDate *scheduledDate;
 
 + (CMStore *)instance;

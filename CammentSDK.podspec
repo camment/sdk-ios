@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.description = "Camment is disrupting the second screen experience, replacing it with a patent pending first screen technology.\nOur technology is a simple SDK that allows broadcasters, and anyone with video, whether its streaming or clips, to add a social layer to their streams."
   s.frameworks = ["Foundation", "SystemConfiguration", "MobileCoreServices", "QuartzCore", "Accelerate", "CoreData", "AVFoundation", "UIKit", "ImageIO", "VideoToolbox", "MessageUI", "AssetsLibrary", "CoreImage", "CoreGraphics"]
   s.libraries = ["sqlite3", "z"]
-  s.source = { :path => '.' }
+  s.source = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '1.0.0' }
 
   s.ios.deployment_target    = '8.1'
   s.ios.vendored_framework   = 'ios/CammentSDK.framework'

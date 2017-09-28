@@ -9,7 +9,7 @@ Camment is disrupting the second screen experience, replacing it with a patent p
 Our technology is a simple SDK that allows broadcasters, and anyone with video, whether its streaming or clips, to add a social layer to their streams.
 DESC
 
-s.homepage         = 'https://github.com/alexfedosov/CammentSDK'
+s.homepage         = 'https://github.com/camment/sdk-ios.git'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Alexander Fedosov' => 'alex@camment.tv' }
 s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '1.0.0' }

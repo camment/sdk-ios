@@ -459,6 +459,7 @@
             [CMStore instance].isOnboardingFinished = YES;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
+            [CMStore instance].isOnboardingFinished = YES;
             [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
             break;
         case CMOnboardingAlertTapToPlayCamment:

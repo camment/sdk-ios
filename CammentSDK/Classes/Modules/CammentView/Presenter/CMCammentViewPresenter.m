@@ -85,19 +85,22 @@
         [self.botRegistry updateBotsOutputInterface:self];
 
         @weakify(self);
-        [[RACObserve([CMStore instance], activeGroup) deliverOnMainThread] subscribeNext:^(CMUsersGroup *group) {
+        [[[RACObserve([CMStore instance], activeGroup) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(CMUsersGroup *group) {
             @strongify(self);
             self.usersGroup = group;
         }];
 
-        [[[[CMStore instance] reloadActiveGroupSubject] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+        [[[[[CMStore instance] reloadActiveGroupSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
             @strongify(self);
             if (shouldReload.boolValue) {
                 [self updateChatWithActiveGroup];
             }
         }];
 
-        [RACObserve([CMStore instance], playingCammentId) subscribeNext:^(NSString *nextId) {
+        [[[RACObserve([CMStore instance], playingCammentId)
+                takeUntil:self.rac_willDeallocSignal]
+                deliverOnMainThread]
+        subscribeNext:^(NSString *nextId) {
             @strongify(self);
             [self playCamment:nextId];
             if (self.isOnboardingRunning) {
@@ -113,22 +116,23 @@
             }
         }];
 
-        [[[RACObserve([CMStore instance], cammentRecordingState) filter:^BOOL(NSNumber *state) {
+        __weak typeof(self) weakSelf = self;
+        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:weakSelf.rac_willDeallocSignal] filter:^BOOL(NSNumber *state) {
             return state.integerValue != CMCammentRecordingStateNotRecording;
         }] flattenMap:^RACSignal *(NSNumber *state) {
-            @strongify(self);
-            if (!self) {return [RACSignal empty];}
+
+            if (!weakSelf) {return [RACSignal empty];}
             CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
 
             if (cammentRecordingState == CMCammentRecordingStateFinished) {
-                [self.recorderInteractor stopRecording];
+                [weakSelf.recorderInteractor stopRecording];
                 return [RACSignal empty];
             }
 
             if (cammentRecordingState == CMCammentRecordingStateCancelled) {
-                [self.willStartRecordSignal dispose];
+                [weakSelf.willStartRecordSignal dispose];
                 [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
-                [self.recorderInteractor cancelRecording];
+                [weakSelf.recorderInteractor cancelRecording];
                 return [RACSignal empty];
             }
 
@@ -137,23 +141,24 @@
                 return nil;
             }];
         }] subscribeNext:^(id x) {
-            if (!self.isCameraSessionConfigured) {
-                [self.output askForSetupPermissions];
+            if (!weakSelf.isCameraSessionConfigured) {
+                [weakSelf.output askForSetupPermissions];
                 return;
             }
+            
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
-            self.willStartRecordSignal = [[[[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
+            weakSelf.willStartRecordSignal = [[[[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
                 [subscriber sendCompleted];
                 return nil;
             }] delay:0.5] deliverOnMainThread] subscribeCompleted:^{
-                [self.recorderInteractor startRecording];
+                [weakSelf.recorderInteractor startRecording];
             }];
         }];
 
-        [[RACSignal combineLatest:@[
-                RACObserve(self, cammentsBlockNodePresenter.items),
+        [[[RACSignal combineLatest:@[
+                RACObserve(self.cammentsBlockNodePresenter, items),
                 RACObserve([CMStore instance], currentShowTimeInterval)
-        ]] subscribeNext:^(RACTuple *tuple) {
+        ]] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(RACTuple *tuple) {
             @strongify(self);
             if (!self) {return;}
             CMPresentationState *state = [CMPresentationState new];
@@ -266,8 +271,11 @@
                 withUserGroupUuid:groupUUID]
                 withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
                 withLocalAsset:asset] build];
+        @weakify(self);
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
+                                                @strongify(self);
+                                                if (!self) { return; }
                                                 if (self.isOnboardingRunning) {
                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];

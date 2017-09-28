@@ -13,83 +13,88 @@
 
 @interface CMCammentRecorderInteractor () <SCRecorderDelegate>
 @property(nonatomic, weak) SCImageView *previewView;
+@property(nonatomic, strong) SCRecorder *recorder;
 @end
 
-@implementation CMCammentRecorderInteractor {
-    SCRecorder *recorder;
-}
+@implementation CMCammentRecorderInteractor
 
 - (instancetype)init {
     self = [super init];
 
     if (self) {
-        recorder = [SCRecorder recorder];
-        [RACObserve([CMStore instance], cammentRecordingState) subscribeNext:^(NSNumber *state) {
+        self.recorder = [SCRecorder recorder];
+        __weak typeof(self) weakSelf = self;
+        [[[RACObserve([CMStore instance], cammentRecordingState) deliverOnMainThread]
+          takeUntil:self.rac_willDeallocSignal]
+         subscribeNext:^(NSNumber *state) {
             BOOL showPreview = state.integerValue == CMCammentRecordingStateRecording;
-            [recorder setSCImageView:showPreview ? _previewView : nil];
+            [weakSelf.recorder setSCImageView:showPreview ? weakSelf.previewView : nil];
         }];
     }
 
     return self;
 }
 
+- (void)dealloc {
+    
+}
+
 - (void)configureCamera {
-    recorder.captureSessionPreset = AVCaptureSessionPresetHigh;
-    recorder.device = AVCaptureDevicePositionFront;
-    recorder.autoSetVideoOrientation = NO;
-    recorder.delegate = self;
+    self.recorder.captureSessionPreset = AVCaptureSessionPresetHigh;
+    self.recorder.device = AVCaptureDevicePositionFront;
+    self.recorder.autoSetVideoOrientation = NO;
+    self.recorder.delegate = self;
     // Get the video configuration object
-    SCVideoConfiguration *video = recorder.videoConfiguration;
+    SCVideoConfiguration *video = self.recorder.videoConfiguration;
     video.enabled = YES;
     video.size = CGSizeMake(270, 270);
     video.keepInputAffineTransform = YES;
     // Get the audio configuration object
-    SCAudioConfiguration *audio = recorder.audioConfiguration;
+    SCAudioConfiguration *audio = self.recorder.audioConfiguration;
     audio.enabled = YES;
 
-    SCPhotoConfiguration *photo = recorder.photoConfiguration;
+    SCPhotoConfiguration *photo = self.recorder.photoConfiguration;
     photo.enabled = NO;
 }
 
 - (void)updateDeviceOrientation:(AVCaptureVideoOrientation)orientation {
-    [recorder setVideoOrientation:orientation];
+    [self.recorder setVideoOrientation:orientation];
 }
 
 - (void)releaseCamera {
-    [recorder stopRunning];
+    [self.recorder stopRunning];
 }
 
 - (void)connectPreviewViewToRecorder:(SCImageView *)view {
     self.previewView = view;
-//    [(SCFilterImageView *)view setFilter:recorder.videoConfiguration.filter];
-    recorder.mirrorOnFrontCamera = YES;
+    self.recorder.mirrorOnFrontCamera = YES;
 
-    if (![recorder startRunning]) {
-        NSLog(@"Something wrong there: %@", recorder.error);
+    if (![self.recorder startRunning]) {
+        NSLog(@"Something wrong there: %@", self.recorder.error);
     }
 
-    recorder.session = [SCRecordSession recordSession];
+    self.recorder.session = [SCRecordSession recordSession];
 }
 
 - (void)startRecording {
-    if (recorder.isRecording) {return;}
-    [recorder.session removeAllSegments];
-    [recorder record];
+    if (self.recorder.isRecording) {return;}
+    [self.recorder.session removeAllSegments];
+    [self.recorder record];
 }
 
 - (void)stopRecording {
-    [recorder pause];
+    [self.recorder pause];
 }
 
 - (void)cancelRecording {
-    SCRecordSession *recordSession = recorder.session;
+    SCRecordSession *recordSession = self.recorder.session;
 
     if (recordSession != nil) {
         [recordSession removeAllSegments];
-        recorder.session = nil;
+        self.recorder.session = nil;
         [recordSession cancelSession:nil];
-        [recorder pause];
-        recorder.session = [SCRecordSession recordSession];
+        [self.recorder pause];
+        self.recorder.session = [SCRecordSession recordSession];
     }
 }
 
@@ -101,13 +106,13 @@
     SCAssetExportSession *assetExportSession = [[SCAssetExportSession alloc] initWithAsset:asset];
     assetExportSession.outputUrl = _recorder.session.outputUrl;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
-//
-//    assetExportSession.videoConfiguration.filter = [CMAutoFrameFilter new];
+
     assetExportSession.videoConfiguration.preset = SCPresetMediumQuality;
     assetExportSession.audioConfiguration.preset = SCPresetLowQuality;
+    __weak typeof(self) weakSelf = self;
     [assetExportSession exportAsynchronouslyWithCompletionHandler: ^{
         if (assetExportSession.error == nil) {
-            [self.output recorderDidFinishExportingToURL:_recorder.session.outputUrl uuid:assetKey];
+            [weakSelf.output recorderDidFinishExportingToURL:_recorder.session.outputUrl uuid:assetKey];
         } else {
             // Something bad happened
         }

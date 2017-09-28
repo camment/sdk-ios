@@ -1,0 +1,6 @@
+framework module CammentSDK {
+  umbrella header "CammentSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}

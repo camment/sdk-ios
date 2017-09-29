@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "CammentSDK"
-  s.version = "1.0.0"
+  s.version = "1.0.1"
   s.summary = "iOS SDK for camment.tv"
   s.license = {"type"=>"MIT", "file"=>"LICENSE"}
   s.authors = {"Alexander Fedosov"=>"alex@camment.tv"}

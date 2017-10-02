@@ -12,7 +12,6 @@
 
 
 @interface CMCammentRecorderInteractor () <SCRecorderDelegate>
-@property(nonatomic, weak) SCImageView *previewView;
 @property(nonatomic, strong) SCRecorder *recorder;
 @end
 
@@ -23,20 +22,13 @@
 
     if (self) {
         self.recorder = [SCRecorder recorder];
-        __weak typeof(self) weakSelf = self;
-        [[[RACObserve([CMStore instance], cammentRecordingState) deliverOnMainThread]
-          takeUntil:self.rac_willDeallocSignal]
-         subscribeNext:^(NSNumber *state) {
-            BOOL showPreview = state.integerValue == CMCammentRecordingStateRecording;
-            [weakSelf.recorder setSCImageView:showPreview ? weakSelf.previewView : nil];
-        }];
     }
 
     return self;
 }
 
 - (void)dealloc {
-    
+    self.recorder.SCImageView = nil;
 }
 
 - (void)configureCamera {
@@ -66,7 +58,7 @@
 }
 
 - (void)connectPreviewViewToRecorder:(SCImageView *)view {
-    self.previewView = view;
+    self.recorder.SCImageView = view;
     self.recorder.mirrorOnFrontCamera = YES;
 
     if (![self.recorder startRunning]) {

@@ -246,6 +246,14 @@
 }
 
 - (void)setImageBySampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    if (self.GLKView.window == nil
+        || self.GLKView.bounds.size.height == 0
+        || self.GLKView.bounds.size.width == 0
+        || self.bounds.size.height == 0
+        || self.bounds.size.width == 0)
+    {
+        return;
+    }
     _sampleBufferHolder.sampleBuffer = sampleBuffer;
     
     [self setNeedsDisplay];

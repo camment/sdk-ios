@@ -39,11 +39,15 @@
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
     [self.view addGestureRecognizer:dismissViewControllerGesture];
-
-    [self.presenter setupView];
+    
 }
 
--(void)viewDidLayoutSubviews {
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.presenter setupView];
+}
+    
+- (void)viewDidLayoutSubviews {
     [super viewDidLayoutSubviews];
     [[_cammentOverlayController cammentView] setFrame:self.view.bounds];
 }

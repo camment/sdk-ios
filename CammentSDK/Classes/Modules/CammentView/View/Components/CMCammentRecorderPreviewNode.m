@@ -22,9 +22,8 @@
     self = [super init];
     if (self) {
         self.cameraPreviewNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
-            SCFilterImageView *view = [SCFilterImageView new];
+            SCImageView *view = [SCImageView new];
             view.contextType = SCContextTypeEAGL;
-            view.scaleAndResizeCIImageAutomatically = YES;
             view.contentMode = UIViewContentModeScaleAspectFill;
             [view loadContextIfNeeded];
             return view;
@@ -91,7 +90,7 @@
         NSLog(@"Coudn't operate with UIKit layer in background thread");
         return nil;
     }
-    return (SCFilterImageView *) _cameraPreviewNode.view;
+    return (SCImageView *) _cameraPreviewNode.view;
 }
 
 

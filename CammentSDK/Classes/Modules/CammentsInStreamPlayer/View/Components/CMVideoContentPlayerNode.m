@@ -2,7 +2,6 @@
 // Created by Alexander Fedosov on 15.05.17.
 // Copyright (c) 2017 Sportacam. All rights reserved.
 //
-
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMVideoContentPlayerNode.h"
 #import "CMStore.h"
@@ -15,6 +14,7 @@
 @interface CMVideoContentPlayerNode () <ASVideoPlayerNodeDelegate>
 @property(nonatomic, strong) ASVideoPlayerNode *videoPlayerNode;
 @property(nonatomic, strong) RACDisposable *disposable;
+@property(nonatomic) BOOL muted;
 @end
 
 @implementation CMVideoContentPlayerNode
@@ -29,6 +29,7 @@
         self.videoPlayerNode.shouldAutoRepeat = YES;
         self.videoPlayerNode.shouldAutoPlay = YES;
         self.videoPlayerNode.delegate = self;
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -63,28 +64,43 @@
 }
 
 - (void)setMuted:(BOOL)muted {
-    [self.videoPlayerNode.videoNode.player setVolume:muted ? 0.3f : 1.0f];
+    _muted = muted;
+    [self setVolume:muted ? 0.1f : 1.0f];
+}
+
+- (void)setVolume:(CGFloat)volume {
+    AVAsset *asset = self.videoPlayerNode.asset;
+
+    NSArray *audioTracks = [asset tracksWithMediaType:AVMediaTypeAudio];
+    NSMutableArray *allAudioParams = [NSMutableArray array];
+    for (AVAssetTrack *track in audioTracks) {
+        AVMutableAudioMixInputParameters *audioInputParams = [AVMutableAudioMixInputParameters audioMixInputParameters];
+        [audioInputParams setVolume:volume atTime:kCMTimeZero];
+        [audioInputParams setTrackID:[track trackID]];
+        [allAudioParams addObject:audioInputParams];
+    }
+    AVMutableAudioMix *audioVolMix = [AVMutableAudioMix audioMix];
+    [audioVolMix setInputParameters:allAudioParams];
+    [self.videoPlayerNode.videoNode.player.currentItem setAudioMix:audioVolMix];
 }
 
 - (void)setLowVolume:(BOOL)lowVolume {
-//    FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
-//            tweakCollectionWithName:@"Video player settings"];
-//    CGFloat value = [([collection tweakWithIdentifier:@"Volume"].currentValue ?: [collection tweakWithIdentifier:@"Volume"].defaultValue) floatValue] / 100;
-    [self.videoPlayerNode.videoNode.player setVolume:lowVolume ? 0.7f : 1.0f];
+    if (_muted) { return; }
+    [self setVolume:lowVolume ? 0.4f : 1.0f];
 }
 
-- (BOOL)videoPlayerNode:(ASVideoPlayerNode*)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
-    if (state != ASVideoNodePlayerStatePlaying) { return YES; }
-    
+- (BOOL)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
+    if (state != ASVideoNodePlayerStatePlaying) {return YES;}
+
     if (self.startsAt) {
         self.videoPlayerNode.userInteractionEnabled = NO;
         NSTimeInterval seekInSec = [[NSDate date] timeIntervalSinceDate:self.startsAt];
         if (seekInSec > 0) {
             [self.videoPlayerNode.videoNode.player
-             seekToTime:CMTimeMakeWithSeconds(seekInSec, self.videoPlayerNode.videoNode.periodicTimeObserverTimescale)];
+                    seekToTime:CMTimeMakeWithSeconds(seekInSec, self.videoPlayerNode.videoNode.periodicTimeObserverTimescale)];
         }
     }
-    
+
     return YES;
 }
 

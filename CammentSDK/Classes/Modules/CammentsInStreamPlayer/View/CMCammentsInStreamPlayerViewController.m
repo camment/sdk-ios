@@ -46,11 +46,6 @@
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
     [self.view addGestureRecognizer:dismissViewControllerGesture];
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
     [self.presenter setupView];
 }
     

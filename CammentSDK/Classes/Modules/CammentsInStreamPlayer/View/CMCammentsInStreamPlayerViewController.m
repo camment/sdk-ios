@@ -97,7 +97,7 @@
     } else {
         [show.showType matchVideo:^(CMAPIShow *matchedShow) {
             self.contentViewerNode = [CMVideoContentPlayerNode new];
-            if ([show.uuid isEqualToString:[CMStore instance].scheduledShowsPasscode]) {
+            if ([passcode isEqualToString:[CMStore instance].scheduledShowsPasscode]) {
                 [(CMVideoContentPlayerNode *)self.contentViewerNode setStartsAt:[CMStore instance].scheduledDate];
             }
         } html:^(NSString *webURL) {

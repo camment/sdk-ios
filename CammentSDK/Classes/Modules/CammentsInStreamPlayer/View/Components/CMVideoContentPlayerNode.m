@@ -63,14 +63,14 @@
 }
 
 - (void)setMuted:(BOOL)muted {
-    [self.videoPlayerNode setMuted:muted];
+    [self.videoPlayerNode.videoNode.player setVolume:muted ? 0.3f : 1.0f];
 }
 
 - (void)setLowVolume:(BOOL)lowVolume {
-    FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
-            tweakCollectionWithName:@"Video player settings"];
-    CGFloat value = [([collection tweakWithIdentifier:@"Volume"].currentValue ?: [collection tweakWithIdentifier:@"Volume"].defaultValue) floatValue] / 100;
-    [self.videoPlayerNode.videoNode.player setVolume:lowVolume ? value : 1];
+//    FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Settings"]
+//            tweakCollectionWithName:@"Video player settings"];
+//    CGFloat value = [([collection tweakWithIdentifier:@"Volume"].currentValue ?: [collection tweakWithIdentifier:@"Volume"].defaultValue) floatValue] / 100;
+    [self.videoPlayerNode.videoNode.player setVolume:lowVolume ? 0.7f : 1.0f];
 }
 
 - (BOOL)videoPlayerNode:(ASVideoPlayerNode*)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {

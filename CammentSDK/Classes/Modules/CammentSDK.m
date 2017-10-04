@@ -339,8 +339,16 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         [self joinUserToGroup:group.uuid];
 
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
-            CMShowMetadata *metadata = [CMShowMetadata new];
+        CMShowMetadata *metadata = [CMShowMetadata new];
+        CMInvitation *invitation = [CMStore instance].openedInvitations[group.uuid];
+        if (invitation) {
+            metadata.uuid = invitation.showUuid;
+            [[CMStore instance].openedInvitations removeObjectForKey:group.uuid];
+        }
+
+        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow)]) {
+            [self.sdkDelegate didJoinToShow:metadata];
+        } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
             [self.sdkDelegate didAcceptInvitationToShow:metadata];
         }
 
@@ -404,8 +412,15 @@
                                                                              message:CMLocalized(@"Would you like to join the conversation?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [[self acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
 
+        CMShowMetadata *metadata = [CMShowMetadata new];;
+        metadata.uuid = invitation.showUuid;
+
+        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didOpenInvitationToShow:)]) {
+            [self.sdkDelegate didOpenInvitationToShow:metadata];
+        }
+
+        [[self acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (t.error) {
                     [self showHud:CMLocalized(@"You are not allowed to join this group") hideAfter:2];
@@ -547,12 +562,17 @@
 
     if ([urlComponents.scheme isEqualToString:@"camment"]
             && [urlComponents.host isEqualToString:@"group"]) {
-        NSString *groupUuid = [urlComponents.path stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/"]];
-        if (groupUuid.length > 0) {
+        NSArray *components = [urlComponents.path pathComponents];
+        if (components.count < 4) { return; }
+        
+        NSString *groupUuid = components[1];
+        NSString *showUuid = components[3];
+        if (groupUuid.length > 0 && showUuid.length > 0) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                CMInvitation *invitation = [[[[CMInvitationBuilder alloc] init]
-                        withUserGroupUuid:groupUuid]
-                        build];
+                CMInvitation *invitation = [[[[[CMInvitationBuilder alloc] init]
+                                             withUserGroupUuid:groupUuid]
+                                            withShowUuid:showUuid]
+                                            build];
                 [self verifyInvitation:invitation];
             });
         }
@@ -561,6 +581,10 @@
 
 
 - (void)verifyInvitation:(CMInvitation *)invitation {
+    if (!invitation || !invitation.userGroupUuid) { return; }
+
+    [CMStore instance].openedInvitations[invitation.userGroupUuid] = invitation;
+
     if ([CMStore instance].isFBConnected) {
         //for external invitations key should be nil for now
         NSString *invitationKey = nil;

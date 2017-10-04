@@ -11,6 +11,7 @@
 #import "FBTweakCollection.h"
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
+#import "CMInvitation.h"
 
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
@@ -32,6 +33,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             _instance.isConnected = NO;
             _instance.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
             _instance.reloadActiveGroupSubject = [RACSubject new];
+            _instance.openedInvitations = [NSMutableDictionary new];
 
             // 28 September 2017, 21:00
             _instance.scheduledDate = [NSDate dateWithTimeIntervalSince1970:1506967200];

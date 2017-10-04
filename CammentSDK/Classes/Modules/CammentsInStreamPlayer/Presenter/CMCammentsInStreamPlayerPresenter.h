@@ -12,10 +12,11 @@
 
 @class CMCammentsInStreamPlayerWireframe;
 @class CMAPIShow;
+@protocol CMLoadingHUD;
 
 @interface CMCammentsInStreamPlayerPresenter : NSObject<CMCammentsInStreamPlayerPresenterInput>
 
-@property (nonatomic, weak) id<CMCammentsInStreamPlayerPresenterOutput> output;
+@property (nonatomic, weak) id<CMCammentsInStreamPlayerPresenterOutput, CMLoadingHUD> output;
 
 @property (nonatomic) CMCammentsInStreamPlayerWireframe *wireframe;
 

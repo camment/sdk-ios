@@ -65,7 +65,7 @@
 
 - (void)setMuted:(BOOL)muted {
     _muted = muted;
-    [self setVolume:muted ? 0.1f : 1.0f];
+    [self setVolume:muted ? 0.05f : 1.0f];
 }
 
 - (void)setVolume:(CGFloat)volume {
@@ -86,11 +86,11 @@
 
 - (void)setLowVolume:(BOOL)lowVolume {
     if (_muted) { return; }
-    [self setVolume:lowVolume ? 0.4f : 1.0f];
+    [self setVolume:lowVolume ? 0.3f : 1.0f];
 }
 
 - (BOOL)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
-    if (state != ASVideoNodePlayerStatePlaying) {return YES;}
+    if (state != ASVideoNodePlayerStatePlaying) { return YES; }
 
     if (self.startsAt) {
         self.videoPlayerNode.userInteractionEnabled = NO;

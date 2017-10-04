@@ -59,16 +59,16 @@
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
-    
+
     NSArray *updateShowsListSignals = @[
-                                        RACObserve([CMStore instance], isSignedIn),
-                                        RACObserve([CMStore instance], isConnected),
-                                        RACObserve([CMStore instance], isOfflineMode)
-                                        ];
+            RACObserve([CMStore instance], isSignedIn),
+            RACObserve([CMStore instance], isConnected),
+            RACObserve([CMStore instance], isOfflineMode)
+    ];
     [[[RACSignal combineLatest:updateShowsListSignals] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
         NSNumber *isSignedIn = tuple.first;
         NSNumber *isOfflineMode = tuple.third;
-        
+
         if (isSignedIn.boolValue || isOfflineMode.boolValue) {
             [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
@@ -142,7 +142,6 @@
 }
 
 - (void)showListFetchingFailed:(NSError *)error {
-    //if (error.code = )
     DDLogError(@"Show list fetch error %@", error);
 }
 
@@ -151,24 +150,30 @@
     [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
 }
 
-- (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata {
-    if (!metadata || !metadata.uuid || metadata.uuid.length == 0) { return; }
+- (void)didOpenInvitationToShow:(CMShowMetadata *_Nonnull)metadata {
+    if (!metadata || metadata.uuid.length == 0) {return;}
 
     NSArray<CMShow *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(CMShow *value) {
         return [value.uuid isEqualToString:metadata.uuid];
     }].array ?: @[];
     CMShow *show = shows.firstObject;
-    if (show) {
-        UIViewController *viewController = (id) self.output;
-        UIViewController *presentingViewController = viewController;
-        if (presentingViewController.presentingViewController) {
-            [presentingViewController dismissViewControllerAnimated:YES
-                                                         completion:^{
-                                                             [self didSelectShow:show];
-                                                         }];
-        } else {
-            [self didSelectShow:show];
-        }
+
+    if (!show) {
+        show = [[CMShow alloc] initWithUuid:metadata.uuid
+                                        url:nil
+                                  thumbnail:nil
+                                   showType:nil];
+    }
+
+    UIViewController *viewController = (id) self.output;
+    UIViewController *presentedViewController = [viewController presentedViewController];
+    if (presentedViewController) {
+        [presentedViewController dismissViewControllerAnimated:YES
+                                                    completion:^{
+                                                        [self didSelectShow:show];
+                                                    }];
+    } else {
+        [self didSelectShow:show];
     }
 }
 

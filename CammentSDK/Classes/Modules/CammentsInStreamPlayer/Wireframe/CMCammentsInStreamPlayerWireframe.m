@@ -23,7 +23,7 @@
 
 
 - (void)presentInWindow:(UIWindow *)window; {
-    CMCammentsInStreamPlayerViewController *view = [CMCammentsInStreamPlayerViewController new];
+    CMCammentsInStreamPlayerViewController *view = [[CMCammentsInStreamPlayerViewController alloc] initWithShow:_show];
     CMCammentsInStreamPlayerPresenter *presenter = [[CMCammentsInStreamPlayerPresenter alloc] initWithShow:_show];
 
     view.presenter = presenter;
@@ -38,7 +38,7 @@
 
 - (void)presentInViewController:(UIViewController *)viewController {
     self.parentViewController = viewController;
-    CMCammentsInStreamPlayerViewController *view = [CMCammentsInStreamPlayerViewController new];
+    CMCammentsInStreamPlayerViewController *view = [[CMCammentsInStreamPlayerViewController alloc] initWithShow:_show];
     CMCammentsInStreamPlayerPresenter *presenter = [[CMCammentsInStreamPlayerPresenter alloc] initWithShow:_show];
 
     view.presenter = presenter;
@@ -53,7 +53,7 @@
 
 - (void)pushInNavigationController:(UINavigationController *)navigationController {
     self.parentNavigationController = navigationController;
-    CMCammentsInStreamPlayerViewController *view = [CMCammentsInStreamPlayerViewController new];
+    CMCammentsInStreamPlayerViewController *view = [[CMCammentsInStreamPlayerViewController alloc] initWithShow:_show];
     CMCammentsInStreamPlayerPresenter *presenter = [[CMCammentsInStreamPlayerPresenter alloc] initWithShow:_show];
 
     view.presenter = presenter;

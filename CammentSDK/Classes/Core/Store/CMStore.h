@@ -11,6 +11,7 @@
 
 @class CMShow;
 @class CMShowMetadata;
+@class CMInvitation;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -32,6 +33,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, assign) CMCammentRecordingState cammentRecordingState;
 
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
+@property (nonatomic, copy) CMShow *activeShow;
 
 @property(nonatomic, copy) NSString *cognitoUserId;
 
@@ -46,6 +48,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property(nonatomic, copy) NSString *apiKey;
 
 @property(nonatomic, copy) NSString *email;
+
+@property(nonatomic, strong) NSMutableDictionary<NSString *, CMInvitation *> *openedInvitations;
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 

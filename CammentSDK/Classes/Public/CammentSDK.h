@@ -17,7 +17,11 @@
 
 @protocol CMCammentSDKDelegate <NSObject>
 
-- (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
+//* Deprecated. Use didJoinToShow: instead*/
+- (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
+
+- (void)didJoinToShow:(CMShowMetadata * _Nonnull)metadata;
+- (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
 @end
 

@@ -12,9 +12,12 @@
 #import "CMCammentsInStreamPlayerPresenterInput.h"
 #import "CMCammentsInStreamPlayerPresenterOutput.h"
 #import "CMCammentsInStreamPlayerNode.h"
+#import "CMLoadingHUD.h"
 
-@interface CMCammentsInStreamPlayerViewController : UIViewController <CMCammentsInStreamPlayerPresenterOutput>
+@interface CMCammentsInStreamPlayerViewController : UIViewController <CMCammentsInStreamPlayerPresenterOutput, CMLoadingHUD>
 
 @property (nonatomic, strong) id<CMCammentsInStreamPlayerPresenterInput> presenter;
+
+- (instancetype)initWithShow:(CMShow *)show;
 
 @end

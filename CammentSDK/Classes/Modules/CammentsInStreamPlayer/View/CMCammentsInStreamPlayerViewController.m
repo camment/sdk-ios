@@ -13,6 +13,7 @@
 #import "CMCammentOverlayController.h"
 #import "CMVideoContentPlayerNode.h"
 #import "CMWebContentPlayerNode.h"
+#import "UIViewController+LoadingHUD.h"
 #import "CMShowMetadata.h"
 
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate>
@@ -20,13 +21,18 @@
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 @property(nonatomic, strong) ASDisplayNode* contentViewerNode;
 
+@property(nonatomic, copy) NSString *showUuid;
 @end
 
 @implementation CMCammentsInStreamPlayerViewController
 
-- (instancetype)init {
+- (instancetype)initWithShow:(CMShow *)show {
     self = [super init];
     if (self) {
+        self.showUuid = show.uuid;
+        ASDisplayNode *loadingNode = [ASDisplayNode new];
+        loadingNode.backgroundColor = [UIColor blackColor];
+        self.contentViewerNode = loadingNode;
     }
 
     return self;
@@ -35,15 +41,23 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = self.showUuid;
+
+    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata];
+    _cammentOverlayController.overlayDelegate = self;
+    [_cammentOverlayController addToParentViewController:self];
+    [self.view addSubview:[_cammentOverlayController cammentView]];
+    [_cammentOverlayController setContentView:self.contentViewerNode.view];
+    
     UISwipeGestureRecognizer *dismissViewControllerGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController)];
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
     [self.view addGestureRecognizer:dismissViewControllerGesture];
-    
 }
 
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [self.presenter setupView];
 }
     
@@ -57,18 +71,6 @@
 }
 
 - (void)startShow:(CMShow *)show {
-    if (_cammentOverlayController) {
-        [_cammentOverlayController removeFromParentViewController];
-        [[_cammentOverlayController cammentView] removeFromSuperview];
-    }
-
-    CMShowMetadata *metadata = [CMShowMetadata new];
-    metadata.uuid = show.uuid;
-
-    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata];
-    _cammentOverlayController.overlayDelegate = self;
-    [_cammentOverlayController addToParentViewController:self];
-    [self.view addSubview:[_cammentOverlayController cammentView]];
 
     [show.showType matchVideo:^(CMAPIShow *matchedShow) {
         self.contentViewerNode = [CMVideoContentPlayerNode new];
@@ -77,7 +79,6 @@
     }];
 
     [_cammentOverlayController setContentView:self.contentViewerNode.view];
-
 
     [(id<CMContentViewerNode>)self.contentViewerNode openContentAtUrl:[[NSURL alloc] initWithString:show.url]];
 }

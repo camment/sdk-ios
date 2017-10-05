@@ -12,6 +12,7 @@
 #import "CMStore.h"
 #import "FBTweakViewController.h"
 #import "FBTweakStore.h"
+#import "CammentSDK.h"
 
 @interface CMShowsListViewController () <ASCollectionDelegate, FBTweakViewControllerDelegate>
 
@@ -30,7 +31,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 #ifdef INTERNALBUILD
     UIBarButtonItem *tweaksButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                             target:self
@@ -65,6 +65,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [CammentSDK instance].sdkUIDelegate = self;
 }
 
 - (void)setCurrentBroadcasterPasscode:(NSString *)passcode {
@@ -123,5 +124,14 @@
     [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
+- (void)cammentSDKWantsPresentViewController:(UIViewController *_Nonnull)viewController {
+    if (self.presentedViewController) {
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:^{
+            [self presentViewController:viewController animated:YES completion:^{}];
+        }];
+    } else {
+        [self presentViewController:viewController animated:YES completion:^{}];
+    }
+}
 
 @end

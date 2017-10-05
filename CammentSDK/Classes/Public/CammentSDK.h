@@ -17,6 +17,7 @@
 
 @protocol CMCammentSDKDelegate <NSObject>
 
+@optional
 //* Deprecated. Use didJoinToShow: instead*/
 - (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
 
@@ -25,16 +26,23 @@
 
 @end
 
+@protocol CMCammentSDKUIDelegate <NSObject>
+
+- (void)cammentSDKWantsPresentViewController:(UIViewController * _Nonnull)viewController;
+
+@end
+
 @interface CammentSDK: NSObject
 
 @property (nonatomic, weak) id<CMCammentSDKDelegate> _Nullable sdkDelegate;
+@property (nonatomic, weak) id<CMCammentSDKUIDelegate> _Nullable sdkUIDelegate;
 
 + (CammentSDK * _Nonnull)instance;
 
 - (void)configureWithApiKey:(NSString * _Nonnull)apiKey;
 
 - (void)connectUserWithIdentity:(CMCammentIdentity * _Nonnull)identity
-                        success:(void (^ _Nullable)())successBlock
+                        success:(void (^ _Nullable)(void))successBlock
                           error:(void (^ _Nullable)(NSError * _Nullable error))errorBlock;
 
 - (void)applicationDidBecomeActive:(UIApplication * _Nonnull)application;

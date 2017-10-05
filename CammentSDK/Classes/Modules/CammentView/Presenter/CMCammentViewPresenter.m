@@ -531,9 +531,8 @@
                                                                              message:CMLocalized(@"Couldn't get the invitation link. Check your internet connection and try again.")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-
-    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
 
     [self.wireframe.parentViewController presentViewController:alertController
                                                       animated:YES
@@ -556,7 +555,8 @@
 
         NSArray *objectsToShare = @[textToShare, url];
 
-        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare
+                                                                                 applicationActivities:nil];
 
         activityVC.popoverPresentationController.sourceView = self.wireframe.parentViewController.view;
         [self.wireframe.parentViewController presentViewController:activityVC
@@ -564,9 +564,9 @@
                                                         completion:nil];
     }]];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-
-    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
 
     [self.wireframe.parentViewController presentViewController:alertController
                                                       animated:YES

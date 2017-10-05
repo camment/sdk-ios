@@ -292,8 +292,6 @@
 }
 
 - (void)configure {
-    [[AWSDDLog sharedInstance] setLogLevel:AWSDDLogLevelAll];
-    [AWSDDLog addLogger:AWSDDTTYLogger.sharedInstance];
     [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
     [[CMAnalytics instance] configureAWSMobileAnalytics];
     self.authService = [[CMCognitoAuthService alloc] init];
@@ -366,7 +364,7 @@
 }
 
 - (void)presentMembershipRequestAlert:(CMUsersGroup *)group joiningUser:(CMUser *)user {
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+
     NSString *username = user.username ?: @"Your friend";
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User wants to join the group"), username]
                                                                              message:CMLocalized(@"Do you accept the join request?")
@@ -384,29 +382,17 @@
                                                          isAllowedToJoin:NO];
     }]];
 
-    UIViewController *presentedViewController = [rootViewController topVisibleViewController];
-
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([presentedViewController isKindOfClass:[CMInvitationViewController class]] && presentedViewController.beingPresented) {
-            [presentedViewController dismissViewControllerAnimated:YES
-                                                        completion:^{
-                                                            [presentedViewController presentViewController:alertController
-                                                                                                  animated:YES
-                                                                                                completion:nil];
-                                                        }];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [presentedViewController presentViewController:alertController
-                                                      animated:YES
-                                                    completion:nil];
-            });
-        }
-    });
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
+        });
+    } else {
+        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
+    }
 }
 
 - (void)presentChatInvitation:(CMInvitation *)invitation {
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+
     NSString *username = invitation.invitationIssuer.username ?: @"Your friend";
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User invited you to a private chat"), username]
                                                                              message:CMLocalized(@"Would you like to join the conversation?")
@@ -430,29 +416,17 @@
         }];
     }]];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
 
-    }]];
-
-    UIViewController *presentedViewController = [rootViewController topVisibleViewController];
-
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([presentedViewController isKindOfClass:[CMInvitationViewController class]] && presentedViewController.beingPresented) {
-            [presentedViewController dismissViewControllerAnimated:YES
-                                                        completion:^{
-                                                            [presentedViewController presentViewController:alertController
-                                                                                                  animated:YES
-                                                                                                completion:nil];
-                                                        }];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [presentedViewController presentViewController:alertController
-                                                      animated:YES
-                                                    completion:nil];
-            });
-        }
-    });
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
+        });
+    } else {
+        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
+    }
 }
 
 - (void)presentLoginSuggestion:(NSString *)reason {
@@ -471,25 +445,13 @@
         [self.onSignedInOperationsQueue cancelAllOperations];
     }]];
 
-    UIViewController *presentedViewController = [rootViewController topVisibleViewController];
-
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([presentedViewController isKindOfClass:[CMInvitationViewController class]] && presentedViewController.beingPresented) {
-            [presentedViewController dismissViewControllerAnimated:YES
-                                                        completion:^{
-                                                            [presentedViewController presentViewController:alertController
-                                                                                                  animated:YES
-                                                                                                completion:nil];
-                                                        }];
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [presentedViewController presentViewController:alertController
-                                                      animated:YES
-                                                    completion:nil];
-            });
-        }
-    });
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
+        });
+    } else {
+        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
+    }
 }
 
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {

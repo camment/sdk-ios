@@ -6,11 +6,10 @@
 //  Copyright 2017 Sportacam. All rights reserved.
 //
 
-#import <ReactiveObjC/ReactiveObjC.h>
+#import <CammentSDK/CammentSDK.h>
 #import "CMCammentsInStreamPlayerViewController.h"
 #import "CMAPIShow.h"
 #import "CMShow.h"
-#import "CMCammentOverlayController.h"
 #import "CMVideoContentPlayerNode.h"
 #import "CMWebContentPlayerNode.h"
 #import "UIViewController+LoadingHUD.h"
@@ -21,7 +20,7 @@
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "CMWaitContentNode.h"
 
-@interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate>
+@interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate, CMCammentSDKUIDelegate>
 
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 @property(nonatomic, strong) ASDisplayNode* contentViewerNode;
@@ -62,6 +61,11 @@
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
     [self.view addGestureRecognizer:dismissViewControllerGesture];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [CammentSDK instance].sdkUIDelegate = self;
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -146,4 +150,15 @@
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleLightContent;
 }
+
+- (void)cammentSDKWantsPresentViewController:(UIViewController *_Nonnull)viewController {
+    if (self.presentedViewController) {
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:^{
+            [self presentViewController:viewController animated:YES completion:^{}];
+        }];
+    } else {
+        [self presentViewController:viewController animated:YES completion:^{}];
+    }
+}
+
 @end

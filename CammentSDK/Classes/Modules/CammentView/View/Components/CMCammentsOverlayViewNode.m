@@ -48,7 +48,7 @@
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
         _contentView = [UIView new];
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
-            return _contentView;
+            return _contentView ?: [UIView new];
         }];
         self.cammentButtonScreenSideVerticalInset = layoutConfig.cammentButtonLayoutVerticalInset;
         self.cammentPanDownGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleCammentButtonPanGesture:)];

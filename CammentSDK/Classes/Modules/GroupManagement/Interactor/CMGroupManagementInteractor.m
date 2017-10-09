@@ -11,16 +11,14 @@
 #import "CMUsersGroup.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMShow.h"
 
 @implementation CMGroupManagementInteractor
 
-- (void)replyWithJoiningPermissionForUser:(CMUser *)user
-                                    group:(CMUsersGroup *)group
-                          isAllowedToJoin:(BOOL)isAllowedToJoin
-{
+- (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     if (isAllowedToJoin) {
-        [[client usergroupsGroupUuidUsersUserIdPut:user.userId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
+        [[client usergroupsGroupUuidUsersUserIdPut:user.userId groupUuid:group.uuid showUuid:show.uuid] continueWithBlock:^id(AWSTask<id> *t) {
             return nil;
         }];
     } else {

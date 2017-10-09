@@ -11,10 +11,11 @@
 
 @implementation CMMembershipAcceptedMessage
 
-- (instancetype)initWithGroup:(CMUsersGroup *)group
+- (instancetype)initWithGroup:(CMUsersGroup *)group show:(CMShow *)show
 {
   if ((self = [super init])) {
     _group = [group copy];
+    _show = [show copy];
   }
 
   return self;
@@ -27,14 +28,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t group: %@; \n", [super description], _group];
+  return [NSString stringWithFormat:@"%@ - \n\t group: %@; \n\t show: %@; \n", [super description], _group, _show];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_group hash]};
+  NSUInteger subhashes[] = {[_group hash], [_show hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 1; ++ii) {
+  for (int ii = 1; ii < 2; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -55,7 +56,8 @@
     return NO;
   }
   return
-    (_group == object->_group ? YES : [_group isEqual:object->_group]);
+    (_group == object->_group ? YES : [_group isEqual:object->_group]) &&
+    (_show == object->_show ? YES : [_show isEqual:object->_show]);
 }
 
 @end

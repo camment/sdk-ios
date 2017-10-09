@@ -18,16 +18,22 @@
 @protocol CMCammentSDKDelegate <NSObject>
 
 @optional
-//* Deprecated. Use didJoinToShow: instead*/
+// Calls when user joined to show.
+// Deprecated: use didJoinToShow: instead
 - (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
 
+// Calls when user joined to show
 - (void)didJoinToShow:(CMShowMetadata * _Nonnull)metadata;
+// Calls when user opened invitation to show
 - (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
+// Calls when user accept someone's joining request
+- (void)didAcceptJoiningRequest:(CMShowMetadata * _Nonnull)metadata;
 @end
 
 @protocol CMCammentSDKUIDelegate <NSObject>
 
+// SDK use the method to display important alerts (invitations, joining requests etc)
 - (void)cammentSDKWantsPresentViewController:(UIViewController * _Nonnull)viewController;
 
 @end

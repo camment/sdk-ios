@@ -96,16 +96,20 @@
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
                 withUserPhoto:userJson[@"picture"]] build];
+        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"] url:nil thumbnail:nil showType:[CMShowType videoWithShow:nil]];
         CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
-        CMMembershipRequestMessage *membershipRequestMessage = [[[[CMMembershipRequestMessageBuilder new]
+        CMMembershipRequestMessage *membershipRequestMessage = [[[[[CMMembershipRequestMessageBuilder new]
                 withGroup:group]
+                withShow:show]
                 withJoiningUser:user]
                 build];
         serverMessage = [CMServerMessage membershipRequestWithMembershipRequestMessage:membershipRequestMessage];
     } else if ([type isEqualToString:@"membership-accepted"]) {
+        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"] url:nil thumbnail:nil showType:[CMShowType videoWithShow:nil]];
         CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
-        CMMembershipAcceptedMessage *membershipAcceptedMessage = [[[CMMembershipAcceptedMessageBuilder new]
+        CMMembershipAcceptedMessage *membershipAcceptedMessage = [[[[CMMembershipAcceptedMessageBuilder new]
                 withGroup:group]
+                withShow:show]
                 build];
         serverMessage = [CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:membershipAcceptedMessage];
     }

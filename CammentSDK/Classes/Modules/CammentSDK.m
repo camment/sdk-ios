@@ -323,28 +323,26 @@
         }];
 
         [message matchMembershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
-            [self presentMembershipRequestAlert:membershipRequestMessage.group
-                                    joiningUser:membershipRequestMessage.joiningUser];
+            [self presentMembershipRequestAlert:membershipRequestMessage];
         }];
 
         [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
-            [self presentMembershipAcceptedAlert:membershipAcceptedMessage.group];
+            [self presentMembershipAcceptedAlert:membershipAcceptedMessage];
         }];
     }];
 }
 
-- (void)presentMembershipAcceptedAlert:(CMUsersGroup *)group {
+- (void)presentMembershipAcceptedAlert:(CMMembershipAcceptedMessage *)message {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self joinUserToGroup:group.uuid];
+        [self joinUserToGroup:message.group.uuid];
 
         CMShowMetadata *metadata = [CMShowMetadata new];
-        CMInvitation *invitation = [CMStore instance].openedInvitations[group.uuid];
-        if (invitation) {
-            metadata.uuid = invitation.showUuid;
-            [[CMStore instance].openedInvitations removeObjectForKey:group.uuid];
+        CMShow *show = message.show;
+        if (show) {
+            metadata.uuid = show.uuid;
         }
 
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow)]) {
+        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
             [self.sdkDelegate didJoinToShow:metadata];
         } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
             [self.sdkDelegate didAcceptInvitationToShow:metadata];
@@ -363,23 +361,35 @@
     [hud hideAnimated:YES afterDelay:delay];
 }
 
-- (void)presentMembershipRequestAlert:(CMUsersGroup *)group joiningUser:(CMUser *)user {
+- (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message {
+
+    CMUsersGroup *group = message.group;
+    CMUser *user = message.joiningUser;
 
     NSString *username = user.username ?: @"Your friend";
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User wants to join the group"), username]
                                                                              message:CMLocalized(@"Do you accept the join request?")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptJoiningRequest:)]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                CMShowMetadata *metadata = [CMShowMetadata new];
+                metadata.uuid = message.show.uuid;
+                [self.sdkDelegate didAcceptJoiningRequest:metadata];
+            });
+        }
         [self joinUserToGroup:group.uuid];
         [self.groupManagmentInteractor replyWithJoiningPermissionForUser:user
                                                                    group:group
-                                                         isAllowedToJoin:YES];
+                                                         isAllowedToJoin:YES
+                                                                    show:message.show];
     }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         [self.groupManagmentInteractor replyWithJoiningPermissionForUser:user
                                                                    group:group
-                                                         isAllowedToJoin:NO];
+                                                         isAllowedToJoin:NO
+                                                                    show:message.show];
     }]];
 
     if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
@@ -457,7 +467,7 @@
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
     if (invitation.invitationKey == nil) {
         CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-        return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid];
+        return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid showUuid:invitation.showUuid];
     }
 
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
@@ -469,9 +479,11 @@
 
 - (void)joinUserToGroup:(NSString *)groupId {
     DDLogInfo(@"Join group id %@", groupId);
-    CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
-    [[CMStore instance] setActiveGroup:usersGroup];
-    [[[CMStore instance] reloadActiveGroupSubject] sendNext:@YES];
+    if (![groupId isEqualToString:[CMStore instance].activeGroup.uuid]) {
+        CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
+        [[CMStore instance] setActiveGroup:usersGroup];
+        [[[CMStore instance] reloadActiveGroupSubject] sendNext:@YES];
+    }
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -545,17 +557,50 @@
 - (void)verifyInvitation:(CMInvitation *)invitation {
     if (!invitation || !invitation.userGroupUuid) { return; }
 
-    [CMStore instance].openedInvitations[invitation.userGroupUuid] = invitation;
-
     if ([CMStore instance].isFBConnected) {
         //for external invitations key should be nil for now
         NSString *invitationKey = nil;
         CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder
                                                     invitationFromExistingInvitation:invitation]
                                                    withInvitationKey:invitationKey] build];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self presentChatInvitation:invitationWithUpdatedKey];
-        });
+        NSString *groupUuid = invitation.userGroupUuid;
+        AWSTask * task =[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidGet:groupUuid];
+
+        __weak typeof(self) weakSelf = self;
+        dispatch_block_t presentChatInvitationBlock = ^{
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [weakSelf presentChatInvitation:invitationWithUpdatedKey];
+            });
+        };
+
+        if (task) {
+            [task continueWithBlock:^id(AWSTask<id> *t) {
+                if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
+                    CMAPIUsergroup *usergroup = t.result;
+                    if ([usergroup.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
+                        CMUsersGroup *group = [[[[[CMUsersGroupBuilder new]
+                                withUuid:invitation.userGroupUuid]
+                                withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
+                                withTimestamp:usergroup.timestamp]
+                                build];
+                        CMShow *show = [[CMShow alloc] initWithUuid:invitation.showUuid
+                                                                url:nil
+                                                          thumbnail:nil
+                                                           showType:[CMShowType videoWithShow:nil]];
+
+                        CMMembershipAcceptedMessage *message = [[CMMembershipAcceptedMessage alloc] initWithGroup:group show:show];
+                        [weakSelf presentMembershipAcceptedAlert:message];
+                    } else {
+                        presentChatInvitationBlock();
+                    }
+                }
+                return nil;
+            }];
+        } else {
+            presentChatInvitationBlock();
+        }
+
+
     } else {
         [self.onSignedInOperationsQueue setSuspended:YES];
         @weakify(self);

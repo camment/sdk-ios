@@ -3,6 +3,7 @@
 @class CMMembershipRequestMessage;
 @class CMUser;
 @class CMUsersGroup;
+@class CMShow;
 
 @interface CMMembershipRequestMessageBuilder : NSObject
 
@@ -15,6 +16,8 @@
 - (instancetype)withJoiningUser:(CMUser *)joiningUser;
 
 - (instancetype)withGroup:(CMUsersGroup *)group;
+
+- (instancetype)withShow:(CMShow *)show;
 
 @end
 

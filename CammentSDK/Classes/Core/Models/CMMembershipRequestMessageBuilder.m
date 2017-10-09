@@ -9,6 +9,7 @@
 {
   CMUser *_joiningUser;
   CMUsersGroup *_group;
+  CMShow *_show;
 }
 
 + (instancetype)membershipRequestMessage
@@ -18,14 +19,15 @@
 
 + (instancetype)membershipRequestMessageFromExistingMembershipRequestMessage:(CMMembershipRequestMessage *)existingMembershipRequestMessage
 {
-  return [[[CMMembershipRequestMessageBuilder membershipRequestMessage]
-           withJoiningUser:existingMembershipRequestMessage.joiningUser]
-          withGroup:existingMembershipRequestMessage.group];
+  return [[[[CMMembershipRequestMessageBuilder membershipRequestMessage]
+            withJoiningUser:existingMembershipRequestMessage.joiningUser]
+           withGroup:existingMembershipRequestMessage.group]
+          withShow:existingMembershipRequestMessage.show];
 }
 
 - (CMMembershipRequestMessage *)build
 {
-  return [[CMMembershipRequestMessage alloc] initWithJoiningUser:_joiningUser group:_group];
+  return [[CMMembershipRequestMessage alloc] initWithJoiningUser:_joiningUser group:_group show:_show];
 }
 
 - (instancetype)withJoiningUser:(CMUser *)joiningUser
@@ -37,6 +39,12 @@
 - (instancetype)withGroup:(CMUsersGroup *)group
 {
   _group = [group copy];
+  return self;
+}
+
+- (instancetype)withShow:(CMShow *)show
+{
+  _show = [show copy];
   return self;
 }
 

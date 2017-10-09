@@ -21,6 +21,7 @@
 #import "CMAPIDeeplink.h"
 #import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
+#import "CMAPIUsergroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
@@ -195,16 +196,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param deeplinkHash 
- @param os 
- 
- return type: CMAPIDeeplink *
- */
-- (AWSTask *)deferredDeeplinkDeeplinkHashGet:( NSString *)deeplinkHash os:(nullable NSString *)os;
-
-/**
- 
- 
  @param body 
  
  return type: 
@@ -219,6 +210,14 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIFacebookFriendList *
  */
 - (AWSTask *)meFbFriendsGet:(nullable NSString *)fbAccessToken;
+
+/**
+ 
+ 
+ 
+ return type: CMAPIUsergroupList *
+ */
+- (AWSTask *)meGroupsGet;
 
 /**
  
@@ -268,10 +267,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param groupUuid 
  
- return type: 
+ return type: CMAPIUsergroup *
  */
-- (AWSTask *)usergroupsTestPost;
+- (AWSTask *)usergroupsGroupUuidGet:( NSString *)groupUuid;
 
 /**
  
@@ -335,20 +335,22 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
+ @param showUuid 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid showUuid:(nullable NSString *)showUuid;
 
 /**
  
  
  @param userId 
  @param groupUuid 
+ @param showUuid 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:( NSString *)userId groupUuid:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:( NSString *)userId groupUuid:( NSString *)groupUuid showUuid:(nullable NSString *)showUuid;
 
 /**
  

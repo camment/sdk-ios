@@ -121,7 +121,7 @@
             case SCContextTypeCoreGraphics:
                 break;
             case SCContextTypeEAGL:
-                _GLKView = [[GLKView alloc] initWithFrame:self.bounds context:context.EAGLContext];
+                _GLKView = [[GLKView alloc] initWithFrame:CGRectMake(0, 0, 90, 90) context:context.EAGLContext];
                 _GLKView.contentScaleFactor = self.contentScaleFactor;
                 _GLKView.delegate = self;
                 [self insertSubview:_GLKView atIndex:0];

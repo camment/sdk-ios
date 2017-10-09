@@ -77,10 +77,8 @@
                                                       }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
-                                                        style:UIAlertActionStyleDefault
-                                                      handler:^(UIAlertAction *action) {
-                                                          [alertController dismissViewControllerAnimated:YES completion:nil];
-                                                      }]];
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
     [self presentViewController:alertController animated:YES completion:nil];
 }
 

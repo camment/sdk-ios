@@ -24,6 +24,7 @@
 #import "CMAPIDeeplink.h"
 #import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
+#import "CMAPIUsergroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
@@ -185,29 +186,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIDeeplink class]];
 }
 
-- (AWSTask *)deferredDeeplinkDeeplinkHashGet:(NSString *)deeplinkHash os:(NSString *)os {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      @"os": os
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"deeplinkHash": deeplinkHash,
-                                     
-                                     };
-    
-    return [self invokeHTTPRequest:@"GET"
-                         URLString:@"/deferred-deeplink/{deeplinkHash}"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:[CMAPIDeeplink class]];
-}
-
 - (AWSTask *)demoValidatePasscodePost:(CMAPIPasscodeInRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -250,6 +228,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                   headerParameters:headerParameters
                               body:nil
                      responseClass:[CMAPIFacebookFriendList class]];
+}
+
+- (AWSTask *)meGroupsGet {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/me/groups"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMAPIUsergroupList class]];
 }
 
 - (AWSTask *)showsGet:(NSString *)passcode {
@@ -363,7 +363,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIUsergroup class]];
 }
 
-- (AWSTask *)usergroupsTestPost {
+- (AWSTask *)usergroupsGroupUuidGet:(NSString *)groupUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -373,16 +373,16 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       
                                       };
     NSDictionary *pathParameters = @{
-                                     
+                                     @"groupUuid": groupUuid
                                      };
     
-    return [self invokeHTTPRequest:@"POST"
-                         URLString:@"/usergroups/test"
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/usergroups/{groupUuid}"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:nil
-                     responseClass:nil];
+                     responseClass:[CMAPIUsergroup class]];
 }
 
 - (AWSTask *)usergroupsGroupUuidCammentsGet:(NSString *)groupUuid {
@@ -521,17 +521,18 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIUserinfoList class]];
 }
 
-- (AWSTask *)usergroupsGroupUuidUsersPost:(NSString *)groupUuid {
+- (AWSTask *)usergroupsGroupUuidUsersPost:(NSString *)groupUuid showUuid:(NSString *)showUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      
+                                      @"showUuid": showUuid
                                       };
     NSDictionary *pathParameters = @{
-                                     @"groupUuid": groupUuid
+                                     @"groupUuid": groupUuid,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"POST"
@@ -543,18 +544,19 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
-- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:(NSString *)userId groupUuid:(NSString *)groupUuid {
+- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:(NSString *)userId groupUuid:(NSString *)groupUuid showUuid:(NSString *)showUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      
+                                      @"showUuid": showUuid
                                       };
     NSDictionary *pathParameters = @{
                                      @"userId": userId,
-                                     @"groupUuid": groupUuid
+                                     @"groupUuid": groupUuid,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"PUT"

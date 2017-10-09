@@ -1,7 +1,9 @@
 %type name="CMUser"
 %type name="CMUsersGroup"
+%type name="CMShow"
 
 CMMembershipRequestMessage includes(RMBuilder) {
   CMUser* joiningUser
   CMUsersGroup *group
+  CMShow *show
 }

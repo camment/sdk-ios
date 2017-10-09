@@ -2,6 +2,7 @@
 
 @class CMMembershipAcceptedMessage;
 @class CMUsersGroup;
+@class CMShow;
 
 @interface CMMembershipAcceptedMessageBuilder : NSObject
 
@@ -12,6 +13,8 @@
 - (CMMembershipAcceptedMessage *)build;
 
 - (instancetype)withGroup:(CMUsersGroup *)group;
+
+- (instancetype)withShow:(CMShow *)show;
 
 @end
 

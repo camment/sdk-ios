@@ -92,8 +92,9 @@
 
     CGFloat cammentRecorderNodeWidth = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.width;
     CGFloat cammentRecorderNodeHeight = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.height;
-    _cammentRecorderNode.style.width = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeWidth : 1.0f);
-    _cammentRecorderNode.style.height = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeHeight : .0f);
+    _cammentRecorderNode.style.width = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeWidth : 5.0f);
+    _cammentRecorderNode.style.height = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeHeight : 5.0f);
+    
     ASInsetLayoutSpec *cammentRecorderNodeInsetsLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                     _showCammentRecorderNode ? 20.0f : .0f,
@@ -154,6 +155,7 @@
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     UIView * snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
     snapshot.frame = self.cammentRecorderNode.view.bounds;
+    snapshot.alpha = 1.0f;
     [self.cammentRecorderNode.view addSubview:snapshot];
 
     CGRect cammentBlockFinalFrame = [context finalFrameForNode:self.cammentsBlockNode];
@@ -172,6 +174,7 @@
                 cammentBlockFinalFrame.size.width,
                 MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
+        self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];

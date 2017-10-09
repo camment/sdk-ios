@@ -14,7 +14,8 @@
 
 - (void)signInWithFacebookProvider:(UIViewController *)viewController {
     self.manager = [FBSDKLoginManager new];
-
+    self.manager.loginBehavior = FBSDKLoginBehaviorNative;
+    
     @weakify(self);
     [self.manager logInWithReadPermissions:@[@"public_profile", @"user_friends", @"email", @"read_custom_friendlists"]
                    fromViewController:viewController

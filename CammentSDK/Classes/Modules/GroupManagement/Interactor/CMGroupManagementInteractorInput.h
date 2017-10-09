@@ -10,11 +10,10 @@
 
 @class CMUser;
 @class CMUsersGroup;
+@class CMShow;
 
 @protocol CMGroupManagementInteractorInput <NSObject>
 
-- (void)replyWithJoiningPermissionForUser:(CMUser *)user
-                                    group:(CMUsersGroup *)group
-                          isAllowedToJoin:(BOOL)isAllowedToJoin;
+- (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show;
 
 @end

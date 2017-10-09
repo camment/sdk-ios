@@ -49,8 +49,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic, copy) NSString *email;
 
-@property(nonatomic, strong) NSMutableDictionary<NSString *, CMInvitation *> *openedInvitations;
-
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 
 @property(nonatomic) BOOL isOfflineMode;

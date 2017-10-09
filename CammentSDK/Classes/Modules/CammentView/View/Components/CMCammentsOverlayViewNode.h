@@ -21,7 +21,7 @@
 
 @interface CMCammentsOverlayViewNode: ASDisplayNode
 
-@property(nonatomic, strong) UIView* contentView;
+@property(nonatomic, weak) UIView* contentView;
 @property(nonatomic, strong, readonly) ASDisplayNode* contentNode;
 @property(nonatomic, strong, readonly) CMCammentsBlockNode *cammentsBlockNode;
 @property(nonatomic, strong, readonly) CMCammentRecorderPreviewNode *cammentRecorderNode;

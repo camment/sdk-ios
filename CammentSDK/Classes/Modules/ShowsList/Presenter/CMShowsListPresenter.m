@@ -26,6 +26,7 @@
 
 @property(nonatomic, strong) CMShowsListCollectionPresenter *showsListCollectionPresenter;
 
+@property(nonatomic, strong) CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe;
 @end
 
 @implementation CMShowsListPresenter
@@ -146,11 +147,25 @@
 }
 
 - (void)didSelectShow:(CMShow *)show {
-    CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
-    [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
+    [self openShowIfNeeded:show];
 }
 
-- (void)didOpenInvitationToShow:(CMShowMetadata *_Nonnull)metadata {
+- (void)openShowIfNeeded:(CMShow *)show {
+    if ([self.cammentsInStreamPlayerWireframe.show.uuid isEqualToString:show.uuid] && self.cammentsInStreamPlayerWireframe.view) { return; }
+
+    if (self.cammentsInStreamPlayerWireframe.view) {
+        [self.cammentsInStreamPlayerWireframe.view dismissViewControllerAnimated:YES completion:^{
+            self.cammentsInStreamPlayerWireframe = nil;
+            [self openShowIfNeeded:show];
+            return;
+        }];
+    }
+
+    self.cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
+    [_cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
+}
+
+- (void)openShowIfNeededWithMetadata:(CMShowMetadata *_Nonnull)metadata {
     if (!metadata || metadata.uuid.length == 0) {return;}
 
     NSArray<CMShow *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(CMShow *value) {
@@ -165,16 +180,19 @@
                                    showType:nil];
     }
 
-    UIViewController *viewController = (id) self.output;
-    UIViewController *presentedViewController = [viewController presentedViewController];
-    if (presentedViewController) {
-        [presentedViewController dismissViewControllerAnimated:YES
-                                                    completion:^{
-                                                        [self didSelectShow:show];
-                                                    }];
-    } else {
-        [self didSelectShow:show];
-    }
+    [self openShowIfNeeded:show];
+}
+
+- (void)didOpenInvitationToShow:(CMShowMetadata *_Nonnull)metadata {
+    [self openShowIfNeededWithMetadata:metadata];
+}
+
+- (void)didAcceptJoiningRequest:(CMShowMetadata *)metadata {
+    [self openShowIfNeededWithMetadata:metadata];
+}
+
+- (void)didJoinToShow:(CMShowMetadata *)metadata {
+    [self openShowIfNeededWithMetadata:metadata];
 }
 
 @end

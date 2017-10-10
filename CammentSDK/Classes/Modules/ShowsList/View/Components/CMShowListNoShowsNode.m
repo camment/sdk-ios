@@ -52,7 +52,7 @@
     self.layer.shadowRadius = 15.0f;
     self.layer.shadowOpacity = .5f;
     self.layer.shadowOffset = CGSizeMake(.0f, .0f);
-    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.layer.bounds].CGPath;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.bounds cornerRadius:15.0f].CGPath;
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

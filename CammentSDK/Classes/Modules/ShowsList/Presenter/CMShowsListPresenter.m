@@ -57,6 +57,7 @@
 }
 
 - (void)setupView {
+    [self.output setShowNoShowsView:NO];
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
@@ -66,11 +67,12 @@
             RACObserve([CMStore instance], isConnected),
             RACObserve([CMStore instance], isOfflineMode)
     ];
-    [[[RACSignal combineLatest:updateShowsListSignals] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
+    [[[[RACSignal combineLatest:updateShowsListSignals] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
         NSNumber *isSignedIn = tuple.first;
+        NSNumber *isConnected = tuple.second;
         NSNumber *isOfflineMode = tuple.third;
 
-        if (isSignedIn.boolValue || isOfflineMode.boolValue) {
+        if (isSignedIn.boolValue && isConnected.boolValue || isOfflineMode.boolValue) {
             [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
     }];
@@ -107,17 +109,18 @@
         demoWebShowUrl = webShowTweak.currentValue;
     }
 
-    shows = [shows arrayByAddingObjectsFromArray:@[
-            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
-                                     url:demoWebShowUrl
-                               thumbnail:nil
-                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
-    ]];
+//    shows = [shows arrayByAddingObjectsFromArray:@[
+//            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
+//                                     url:demoWebShowUrl
+//                               thumbnail:nil
+//                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
+//    ]];
 #endif
 
     self.showsListCollectionPresenter.shows = shows;
     [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
+    [self.output setShowNoShowsView:shows.count == 0];
 }
 
 - (void)tweakDidChange:(FBTweak *)tweak {

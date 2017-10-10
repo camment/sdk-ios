@@ -19,4 +19,6 @@
 
 @property (nonatomic, strong) id<CMShowsListPresenterInput> presenter;
 
+@property(nonatomic, strong) UIImage *selectedShowPlaceHolder;
+@property(nonatomic) CGRect selectedCellFrame;
 @end

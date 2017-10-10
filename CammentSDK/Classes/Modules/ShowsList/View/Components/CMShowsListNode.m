@@ -16,8 +16,8 @@
 
 - (instancetype)init {
     UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-    layout.minimumLineSpacing = 4.0f;
-    layout.minimumInteritemSpacing = 4.0f;
+    layout.minimumLineSpacing = 30.0f;
+    layout.minimumInteritemSpacing = 30.0f;
     self = [super initWithCollectionViewLayout:layout];
     if (self) {
         self.backgroundColor = [UIColor whiteColor];
@@ -36,6 +36,5 @@
     self.delegate = delegate;
     self.dataSource = delegate;
 }
-
 
 @end

@@ -8,7 +8,12 @@
 
 #import <AsyncDisplayKit/ASCollectionNode.h>
 #import "CMCammentsInStreamPlayerWireframe.h"
+#import "TransitionDelegate.h"
 
+
+@interface CMCammentsInStreamPlayerWireframe ()
+@property(nonatomic, strong) TransitionDelegate *transitionDelegate;
+@end
 
 @implementation CMCammentsInStreamPlayerWireframe
 
@@ -48,6 +53,8 @@
     self.view = view;
     self.presenter = presenter;
 
+    self.transitionDelegate = [TransitionDelegate new];
+    view.transitioningDelegate = self.transitionDelegate;
     [viewController presentViewController:view animated:YES completion:nil];
 }
 

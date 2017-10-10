@@ -9,6 +9,6 @@
 
 @protocol CMShowsListCollectionPresenterOutput <NSObject>
 
-- (void)didSelectShow:(CMShow *)show;
+- (void)didSelectShow:(CMShow *)show rect:(CGRect)rect image:(UIImage *)image;
 
 @end

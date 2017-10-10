@@ -146,7 +146,9 @@
     DDLogError(@"Show list fetch error %@", error);
 }
 
-- (void)didSelectShow:(CMShow *)show {
+- (void)didSelectShow:(CMShow *)show rect:(CGRect)rect image:(UIImage *)image {
+    self.wireframe.view.selectedCellFrame = rect;
+    self.wireframe.view.selectedShowPlaceHolder = image;
     [self openShowIfNeeded:show];
 }
 

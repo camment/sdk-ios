@@ -10,5 +10,7 @@
 @protocol CMShowsListCollectionPresenterOutput <NSObject>
 
 - (void)didSelectShow:(CMShow *)show rect:(CGRect)rect image:(UIImage *)image;
+- (void)showTweaksView;
+- (void)showPasscodeView;
 
 @end

@@ -16,7 +16,7 @@
 @interface CMShowsListNode: ASDisplayNode
 
 @property(nonatomic, strong) ASCollectionNode *listNode;
-@property (nonatomic, assign) BOOL showEmptyView;
+@property(nonatomic, strong) UIRefreshControl *refreshControl;
 
 - (void)setShowsListDelegate:(id<CMShowsListNodeDelegate>)delegate;
 

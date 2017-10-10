@@ -9,6 +9,7 @@
 
 @interface CMShowListNoShowsNode ()
 @property(nonatomic, strong) ASTextNode *textNode;
+@property(nonatomic, strong) ASTextNode *welcomeTextNode;
 @property(nonatomic, strong) ASDisplayNode *cardNode;
 @end
 
@@ -19,29 +20,53 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.textNode = [ASTextNode new];
-        self.textNode.attributedText = [[NSAttributedString alloc] initWithString:@"Open invitation link or copy it to clipboard"
+        self.welcomeTextNode = [ASTextNode new];
+        self.welcomeTextNode.attributedText = [[NSAttributedString alloc] initWithString:@"Welcome!"
                                                                        attributes:@{
-                                                                               NSFontAttributeName: [UIFont systemFontOfSize:36.0f],
+                                                                               NSFontAttributeName: [UIFont boldSystemFontOfSize:36.0f],
+                                                                               NSForegroundColorAttributeName: [UIColor whiteColor]
+                                                                       }];
+
+        self.textNode = [ASTextNode new];
+        self.textNode.attributedText = [[NSAttributedString alloc] initWithString:@"To get started open an invitation link from you friend or copy it to clipboard"
+                                                                       attributes:@{
+                                                                               NSFontAttributeName: [UIFont systemFontOfSize:18.0f],
                                                                                NSForegroundColorAttributeName: [UIColor whiteColor]
                                                                        }];
         self.cardNode = [ASDisplayNode new];
         self.cardNode.cornerRadius = 15.0f;
-        self.cardNode.backgroundColor = UIColorFromRGB(0x287CEC);
+        self.cardNode.backgroundColor = UIColorFromRGB(0x2b7cec);
         self.automaticallyManagesSubnodes = YES;
     }
 
     return self;
 }
 
+- (void)didLoad {
+    [super didLoad];
+
+    self.clipsToBounds = NO;
+
+    self.cardNode.cornerRadius = 15.0f;
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowRadius = 15.0f;
+    self.layer.shadowOpacity = .5f;
+    self.layer.shadowOffset = CGSizeMake(.0f, .0f);
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.layer.bounds].CGPath;
+}
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(20.0f, 20.0f, 20.0f, 20.0f)
+
+    ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
+                                                                                 spacing:20.0f
+                                                                          justifyContent:ASStackLayoutJustifyContentStart
+                                                                              alignItems:ASStackLayoutAlignItemsStart
+                                                                                children:@[_welcomeTextNode, _textNode]];
+
+    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
                                                   child:[ASOverlayLayoutSpec overlayLayoutSpecWithChild:_cardNode
-                                                                                                overlay:[ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY
-                                                                                                                                                   sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY
-                                                                                                                                                           child:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(30.0f, 30.0f, 30.0f, 30.0f)
-                                                                                                                                                                                                        child:_textNode]]]];
+                                                                                                overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(INFINITY, 30.0f, 30.0f, 30.0f)
+                                                                                                                                                child:stackLayoutSpec]]];
 }
 
 @end

@@ -60,7 +60,13 @@
             self.title = @"Online";
         }
     }];
+    [self.node.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.presenter setupView];
+}
+
+- (void)refresh {
+    [self.presenter viewWantsRefreshShowList];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -76,10 +82,12 @@
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [hud setMode:MBProgressHUDModeIndeterminate];
     [hud setAnimationType:MBProgressHUDAnimationFade];
+    [self.node.refreshControl beginRefreshing];
 }
 
 - (void)hideLoadingIndicator {
     [MBProgressHUD hideHUDForView:self.view animated:NO];
+    [self.node.refreshControl endRefreshing];
 }
 
 - (void)setCammentsBlockNodeDelegate:(id <CMShowsListNodeDelegate>)delegate {
@@ -131,11 +139,6 @@
     } else {
         [self presentViewController:viewController animated:YES completion:^{}];
     }
-}
-
-- (void)setShowNoShowsView:(BOOL)showNoShowsView {
-    self.node.showEmptyView = showNoShowsView;
-    [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 @end

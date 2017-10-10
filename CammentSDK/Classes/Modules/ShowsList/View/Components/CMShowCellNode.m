@@ -31,10 +31,10 @@
     
     self.cornerRadius = 15.0f;
     self.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.layer.shadowRadius = 5.0f;
-    self.layer.shadowOpacity = .2f;
+    self.layer.shadowRadius = 15.0f;
+    self.layer.shadowOpacity = .3f;
     self.layer.shadowOffset = CGSizeMake(.0f, .0f);
-    self.layer.shadowPath = [UIBezierPath bezierPathWithRect:self.layer.bounds].CGPath;
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.bounds cornerRadius:15.0f].CGPath;
 
     self.tapGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     self.tapGestureRecognizer.minimumPressDuration = 0.0f;

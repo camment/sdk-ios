@@ -20,5 +20,8 @@
 
 - (void)setCurrentBroadcasterPasscode:(NSString *)passcode;
 
-- (void)setShowNoShowsView:(BOOL)showNoShowsView;
+- (void)showTweaks;
+
+- (void)showPasscodeAlert;
+
 @end

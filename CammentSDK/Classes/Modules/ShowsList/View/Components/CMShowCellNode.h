@@ -11,6 +11,8 @@
 @protocol CMShowCellNodeDelegate<NSObject>
 
 - (void)showCellNode:(CMShowCellNode *)node didSelectShow:(CMShow *)show;
+- (void)showTweaksView;
+- (void)showPasscodeView;
 
 @end
 

@@ -57,7 +57,6 @@
 }
 
 - (void)setupView {
-    [self.output setShowNoShowsView:NO];
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
@@ -84,6 +83,10 @@
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.interactor fetchShowList:passcode];
+}
+
+- (void)viewWantsRefreshShowList {
+    [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
 }
 
 - (void)showListDidFetched:(CMAPIShowList *)list {
@@ -117,10 +120,9 @@
 //    ]];
 #endif
 
+    self.showsListCollectionPresenter.showNoShowsNode = shows.count == 0;
     self.showsListCollectionPresenter.shows = shows;
-    [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
-    [self.output setShowNoShowsView:shows.count == 0];
 }
 
 - (void)tweakDidChange:(FBTweak *)tweak {
@@ -153,6 +155,14 @@
     self.wireframe.view.selectedCellFrame = rect;
     self.wireframe.view.selectedShowPlaceHolder = image;
     [self openShowIfNeeded:show];
+}
+
+- (void)showTweaksView {
+    [self.output showTweaks];
+}
+
+- (void)showPasscodeView {
+    [self.output showPasscodeAlert];
 }
 
 - (void)openShowIfNeeded:(CMShow *)show {
@@ -199,5 +209,6 @@
 - (void)didJoinToShow:(CMShowMetadata *)metadata {
     [self openShowIfNeededWithMetadata:metadata];
 }
+
 
 @end

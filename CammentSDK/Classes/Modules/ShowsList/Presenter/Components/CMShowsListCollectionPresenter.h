@@ -16,5 +16,8 @@
 
 @property (nonatomic, strong) NSArray<CMShow *> *shows;
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
+@property (nonatomic) BOOL showNoShowsNode;
+
+- (void)reloadShows;
 
 @end

@@ -13,7 +13,10 @@
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
 @end
 
-@interface CMShowsListNode: ASCollectionNode
+@interface CMShowsListNode: ASDisplayNode
+
+@property(nonatomic, strong) ASCollectionNode *listNode;
+@property (nonatomic, assign) BOOL showEmptyView;
 
 - (void)setShowsListDelegate:(id<CMShowsListNodeDelegate>)delegate;
 

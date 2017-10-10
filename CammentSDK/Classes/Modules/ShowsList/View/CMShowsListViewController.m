@@ -82,10 +82,9 @@
     [MBProgressHUD hideHUDForView:self.view animated:NO];
 }
 
-
 - (void)setCammentsBlockNodeDelegate:(id <CMShowsListNodeDelegate>)delegate {
     [self.node setShowsListDelegate:delegate];
-    [delegate setItemCollectionDisplayNode:self.node];
+    [delegate setItemCollectionDisplayNode:self.node.listNode];
 }
 
 - (BOOL)shouldAutorotate {
@@ -132,6 +131,11 @@
     } else {
         [self presentViewController:viewController animated:YES completion:^{}];
     }
+}
+
+- (void)setShowNoShowsView:(BOOL)showNoShowsView {
+    self.node.showEmptyView = showNoShowsView;
+    [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 @end

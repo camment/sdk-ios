@@ -23,7 +23,6 @@
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate, CMCammentSDKUIDelegate>
 
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
-@property(nonatomic, strong) ASDisplayNode* contentViewerNode;
 @property(nonatomic) RACDisposable *countDownSignalDisposable;
 
 @property(nonatomic, copy) NSString *showUuid;

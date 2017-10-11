@@ -32,4 +32,7 @@
 @property (nonatomic, strong, nullable) NSString *url;
 
 
+@property (nonatomic, strong, nullable) NSNumber *startAt;
+
+
 @end

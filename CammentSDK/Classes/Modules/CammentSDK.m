@@ -617,7 +617,8 @@
                         CMShow *show = [[CMShow alloc] initWithUuid:invitation.showUuid
                                                                 url:nil
                                                           thumbnail:nil
-                                                           showType:[CMShowType videoWithShow:nil]];
+                                                           showType:[CMShowType videoWithShow:nil]
+                                                           startsAt:nil];
 
                         CMMembershipAcceptedMessage *message = [[CMMembershipAcceptedMessage alloc] initWithGroup:group show:show];
                         [weakSelf presentMembershipAcceptedAlert:message];

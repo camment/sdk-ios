@@ -22,7 +22,6 @@
 
 #import "CMAPIError.h"
 #import "CMAPIDeeplink.h"
-#import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIUsergroupList.h"
 #import "CMAPIShowList.h"
@@ -186,28 +185,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIDeeplink class]];
 }
 
-- (AWSTask *)demoValidatePasscodePost:(CMAPIPasscodeInRequest *)body {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     
-                                     };
-    
-    return [self invokeHTTPRequest:@"POST"
-                         URLString:@"/demo/validate-passcode"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:body
-                     responseClass:nil];
-}
-
 - (AWSTask *)meFbFriendsGet:(NSString *)fbAccessToken {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -272,6 +249,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                   headerParameters:headerParameters
                               body:nil
                      responseClass:[CMAPIShowList class]];
+}
+
+- (AWSTask *)showsOptions {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"OPTIONS"
+                         URLString:@"/shows"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
 }
 
 - (AWSTask *)showsUuidGet:(NSString *)uuid {

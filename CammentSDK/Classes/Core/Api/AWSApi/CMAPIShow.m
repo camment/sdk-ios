@@ -22,7 +22,8 @@
     return @{
              @"thumbnail": @"thumbnail",
              @"uuid": @"uuid",
-             @"url": @"url"
+             @"url": @"url",
+             @"startAt": @"startAt"
              };
 }
 

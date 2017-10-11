@@ -49,4 +49,8 @@
     return _videoThumbnailNode;
 }
 
+- (UIImage *)thumbnailImage {
+    return [_videoThumbnailNode image];
+}
+
 @end

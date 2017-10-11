@@ -439,6 +439,28 @@
     }
 }
 
+- (void)presentOpenURLSuggestion:(NSURL *)url {
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"We found a link in your clipboard")]
+                                                                             message:CMLocalized(@"Would you like to open it and join the group? It will redirect you to your web browser first.")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
+
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
+        });
+    } else {
+        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
+    }
+}
+
 - (void)presentLoginSuggestion:(NSString *)reason {
     UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
 
@@ -489,6 +511,15 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     DDLogInfo(@"applicationDidBecomeActive hook has been installed");
     [FBSDKAppEvents activateApp];
+
+    UIPasteboard *pb = [UIPasteboard generalPasteboard];
+    if (pb.URL) {
+
+        NSURLComponents *components = [NSURLComponents componentsWithURL:pb.URL resolvingAgainstBaseURL:NO];
+        if (![components.host isEqualToString:@"camment.sportacam.com"]) { return; }
+        [self presentOpenURLSuggestion:pb.URL];
+        [pb setValue:@"" forPasteboardType:UIPasteboardNameGeneral];
+    }
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

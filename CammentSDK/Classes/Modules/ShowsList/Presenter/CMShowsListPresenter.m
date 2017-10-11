@@ -66,11 +66,12 @@
             RACObserve([CMStore instance], isConnected),
             RACObserve([CMStore instance], isOfflineMode)
     ];
-    [[[RACSignal combineLatest:updateShowsListSignals] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
+    [[[[RACSignal combineLatest:updateShowsListSignals] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
         NSNumber *isSignedIn = tuple.first;
+        NSNumber *isConnected = tuple.second;
         NSNumber *isOfflineMode = tuple.third;
 
-        if (isSignedIn.boolValue || isOfflineMode.boolValue) {
+        if (isSignedIn.boolValue && isConnected.boolValue || isOfflineMode.boolValue) {
             [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
     }];
@@ -82,6 +83,10 @@
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.interactor fetchShowList:passcode];
+}
+
+- (void)viewWantsRefreshShowList {
+    [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
 }
 
 - (void)showListDidFetched:(CMAPIShowList *)list {
@@ -107,16 +112,16 @@
         demoWebShowUrl = webShowTweak.currentValue;
     }
 
-    shows = [shows arrayByAddingObjectsFromArray:@[
-            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
-                                     url:demoWebShowUrl
-                               thumbnail:nil
-                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
-    ]];
+//    shows = [shows arrayByAddingObjectsFromArray:@[
+//            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
+//                                     url:demoWebShowUrl
+//                               thumbnail:nil
+//                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
+//    ]];
 #endif
 
+    self.showsListCollectionPresenter.showNoShowsNode = shows.count == 0;
     self.showsListCollectionPresenter.shows = shows;
-    [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
 }
 
@@ -146,8 +151,18 @@
     DDLogError(@"Show list fetch error %@", error);
 }
 
-- (void)didSelectShow:(CMShow *)show {
+- (void)didSelectShow:(CMShow *)show rect:(CGRect)rect image:(UIImage *)image {
+    self.wireframe.view.selectedCellFrame = rect;
+    self.wireframe.view.selectedShowPlaceHolder = image;
     [self openShowIfNeeded:show];
+}
+
+- (void)showTweaksView {
+    [self.output showTweaks];
+}
+
+- (void)showPasscodeView {
+    [self.output showPasscodeAlert];
 }
 
 - (void)openShowIfNeeded:(CMShow *)show {
@@ -194,5 +209,6 @@
 - (void)didJoinToShow:(CMShowMetadata *)metadata {
     [self openShowIfNeededWithMetadata:metadata];
 }
+
 
 @end

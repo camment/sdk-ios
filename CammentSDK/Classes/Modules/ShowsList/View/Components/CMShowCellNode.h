@@ -6,13 +6,26 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class CMShow;
+@class CMShow, CMShowCellNode;
 
+@protocol CMShowCellNodeDelegate<NSObject>
+
+- (void)showCellNode:(CMShowCellNode *)node didSelectShow:(CMShow *)show;
+- (void)showTweaksView;
+- (void)showPasscodeView;
+
+@end
 
 @interface CMShowCellNode: ASCellNode
 
 @property (nonatomic, strong, readonly) CMShow *show;
+@property (nonatomic, weak) id<CMShowCellNodeDelegate> delegate;
 
 - (instancetype)initWithShow:(CMShow *)show;
 
+- (void)playPressAnimation;
+
+- (void)cancelTapGesture;
+
+- (UIImage *)thumbnailImage;
 @end

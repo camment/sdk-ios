@@ -17,6 +17,9 @@
 @interface CMCammentsInStreamPlayerViewController : UIViewController <CMCammentsInStreamPlayerPresenterOutput, CMLoadingHUD>
 
 @property (nonatomic, strong) id<CMCammentsInStreamPlayerPresenterInput> presenter;
+@property(nonatomic, strong) ASDisplayNode* contentViewerNode;
+
+@property(nonatomic) CGRect videoThumbnailFrame;
 
 - (instancetype)initWithShow:(CMShow *)show;
 

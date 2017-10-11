@@ -62,7 +62,8 @@ NSString *kAnalyticsEventOnboardingEnd = @"Onboarding End";
 }
 
 - (void)setMixpanelID:(NSString *)id {
-    [self.mixpanel setDistinctId:id];
+    [self.mixpanel createAlias:id forDistinctID:self.mixpanel.distinctId];
+    [self.mixpanel identify:id];
 }
 
 - (void)trackMixpanelEvent:(NSString *)event {

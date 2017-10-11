@@ -19,7 +19,6 @@
 
 #import "CMAPIError.h"
 #import "CMAPIDeeplink.h"
-#import "CMAPIPasscodeInRequest.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIUsergroupList.h"
 #import "CMAPIShowList.h"
@@ -196,15 +195,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param body 
- 
- return type: 
- */
-- (AWSTask *)demoValidatePasscodePost:( CMAPIPasscodeInRequest *)body;
-
-/**
- 
- 
  @param fbAccessToken 
  
  return type: CMAPIFacebookFriendList *
@@ -227,6 +217,14 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIShowList *
  */
 - (AWSTask *)showsGet:(nullable NSString *)passcode;
+
+/**
+ 
+ 
+ 
+ return type: 
+ */
+- (AWSTask *)showsOptions;
 
 /**
  

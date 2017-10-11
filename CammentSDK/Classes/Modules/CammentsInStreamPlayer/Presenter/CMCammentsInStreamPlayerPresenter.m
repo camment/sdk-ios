@@ -66,7 +66,8 @@
                 initWithUuid:cmapiShow.uuid
                          url:cmapiShow.url
                    thumbnail:cmapiShow.thumbnail
-                    showType:[CMShowType videoWithShow:cmapiShow]];
+                    showType:[CMShowType videoWithShow:cmapiShow]
+                               startsAt:cmapiShow.startAt];
         self.show = updatedShow;
 
         dispatch_async(dispatch_get_main_queue(), ^{

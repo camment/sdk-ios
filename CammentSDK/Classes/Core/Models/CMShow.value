@@ -5,4 +5,5 @@ CMShow {
     NSString *url
     NSString *thumbnail
     CMShowType *showType
+    NSNumber *startsAt
 }

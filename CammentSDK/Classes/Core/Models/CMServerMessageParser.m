@@ -96,7 +96,11 @@
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
                 withUserPhoto:userJson[@"picture"]] build];
-        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"] url:nil thumbnail:nil showType:[CMShowType videoWithShow:nil]];
+        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"]
+                                                url:nil
+                                          thumbnail:nil
+                                           showType:[CMShowType videoWithShow:nil]
+                                           startsAt:nil];
         CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
         CMMembershipRequestMessage *membershipRequestMessage = [[[[[CMMembershipRequestMessageBuilder new]
                 withGroup:group]
@@ -105,7 +109,11 @@
                 build];
         serverMessage = [CMServerMessage membershipRequestWithMembershipRequestMessage:membershipRequestMessage];
     } else if ([type isEqualToString:@"membership-accepted"]) {
-        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"] url:nil thumbnail:nil showType:[CMShowType videoWithShow:nil]];
+        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"]
+                                                url:nil
+                                          thumbnail:nil
+                                           showType:[CMShowType videoWithShow:nil]
+                                           startsAt:nil];
         CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
         CMMembershipAcceptedMessage *membershipAcceptedMessage = [[[[CMMembershipAcceptedMessageBuilder new]
                 withGroup:group]

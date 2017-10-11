@@ -91,7 +91,11 @@
 
 - (void)showListDidFetched:(CMAPIShowList *)list {
     NSArray *shows = [list.items.rac_sequence map:^CMShow *(CMAPIShow *value) {
-        return [[CMShow alloc] initWithUuid:value.uuid url:value.url thumbnail:value.thumbnail showType:[CMShowType videoWithShow:value]];
+        return [[CMShow alloc] initWithUuid:value.uuid
+                                        url:value.url
+                                  thumbnail:value.thumbnail
+                                   showType:[CMShowType videoWithShow:value]
+                                   startsAt:value.startAt];
     }].array ?: @[];
 
 #ifdef USE_INTERNAL_FEATURES
@@ -141,7 +145,8 @@
                 [[CMShow alloc] initWithUuid:[(CMAPIShow *) shows.firstObject uuid]
                                          url:tweak.currentValue
                                    thumbnail:nil
-                                    showType:[CMShowType htmlWithWebURL:tweak.currentValue]]
+                                    showType:[CMShowType htmlWithWebURL:tweak.currentValue]
+                                    startsAt:nil]
         ]];
         [self.showsListCollectionPresenter.collectionNode reloadData];
     }
@@ -192,7 +197,8 @@
         show = [[CMShow alloc] initWithUuid:metadata.uuid
                                         url:nil
                                   thumbnail:nil
-                                   showType:nil];
+                                   showType:nil
+                                   startsAt:nil];
     }
 
     [self openShowIfNeeded:show];

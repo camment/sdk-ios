@@ -74,14 +74,14 @@
     }
 }
 
-- (ASDisplayNode *)contentNode {
-    return [ASDisplayNode new];
+- (ASLayoutSpec *)contentNode {
+    return [ASInsetLayoutSpec
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 0, 0, 0)
+                                child:[ASDisplayNode new]];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    ASDisplayNode *contentNode = [self contentNode];
-    contentNode.clipsToBounds = YES;
-    contentNode.cornerRadius = 15.0f;
+    ASLayoutSpec *contentNode = [self contentNode];
 
     contentNode.style.preferredLayoutSize = ASLayoutSizeMake(ASDimensionMakeWithFraction(1), ASDimensionMakeWithFraction(1));
 

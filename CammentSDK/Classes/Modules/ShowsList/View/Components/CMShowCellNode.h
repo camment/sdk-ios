@@ -28,4 +28,7 @@
 - (void)cancelTapGesture;
 
 - (UIImage *)thumbnailImage;
+
+- (ASLayoutSpec *)contentNode;
+
 @end

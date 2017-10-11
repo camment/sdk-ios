@@ -86,10 +86,9 @@
 
 - (void)startShow:(CMShow *)show {
     NSString *passcode = [[GVUserDefaults standardUserDefaults] broadcasterPasscode];
-    if ([passcode isEqualToString:[CMStore instance].scheduledShowsPasscode]
-            && [[NSDate date] isEarlierThan:[CMStore instance].scheduledDate]) {
-        self.contentViewerNode = [[CMWaitContentNode alloc] initWithStartDate:[CMStore instance].scheduledDate];
-
+    NSDate *startsAt = show.startsAt ? [NSDate dateWithTimeIntervalSince1970:show.startsAt.integerValue] : nil;
+    if (startsAt && [[NSDate date] isEarlierThan:startsAt]) {
+        self.contentViewerNode = [[CMWaitContentNode alloc] initWithStartDate:startsAt];
         RACSignal * countDownSignal = [[[RACSignal interval:1
                   onScheduler:[RACScheduler mainThreadScheduler]]
                 startWith:[NSDate date]]
@@ -100,7 +99,7 @@
 
         @weakify(self);
         self.countDownSignalDisposable = [[countDownSignal takeWhileBlock:^BOOL(id x) {
-            return [[NSDate date] isEarlierThan:[CMStore instance].scheduledDate];
+            return [[NSDate date] isEarlierThan:startsAt];
         }] subscribeCompleted:^{
             @strongify(self);
             [self startShow:show];
@@ -109,8 +108,8 @@
     } else {
         [show.showType matchVideo:^(CMAPIShow *matchedShow) {
             self.contentViewerNode = [CMVideoContentPlayerNode new];
-            if ([passcode isEqualToString:[CMStore instance].scheduledShowsPasscode]) {
-                [(CMVideoContentPlayerNode *)self.contentViewerNode setStartsAt:[CMStore instance].scheduledDate];
+            if (startsAt) {
+                [(CMVideoContentPlayerNode *)self.contentViewerNode setStartsAt:startsAt];
             }
         } html:^(NSString *webURL) {
             self.contentViewerNode = [CMWebContentPlayerNode new];
@@ -118,7 +117,6 @@
     }
 
     [_cammentOverlayController setContentView:self.contentViewerNode.view];
-    
     [(id<CMContentViewerNode>)self.contentViewerNode openContentAtUrl:[[NSURL alloc] initWithString:show.url]];
 }
 

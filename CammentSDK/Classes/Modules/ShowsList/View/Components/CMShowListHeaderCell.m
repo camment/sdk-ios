@@ -104,7 +104,7 @@
                                                                    alignItems:ASStackLayoutAlignItemsStart
                                                                      children:@[_headerTextNode, _onlineStatusTextNode]];
     ASOverlayLayoutSpec *overlayLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:headerStack
-                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(INFINITY, INFINITY, 12, 0) child:buttonsStack]];
+                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(INFINITY, INFINITY, 17, 0) child:buttonsStack]];
     return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(INFINITY, 0, 0, 0) child:overlayLayoutSpec];
 
 }

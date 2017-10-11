@@ -28,13 +28,7 @@
     [super didLoad];
     
     self.clipsToBounds = NO;
-    
     self.cornerRadius = 15.0f;
-    self.layer.shadowColor = [UIColor blackColor].CGColor;
-    self.layer.shadowRadius = 15.0f;
-    self.layer.shadowOpacity = .3f;
-    self.layer.shadowOffset = CGSizeMake(.0f, .0f);
-    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.bounds cornerRadius:15.0f].CGPath;
 
     self.tapGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     self.tapGestureRecognizer.minimumPressDuration = 0.0f;
@@ -43,6 +37,19 @@
     self.tapGestureRecognizer.delaysTouchesEnded = NO;
     self.tapGestureRecognizer.allowableMovement = 20.0f;
     [self.view addGestureRecognizer:self.tapGestureRecognizer];
+}
+
+- (void)layout {
+    [super layout];
+    [self updateShadow];
+}
+
+- (void)updateShadow {
+    self.layer.shadowColor = [UIColor blackColor].CGColor;
+    self.layer.shadowRadius = 15.0f;
+    self.layer.shadowOpacity = .3f;
+    self.layer.shadowOffset = CGSizeMake(.0f, .0f);
+    self.layer.shadowPath = [UIBezierPath bezierPathWithRoundedRect:self.layer.bounds cornerRadius:15.0f].CGPath;
 }
 
 - (void)handleTap:(UILongPressGestureRecognizer *)recognizer {

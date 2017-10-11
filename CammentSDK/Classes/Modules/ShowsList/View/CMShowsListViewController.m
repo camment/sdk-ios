@@ -95,14 +95,6 @@
     [delegate setItemCollectionDisplayNode:self.node.listNode];
 }
 
-- (BOOL)shouldAutorotate {
-    return NO;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
-}
-
 - (void)showTweaks {
     FBTweakViewController *tweakVC = [[FBTweakViewController alloc] initWithStore:[FBTweakStore sharedInstance]];
     tweakVC.tweaksDelegate = self;

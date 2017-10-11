@@ -86,7 +86,7 @@
     animation.duration = [self transitionDuration:transitionContext];
     animation.timingFunction = [CAMediaTimingFunction functionWithName: self.presenting ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
     [animation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
-        [streamPlayerViewController.view setBackgroundColor:[UIColor whiteColor]];
+        [streamPlayerViewController.view setBackgroundColor:[UIColor blackColor]];
         [shadowView removeFromSuperview];
         [placeholderImageView removeFromSuperview];
         [showsListViewController.view setUserInteractionEnabled:YES];
@@ -119,7 +119,7 @@
 - (void)addAnimationForShadowView:(UIView *)shadowView{
     POPBasicAnimation *shadowAnim = [POPBasicAnimation animationWithPropertyNamed:kPOPViewBackgroundColor];
     UIColor *hiddenColor = [UIColor clearColor];
-    UIColor *shownColor = [UIColor colorWithWhite:.2 alpha:.5];
+    UIColor *shownColor = [UIColor blackColor];
     shadowAnim.fromValue = self.presenting ? hiddenColor : shownColor;
     shadowAnim.toValue = self.presenting ? shownColor : hiddenColor;
     shadowAnim.duration = [self transitionDuration:nil];

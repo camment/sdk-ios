@@ -51,9 +51,8 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    BOOL isPortrait = UIDeviceOrientationIsPortrait([UIDevice currentDevice].orientation);
     CGSize statusBarSize = [UIApplication sharedApplication].statusBarFrame.size;
-    CGFloat statusBarHeight = (isPortrait ? statusBarSize.height : statusBarSize.width);
+    CGFloat statusBarHeight = statusBarSize.height;
 
     _statusBarNode.style.height = ASDimensionMake(statusBarHeight);
     return [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_listNode

@@ -13,6 +13,7 @@
 #import "FBTweakViewController.h"
 #import "FBTweakStore.h"
 #import "CammentSDK.h"
+#import "CMAnalytics.h"
 
 @interface CMShowsListViewController () <ASCollectionDelegate, FBTweakViewControllerDelegate>
 
@@ -72,6 +73,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [CammentSDK instance].sdkUIDelegate = self;
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventShowsScreenList];
 }
 
 - (void)setCurrentBroadcasterPasscode:(NSString *)passcode {

@@ -38,6 +38,7 @@
 #import "GVUserDefaults.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "AWSIotDataManager.h"
+#import "Mixpanel.h"
 
 @interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
 
@@ -198,6 +199,7 @@
     [[self.authService signIn]
             subscribeNext:^(NSString *cognitoUserId) {
                 NSLog(@"%@", cognitoUserId);
+                [[CMAnalytics instance] setMixpanelID:cognitoUserId];
                 [[CMStore instance] setCognitoUserId:cognitoUserId];
                 [[CMStore instance] setFacebookUserId:[FBSDKAccessToken currentAccessToken].userID];
                 CMUser *currentUser = [[[[CMUserBuilder new]
@@ -220,6 +222,9 @@
                     [self updateUserInfo];
                     [[CMStore instance] setIsSignedIn:YES];
                     [self configureIoTListener:[CMStore instance].cognitoUserId];
+                    if ([CMStore instance].isFBConnected) {
+                        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
+                    }
                     if (successBlock) {successBlock();}
                 }];
 }
@@ -383,6 +388,7 @@
                                                                    group:group
                                                          isAllowedToJoin:YES
                                                                     show:message.show];
+        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAcceptJoinRequest];
     }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
@@ -390,6 +396,7 @@
                                                                    group:group
                                                          isAllowedToJoin:NO
                                                                     show:message.show];
+        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventDeclineJoinRequest];
     }]];
 
     if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
@@ -505,6 +512,7 @@
         CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
         [[CMStore instance] setActiveGroup:usersGroup];
         [[[CMStore instance] reloadActiveGroupSubject] sendNext:@YES];
+        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventJoinGroup];
     }
 }
 
@@ -524,6 +532,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     DDLogInfo(@"didFinishLaunchingWithOptions hook has been installed");
+    [[CMAnalytics instance] configureMixpanelAnalytics];
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAppStart];
+
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord
                                      withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
@@ -573,6 +584,7 @@
         NSString *groupUuid = components[1];
         NSString *showUuid = components[3];
         if (groupUuid.length > 0 && showUuid.length > 0) {
+            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOpenDeeplink];
             dispatch_async(dispatch_get_main_queue(), ^{
                 CMInvitation *invitation = [[[[[CMInvitationBuilder alloc] init]
                                              withUserGroupUuid:groupUuid]

@@ -38,6 +38,7 @@
 #import "RACSignal+SignalHelpers.h"
 #import "CMCammentCell.h"
 #import "CMBotRegistry.h"
+#import "CMAnalytics.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
 
@@ -117,7 +118,18 @@
         }];
 
         __weak typeof(self) weakSelf = self;
-        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:weakSelf.rac_willDeallocSignal] filter:^BOOL(NSNumber *state) {
+        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:weakSelf.rac_willDeallocSignal]
+                filter:^BOOL(NSNumber *state) {
+                    switch ((CMCammentRecordingState)state.integerValue) {
+                        case CMCammentRecordingStateNotRecording:
+                            break;
+                        case CMCammentRecordingStateRecording:
+                            break;
+                        case CMCammentRecordingStateFinished:
+                            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentRecord];
+                            break;
+                        case CMCammentRecordingStateCancelled:break;
+                    }
             return state.integerValue != CMCammentRecordingStateNotRecording;
         }] flattenMap:^RACSignal *(NSNumber *state) {
 
@@ -203,6 +215,7 @@
 - (void)runOnboarding {
     _isOnboardingRunning = YES;
     [self showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingStart];
 }
 
 - (void)updateChatWithActiveGroup {
@@ -373,6 +386,7 @@
         [self.output showLoadingHUD];
         [_authInteractor signInWithFacebookProvider:(id) self.output];
     }
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventInvite];
 }
 
 - (void)getInvitationDeeplink {
@@ -497,6 +511,7 @@
     CMCammentsBlockItem *cammentsBlockItem = [CMCammentsBlockItem cammentWithCamment:camment];
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
     [self.interactor deleteCament:camment];
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentDelete];
 }
 
 - (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {

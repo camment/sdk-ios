@@ -63,4 +63,6 @@ s.dependency  'DateTools'
 s.dependency  'CocoaLumberjack'
 s.dependency  'GVUserDefaults'
 s.dependency  'TLIndexPathTools'
+s.dependency  'Mixpanel'
+
 end

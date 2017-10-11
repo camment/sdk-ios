@@ -19,6 +19,7 @@
 #import "GVUserDefaults.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "CMWaitContentNode.h"
+#import "CMAnalytics.h"
 
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate, CMCammentSDKUIDelegate>
 
@@ -65,6 +66,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [CammentSDK instance].sdkUIDelegate = self;
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventShowScreen];
 }
 
 - (void)viewDidAppear:(BOOL)animated {

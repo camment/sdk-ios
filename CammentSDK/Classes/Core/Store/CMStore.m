@@ -12,6 +12,7 @@
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
 #import "CMInvitation.h"
+#import "CMAnalytics.h"
 
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
@@ -35,7 +36,15 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             _instance.reloadActiveGroupSubject = [RACSubject new];
 
             [RACObserve(_instance, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
+                if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
+                    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingEnd];
+                }
                 [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
+            }];
+
+            [RACObserve(_instance, playingCammentId) subscribeNext:^(NSString *id) {
+                if ([id isEqualToString:kCMStoreCammentIdIfNotPlaying]) { return; }
+                [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentPlay];
             }];
         }
     }

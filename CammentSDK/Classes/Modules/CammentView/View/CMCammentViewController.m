@@ -161,13 +161,13 @@
 }
 
 - (void)hideCamments {
-//    if (self.node.showGroupsListNode) {
-//        self.node.showGroupsListNode = NO;
-//        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
-//        }];
-//        [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
-//        return;
-//    }
+    if (self.node.showGroupsListNode) {
+        self.node.showGroupsListNode = NO;
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
+        }];
+        [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+        return;
+    }
 
     if (self.node.showCammentsBlock) {
         self.node.showCammentsBlock = NO;
@@ -178,13 +178,13 @@
 }
 
 - (void)showCamments {
-//    if (self.node.showCammentsBlock) {
-//        self.node.showGroupsListNode = YES;
-//        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
-//        }];
-//        [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
-//        return;
-//    }
+    if (self.node.showCammentsBlock) {
+        self.node.showGroupsListNode = YES;
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
+        }];
+        [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+        return;
+    }
 
     if (!self.node.showCammentsBlock) {
         self.node.showCammentsBlock = YES;

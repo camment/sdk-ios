@@ -46,12 +46,19 @@
     CMShowsListViewController *showsListViewController = [(UINavigationController *)[transitionContext viewControllerForKey:keyForViewController] viewControllers].firstObject;
     CMCammentsInStreamPlayerViewController *streamPlayerViewController = [transitionContext viewControllerForKey:keyForProfileViewController];
     
+    if (!self.presenting) {
+        UINavigationController *navigationController = [transitionContext viewControllerForKey:keyForViewController];
+        navigationController.view.frame = [UIApplication sharedApplication].keyWindow.bounds;
+        showsListViewController.view.frame = transitionContext.containerView.bounds;
+        streamPlayerViewController.view.frame = transitionContext.containerView.bounds;
+        [UIViewController attemptRotationToDeviceOrientation];
+    }
+    
     // setup viewcontrollers
     [showsListViewController.view setUserInteractionEnabled:NO];
     [streamPlayerViewController.view setUserInteractionEnabled:NO];
-    [transitionContext.containerView addSubview:showsListViewController.view];
     [streamPlayerViewController.view setBackgroundColor:[UIColor clearColor]];
-
+    
     // fade out to dark color view
     UIView *shadowView = [[UIView alloc] initWithFrame:showsListViewController.view.bounds];
     [transitionContext.containerView addSubview:shadowView];
@@ -103,7 +110,7 @@
     radiusAnimation.toValue = self.presenting ? @0 : @15;
     radiusAnimation.duration = [self transitionDuration:transitionContext];
     radiusAnimation.timingFunction = [CAMediaTimingFunction functionWithName: self.presenting ? kCAMediaTimingFunctionEaseIn : kCAMediaTimingFunctionEaseOut];
-    [placeholderImageView.layer pop_addAnimation:radiusAnimation forKey:@"frameAnimation"];
+    [placeholderImageView.layer pop_addAnimation:radiusAnimation forKey:@"cornerRadiusAnimation"];
 
     if (!self.presenting) {
         POPBasicAnimation *opacityAnimation = [POPBasicAnimation animationWithPropertyNamed:kPOPLayerOpacity];
@@ -112,7 +119,7 @@
         opacityAnimation.toValue = @0;
         opacityAnimation.duration = [self transitionDuration:nil] * 0.95;
         opacityAnimation.timingFunction = [CAMediaTimingFunction functionWithName: kCAMediaTimingFunctionEaseIn];
-        [placeholderImageView.layer pop_addAnimation:opacityAnimation forKey:@"frameAnimation"];
+        [placeholderImageView.layer pop_addAnimation:opacityAnimation forKey:@"opacityAnimation"];
     }
 }
 

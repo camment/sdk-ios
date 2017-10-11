@@ -28,7 +28,7 @@
                                                                        }];
 
         self.textNode = [ASTextNode new];
-        self.textNode.attributedText = [[NSAttributedString alloc] initWithString:@"To get started open an invitation link from you friend or copy it to clipboard"
+        self.textNode.attributedText = [[NSAttributedString alloc] initWithString:@"To get started open an invitation link from your friend or copy it to clipboard"
                                                                        attributes:@{
                                                                                NSFontAttributeName: [UIFont systemFontOfSize:18.0f],
                                                                                NSForegroundColorAttributeName: [UIColor whiteColor]

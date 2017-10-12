@@ -11,7 +11,7 @@
 
 @interface CMGroupInfoNode ()
 
-@property (nonatomic, strong) CMNotSignedInGroupInfoNode *notSignedInGroupInfoNode;
+@property (nonatomic, strong) CMInviteFriendsGroupInfoNode *notSignedInGroupInfoNode;
 
 @end
 
@@ -21,7 +21,7 @@
     self = [super init];
     if (self) {
 
-        self.notSignedInGroupInfoNode = [CMNotSignedInGroupInfoNode new];
+        self.notSignedInGroupInfoNode = [CMInviteFriendsGroupInfoNode new];
 
         self.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;

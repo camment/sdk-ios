@@ -27,11 +27,11 @@
     [self.presenter setupView];
 }
 
-- (void)notSignedNodeDidTapLearnMoreButton:(CMNotSignedInGroupInfoNode *)node {
+- (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
     [self.presenter handleLearnMoreAction];
 }
 
-- (void)notSignedNodeDidTapInviteFriendsButton:(CMNotSignedInGroupInfoNode *)node {
+- (void)inviteFriendsGroupInfoDidTapInviteFriendsButton:(CMInviteFriendsGroupInfoNode *)node {
     [self.presenter handleInviteFriendsAction];
 }
 

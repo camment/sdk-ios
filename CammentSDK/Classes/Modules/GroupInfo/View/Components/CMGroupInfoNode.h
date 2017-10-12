@@ -8,9 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
-#import "CMNotSignedInGroupInfoNode.h"
+#import "CMInviteFriendsGroupInfoNode.h"
 
-@protocol CMGroupInfoNodeDelegate<CMNotSignedInGroupInfoNodeDelegate>
+@protocol CMGroupInfoNodeDelegate<CMInviteFriendsGroupInfoNodeDelegate>
 @end
 
 @interface CMGroupInfoNode: ASDisplayNode

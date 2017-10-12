@@ -2,11 +2,11 @@
 // Created by Alexander Fedosov on 12.10.2017.
 //
 
-#import "CMNotSignedInGroupInfoNode.h"
+#import "CMInviteFriendsGroupInfoNode.h"
 #import "UIColorMacros.h"
 
 
-@interface CMNotSignedInGroupInfoNode ()
+@interface CMInviteFriendsGroupInfoNode ()
 
 @property(nonatomic, strong) ASTextNode *infoTextNode;
 @property(nonatomic, strong) ASButtonNode *learnMoreButtonNode;
@@ -14,7 +14,7 @@
 
 @end
 
-@implementation CMNotSignedInGroupInfoNode {
+@implementation CMInviteFriendsGroupInfoNode {
 
 }
 
@@ -66,14 +66,14 @@
 }
 
 - (void)tapInviteFriendsButton {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(notSignedNodeDidTapInviteFriendsButton:)]) {
-        [self.delegate notSignedNodeDidTapInviteFriendsButton:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFriendsGroupInfoDidTapInviteFriendsButton:)]) {
+        [self.delegate inviteFriendsGroupInfoDidTapInviteFriendsButton:self];
     }
 }
 
 - (void)tapLearnMoreButton {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(notSignedNodeDidTapLearnMoreButton:)]) {
-        [self.delegate notSignedNodeDidTapLearnMoreButton:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFriendsGroupInfoNodeDidTapLearnMoreButton:)]) {
+        [self.delegate inviteFriendsGroupInfoNodeDidTapLearnMoreButton:self];
     }
 }
 

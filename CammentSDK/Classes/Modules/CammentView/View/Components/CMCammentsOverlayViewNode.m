@@ -47,7 +47,7 @@
         self.layoutConfig = layoutConfig;
         self.showCammentsBlock = YES;
         _cammentsBlockNode = [CMCammentsBlockNode new];
-        _groupsListNode = [ASDisplayNode new];
+        _leftSidebarNode = [ASDisplayNode new];
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
         _contentView = [UIView new];
@@ -76,8 +76,8 @@
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
-- (void)setGroupsListNode:(ASDisplayNode *)groupsListNode {
-    _groupsListNode = groupsListNode;
+- (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {
+    _leftSidebarNode = leftSidebarNode;
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
@@ -121,7 +121,7 @@
     ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
     ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
 
-    _groupsListNode.style.width = ASDimensionMake(self.groupsSidebarWidth);
+    _leftSidebarNode.style.width = ASDimensionMake(self.groupsSidebarWidth);
     camentBlockLayoutSpec.style.width = ASDimensionMake(150.0f);
 
     ASStackLayoutSpec *leftColumnStack = [ASStackLayoutSpec
@@ -130,19 +130,19 @@
                           justifyContent:ASStackLayoutJustifyContentStart
                               alignItems:ASStackLayoutAlignItemsStart
                                 children:@[
-                                        _groupsListNode,
+                                        _leftSidebarNode,
                                         camentBlockLayoutSpec
                                 ]
     ];
 
-    leftColumnStack.style.width = ASDimensionMake(_groupsListNode.style.width.value + camentBlockLayoutSpec.style.width.value);
+    leftColumnStack.style.width = ASDimensionMake(_leftSidebarNode.style.width.value + camentBlockLayoutSpec.style.width.value);
     CGFloat leftLayoutInset = 0.0f;
     CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value;
     if (_showCammentsBlock) {
-        leftColumnStackOffset = -_groupsListNode.style.width.value;
+        leftColumnStackOffset = -_leftSidebarNode.style.width.value;
     }
 
-    if (_showGroupsListNode) {
+    if (_showLestSidebarNode) {
         leftColumnStackOffset = .0f;
     }
 
@@ -152,7 +152,7 @@
 
     _cammentsBlockNode.style.height = ASDimensionMake(
             [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
-    _groupsListNode.style.height = ASDimensionMake(
+    _leftSidebarNode.style.height = ASDimensionMake(
             [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
 
     ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
@@ -187,7 +187,7 @@
                             self.cammentButtonScreenSideVerticalInset,
                             INFINITY,
                             INFINITY,
-                            _showGroupsListNode ?
+                            _showLestSidebarNode ?
                                     - _groupsSidebarWidth + _cammentButton.style.width.value * 2
                                     : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
@@ -199,7 +199,7 @@
                             INFINITY,
                             INFINITY,
                             self.cammentButtonScreenSideVerticalInset,
-                            _showGroupsListNode ?
+                            _showLestSidebarNode ?
                                     - _groupsSidebarWidth + _cammentButton.style.width.value * 2
                                     : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
@@ -232,7 +232,7 @@
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
-        self.groupsListNode.frame = [context finalFrameForNode:self.groupsListNode];
+        self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];
         self.cammentsBlockNode.frame = cammentBlockFinalFrame;

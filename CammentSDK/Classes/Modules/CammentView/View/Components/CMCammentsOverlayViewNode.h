@@ -25,11 +25,11 @@
 @property(nonatomic, weak) UIView* contentView;
 @property(nonatomic, strong, readonly) ASDisplayNode* contentNode;
 @property(nonatomic, strong, readonly) CMCammentsBlockNode *cammentsBlockNode;
-@property(nonatomic, strong) ASDisplayNode *groupsListNode;
+@property(nonatomic, strong) ASDisplayNode *leftSidebarNode;
 @property(nonatomic, strong, readonly) CMCammentRecorderPreviewNode *cammentRecorderNode;
 @property(nonatomic, strong, readonly) CMCammentButton *cammentButton;
 @property(nonatomic, assign) BOOL showCammentsBlock;
-@property(nonatomic, assign) BOOL showGroupsListNode;
+@property(nonatomic, assign) BOOL showLestSidebarNode;
 @property(nonatomic, assign) BOOL showCammentRecorderNode;
 
 @property(nonatomic, weak) id<CMCammentsOverlayViewNodeDelegate> delegate;

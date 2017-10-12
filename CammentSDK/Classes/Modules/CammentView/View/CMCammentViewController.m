@@ -56,7 +56,7 @@
     self.node.delegate = self;
 
     [self.groupListWireframe addToViewController:self];
-    self.node.groupsListNode = self.groupListWireframe.view.node;
+    self.node.leftSidebarNode = self.groupListWireframe.view.node;
 
     [self setupBindings];
     [self.presenter setupView];
@@ -161,8 +161,8 @@
 }
 
 - (void)hideCamments {
-    if (self.node.showGroupsListNode) {
-        self.node.showGroupsListNode = NO;
+    if (self.node.showLestSidebarNode) {
+        self.node.showLestSidebarNode = NO;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
         }];
         [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
@@ -179,7 +179,7 @@
 
 - (void)showCamments {
     if (self.node.showCammentsBlock) {
-        self.node.showGroupsListNode = YES;
+        self.node.showLestSidebarNode = YES;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
         }];
         [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];

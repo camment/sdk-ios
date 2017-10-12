@@ -98,6 +98,11 @@
             }
         }];
 
+        [[[[[CMStore instance] inviteFriendsActionSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+            @strongify(self);
+            [self inviteFriendsAction];
+        }];
+
         [[[RACObserve([CMStore instance], playingCammentId)
                 takeUntil:self.rac_willDeallocSignal]
                 deliverOnMainThread]

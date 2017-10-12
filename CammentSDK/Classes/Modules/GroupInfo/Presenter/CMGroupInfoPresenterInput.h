@@ -12,5 +12,7 @@
 @protocol CMGroupInfoPresenterInput <NSObject>
 
 - (void)setupView;
+- (void)handleLearnMoreAction;
+- (void)handleInviteFriendsAction;
 
 @end

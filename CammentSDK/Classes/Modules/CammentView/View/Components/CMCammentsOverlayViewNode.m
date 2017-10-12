@@ -17,7 +17,7 @@
 @interface CMCammentsOverlayViewNode ()
 
 @property (nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
-@property (nonatomic, assign) CGFloat groupsSidebarWidth;
+@property (nonatomic, assign) CGFloat leftSidebarWidth;
 @property (nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
 
 @property(nonatomic, strong) CMCammentOverlayLayoutConfig *layoutConfig;
@@ -27,7 +27,7 @@
 
 - (instancetype)init {
     CMCammentOverlayLayoutConfig *layoutConfig = [CMCammentOverlayLayoutConfig new];
-    self.groupsSidebarWidth = 240.0f;
+    self.leftSidebarWidth = 240.0f;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionTopRight;
         layoutConfig.cammentButtonLayoutVerticalInset = 20.0f;
@@ -121,7 +121,7 @@
     ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
     ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
 
-    _leftSidebarNode.style.width = ASDimensionMake(self.groupsSidebarWidth);
+    _leftSidebarNode.style.width = ASDimensionMake(self.leftSidebarWidth);
     camentBlockLayoutSpec.style.width = ASDimensionMake(150.0f);
 
     ASStackLayoutSpec *leftColumnStack = [ASStackLayoutSpec
@@ -188,7 +188,7 @@
                             INFINITY,
                             INFINITY,
                             _showLestSidebarNode ?
-                                    - _groupsSidebarWidth + _cammentButton.style.width.value * 2
+                                    - _leftSidebarWidth + _cammentButton.style.width.value * 2
                                     : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
             break;
@@ -200,7 +200,7 @@
                             INFINITY,
                             self.cammentButtonScreenSideVerticalInset,
                             _showLestSidebarNode ?
-                                    - _groupsSidebarWidth + _cammentButton.style.width.value * 2
+                                    - _leftSidebarWidth + _cammentButton.style.width.value * 2
                                     : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
             break;

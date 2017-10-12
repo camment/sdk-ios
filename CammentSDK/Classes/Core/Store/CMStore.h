@@ -50,6 +50,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property(nonatomic, copy) NSString *email;
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
+@property RACSubject<NSNumber *> *inviteFriendsActionSubject;
 
 @property(nonatomic) BOOL isOfflineMode;
 

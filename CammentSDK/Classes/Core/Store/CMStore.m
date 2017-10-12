@@ -34,6 +34,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             _instance.isConnected = NO;
             _instance.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
             _instance.reloadActiveGroupSubject = [RACSubject new];
+            _instance.inviteFriendsActionSubject = [RACSubject new];
 
             [RACObserve(_instance, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
                 if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {

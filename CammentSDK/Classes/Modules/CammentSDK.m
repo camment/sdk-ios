@@ -3,6 +3,7 @@
 // Copyright (c) 2017 Camment. All rights reserved.
 //
 
+@import CoreText;
 #import <ReactiveObjC/ReactiveObjC.h>
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "CammentSDK.h"
@@ -39,6 +40,7 @@
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "AWSIotDataManager.h"
 #import "Mixpanel.h"
+#import "NSArray+RacSequence.h"
 
 @interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
 
@@ -71,7 +73,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-
+        [self loadAssets];
 #ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
 #else
@@ -104,6 +106,35 @@
     }
 
     return self;
+}
+
+- (void)loadAssets {
+    NSArray *customFonts = @[
+            @"Nunito-Medium.ttf"
+    ];
+    [customFonts map:^id(NSString *fileName) {
+        NSString *filePath = [[NSBundle cammentSDKBundle] pathForResource:fileName ofType:nil];
+        if (!filePath) { return nil; }
+
+        NSData *inData = [NSData dataWithContentsOfFile:filePath];
+        if (!inData) { return nil; }
+
+        CFErrorRef error;
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)inData);
+        CGFontRef font = CGFontCreateWithDataProvider(provider);
+        if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
+            CFStringRef errorDescription = CFErrorCopyDescription(error);
+            DDLogInfo(@"Failed to load font: %@", errorDescription);
+            CFRelease(errorDescription);
+        }
+        CFRelease(font);
+        CFRelease(provider);
+
+        return nil;
+    }];
+
+    DDLogInfo(@"Fonts loaded");
+    DDLogInfo(@"%@", [UIFont familyNames]);
 }
 
 - (void)reachabilityChanged:(NSNotification *)reachabilityChanged {

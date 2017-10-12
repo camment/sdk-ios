@@ -14,7 +14,7 @@
 #import "CMGroupInfoPresenterOutput.h"
 #import "CMGroupInfoNode.h"
 
-@interface CMGroupInfoViewController : ASViewController<CMGroupInfoNode *><CMGroupInfoPresenterOutput>
+@interface CMGroupInfoViewController: ASViewController<CMGroupInfoNode *><CMGroupInfoPresenterOutput>
 
 @property (nonatomic, strong) id<CMGroupInfoPresenterInput> presenter;
 

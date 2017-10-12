@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMNotSignedInGroupInfoNode.h"
 
+@protocol CMGroupInfoNodeDelegate<CMNotSignedInGroupInfoNodeDelegate>
+@end
 
 @interface CMGroupInfoNode: ASDisplayNode
+
+@property(nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
 
 @end

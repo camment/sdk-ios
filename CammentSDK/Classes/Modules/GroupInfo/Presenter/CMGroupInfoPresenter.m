@@ -8,11 +8,24 @@
 
 #import "CMGroupInfoPresenter.h"
 #import "CMGroupInfoWireframe.h"
+#import "CMStore.h"
 
 @implementation CMGroupInfoPresenter
 
 - (void)setupView {
 
 }
+
+- (void)handleLearnMoreAction {
+    NSURL *infoURL = [[NSURL alloc] initWithString:@"http://camment.tv"];
+    [[UIApplication sharedApplication] openURL:infoURL
+                                       options:@{}
+                             completionHandler:nil];
+}
+
+- (void)handleInviteFriendsAction {
+    [[[CMStore instance] inviteFriendsActionSubject] sendNext:@YES];
+}
+
 
 @end

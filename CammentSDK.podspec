@@ -40,7 +40,8 @@ s.frameworks = [
   'MessageUI',
   'AssetsLibrary',
   'CoreImage',
-  'CoreGraphics'
+  'CoreGraphics',
+  'CoreText'
 ]
 
 s.dependency  'AMPopTip', '1.5'

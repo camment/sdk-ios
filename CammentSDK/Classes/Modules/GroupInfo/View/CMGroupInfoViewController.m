@@ -9,11 +9,15 @@
 #import "CMGroupInfoViewController.h"
 
 
+@interface CMGroupInfoViewController () <CMGroupInfoNodeDelegate>
+@end
+
 @implementation CMGroupInfoViewController
 
 - (instancetype)init {
     self = [super initWithNode:[CMGroupInfoNode new]];
     if (self) {
+        self.node.delegate = self;
     }
     return self;
 }
@@ -21,6 +25,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.presenter setupView];
+}
+
+- (void)notSignedNodeDidTapLearnMoreButton:(CMNotSignedInGroupInfoNode *)node {
+    [self.presenter handleLearnMoreAction];
+}
+
+- (void)notSignedNodeDidTapInviteFriendsButton:(CMNotSignedInGroupInfoNode *)node {
+    [self.presenter handleInviteFriendsAction];
 }
 
 @end

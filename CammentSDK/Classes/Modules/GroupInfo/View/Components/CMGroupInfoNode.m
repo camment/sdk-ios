@@ -11,7 +11,7 @@
 
 @interface CMGroupInfoNode ()
 
-@property (nonatomic, strong) ASDisplay
+@property (nonatomic, strong) CMNotSignedInGroupInfoNode *notSignedInGroupInfoNode;
 
 @end
 
@@ -20,6 +20,9 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+
+        self.notSignedInGroupInfoNode = [CMNotSignedInGroupInfoNode new];
+
         self.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;
     }
@@ -27,8 +30,14 @@
     return self;
 }
 
+- (void)setDelegate:(id <CMGroupInfoNodeDelegate>)delegate {
+    _delegate = delegate;
+    self.notSignedInGroupInfoNode.delegate = _delegate;
+}
+
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-  return [super layoutSpecThatFits:constrainedSize];
+  return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
+                                                child:_notSignedInGroupInfoNode];
 }
 
 @end

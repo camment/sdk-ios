@@ -17,10 +17,11 @@
 #import "CMCammentViewNode.h"
 
 @class CMGroupsListWireframe;
+@class CMGroupInfoWireframe;
 
 @interface CMCammentViewController : ASViewController<CMCammentViewNode *><CMCammentViewPresenterOutput, CMCammentsOverlayViewNodeDelegate>
 
 @property (nonatomic, strong) id<CMCammentViewPresenterInput> presenter;
-@property (nonatomic, strong) CMGroupsListWireframe *groupListWireframe;
+@property (nonatomic, strong) CMGroupInfoWireframe *sidebarWireframe;
 
 @end

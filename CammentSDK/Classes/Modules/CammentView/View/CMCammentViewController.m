@@ -21,6 +21,7 @@
 #import "CMUserJoinedMessage.h"
 #import "CMCammentCell.h"
 #import "CMGroupsListWireframe.h"
+#import "CMGroupInfoWireframe.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 
@@ -55,8 +56,8 @@
     self.node.cammentButton.delegate = self;
     self.node.delegate = self;
 
-    [self.groupListWireframe addToViewController:self];
-    self.node.leftSidebarNode = self.groupListWireframe.view.node;
+    [self.sidebarWireframe addToViewController:self];
+    self.node.leftSidebarNode = self.sidebarWireframe.view.node;
 
     [self setupBindings];
     [self.presenter setupView];

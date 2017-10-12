@@ -496,7 +496,9 @@
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
     if (invitation.invitationKey == nil) {
         CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-        return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid showUuid:invitation.showUuid];
+        CMAPIShowUuid *showUuid = [CMAPIShowUuid new];
+        showUuid.showUuid = invitation.showUuid;
+        return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid body:showUuid];
     }
 
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];

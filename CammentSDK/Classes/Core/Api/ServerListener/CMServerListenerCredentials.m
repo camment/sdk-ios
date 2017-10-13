@@ -15,7 +15,7 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
 }
 
 - (instancetype)init {
-    return [self initWithClientId:[CMStore instance].cognitoUserId ?: @""
+    return [self initWithClientId:[CMStore instance].currentUser.cognitoUserId ?: @""
                           keyFile:@"awsiot-identity"
                        passPhrase:@"8uT$BwY+x=DF,M"
                     certificateId:nil];

@@ -287,7 +287,7 @@
         CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
                 withShowUuid:self.show.uuid]
                 withUserGroupUuid:groupUUID]
-                withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
+                withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
                 withLocalAsset:asset] build];
         @weakify(self);
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
@@ -316,7 +316,7 @@
             withLocalURL:url.absoluteString]
             withShowUuid:self.show.uuid]
             withUserGroupUuid:self.usersGroup ? self.usersGroup.uuid : nil]
-            withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
+            withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
             build];
     [self.interactor uploadCamment:cammentToUpload];
 }
@@ -383,6 +383,8 @@
 
 - (void)inviteFriendsAction {
     [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
+    [CMStore instance].isOnboardingFinished = YES;
+    
     FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
     [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
     if ([CMStore instance].isFBConnected) {
@@ -504,8 +506,8 @@
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
-    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]
-        || [CMStore instance].cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil ) {
+    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].currentUser.cognitoUserId]
+        || [CMStore instance].currentUser.cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil ) {
         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }
@@ -521,7 +523,7 @@
 
 - (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {
     if ([message.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
-            ![message.joinedUser.cognitoUserId isEqualToString:[CMStore instance].cognitoUserId]) {
+            ![message.joinedUser.cognitoUserId isEqualToString:[CMStore instance].currentUser.cognitoUserId]) {
         [self.output presentUserJoinedMessage:message];
     }
 }

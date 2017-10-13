@@ -28,13 +28,13 @@
 - (instancetype)init {
     CMCammentOverlayLayoutConfig *layoutConfig = [CMCammentOverlayLayoutConfig new];
     self.leftSidebarWidth = 240.0f;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionTopRight;
-        layoutConfig.cammentButtonLayoutVerticalInset = 20.0f;
-    } else {
-        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
-        layoutConfig.cammentButtonLayoutVerticalInset = 80.0f;
-    }
+//    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+//        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionTopRight;
+//        layoutConfig.cammentButtonLayoutVerticalInset = 20.0f;
+//    } else {
+    layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
+    layoutConfig.cammentButtonLayoutVerticalInset = 80.0f;
+//    }
     
     return [self initWithLayoutConfig:layoutConfig];
 }
@@ -177,7 +177,7 @@
 
 - (ASInsetLayoutSpec *)cammentButtonLayoutSpec:(CMCammentOverlayLayoutConfig *)layoutConfig {
     ASInsetLayoutSpec *layoutSpec = nil;
-
+    
     switch (layoutConfig.cammentButtonLayoutPosition) {
 
         case CMCammentOverlayLayoutPositionTopLeft:
@@ -232,6 +232,8 @@
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
+        self.cammentButton.transform = CATransform3DIdentity;
+        self.cammentButton.layer.transform = CATransform3DIdentity;
         self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];

@@ -92,9 +92,7 @@
                                                                       justifyContent:ASStackLayoutJustifyContentCenter
                                                                           alignItems:ASStackLayoutAlignItemsCenter
                                                                             children:@[infoTextLayoutSpec, _learnMoreButtonNode, inviteFriendsButtonLayoutSpec]];
-    return [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY
-                                                      sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY
-                                                              child:centerStack];
+    return centerStack;
 }
 
 

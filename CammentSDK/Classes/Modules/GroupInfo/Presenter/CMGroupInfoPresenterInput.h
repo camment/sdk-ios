@@ -8,11 +8,11 @@
 
 
 #import <Foundation/Foundation.h>
+#import "CMGroupInfoNode.h"
 
-@protocol CMGroupInfoPresenterInput <NSObject>
+@protocol CMGroupInfoPresenterInput <NSObject, CMGroupInfoNodeDelegate>
 
 - (void)setupView;
-- (void)handleLearnMoreAction;
-- (void)handleInviteFriendsAction;
 
+- (void)layoutCollectionViewIfNeeded;
 @end

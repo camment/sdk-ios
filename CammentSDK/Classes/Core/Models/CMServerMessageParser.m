@@ -48,8 +48,7 @@
     } else if ([type isEqualToString:@"invitation"]) {
 
         NSDictionary *userJson = body[@"invitingUser"];
-        CMUser *user = [[[[[[CMUserBuilder new]
-                withUserId:userJson[@"userCognitoIdentityId"]]
+        CMUser *user = [[[[[CMUserBuilder new]
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withUsername:userJson[@"name"]]
                 withStatus:CMUserStatusOnline]
@@ -64,8 +63,7 @@
         serverMessage = [CMServerMessage invitationWithInvitation:invitation];
     } else if ([type isEqualToString:@"new-user-in-group"]) {
         NSDictionary *userJson = body[@"user"];
-        CMUser *user = [[[[[[[CMUserBuilder new]
-                withUserId:userJson[@"userCognitoIdentityId"]]
+        CMUser *user = [[[[[[CMUserBuilder new]
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
@@ -90,8 +88,7 @@
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     } else if ([type isEqualToString:@"membership-request"]) {
         NSDictionary *userJson = body[@"joiningUser"];
-        CMUser *user = [[[[[[[CMUserBuilder new]
-                withUserId:userJson[@"userCognitoIdentityId"]]
+        CMUser *user = [[[[[[CMUserBuilder new]
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]

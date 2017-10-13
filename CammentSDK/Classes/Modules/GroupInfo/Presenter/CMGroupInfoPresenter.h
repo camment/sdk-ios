@@ -13,6 +13,7 @@
 #import "CMGroupInfoInteractorOutput.h"
 
 @class CMGroupInfoWireframe;
+@class CMProfileViewNode;
 
 @interface CMGroupInfoPresenter : NSObject<CMGroupInfoPresenterInput, CMGroupInfoInteractorOutput>
 
@@ -20,4 +21,5 @@
 @property (nonatomic) id<CMGroupInfoInteractorInput> interactor;
 @property (nonatomic) CMGroupInfoWireframe *wireframe;
 
+- (void)reloadData;
 @end

@@ -9,7 +9,7 @@
 #import "CMGroupInfoViewController.h"
 
 
-@interface CMGroupInfoViewController () <CMGroupInfoNodeDelegate>
+@interface CMGroupInfoViewController ()
 @end
 
 @implementation CMGroupInfoViewController
@@ -17,22 +17,29 @@
 - (instancetype)init {
     self = [super initWithNode:[CMGroupInfoNode new]];
     if (self) {
-        self.node.delegate = self;
+        self.automaticallyAdjustsScrollViewInsets = NO;
     }
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.node.delegate = self.presenter;
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self.presenter setupView];
 }
 
-- (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
-    [self.presenter handleLearnMoreAction];
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [self.presenter layoutCollectionViewIfNeeded];
+    [coordinator animateAlongsideTransition:nil completion:^(id <UIViewControllerTransitionCoordinatorContext> context) {
+        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:^{
+        }];
+    }];
 }
 
-- (void)inviteFriendsGroupInfoDidTapInviteFriendsButton:(CMInviteFriendsGroupInfoNode *)node {
-    [self.presenter handleInviteFriendsAction];
-}
 
 @end

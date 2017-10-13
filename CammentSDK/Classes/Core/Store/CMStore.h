@@ -35,19 +35,13 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
 @property (nonatomic, copy) CMShow *activeShow;
 
-@property(nonatomic, copy) NSString *cognitoUserId;
-
 @property(nonatomic) BOOL isOnboardingFinished;
 
 @property(nonatomic) CMShowMetadata *currentShowMetadata;
 
 @property(nonatomic, strong) CMUser *currentUser;
 
-@property(nonatomic, copy) NSString *facebookUserId;
-
 @property(nonatomic, copy) NSString *apiKey;
-
-@property(nonatomic, copy) NSString *email;
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 @property RACSubject<NSNumber *> *inviteFriendsActionSubject;

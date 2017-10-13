@@ -11,8 +11,6 @@
 
 - (CMUser *)build;
 
-- (instancetype)withUserId:(NSString *)userId;
-
 - (instancetype)withCognitoUserId:(NSString *)cognitoUserId;
 
 - (instancetype)withFbUserId:(NSString *)fbUserId;

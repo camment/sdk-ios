@@ -9,7 +9,7 @@
 #import "CMHalfOpacityAnimation.h"
 
 @interface CMCammentButton () <UIGestureRecognizerDelegate>
-@property(nonatomic, strong) ASImageNode *cammentIcon;
+@property(nonatomic, strong) ASDisplayNode *cammentIcon;
 @property(nonatomic, strong) UILongPressGestureRecognizer *gestureRecognizer;
 @end
 
@@ -22,13 +22,20 @@
         self.style.width = ASDimensionMake(65.0f);
         self.style.height = ASDimensionMake(65.0f);
 
-        self.cammentIcon = [ASImageNode new];
-        self.cammentIcon.image = [UIImage imageNamed:@"cammentButton"
-                                            inBundle:[NSBundle cammentSDKBundle]
-                       compatibleWithTraitCollection:nil];
-        self.cammentIcon.contentMode = UIViewContentModeScaleAspectFit;
-        self.cammentIcon.backgroundColor = [UIColor clearColor];
-
+        self.cammentIcon = [[ASDisplayNode alloc] initWithViewBlock:^UIView * _Nonnull{
+            return [UIImageView new];
+        } didLoadBlock:^(__kindof ASDisplayNode * _Nonnull node) {
+            UIImageView *imageView = (UIImageView *)node.view;
+            imageView.image = [UIImage imageNamed:@"cammentButton"
+                                                inBundle:[NSBundle cammentSDKBundle]
+                           compatibleWithTraitCollection:nil];
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            imageView.backgroundColor = [UIColor clearColor];
+        }];
+        
+        self.cammentIcon.style.width = ASDimensionMake(65.0f);
+        self.cammentIcon.style.height = ASDimensionMake(65.0f);
+        
         self.gestureRecognizer = [UILongPressGestureRecognizer new];
         self.gestureRecognizer.delegate = self;
         self.gestureRecognizer.minimumPressDuration = 0.f;

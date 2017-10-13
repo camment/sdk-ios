@@ -18,11 +18,11 @@
 - (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     if (isAllowedToJoin) {
-        [[client usergroupsGroupUuidUsersUserIdPut:user.userId groupUuid:group.uuid showUuid:show.uuid] continueWithBlock:^id(AWSTask<id> *t) {
+        [[client usergroupsGroupUuidUsersUserIdPut:user.cognitoUserId groupUuid:group.uuid showUuid:show.uuid] continueWithBlock:^id(AWSTask<id> *t) {
             return nil;
         }];
     } else {
-        [[client usergroupsGroupUuidUsersUserIdDelete:user.userId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
+        [[client usergroupsGroupUuidUsersUserIdDelete:user.cognitoUserId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
             return nil;
         }];
     }

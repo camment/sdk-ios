@@ -14,7 +14,7 @@
 
 @end
 
-@interface CMInviteFriendsGroupInfoNode : ASDisplayNode
+@interface CMInviteFriendsGroupInfoNode : ASCellNode
 
 @property (nonatomic, weak) id<CMInviteFriendsGroupInfoNodeDelegate> delegate;
 

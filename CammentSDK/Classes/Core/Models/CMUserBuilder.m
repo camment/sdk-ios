@@ -7,7 +7,6 @@
 
 @implementation CMUserBuilder
 {
-  NSString *_userId;
   NSString *_cognitoUserId;
   NSString *_fbUserId;
   NSString *_username;
@@ -26,8 +25,7 @@
 
 + (instancetype)userFromExistingUser:(CMUser *)existingUser
 {
-  return [[[[[[[[[[[CMUserBuilder user]
-                   withUserId:existingUser.userId]
+  return [[[[[[[[[[CMUserBuilder user]
                   withCognitoUserId:existingUser.cognitoUserId]
                  withFbUserId:existingUser.fbUserId]
                 withUsername:existingUser.username]
@@ -41,13 +39,7 @@
 
 - (CMUser *)build
 {
-  return [[CMUser alloc] initWithUserId:_userId cognitoUserId:_cognitoUserId fbUserId:_fbUserId username:_username firstname:_firstname lastname:_lastname email:_email visibility:_visibility userPhoto:_userPhoto status:_status];
-}
-
-- (instancetype)withUserId:(NSString *)userId
-{
-  _userId = [userId copy];
-  return self;
+  return [[CMUser alloc] initWithCognitoUserId:_cognitoUserId fbUserId:_fbUserId username:_username firstname:_firstname lastname:_lastname email:_email visibility:_visibility userPhoto:_userPhoto status:_status];
 }
 
 - (instancetype)withCognitoUserId:(NSString *)cognitoUserId

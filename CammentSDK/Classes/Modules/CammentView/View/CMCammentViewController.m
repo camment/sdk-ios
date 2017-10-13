@@ -65,6 +65,7 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    [self.sidebarWireframe.presenter layoutCollectionViewIfNeeded];
     [self.presenter checkIfNeedForOnboarding];
     [self updateCameraOrientation];
 }
@@ -117,6 +118,8 @@
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
     CMOnboardingAlertType alertType = _currentOnboardingAlert;
 
     [self hideOnboardingAlert:[self currentOnboardingAlert]];
@@ -183,7 +186,7 @@
         self.node.showLestSidebarNode = YES;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
         }];
-        [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+        [self hideOnboardingAlert:[self currentOnboardingAlert]];
         return;
     }
 
@@ -225,6 +228,8 @@
 }
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
+    if (self.node.showLestSidebarNode) { return; }
+    
     self.currentOnboardingAlert = type;
 
     CGRect frame = CGRectNull;

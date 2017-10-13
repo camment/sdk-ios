@@ -231,12 +231,11 @@
             subscribeNext:^(NSString *cognitoUserId) {
                 NSLog(@"%@", cognitoUserId);
                 [[CMAnalytics instance] setMixpanelID:cognitoUserId];
-                [[CMStore instance] setCognitoUserId:cognitoUserId];
-                [[CMStore instance] setFacebookUserId:[FBSDKAccessToken currentAccessToken].userID];
-                CMUser *currentUser = [[[[CMUserBuilder new]
-                        withCognitoUserId:cognitoUserId]
-                        withStatus:CMUserStatusOnline]
-                        build];
+                CMUser *currentUser = [[[[[CMUserBuilder new]
+                                          withCognitoUserId:cognitoUserId]
+                                         withFbUserId:[FBSDKAccessToken currentAccessToken].userID]
+                                        withStatus:CMUserStatusOnline]
+                                       build];
                 [[CMStore instance] setCurrentUser:currentUser];
             }
                     error:^(NSError *error) {
@@ -252,7 +251,7 @@
                     [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
                     [self updateUserInfo];
                     [[CMStore instance] setIsSignedIn:YES];
-                    [self configureIoTListener:[CMStore instance].cognitoUserId];
+                    [self configureIoTListener:[CMStore instance].currentUser.cognitoUserId];
                     if ([CMStore instance].isFBConnected) {
                         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
                     }
@@ -270,7 +269,10 @@
             id result,
             NSError *error) {
         if (result && !error) {
-            [CMStore instance].email = (NSString *) [result valueForKey:@"email"];
+            NSString *email = (NSString *) [result valueForKey:@"email"];
+            [CMStore instance].currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
+                                              withEmail:email]
+                                              build];
         }
     }];
 
@@ -281,8 +283,6 @@
         DDLogVerbose(@"FB profile not found");
         return;
     }
-
-    [CMStore instance].facebookUserId = profile.userID;
 
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
     if (profile.userID) {
@@ -350,8 +350,8 @@
 
         [message matchInvitation:^(CMInvitation *invitation) {
             if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
-                    && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].facebookUserId]
-                    && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].facebookUserId]) {
+                    && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].currentUser.fbUserId]
+                    && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].currentUser.fbUserId]) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self presentChatInvitation:invitation];
                 });
@@ -651,7 +651,7 @@
             [task continueWithBlock:^id(AWSTask<id> *t) {
                 if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
                     CMAPIUsergroup *usergroup = t.result;
-                    if ([usergroup.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]) {
+                    if ([usergroup.userCognitoIdentityId isEqualToString:[CMStore instance].currentUser.cognitoUserId]) {
                         CMUsersGroup *group = [[[[[CMUsersGroupBuilder new]
                                 withUuid:invitation.userGroupUuid]
                                 withOwnerCognitoUserId:usergroup.userCognitoIdentityId]

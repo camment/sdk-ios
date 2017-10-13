@@ -10,7 +10,8 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMInviteFriendsGroupInfoNode.h"
 
-@protocol CMGroupInfoNodeDelegate<CMInviteFriendsGroupInfoNodeDelegate>
+@protocol CMGroupInfoNodeDelegate<CMInviteFriendsGroupInfoNodeDelegate,ASCollectionDelegate, ASCollectionDataSource, UICollectionViewDelegateFlowLayout>
+- (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
 @end
 
 @interface CMGroupInfoNode: ASDisplayNode

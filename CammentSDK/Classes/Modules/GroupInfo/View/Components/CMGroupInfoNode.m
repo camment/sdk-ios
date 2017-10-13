@@ -11,7 +11,7 @@
 
 @interface CMGroupInfoNode ()
 
-@property (nonatomic, strong) CMInviteFriendsGroupInfoNode *notSignedInGroupInfoNode;
+@property (nonatomic, strong) ASCollectionNode *collectionNode;
 
 @end
 
@@ -21,10 +21,14 @@
     self = [super init];
     if (self) {
 
-        self.notSignedInGroupInfoNode = [CMInviteFriendsGroupInfoNode new];
+        UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout new];
+        flowLayout.minimumInteritemSpacing = .0f;
+        flowLayout.minimumLineSpacing = .0f;
 
+        self.collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout:flowLayout];
         self.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;
+
     }
 
     return self;
@@ -32,12 +36,14 @@
 
 - (void)setDelegate:(id <CMGroupInfoNodeDelegate>)delegate {
     _delegate = delegate;
-    self.notSignedInGroupInfoNode.delegate = _delegate;
+    _collectionNode.delegate = _delegate;
+    _collectionNode.dataSource = _delegate;
+    [_delegate setItemCollectionDisplayNode:_collectionNode];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
-                                                child:_notSignedInGroupInfoNode];
+                                                child:_collectionNode];
 }
 
 @end

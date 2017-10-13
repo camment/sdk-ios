@@ -1,7 +1,6 @@
 %type name=CMUserStatus file=CMUserStatus canForwardDeclare=false
 
 CMUser includes(RMBuilder)  {
-  NSString *userId
   NSString *cognitoUserId
   NSString *fbUserId
   NSString *username

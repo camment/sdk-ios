@@ -13,12 +13,14 @@
 #import "CMPresentationUtility.h"
 #import "CMInvitation.h"
 #import "CMAnalytics.h"
+#import "CMGroupsListInteractor.h"
 
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
-@interface CMStore ()
+@interface CMStore () <CMGroupsListInteractorOutput>
 @property(nonatomic, strong) FBTweak *offlineTweak;
+@property(nonatomic, strong) CMGroupsListInteractor *groupsListInteractor;
 @end
 
 @implementation CMStore
@@ -28,30 +30,59 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
     @synchronized (self) {
         if (_instance == nil) {
-            _instance = [[self alloc] init];
-            _instance.playingCammentId = kCMStoreCammentIdIfNotPlaying;
-            _instance.cammentRecordingState = CMCammentRecordingStateNotRecording;
-            _instance.isConnected = NO;
-            _instance.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
-            _instance.reloadActiveGroupSubject = [RACSubject new];
-            _instance.inviteFriendsActionSubject = [RACSubject new];
-
-            [RACObserve(_instance, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
-                if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
-                    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingEnd];
-                }
-                [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
-            }];
-
-            [RACObserve(_instance, playingCammentId) subscribeNext:^(NSString *id) {
-                if ([id isEqualToString:kCMStoreCammentIdIfNotPlaying]) { return; }
-                [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentPlay];
-            }];
+            _instance = [CMStore new];
         }
     }
 
     return _instance;
 }
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
+        self.cammentRecordingState = CMCammentRecordingStateNotRecording;
+        self.isConnected = NO;
+        self.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
+        self.reloadActiveGroupSubject = [RACSubject new];
+        self.inviteFriendsActionSubject = [RACSubject new];
+
+        self.groupsListInteractor = [CMGroupsListInteractor new];
+        self.groupsListInteractor.output = self;
+
+        [RACObserve(self, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
+            if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
+                [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingEnd];
+            }
+            [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
+        }];
+
+        [RACObserve(self, playingCammentId) subscribeNext:^(NSString *id) {
+            if ([id isEqualToString:kCMStoreCammentIdIfNotPlaying]) { return; }
+            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentPlay];
+        }];
+
+        NSArray *updateGroupsSignals = @[
+                RACObserve(self, activeGroup),
+                RACObserve(self, isConnected),
+                RACObserve(self, isSignedIn),
+        ];
+
+        [[RACSignal combineLatest:updateGroupsSignals] subscribeNext:^(RACTuple *tuple) {
+            [self.groupsListInteractor fetchUserGroups];
+        }];
+    }
+
+    return self;
+}
+
+- (void)didFetchUserGroups:(NSArray *)groups {
+    self.userGroups = groups;
+}
+
+- (void)didFailToFetchUserGroups:(NSError *)error {
+}
+
 
 - (void)setupTweaks {
     FBTweakStore *store = [FBTweakStore sharedInstance];

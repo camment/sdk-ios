@@ -231,7 +231,7 @@
             subscribeNext:^(NSString *cognitoUserId) {
                 NSLog(@"%@", cognitoUserId);
                 [[CMAnalytics instance] setMixpanelID:cognitoUserId];
-                CMUser *currentUser = [[[[[CMUserBuilder new]
+                CMUser *currentUser = [[[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
                                           withCognitoUserId:cognitoUserId]
                                          withFbUserId:[FBSDKAccessToken currentAccessToken].userID]
                                         withStatus:CMUserStatusOnline]

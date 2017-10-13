@@ -33,6 +33,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, assign) CMCammentRecordingState cammentRecordingState;
 
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
+@property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
 @property (nonatomic, copy) CMShow *activeShow;
 
 @property(nonatomic) BOOL isOnboardingFinished;

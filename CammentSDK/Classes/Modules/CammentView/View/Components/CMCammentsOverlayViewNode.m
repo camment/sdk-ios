@@ -39,7 +39,6 @@
     return [self initWithLayoutConfig:layoutConfig];
 }
 
-
 - (instancetype)initWithLayoutConfig:(CMCammentOverlayLayoutConfig *)layoutConfig {
     self = [super init];
     

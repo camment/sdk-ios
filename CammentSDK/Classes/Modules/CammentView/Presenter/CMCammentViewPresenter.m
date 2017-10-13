@@ -47,7 +47,6 @@
 @property(nonatomic, strong) CMInvitationInteractor *invitationInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
 @property(nonatomic, strong) CMShowMetadata *show;
-@property(nonatomic, strong) CMUsersGroup *usersGroup;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
@@ -78,7 +77,6 @@
         self.invitationInteractor.output = self;
 
         self.presentationPlayerInteractor.instructionOutput = self;
-        self.usersGroup = [CMStore instance].activeGroup;
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
         self.currentOnboardingStep = CMOnboardingAlertNone;
 
@@ -86,11 +84,6 @@
         [self.botRegistry updateBotsOutputInterface:self];
 
         @weakify(self);
-        [[[RACObserve([CMStore instance], activeGroup) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(CMUsersGroup *group) {
-            @strongify(self);
-            self.usersGroup = group;
-        }];
-
         [[[[[CMStore instance] reloadActiveGroupSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
             @strongify(self);
             if (shouldReload.boolValue) {
@@ -225,7 +218,7 @@
 
 - (void)updateChatWithActiveGroup {
     [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
-    [self.loaderInteractor fetchCachedCamments:self.usersGroup.uuid];
+    [self.loaderInteractor fetchCachedCamments:[CMStore instance].activeGroup.uuid];
     [self setupPresentationInstruction];
 }
 
@@ -282,7 +275,7 @@
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
     if (asset) {
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
-        NSString *groupUUID = [self.usersGroup uuid];
+        NSString *groupUUID = [[CMStore instance].activeGroup uuid];
         CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
         CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
                 withShowUuid:self.show.uuid]
@@ -315,7 +308,7 @@
     CMCamment *cammentToUpload = [[[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
             withShowUuid:self.show.uuid]
-            withUserGroupUuid:self.usersGroup ? self.usersGroup.uuid : nil]
+            withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
             withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
             build];
     [self.interactor uploadCamment:cammentToUpload];
@@ -365,7 +358,7 @@
     BOOL isNewItem = filteredItemsArray.count == 0;
 
     if (
-            ([camment.userGroupUuid isEqualToString:[self.usersGroup uuid]]
+            ([camment.userGroupUuid isEqualToString:[[CMStore instance].activeGroup uuid]]
                     || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
                     &&
                     isNewItem
@@ -542,6 +535,8 @@
     if (usedDeeplink) {
         [self showShareDeeplinkDialog:group.invitationLink];
     }
+
+    [[CMStore instance] setActiveGroup:group];
 }
 
 - (void)didFailToInviteUsersWithError:(NSError *)error {

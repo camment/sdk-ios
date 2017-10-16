@@ -12,10 +12,14 @@
 #import "TLIndexPathDataModel.h"
 #import "TLIndexPathUpdates.h"
 #import "CMProfileViewNode.h"
+#import "CMPeopleJoinedHeaderCell.h"
+#import "CMGroupInfoUserCell.h"
+#import "CMUserBuilder.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
     CMGroupInfoInviteFriendsSection,
+    CMGroupInfoFriendsHeaderSection,
 };
 
 @interface CMGroupInfoPresenter ()
@@ -54,9 +58,17 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         [items addObject:@(CMGroupInfoSectionUserProfile)];
     }
 
+    self.users = @[
+            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
+            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
+            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
+            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
+    ];
+
     if (self.users.count == 0) {
         [items addObject:@(CMGroupInfoInviteFriendsSection)];
     } else {
+        [items addObject:@(CMGroupInfoFriendsHeaderSection)];
         [items addObjectsFromArray:self.users];
     }
 
@@ -113,16 +125,27 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 };
                 break;
             }
-            case CMGroupInfoInviteFriendsSection:
+            case CMGroupInfoInviteFriendsSection:{
                 cellNodeBlock = ^ASCellNode *() {
                     CMInviteFriendsGroupInfoNode *inviteFriendsGroupInfoNode = [CMInviteFriendsGroupInfoNode new];
                     inviteFriendsGroupInfoNode.delegate = weakSelf;
                     return inviteFriendsGroupInfoNode;
                 };
                 break;
+            }
+            case CMGroupInfoFriendsHeaderSection: {
+                cellNodeBlock = ^ASCellNode *() {
+                    return [CMPeopleJoinedHeaderCell new];
+                };
+                break;
+            }
+                
         }
     } else {
-
+        CMUser *user = model;
+        cellNodeBlock = ^ASCellNode *() {
+            return [[CMGroupInfoUserCell alloc] initWithUser:user];
+        };
     }
 
     return cellNodeBlock;

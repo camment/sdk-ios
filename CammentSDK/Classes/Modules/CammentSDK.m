@@ -544,6 +544,8 @@
         [[CMStore instance] setActiveGroup:usersGroup];
         [[[CMStore instance] reloadActiveGroupSubject] sendNext:@YES];
         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventJoinGroup];
+    } else {
+        [[CMStore instance].userHasJoinedSignal sendNext:@YES];
     }
 }
 

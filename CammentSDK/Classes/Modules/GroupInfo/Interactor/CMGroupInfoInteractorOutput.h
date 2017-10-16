@@ -8,5 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMUser;
+
 @protocol CMGroupInfoInteractorOutput <NSObject>
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group;
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group;
 @end

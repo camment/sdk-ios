@@ -46,6 +46,13 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
             self.showProfileInfo = isFBConnected.boolValue;
             [self reloadData];
         }];
+
+        [[[RACObserve([CMStore instance], activeGroupUsers)
+                takeUntil:self.rac_willDeallocSignal]
+                deliverOnMainThread] subscribeNext:^(NSArray *currentGroupUsers) {
+            @strongify(self);
+            [self reloadData];
+        }];
     }
 
     return self;
@@ -58,12 +65,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         [items addObject:@(CMGroupInfoSectionUserProfile)];
     }
 
-    self.users = @[
-            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
-            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
-            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
-            [[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] build],
-    ];
+    self.users = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *user) {
+        return ![user.cognitoUserId isEqualToString:[CMStore instance].currentUser.cognitoUserId];
+    }].array ?: @[];
 
     if (self.users.count == 0) {
         [items addObject:@(CMGroupInfoInviteFriendsSection)];
@@ -255,4 +259,13 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
     }];
 }
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group {
+
+}
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group {
+
+}
+
 @end

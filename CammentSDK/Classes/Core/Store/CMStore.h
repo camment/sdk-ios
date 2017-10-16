@@ -33,6 +33,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, assign) CMCammentRecordingState cammentRecordingState;
 
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
+@property (nonatomic, strong) NSArray<CMUser *> *activeGroupUsers;
 @property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
 @property (nonatomic, copy) CMShow *activeShow;
 
@@ -46,8 +47,10 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 @property RACSubject<NSNumber *> *inviteFriendsActionSubject;
+@property RACSubject<NSNumber *> * userHasJoinedSignal;
 
 @property(nonatomic) BOOL isOfflineMode;
+
 
 + (CMStore *)instance;
 

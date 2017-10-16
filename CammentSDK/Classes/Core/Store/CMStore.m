@@ -14,13 +14,16 @@
 #import "CMInvitation.h"
 #import "CMAnalytics.h"
 #import "CMGroupsListInteractor.h"
-
+#import "CMGroupInfoInteractor.h"
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
-@interface CMStore () <CMGroupsListInteractorOutput>
+@interface CMStore () <CMGroupsListInteractorOutput, CMGroupInfoInteractorOutput>
 @property(nonatomic, strong) FBTweak *offlineTweak;
+
 @property(nonatomic, strong) CMGroupsListInteractor *groupsListInteractor;
+@property(nonatomic, strong) CMGroupInfoInteractor *groupInfoInteractor;
+
 @end
 
 @implementation CMStore
@@ -46,10 +49,15 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
         self.reloadActiveGroupSubject = [RACSubject new];
         self.inviteFriendsActionSubject = [RACSubject new];
+        self.userHasJoinedSignal = [RACSubject new];
 
         self.groupsListInteractor = [CMGroupsListInteractor new];
         self.groupsListInteractor.output = self;
 
+        self.groupInfoInteractor = [CMGroupInfoInteractor new];
+        self.groupInfoInteractor.output = self;
+
+        @weakify(self)
         [RACObserve(self, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
             if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
                 [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingEnd];
@@ -66,11 +74,15 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
                 RACObserve(self, activeGroup),
                 RACObserve(self, isConnected),
                 RACObserve(self, isSignedIn),
+                self.userHasJoinedSignal,
         ];
 
         [[RACSignal combineLatest:updateGroupsSignals] subscribeNext:^(RACTuple *tuple) {
             [self.groupsListInteractor fetchUserGroups];
+            [self.groupInfoInteractor fetchUsersInGroup:self.activeGroup.uuid];
         }];
+
+        [self.userHasJoinedSignal sendNext:@YES];
     }
 
     return self;
@@ -181,5 +193,14 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     }
 }
 
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group {
+
+}
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group {
+    if ([group isEqualToString:self.activeGroup.uuid]) {
+        self.activeGroupUsers = users;
+    }
+}
 
 @end

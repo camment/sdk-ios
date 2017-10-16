@@ -9,4 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMGroupInfoInteractorInput <NSObject>
+
+- (void)fetchUsersInGroup:(NSString *)groupId;
+
 @end

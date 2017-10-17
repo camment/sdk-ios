@@ -17,21 +17,13 @@
 #import "CMAPIDevcammentClient+defaultApiClient.h"
 
 @interface CMInvitationInteractor ()
-@property(nonatomic, strong) CMAPIDevcammentClient *client;
 @end
 
 @implementation CMInvitationInteractor
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.client = [CMAPIDevcammentClient defaultAPIClient];
-    }
-    return self;
-}
-
 - (AWSTask<CMUsersGroup *> *)createEmptyGroup {
-    AWSTask * task = [self.client usergroupsPost];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    AWSTask * task = [client usergroupsPost];
     if (!task) {
         return [AWSTask taskWithError:nil];
     }
@@ -117,7 +109,8 @@
 }
 
 - (void)getDeeplink:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
-
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    
     AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
 
     [groupTask continueWithBlock:^id(AWSTask<id> *t) {
@@ -131,7 +124,7 @@
 
         CMAPIShowUuid *cmapiShowUuid = [CMAPIShowUuid new];
         cmapiShowUuid.showUuid = showUuid;
-        AWSTask *getDeeplinkTask = [self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid];
+        AWSTask *getDeeplinkTask = [client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid];
         if (!getDeeplinkTask) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output didFailToGetInvitationLink:nil];

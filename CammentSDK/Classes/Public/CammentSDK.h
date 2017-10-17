@@ -58,4 +58,6 @@
 - (BOOL)application:(UIApplication * _Nonnull)application
             openURL:(NSURL * _Nonnull)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> * _Nullable)options;
+
+- (void)logout;
 @end

@@ -6,15 +6,19 @@
 #import "CMProfileViewNode.h"
 #import "UIColorMacros.h"
 #import "CMStore.h"
+#import "CMSettingsNode.h"
+#import "CammentSDK.h"
 
 
-@interface CMProfileViewNode ()
+@interface CMProfileViewNode () <CMSettingsNodeDelegate>
 @property(nonatomic, strong) ASTextNode *usernameTextNode;
 @property(nonatomic, strong) ASTextNode *userinfoTextNode;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
 @property(nonatomic, strong) ASImageNode *fbImageNode;
 @property(nonatomic, strong) ASButtonNode *settingsButtonNode;
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
+@property(nonatomic, strong) CMSettingsNode *settingsNode;
+@property BOOL showSettingsNode;
 @end
 
 @implementation CMProfileViewNode {
@@ -51,6 +55,9 @@
         self.fbImageNode.style.height = ASDimensionMake(18.0f);
         self.fbImageNode.style.width = ASDimensionMake(18.0f);
 
+        self.settingsNode = [CMSettingsNode new];
+        self.settingsNode.delegate = self;
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -58,7 +65,7 @@
 }
 
 - (void)tapSettingButton {
-
+    [self switchSettingsView];
 }
 
 - (void)didLoad {
@@ -72,6 +79,10 @@
     [self.fbImageNode setImage:[UIImage imageNamed:@"fb_logo"
                                           inBundle:[NSBundle cammentSDKBundle]
                      compatibleWithTraitCollection:nil]];
+
+    self.userpicImageNode.userInteractionEnabled = YES;
+    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openUserProfile)];
+    [self.userpicImageNode.view addGestureRecognizer:gestureRecognizer];
 
     NSMutableParagraphStyle *mutableParagraphStyle = [NSMutableParagraphStyle new];
     mutableParagraphStyle.alignment = NSTextAlignmentCenter;
@@ -105,7 +116,7 @@
                 NSString *groupsCountString;
 
                 if (groups.count == 0) {
-                    groupsCountString = [NSString stringWithFormat:@"No group found"];
+                    groupsCountString = [NSString stringWithFormat:@"No groups found"];
                 } else if (groups.count == 1) {
                     groupsCountString = [NSString stringWithFormat:@"1 group joined"];
                 } else {
@@ -121,6 +132,15 @@
 
                 [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
             }];
+}
+
+- (void)openUserProfile {
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMStore instance].currentUser.fbUserId]];
+    if ([[UIApplication sharedApplication] canOpenURL:url]) {
+        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
+
+        }];
+    }
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
@@ -151,11 +171,26 @@
 
     ASOverlayLayoutSpec *overlayLayout = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:componentsStack
                                                                                  overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f) child:_settingsButtonNode]];
+
     return [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                    spacing:.0f
                                             justifyContent:ASStackLayoutJustifyContentStart
                                                 alignItems:ASStackLayoutAlignItemsStretch
-                                                  children:@[overlayLayout, _bottomSeparatorNode]];
+                                                  children:@[ _showSettingsNode ? _settingsNode : overlayLayout, _bottomSeparatorNode]];
 }
+
+- (void)settingsNodeDidCloseSettingsView:(CMSettingsNode *)node {
+    [self switchSettingsView];
+}
+
+- (void)switchSettingsView {
+    self.showSettingsNode = !self.showSettingsNode;
+    [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
+- (void)settingsNodeDidLogout:(CMSettingsNode *)node {
+    [[CammentSDK instance] logout];
+}
+
 
 @end

@@ -15,6 +15,7 @@
 #import "CMAnalytics.h"
 #import "CMGroupsListInteractor.h"
 #import "CMGroupInfoInteractor.h"
+#import "CMUserBuilder.h"
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
@@ -50,6 +51,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.reloadActiveGroupSubject = [RACSubject new];
         self.inviteFriendsActionSubject = [RACSubject new];
         self.userHasJoinedSignal = [RACSubject new];
+        self.cleanUpSignal = [RACSubject new];
 
         self.groupsListInteractor = [CMGroupsListInteractor new];
         self.groupsListInteractor.output = self;
@@ -202,5 +204,24 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.activeGroupUsers = users;
     }
 }
+
+- (void)cleanUp {
+    [self.cleanUpSignal sendNext:@YES];
+
+    self.isSignedIn = NO;
+    self.isFBConnected = NO;
+
+    self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
+    self.cammentRecordingState = CMCammentRecordingStateNotRecording;
+
+    self.activeGroup = nil;
+    self.activeGroupUsers = @[];
+    self.userGroups = @[];
+
+    self.isOnboardingFinished = YES;
+
+    self.currentUser = [[CMUserBuilder user] build];
+}
+
 
 @end

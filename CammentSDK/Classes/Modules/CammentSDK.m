@@ -328,6 +328,7 @@
 }
 
 - (void)configure {
+    [[AWSDDLog sharedInstance] setLogLevel:AWSDDLogLevelAll];
     [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
     [[CMAnalytics instance] configureAWSMobileAnalytics];
     self.authService = [[CMCognitoAuthService alloc] init];
@@ -709,7 +710,17 @@
 
 }
 
-#pragma mark Handle group management
+- (void)logout {
+    CMServerListener *listener = [CMServerListener instance];
+    [self.iotSubscriptionDisposable dispose];
+    [[listener dataManager] disconnect];
+
+    [[FBSDKLoginManager new] logOut];
+    [FBSDKAccessToken setCurrentAccessToken:nil];
+    [self.authService signOut];
+    [[CMStore instance] cleanUp];
+    [[self tryRestoreLastSession] subscribeCompleted:^{}];
+}
 
 
 @end

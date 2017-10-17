@@ -1,0 +1,94 @@
+//
+// Created by Alexander Fedosov on 17.10.2017.
+//
+
+#import "CMSettingsNode.h"
+#import "UIColorMacros.h"
+
+
+@interface CMSettingsNode ()
+@property(nonatomic, strong) ASTextNode *infoTextNode;
+@property(nonatomic, strong) ASButtonNode *logoutButton;
+@property(nonatomic, strong) ASButtonNode *closeButton;
+@end
+
+@implementation CMSettingsNode {
+
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.logoutButton = [ASButtonNode new];
+        self.logoutButton.style.height = ASDimensionMake(30.0f);
+        [self.logoutButton setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"Logout")
+                                                                              attributes:@{
+                                                                                      NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:10],
+                                                                                      NSForegroundColorAttributeName: UIColorFromRGB(0x4A90E2),
+                                                                              }]
+                                     forState:UIControlStateNormal];
+        [self.logoutButton addTarget:self action:@selector(logoutAction) forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.closeButton = [ASButtonNode new];
+        self.closeButton.style.height = ASDimensionMake(38.0f);
+        self.closeButton.style.width = ASDimensionMake(38.0f);
+        [self.closeButton setContentEdgeInsets:UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f)];
+        [self.closeButton addTarget:self action:@selector(closeSettingsAction) forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.infoTextNode = [ASTextNode new];
+        NSMutableParagraphStyle *mutableParagraphStyle = [NSMutableParagraphStyle new];
+        mutableParagraphStyle.alignment = NSTextAlignmentCenter;
+
+        self.infoTextNode.attributedText = [[NSAttributedString alloc] initWithString:CMLocalized(@"Logout from Facebook account will remove your from current discussion.")
+                                                                           attributes:@{
+                                                                                   NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:12],
+                                                                                   NSForegroundColorAttributeName: [UIColor blackColor],
+                                                                                   NSParagraphStyleAttributeName: mutableParagraphStyle
+                                                                           }];
+        self.automaticallyManagesSubnodes = YES;
+    }
+    return self;
+}
+
+- (void)didLoad {
+    [super didLoad];
+    [self.closeButton setImage:[UIImage imageNamed:@"profile"
+                                          inBundle:[NSBundle cammentSDKBundle]
+                     compatibleWithTraitCollection:nil]
+                      forState:UIControlStateNormal];
+}
+
+- (void)closeSettingsAction {
+    id <CMSettingsNodeDelegate> o = self.delegate;
+    if ([o respondsToSelector:@selector(settingsNodeDidCloseSettingsView:)]) {
+        [o settingsNodeDidCloseSettingsView:self];
+    }
+}
+
+- (void)logoutAction {
+    id <CMSettingsNodeDelegate> o = self.delegate;
+    if ([o respondsToSelector:@selector(settingsNodeDidLogout:)]) {
+        [o settingsNodeDidLogout:self];
+    }
+}
+
+- (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+
+    ASStackLayoutSpec *centerStack = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
+                                                                             spacing:8.0f
+                                                                      justifyContent:ASStackLayoutJustifyContentCenter
+                                                                          alignItems:ASStackLayoutAlignItemsCenter
+                                                                            children:@[_infoTextNode, _logoutButton]];
+    ASInsetLayoutSpec *componentsStack = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(28.0f, 32.0f, 32.0f, 28.0f)
+                                                                                child:centerStack];
+
+    ASOverlayLayoutSpec *overlayLayout = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:componentsStack
+                                                                                 overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f) child:_closeButton]];
+    return [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
+                                                   spacing:.0f
+                                            justifyContent:ASStackLayoutJustifyContentStart
+                                                alignItems:ASStackLayoutAlignItemsStretch
+                                                  children:@[overlayLayout]];
+}
+
+@end

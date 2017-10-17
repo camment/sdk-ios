@@ -16,5 +16,4 @@
 - (void)signOut;
 
 - (BOOL)isSignedIn;
-
 @end

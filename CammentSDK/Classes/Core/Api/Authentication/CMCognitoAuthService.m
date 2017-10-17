@@ -77,5 +77,4 @@
     return [FBSDKAccessToken currentAccessToken] != nil;
 }
 
-
 @end

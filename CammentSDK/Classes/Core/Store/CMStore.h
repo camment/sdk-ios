@@ -47,7 +47,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 @property RACSubject<NSNumber *> *inviteFriendsActionSubject;
-@property RACSubject<NSNumber *> * userHasJoinedSignal;
+@property RACSubject<NSNumber *> *userHasJoinedSignal;
+@property RACSubject<NSNumber *> *cleanUpSignal;
 
 @property(nonatomic) BOOL isOfflineMode;
 
@@ -55,4 +56,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 + (CMStore *)instance;
 
 - (void)setupTweaks;
+
+- (void)cleanUp;
 @end

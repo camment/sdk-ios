@@ -46,7 +46,6 @@
 @property(nonatomic, strong) CMAuthInteractor *authInteractor;
 @property(nonatomic, strong) CMInvitationInteractor *invitationInteractor;
 @property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
-@property(nonatomic, strong) CMShowMetadata *show;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
@@ -65,7 +64,6 @@
     self = [super init];
 
     if (self) {
-        self.show = metadata;
         self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
         self.cammentsBlockNodePresenter.output = self;
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
@@ -176,6 +174,12 @@
             state.timestamp = [tuple.second unsignedIntegerValue];
             [self.presentationPlayerInteractor update:state];
         }];
+
+        [[[[[CMStore instance] cleanUpSignal] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *cleanUp) {
+            @strongify(self);
+            [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
+        }];
+
     }
 
     return self;
@@ -278,7 +282,7 @@
         NSString *groupUUID = [[CMStore instance].activeGroup uuid];
         CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
         CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
-                withShowUuid:self.show.uuid]
+                withShowUuid:[CMStore instance].currentShowMetadata.uuid]
                 withUserGroupUuid:groupUUID]
                 withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
                 withLocalAsset:asset] build];
@@ -307,7 +311,7 @@
 
     CMCamment *cammentToUpload = [[[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
-            withShowUuid:self.show.uuid]
+            withShowUuid:[CMStore instance].currentShowMetadata.uuid]
             withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
             withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
             build];
@@ -391,7 +395,7 @@
 
 - (void)getInvitationDeeplink {
     [self.output showLoadingHUD];
-    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:self.show.uuid];
+    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid];
 }
 
 - (void)authInteractorDidSignedIn {

@@ -520,14 +520,14 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIUserinfoList class]];
 }
 
-- (AWSTask *)usergroupsGroupUuidUsersPost:(NSString *)groupUuid showUuid:(NSString *)showUuid {
+- (AWSTask *)usergroupsGroupUuidUsersPost:(NSString *)groupUuid body:(CMAPIShowUuid *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      @"showUuid": showUuid
+                                      
                                       };
     NSDictionary *pathParameters = @{
                                      @"groupUuid": groupUuid,
@@ -539,7 +539,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
-                              body:nil
+                              body:body
                      responseClass:nil];
 }
 

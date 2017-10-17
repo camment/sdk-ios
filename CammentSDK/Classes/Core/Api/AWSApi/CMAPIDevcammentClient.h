@@ -333,11 +333,11 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
- @param showUuid 
+ @param body 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid showUuid:(nullable NSString *)showUuid;
+- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid body:( CMAPIShowUuid *)body;
 
 /**
  

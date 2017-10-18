@@ -44,6 +44,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 - (instancetype)init {
     self = [super init];
     if (self) {
+
         self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
         self.cammentRecordingState = CMCammentRecordingStateNotRecording;
         self.isConnected = NO;
@@ -222,6 +223,5 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
     self.currentUser = [[CMUserBuilder user] build];
 }
-
 
 @end

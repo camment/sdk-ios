@@ -89,6 +89,7 @@ static CMServerListener *_instance = nil;
                                                   case AWSIoTMQTTStatusConnecting:
                                                       break;
                                                   case AWSIoTMQTTStatusConnected:
+                                                      DDLogInfo(@"Iot connected");
                                                       break;
                                                   case AWSIoTMQTTStatusDisconnected:
                                                       break;

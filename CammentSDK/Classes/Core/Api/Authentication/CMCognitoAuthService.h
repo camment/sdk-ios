@@ -9,10 +9,12 @@
 
 @interface CMCognitoAuthService: NSObject
 
-- (void)configureWithProvider:(id <AWSIdentityProviderManager>)provider;
+- (void)updateAWSServicesConfiguration;
 
-- (RACSignal *)signIn;
-- (void)refreshIdentity;
+- (RACSignal<NSString *> *)signIn;
+
+- (RACSignal<NSString *> *)refreshCredentials;
+
 - (void)signOut;
 
 - (BOOL)isSignedIn;

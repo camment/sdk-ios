@@ -10,11 +10,8 @@
 #import "CMStore.h"
 #import "CMAnalytics.h"
 #import "CMCognitoAuthService.h"
-#import "CMCognitoFacebookAuthProvider.h"
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
-#import "CMPresentationBuilder.h"
-#import "CMPresentationUtility.h"
 #import "CMServerMessage.h"
 #import "CMUsersGroupBuilder.h"
 #import "UIViewController+topVisibleViewController.h"
@@ -28,18 +25,12 @@
 #import "CMAuthInteractor.h"
 #import "MBProgressHUD.h"
 
-#import "FBTweak.h"
-#import "FBTweakStore.h"
-#import "FBTweakCollection.h"
-#import "CMInvitationInteractorInput.h"
 #import "CMGroupManagementInteractorInput.h"
 #import "CMGroupManagementInteractor.h"
 #import "CMServerMessage+TypeMatching.h"
-#import "NSString+MD5.h"
 #import "GVUserDefaults.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "AWSIotDataManager.h"
-#import "Mixpanel.h"
 #import "NSArray+RacSequence.h"
 
 @interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
@@ -73,6 +64,7 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+
         [self loadAssets];
 #ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
@@ -85,6 +77,15 @@
 #ifdef INTERNALSDK
         [[CMStore instance] setupTweaks];
 #endif
+        [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
+        [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(updateUserInfo)
+                                                     name:FBSDKProfileDidChangeNotification
+                                                   object:nil];
+
+        [[CMAnalytics instance] configureAWSMobileAnalytics];
+
         self.authInteractor = [CMAuthInteractor new];
         [(CMAuthInteractor *) self.authInteractor setOutput:self];
 
@@ -101,162 +102,55 @@
                                                      name:kReachabilityChangedNotification
                                                    object:nil];
 
-        [self updateInterfaceWithReachability:self.connectionReachibility];
-        [self.connectionReachibility startNotifier];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(identityIdDidChange:)
+                                                     name:AWSCognitoIdentityIdChangedNotification
+                                                   object:nil];
+
+        self.authService = [CMCognitoAuthService new];
     }
 
     return self;
 }
 
-- (void)loadAssets {
-    NSArray *customFonts = @[
-            @"Nunito-Medium.ttf"
-    ];
-    [customFonts map:^id(NSString *fileName) {
-        NSString *filePath = [[NSBundle cammentSDKBundle] pathForResource:fileName ofType:nil];
-        if (!filePath) { return nil; }
-
-        NSData *inData = [NSData dataWithContentsOfFile:filePath];
-        if (!inData) { return nil; }
-
-        CFErrorRef error;
-        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)inData);
-        CGFontRef font = CGFontCreateWithDataProvider(provider);
-        if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
-            CFStringRef errorDescription = CFErrorCopyDescription(error);
-            DDLogInfo(@"Failed to load font: %@", errorDescription);
-            CFRelease(errorDescription);
-        }
-        CFRelease(font);
-        CFRelease(provider);
-
-        return nil;
-    }];
-
-    DDLogInfo(@"Fonts loaded");
-    DDLogInfo(@"%@", [UIFont familyNames]);
-}
-
-- (void)reachabilityChanged:(NSNotification *)reachabilityChanged {
-    CMConnectionReachability *curReach = [reachabilityChanged object];
-    if ([curReach isKindOfClass:[CMConnectionReachability class]]) {
-        [self updateInterfaceWithReachability:curReach];
-    }
-}
-
-- (void)updateInterfaceWithReachability:(CMConnectionReachability *)reachability {
-    NetworkStatus netStatus = [reachability currentReachabilityStatus];
-    BOOL connectionAvailable = netStatus != NotReachable;
-    if (connectionAvailable && connectionAvailable != self.connectionAvailable) {
-        connectionAvailable = YES;
-        if (![CMStore instance].isSignedIn) {
-            [self tryRestoreLastSession];
-        }
-    }
-
-    self.connectionAvailable = connectionAvailable;
-}
-
-- (void)dealloc {
-    [self.connectionReachibility stopNotifier];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 - (void)configureWithApiKey:(NSString *)apiKey {
     [CMStore instance].apiKey = apiKey;
-    [self configure];
-    [self launch];
-    @weakify(self);
-    
-    [[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread] subscribeNext:^(NSNumber *isOfflineMode) {
-        @strongify(self);
-        if (isOfflineMode.boolValue) {
-            [self.connectionReachibility stopNotifier];
-            
-            CMServerListener *listener = [CMServerListener instance];
-            [self.iotSubscriptionDisposable dispose];
-            [[listener dataManager] disconnect];
-            
-            return;
-        } else {
-            [self.connectionReachibility startNotifier];
-            [[self tryRestoreLastSession] subscribeCompleted:^{
-                [self checkIfDeferredDeepLinkExists];
-            }];
-        }
+    [[self.authService signIn] subscribeNext:^(NSString *cognitoIdentityId) {
+        [self identityHasChanged:cognitoIdentityId];
+        [self checkIfDeferredDeepLinkExists];
+    } error:^(NSError *error) {
+        DDLogError(@"Error on signing in at configureWithApiKey: method %@", error);
     }];
 }
 
-- (RACSignal *)tryRestoreLastSession {
-    return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-        [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-        CMCammentIdentity *identity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:token];
-
-        [self connectUserWithIdentity:identity
-                              success:^{
-                                  [subscriber sendCompleted];
-                              }
-                                error:^(NSError *error) {
-                                    [subscriber sendError:error];
-                                }];
-        return nil;
-    }];
+-(void)identityIdDidChange:(NSNotification*)notification {
+    NSDictionary *userInfo = notification.userInfo;
+    DDLogInfo(@"identity changed from %@ to %@",
+            [userInfo objectForKey:AWSCognitoNotificationPreviousId],
+            [userInfo objectForKey:AWSCognitoNotificationNewId]);
+    NSString *newIdentity = [userInfo objectForKey:AWSCognitoNotificationNewId];
+    [self identityHasChanged:newIdentity];
 }
 
-- (void)connectUserWithIdentity:(CMCammentIdentity *)identity
-                        success:(void (^ _Nullable)())successBlock
-                          error:(void (^ _Nullable)(NSError *error))errorBlock {
-
-    if ([identity isKindOfClass:[CMCammentFacebookIdentity class]]) {
-        [self.authService configureWithProvider:[CMCognitoFacebookAuthProvider new]];
-        CMCammentFacebookIdentity *cammentFacebookIdentity = (CMCammentFacebookIdentity *) identity;
-        [FBSDKAccessToken setCurrentAccessToken:cammentFacebookIdentity.fbsdkAccessToken];
-        [self signInUserWithSuccess:successBlock error:errorBlock];
-    } else {
-        DDLogError(@"Trying to connect unknown identity %@", [identity class]);
-        if (errorBlock) {
-            errorBlock([NSError
-                    errorWithDomain:@"tv.camment.ios"
-                               code:0
-                           userInfo:@{}]);
-        }
+- (void)identityHasChanged:(NSString *)newIdentity {
+    [[CMAnalytics instance] setMixpanelID:newIdentity];
+    CMUser *currentUser = [[[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
+            withCognitoUserId:newIdentity]
+            withFbUserId:[FBSDKAccessToken currentAccessToken].userID]
+            withStatus:CMUserStatusOnline]
+            build];
+    [[CMStore instance] setCurrentUser:currentUser];
+    [CMStore instance].isSignedIn = newIdentity != nil;
+    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
+    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
+    if ([CMStore instance].isFBConnected) {
+        [self updateUserInfo];
+        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
     }
-}
 
-- (void)signInUserWithSuccess:(void (^ _Nullable)())successBlock
-                        error:(void (^ _Nullable)(NSError *error))errorBlock {
-
-    [[self.authService signIn]
-            subscribeNext:^(NSString *cognitoUserId) {
-                NSLog(@"%@", cognitoUserId);
-                [[CMAnalytics instance] setMixpanelID:cognitoUserId];
-                CMUser *currentUser = [[[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-                                          withCognitoUserId:cognitoUserId]
-                                         withFbUserId:[FBSDKAccessToken currentAccessToken].userID]
-                                        withStatus:CMUserStatusOnline]
-                                       build];
-                [[CMStore instance] setCurrentUser:currentUser];
-            }
-                    error:^(NSError *error) {
-                        [[CMStore instance] setIsSignedIn:NO];
-                        DDLogError(@"%@", error);
-
-                        if (errorBlock) {
-                            errorBlock(error);
-                        }
-                    }
-                completed:^{
-                    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-                    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-                    [self updateUserInfo];
-                    [[CMStore instance] setIsSignedIn:YES];
-                    [self configureIoTListener:[CMStore instance].currentUser.cognitoUserId];
-                    if ([CMStore instance].isFBConnected) {
-                        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
-                    }
-                    if (successBlock) {successBlock();}
-                }];
+    if (self.authService.isSignedIn) {
+        [self configureIoTListener];
+    }
 }
 
 - (void)updateUserInfo {
@@ -271,18 +165,18 @@
         if (result && !error) {
             NSString *email = (NSString *) [result valueForKey:@"email"];
             [CMStore instance].currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-                                              withEmail:email]
-                                              build];
+                    withEmail:email]
+                    build];
         }
     }];
-
-    CMUserBuilder *userBuilder = [CMStore instance].currentUser ? [CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] : [CMUserBuilder new];
 
     FBSDKProfile *profile = [FBSDKProfile currentProfile];
     if (!profile) {
         DDLogVerbose(@"FB profile not found");
         return;
     }
+
+    CMUserBuilder *userBuilder = [CMStore instance].currentUser ? [CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] : [CMUserBuilder new];
 
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
     if (profile.userID) {
@@ -324,23 +218,83 @@
     }];
 }
 
-- (void)launch {
-}
-
 - (void)configure {
-    [[AWSDDLog sharedInstance] setLogLevel:AWSDDLogLevelAll];
-    [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
-    [[CMAnalytics instance] configureAWSMobileAnalytics];
-    self.authService = [[CMCognitoAuthService alloc] init];
-    [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(updateUserInfo)
-                                                 name:FBSDKProfileDidChangeNotification
-                                               object:nil];
-    [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
+    @weakify(self);
+
+    [[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread] subscribeNext:^(NSNumber *isOfflineMode) {
+        @strongify(self);
+        if (isOfflineMode.boolValue) {
+            [self.connectionReachibility stopNotifier];
+
+            CMServerListener *listener = [CMServerListener instance];
+            [self.iotSubscriptionDisposable dispose];
+            [[listener dataManager] disconnect];
+
+            return;
+        } else {
+            [self updateInterfaceWithReachability:self.connectionReachibility];
+            [self.connectionReachibility startNotifier];
+        }
+    }];
 }
 
-- (void)configureIoTListener:(NSString *)userId {
+- (void)loadAssets {
+    NSArray *customFonts = @[
+            @"Nunito-Medium.ttf"
+    ];
+    [customFonts map:^id(NSString *fileName) {
+        NSString *filePath = [[NSBundle cammentSDKBundle] pathForResource:fileName ofType:nil];
+        if (!filePath) { return nil; }
+
+        NSData *inData = [NSData dataWithContentsOfFile:filePath];
+        if (!inData) { return nil; }
+
+        CFErrorRef error;
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)inData);
+        CGFontRef font = CGFontCreateWithDataProvider(provider);
+        if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
+            CFStringRef errorDescription = CFErrorCopyDescription(error);
+            DDLogInfo(@"Failed to load font: %@", errorDescription);
+            CFRelease(errorDescription);
+        }
+        CFRelease(font);
+        CFRelease(provider);
+
+        return nil;
+    }];
+
+    DDLogInfo(@"Fonts loaded");
+    DDLogInfo(@"%@", [UIFont familyNames]);
+}
+
+
+- (void)reachabilityChanged:(NSNotification *)reachabilityChanged {
+    CMConnectionReachability *curReach = [reachabilityChanged object];
+    if ([curReach isKindOfClass:[CMConnectionReachability class]]) {
+        [self updateInterfaceWithReachability:curReach];
+    }
+}
+
+- (void)updateInterfaceWithReachability:(CMConnectionReachability *)reachability {
+    NetworkStatus netStatus = [reachability currentReachabilityStatus];
+    BOOL connectionAvailable = netStatus != NotReachable;
+    if (connectionAvailable && connectionAvailable != self.connectionAvailable) {
+        connectionAvailable = YES;
+        if (![CMStore instance].isSignedIn) {
+            [[self.authService signIn] subscribeNext:^(NSString *x) {
+            }];
+        }
+    }
+
+    self.connectionAvailable = connectionAvailable;
+}
+
+- (void)dealloc {
+    [self.connectionReachibility stopNotifier];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)configureIoTListener {
 
     CMServerListenerCredentials *credentials = [CMServerListenerCredentials defaultCredentials];
 
@@ -636,6 +590,9 @@
 - (void)verifyInvitation:(CMInvitation *)invitation {
     if (!invitation || !invitation.userGroupUuid) { return; }
 
+    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
+    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
+    
     if ([CMStore instance].isFBConnected) {
         //for external invitations key should be nil for now
         NSString *invitationKey = nil;
@@ -697,19 +654,18 @@
 }
 
 - (void)authInteractorDidSignedIn {
-    CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
-    [[CammentSDK instance] connectUserWithIdentity:fbIdentity
-                                           success:^{
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [self.onSignedInOperationsQueue setSuspended:NO];
-                                               });
-                                           }
-                                             error:^(NSError *error) {
-                                             }];
+    [[self.authService refreshCredentials] subscribeNext:^(NSString *x) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.onSignedInOperationsQueue setSuspended:NO];
+        });
+    } error:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.onSignedInOperationsQueue cancelAllOperations];
+        });
+    }];
 }
 
 - (void)authInteractorFailedToSignIn:(NSError *)error {
-
 }
 
 - (void)logout {
@@ -719,10 +675,24 @@
 
     [[FBSDKLoginManager new] logOut];
     [FBSDKAccessToken setCurrentAccessToken:nil];
-    [self.authService signOut];
+
     [[CMStore instance] cleanUp];
-    [[self tryRestoreLastSession] subscribeCompleted:^{}];
+    [self.authService signOut];
+    [self renewUserIdentitySuccess:^{
+    } error:^(NSError *error) {}];
 }
 
+- (void)renewUserIdentitySuccess:(void (^ _Nullable)())successBlock
+                           error:(void (^ _Nullable)(NSError *error))errorBlock {
+    [[self.authService refreshCredentials] subscribeNext:^(NSString *cognitoUserId) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            successBlock();
+        });
+    } error:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            errorBlock(error);
+        });
+    }];
+}
 
 @end

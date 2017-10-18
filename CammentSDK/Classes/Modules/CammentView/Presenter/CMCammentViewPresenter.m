@@ -97,26 +97,26 @@
         [[[RACObserve([CMStore instance], playingCammentId)
                 takeUntil:self.rac_willDeallocSignal]
                 deliverOnMainThread]
-        subscribeNext:^(NSString *nextId) {
-            @strongify(self);
-            [self playCamment:nextId];
-            if (self.isOnboardingRunning) {
-                if ([nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
-                    [self completeActionForOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
-                } else {
-                    [self.output hideOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
-                }
+                subscribeNext:^(NSString *nextId) {
+                    @strongify(self);
+                    [self playCamment:nextId];
+                    if (self.isOnboardingRunning) {
+                        if ([nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
+                            [self completeActionForOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                        } else {
+                            [self.output hideOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                        }
 
-                if (self.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip) {
-                    [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
-                }
-            }
-        }];
+                        if (self.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip) {
+                            [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+                        }
+                    }
+                }];
 
         __weak typeof(self) weakSelf = self;
         [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:weakSelf.rac_willDeallocSignal]
                 filter:^BOOL(NSNumber *state) {
-                    switch ((CMCammentRecordingState)state.integerValue) {
+                    switch ((CMCammentRecordingState) state.integerValue) {
                         case CMCammentRecordingStateNotRecording:
                             break;
                         case CMCammentRecordingStateRecording:
@@ -124,10 +124,11 @@
                         case CMCammentRecordingStateFinished:
                             [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentRecord];
                             break;
-                        case CMCammentRecordingStateCancelled:break;
+                        case CMCammentRecordingStateCancelled:
+                            break;
                     }
-            return state.integerValue != CMCammentRecordingStateNotRecording;
-        }] flattenMap:^RACSignal *(NSNumber *state) {
+                    return state.integerValue != CMCammentRecordingStateNotRecording;
+                }] flattenMap:^RACSignal *(NSNumber *state) {
 
             if (!weakSelf) {return [RACSignal empty];}
             CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
@@ -153,7 +154,7 @@
                 [weakSelf.output askForSetupPermissions];
                 return;
             }
-            
+
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
             weakSelf.willStartRecordSignal = [[[[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
                 [subscriber sendCompleted];
@@ -290,7 +291,7 @@
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
                                                 @strongify(self);
-                                                if (!self) { return; }
+                                                if (!self) {return;}
                                                 if (self.isOnboardingRunning) {
                                                     dispatch_async(dispatch_get_main_queue(), ^{
                                                         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
@@ -305,7 +306,7 @@
     if ([CMStore instance].isOfflineMode) {
         return;
     }
-    
+
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
@@ -325,7 +326,7 @@
 
         [obj matchCamment:^(CMCamment *camment) {
             result = [camment.uuid isEqualToString:uploadedCamment.uuid];
-        }             botCamment:^(CMBotCamment *ads) {
+        }      botCamment:^(CMBotCamment *ads) {
         }];
 
         return result;
@@ -335,7 +336,7 @@
         CMCammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
         [cammentsBlockItem matchCamment:^(CMCamment *camment) {
             mutableCamments[(NSUInteger) index] = [CMCammentsBlockItem cammentWithCamment:uploadedCamment];
-        }                           botCamment:^(CMBotCamment *ads) {
+        }                    botCamment:^(CMBotCamment *ads) {
         }];
     }
     self.cammentsBlockNodePresenter.items = mutableCamments.copy;
@@ -353,7 +354,7 @@
 
         [value matchCamment:^(CMCamment *mathedCamment) {
             result = [camment.uuid isEqualToString:mathedCamment.uuid];
-        }               botCamment:^(CMBotCamment *ads) {
+        }        botCamment:^(CMBotCamment *ads) {
         }];
 
         return result;
@@ -375,13 +376,14 @@
 - (void)didReceiveNewBotCamment:(CMBotCamment *)botCamment {
     [self.cammentsBlockNodePresenter
             insertNewItem:[CMCammentsBlockItem botCammentWithBotCamment:botCamment]
-               completion:^{}];
+               completion:^{
+               }];
 }
 
 - (void)inviteFriendsAction {
     [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
     [CMStore instance].isOnboardingFinished = YES;
-    
+
     FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
     [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
     if ([CMStore instance].isFBConnected) {
@@ -399,20 +401,17 @@
 }
 
 - (void)authInteractorDidSignedIn {
-    CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
-    [[CammentSDK instance] connectUserWithIdentity:fbIdentity
-                                           success:^{
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [self.output hideLoadingHUD];
-                                                   [self inviteFriendsAction];
-                                               });
-                                           }
-                                             error:^(NSError *error) {
-                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                     [self.output hideLoadingHUD];
-                                                 });
-                                                 NSLog(@"Error %@", error);
-                                             }];
+    [[CammentSDK instance] renewUserIdentitySuccess:^{
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.output hideLoadingHUD];
+            [self inviteFriendsAction];
+        });
+    }                                         error:^(NSError *error) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.output hideLoadingHUD];
+        });
+        NSLog(@"Error %@", error);
+    }];
 }
 
 - (void)authInteractorFailedToSignIn:(NSError *)error {
@@ -504,7 +503,7 @@
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
     if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].currentUser.cognitoUserId]
-        || [CMStore instance].currentUser.cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil ) {
+            || [CMStore instance].currentUser.cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil) {
         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }
@@ -554,7 +553,8 @@
                                                                       preferredStyle:UIAlertControllerStyleAlert];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {}]];
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
 
     [self.wireframe.parentViewController presentViewController:alertController
                                                       animated:YES
@@ -588,7 +588,8 @@
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel")
                                                         style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {}]];
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
 
     [self.wireframe.parentViewController presentViewController:alertController
                                                       animated:YES

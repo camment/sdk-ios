@@ -29,7 +29,7 @@
     [task continueWithBlock:^id(AWSTask<id> *t) {
         @strongify(self);
         if (t.error || ![t.result isKindOfClass:[CMAPIUserinfoList class]]) {
-            [self.output groupInfoInteractor:self didFailToFetchUsersInGroup:[NSError new]];
+            [self.output groupInfoInteractor:self didFailToFetchUsersInGroup:t.error];
             return nil;
         }
 

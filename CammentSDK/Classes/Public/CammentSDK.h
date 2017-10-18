@@ -47,10 +47,6 @@
 
 - (void)configureWithApiKey:(NSString * _Nonnull)apiKey;
 
-- (void)connectUserWithIdentity:(CMCammentIdentity * _Nonnull)identity
-                        success:(void (^ _Nullable)(void))successBlock
-                          error:(void (^ _Nullable)(NSError * _Nullable error))errorBlock;
-
 - (void)applicationDidBecomeActive:(UIApplication * _Nonnull)application;
 
 - (BOOL)application:(UIApplication * _Nonnull)application didFinishLaunchingWithOptions:(NSDictionary * _Nullable)launchOptions;
@@ -58,6 +54,8 @@
 - (BOOL)application:(UIApplication * _Nonnull)application
             openURL:(NSURL * _Nonnull)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> * _Nullable)options;
+
+- (void)renewUserIdentitySuccess:(void (^ _Nullable)())successBlock error:(void (^ _Nullable)(NSError *error))errorBlock;
 
 - (void)logout;
 @end

@@ -3,78 +3,77 @@
 // Copyright (c) 2017 Sportacam. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <AWSIoT/AWSIoT.h>
 #import "CMCognitoAuthService.h"
 #import "CMAppConfig.h"
 #import "AWSS3TransferManager.h"
-#import "AWSIoTDataManager.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMStore.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
-
+#import "CMCognitoFacebookAuthProvider.h"
 
 @interface CMCognitoAuthService ()
-
 @property(nonatomic, strong) AWSCognitoCredentialsProvider *credentialsProvider;
-
 @end
 
 @implementation CMCognitoAuthService
 
-- (void)configureWithProvider:(id <AWSIdentityProviderManager>)provider {
 
-    if (!provider) {
-        return;
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
+                initWithRegionType:AWSRegionEUCentral1
+                    identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
+           identityProviderManager:[CMCognitoFacebookAuthProvider new]];
     }
 
-    self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
-            initWithRegionType:AWSRegionEUCentral1
-                identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
-       identityProviderManager:provider];
+    [self updateAWSServicesConfiguration];
+    return self;
+}
 
+- (void)updateAWSServicesConfiguration {
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
                                                                          credentialsProvider:_credentialsProvider];
 
-    AWSServiceManager.defaultServiceManager.defaultServiceConfiguration = configuration;
     [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
+    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
     [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
     [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
-    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
 }
 
-- (RACSignal *)signIn {
+- (RACSignal<NSString *> *)signIn {
+    __weak typeof(self) __weak_self = self;
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        AWSCancellationToken *cancellationToken = [AWSCancellationToken new];
 
-        [[_credentialsProvider getIdentityId] continueWithBlock:^id(AWSTask<id> *task) {
-            if (task.error) {
-                [subscriber sendError:task.error];
-                return nil;
-            } else {
-                NSString *cognitoUserIdentity = [task result];
-                [subscriber sendNext:cognitoUserIdentity];
-                [subscriber sendCompleted];
-            }
+        AWSTask *getIdentityTask = [_credentialsProvider getIdentityId];
+        [getIdentityTask continueWithBlock:^id(AWSTask<id> *task) {
+                    if (task.error) {
+                        [subscriber sendError:task.error];
+                        return nil;
+                    } else {
+                        [self updateAWSServicesConfiguration];
+                        NSString *cognitoUserIdentity = [task result];
+                        [subscriber sendNext:cognitoUserIdentity];
+                    }
 
-            return nil;
-        }                                     cancellationToken:cancellationToken];
+                    return nil;
+                } cancellationToken:nil];
         return nil;
     }];
 }
 
-- (void)refreshIdentity {
+- (RACSignal<NSString *> *)refreshCredentials {
     [_credentialsProvider clearCredentials];
+    return [self signIn];
 }
 
 - (void)signOut {
-    [_credentialsProvider clearCredentials];
     [_credentialsProvider clearKeychain];
 }
 
 - (BOOL)isSignedIn {
-    return [FBSDKAccessToken currentAccessToken] != nil;
+    return _credentialsProvider.identityId != nil;
 }
 
 @end

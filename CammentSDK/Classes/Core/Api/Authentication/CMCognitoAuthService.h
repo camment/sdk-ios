@@ -9,6 +9,8 @@
 
 @interface CMCognitoAuthService: NSObject
 
+@property BOOL cognitoHasBeenConfigured;
+
 - (void)updateAWSServicesConfiguration;
 
 - (RACSignal<NSString *> *)signIn;

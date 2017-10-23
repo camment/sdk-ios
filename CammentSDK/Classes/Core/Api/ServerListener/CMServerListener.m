@@ -35,10 +35,14 @@ static CMServerListener *_instance = nil;
 }
 
 - (void)renewCredentials:(CMServerListenerCredentials *)credentials {
-    [_dataManager disconnect];
-    _credentials = credentials;
     _dataManager = [AWSIoTDataManager IoTDataManagerForKey:CMIotManagerName];
-    _isConnected = NO;
+    if (self.isConnected) {
+        [self subscribeToNewIdentity:credentials.clientId];
+        _credentials = credentials;
+        return;
+    }
+
+    _credentials = credentials;
     [self connect];
 }
 
@@ -121,12 +125,24 @@ static CMServerListener *_instance = nil;
                    messageCallback:^(NSData *data) {
                        [self processMessage:data];
                    }];
+    [self subscribeToNewIdentity:_credentials.clientId];
+}
+
+- (void)subscribeToNewIdentity:(NSString *)newIdentity {
     if (_credentials.clientId) {
-        [_dataManager subscribeToTopic:[NSString stringWithFormat:@"camment/user/%@", _credentials.clientId]
+        NSString *oldChannel = [NSString stringWithFormat:@"camment/user/%@", _credentials.clientId];
+        [_dataManager unsubscribeTopic:oldChannel];
+        DDLogInfo(@"Unsubscribed from %@", oldChannel);
+    }
+
+    if (newIdentity) {
+        NSString *newChannel = [NSString stringWithFormat:@"camment/user/%@", newIdentity];
+        [_dataManager subscribeToTopic:newChannel
                                    QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
                        messageCallback:^(NSData *data) {
                            [self processMessage:data];
                        }];
+        DDLogInfo(@"Subscribed to %@", newChannel);
     }
 }
 

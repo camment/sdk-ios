@@ -362,14 +362,14 @@
 
     BOOL isNewItem = filteredItemsArray.count == 0;
 
-    if (
-            ([camment.userGroupUuid isEqualToString:[[CMStore instance].activeGroup uuid]]
-                    || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
-                    &&
-                    isNewItem
-            ) {
-        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment] completion:^{
-        }];
+    if ([camment.userGroupUuid isEqualToString:[[CMStore instance].activeGroup uuid]]
+                    || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID]) {
+        if (isNewItem) {
+            [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment] completion:^{
+            }];
+        } else {
+            [self.cammentsBlockNodePresenter updateCammentData:camment];
+        }
     }
 }
 

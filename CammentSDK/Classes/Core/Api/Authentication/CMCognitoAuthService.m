@@ -4,6 +4,7 @@
 //
 
 #import <AWSIoT/AWSIoT.h>
+#import "AWSCognito.h"
 #import "CMCognitoAuthService.h"
 #import "CMAppConfig.h"
 #import "AWSS3TransferManager.h"
@@ -36,10 +37,12 @@
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
                                                                          credentialsProvider:_credentialsProvider];
 
+    [AWSCognito registerCognitoWithConfiguration:configuration forKey:CMCognitoName];
     [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
     [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
     [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
     [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
+    self.cognitoHasBeenConfigured = YES;
 }
 
 - (RACSignal<NSString *> *)signIn {

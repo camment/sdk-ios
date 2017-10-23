@@ -32,6 +32,8 @@
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "AWSIotDataManager.h"
 #import "NSArray+RacSequence.h"
+#import "AWSCognito.h"
+#import "AWSCore.h"
 
 @interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
 
@@ -116,7 +118,7 @@
 - (void)configureWithApiKey:(NSString *)apiKey {
     [CMStore instance].apiKey = apiKey;
     [[self.authService signIn] subscribeNext:^(NSString *cognitoIdentityId) {
-        [self identityHasChanged:cognitoIdentityId];
+        [self identityHasChangedOldIdentity:[CMStore instance].currentUser.cognitoUserId newIdentity:cognitoIdentityId];
         [self checkIfDeferredDeepLinkExists];
     } error:^(NSError *error) {
         DDLogError(@"Error on signing in at configureWithApiKey: method %@", error);
@@ -129,10 +131,12 @@
             [userInfo objectForKey:AWSCognitoNotificationPreviousId],
             [userInfo objectForKey:AWSCognitoNotificationNewId]);
     NSString *newIdentity = [userInfo objectForKey:AWSCognitoNotificationNewId];
-    [self identityHasChanged:newIdentity];
+    NSString *oldIdentity = [userInfo objectForKey:AWSCognitoNotificationPreviousId];
+    [self identityHasChangedOldIdentity:oldIdentity newIdentity:newIdentity];
 }
 
-- (void)identityHasChanged:(NSString *)newIdentity {
+- (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
+    if (newIdentity == nil) { return; }
     [[CMAnalytics instance] setMixpanelID:newIdentity];
     CMUser *currentUser = [[[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
             withCognitoUserId:newIdentity]
@@ -148,8 +152,34 @@
         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
     }
 
-    if (self.authService.isSignedIn) {
-        [self configureIoTListener];
+    if (_authService.cognitoHasBeenConfigured) {
+        AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
+        AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
+        NSLog(@"current dataSet%@", dataset.getAll);
+        [[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
+            if (oldIdentity && newIdentity) {
+                [dataset setString:oldIdentity forKey:newIdentity];
+                [dataset setString:newIdentity forKey:@"current"];
+            }
+            
+            NSLog(@"dataSet before sync %@", dataset.getAll);
+            return [dataset synchronize];
+        }] continueWithBlock:^id(AWSTask<id> *t) {
+            NSLog(@"sync dataSet %@", dataset.getAll);
+            return nil;
+        }];
+        
+        [dataset setDatasetMergedHandler:^(NSString *datasetName, NSArray *datasets) {
+            
+        }];
+        
+        [dataset setConflictHandler:^AWSCognitoResolvedConflict *(NSString *datasetName, AWSCognitoConflict *conflict) {
+            return [conflict resolveWithLocalRecord];
+        }];
+        
+        if (newIdentity != nil && _authService.isSignedIn) {
+            [self configureIoTListener];
+        }
     }
 }
 
@@ -669,9 +699,9 @@
 }
 
 - (void)logout {
-    CMServerListener *listener = [CMServerListener instance];
-    [self.iotSubscriptionDisposable dispose];
-    [[listener dataManager] disconnect];
+//    CMServerListener *listener = [CMServerListener instance];
+//    [self.iotSubscriptionDisposable dispose];
+//    [[listener dataManager] disconnect];
 
     [[FBSDKLoginManager new] logOut];
     [FBSDKAccessToken setCurrentAccessToken:nil];

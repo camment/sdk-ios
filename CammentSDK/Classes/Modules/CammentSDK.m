@@ -153,6 +153,14 @@
     }
 
     if (oldIdentity) {
+        if ([[[CMStore instance].activeGroup ownerCognitoUserId] isEqualToString:oldIdentity]) {
+            [CMStore instance].activeGroup = [[[CMUsersGroupBuilder
+                    usersGroupFromExistingUsersGroup:
+                            [CMStore instance].activeGroup]
+                    withOwnerCognitoUserId:newIdentity]
+                    build];
+        }
+
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers map:^CMUser *(CMUser *oldUser) {
             if ([[oldUser cognitoUserId] isEqualToString:oldIdentity]) {
                 return [[[CMUserBuilder userFromExistingUser:oldUser]

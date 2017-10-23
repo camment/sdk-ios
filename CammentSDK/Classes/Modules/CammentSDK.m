@@ -152,6 +152,27 @@
         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
     }
 
+    if (oldIdentity) {
+        [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers map:^CMUser *(CMUser *oldUser) {
+            if ([[oldUser cognitoUserId] isEqualToString:oldIdentity]) {
+                return [[[CMUserBuilder userFromExistingUser:oldUser]
+                        withCognitoUserId:newIdentity]
+                        build];
+            }
+
+            return oldUser;
+        }];
+
+        [CMStore instance].userGroups = [[CMStore instance].userGroups map:^CMUsersGroup *(CMUsersGroup *oldGroup) {
+            if ([oldGroup.ownerCognitoUserId isEqualToString:oldIdentity]) {
+                return [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:oldGroup]
+                        withOwnerCognitoUserId:newIdentity] build];
+            }
+            return oldGroup;
+        }];
+    }
+
+
     if (_authService.cognitoHasBeenConfigured) {
         AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
         AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];

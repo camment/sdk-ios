@@ -9,7 +9,7 @@
 @implementation NSArray (RacSequence)
 
 - (NSArray *)map:(id _Nullable (^)(id _Nullable value))block {
-    return [[self.rac_sequence map:block] array];
+    return [[self.rac_sequence map:block] array] ?: @[];
 }
 
 @end

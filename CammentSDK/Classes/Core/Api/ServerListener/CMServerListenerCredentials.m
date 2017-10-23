@@ -4,7 +4,6 @@
 //
 
 #import "CMServerListenerCredentials.h"
-#import "CMStore.h"
 
 const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertificate";
 
@@ -15,7 +14,7 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
 }
 
 - (instancetype)init {
-    return [self initWithClientId:[CMStore instance].currentUser.cognitoUserId ?: @""
+    return [self initWithClientId:[NSUUID new].UUIDString
                           keyFile:@"awsiot-identity"
                        passPhrase:@"8uT$BwY+x=DF,M"
                     certificateId:nil];

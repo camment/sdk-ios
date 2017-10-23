@@ -18,16 +18,14 @@
 @property (nonatomic, readonly) CMServerListenerCredentials *credentials;
 @property (nonatomic, readonly) RACSubject<CMServerMessage *> *messageSubject;
 
-- (void)renewCredentials:(CMServerListenerCredentials *)credentials;
+@property(nonatomic, copy) NSString *cognitoUuid;
 
 - (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials;
 
 - (void)connect;
 
-- (void)subscribeToGroup:(CMUsersGroup *)group;
-
-- (void)unsubscribeFromGroup:(CMUsersGroup *)group;
-
 + (CMServerListener *)instance;
+
+- (void)redubscribeToNewIdentity:(NSString *)newIdentity;
 
 @end

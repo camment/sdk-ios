@@ -199,16 +199,16 @@
         }];
         
         [dataset setDatasetMergedHandler:^(NSString *datasetName, NSArray *datasets) {
-            
+            [[[CMAPIDevcammentClient defaultAPIClient] meUuidPut] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {
+                return nil;
+            }];
         }];
         
         [dataset setConflictHandler:^AWSCognitoResolvedConflict *(NSString *datasetName, AWSCognitoConflict *conflict) {
             return [conflict resolveWithLocalRecord];
         }];
-        
-        if (newIdentity != nil && _authService.isSignedIn) {
-            [self configureIoTListener];
-        }
+
+        [self configureIoTListeneWithNewIdentity:newIdentity];
     }
 }
 
@@ -353,33 +353,33 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)configureIoTListener {
-
-    CMServerListenerCredentials *credentials = [CMServerListenerCredentials defaultCredentials];
+- (void)configureIoTListeneWithNewIdentity:(NSString *)newIdentity {
 
     CMServerListener *listener = [CMServerListener instance];
-    [listener renewCredentials:credentials];
-    [self.iotSubscriptionDisposable dispose];
-    self.iotSubscriptionDisposable = [listener.messageSubject subscribeNext:^(CMServerMessage *message) {
+    [listener redubscribeToNewIdentity:newIdentity];
 
-        [message matchInvitation:^(CMInvitation *invitation) {
-            if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
-                    && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].currentUser.fbUserId]
-                    && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].currentUser.fbUserId]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [self presentChatInvitation:invitation];
-                });
-            }
-        }];
+    if (!self.iotSubscriptionDisposable) {
+        self.iotSubscriptionDisposable = [listener.messageSubject subscribeNext:^(CMServerMessage *message) {
 
-        [message matchMembershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
-            [self presentMembershipRequestAlert:membershipRequestMessage];
-        }];
+            [message matchInvitation:^(CMInvitation *invitation) {
+                if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
+                        && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].currentUser.fbUserId]
+                        && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].currentUser.fbUserId]) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self presentChatInvitation:invitation];
+                    });
+                }
+            }];
 
-        [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
-            [self presentMembershipAcceptedAlert:membershipAcceptedMessage];
+            [message matchMembershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
+                [self presentMembershipRequestAlert:membershipRequestMessage];
+            }];
+
+            [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
+                [self presentMembershipAcceptedAlert:membershipAcceptedMessage];
+            }];
         }];
-    }];
+    }
 }
 
 - (void)presentMembershipAcceptedAlert:(CMMembershipAcceptedMessage *)message {
@@ -728,10 +728,6 @@
 }
 
 - (void)logout {
-//    CMServerListener *listener = [CMServerListener instance];
-//    [self.iotSubscriptionDisposable dispose];
-//    [[listener dataManager] disconnect];
-
     [[FBSDKLoginManager new] logOut];
     [FBSDKAccessToken setCurrentAccessToken:nil];
 

@@ -212,6 +212,14 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ 
+ return type: 
+ */
+- (AWSTask *)meUuidPut;
+
+/**
+ 
+ 
  @param passcode 
  
  return type: CMAPIShowList *

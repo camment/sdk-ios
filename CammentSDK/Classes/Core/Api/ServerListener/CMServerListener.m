@@ -34,18 +34,6 @@ static CMServerListener *_instance = nil;
     return _instance;
 }
 
-- (void)renewCredentials:(CMServerListenerCredentials *)credentials {
-    _dataManager = [AWSIoTDataManager IoTDataManagerForKey:CMIotManagerName];
-    if (self.isConnected) {
-        [self subscribeToNewIdentity:credentials.clientId];
-        _credentials = credentials;
-        return;
-    }
-
-    _credentials = credentials;
-    [self connect];
-}
-
 - (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials {
     self = [super init];
     if (self) {
@@ -125,12 +113,12 @@ static CMServerListener *_instance = nil;
                    messageCallback:^(NSData *data) {
                        [self processMessage:data];
                    }];
-    [self subscribeToNewIdentity:_credentials.clientId];
+    [self subscribeToNewIdentity:self.cognitoUuid];
 }
 
 - (void)subscribeToNewIdentity:(NSString *)newIdentity {
-    if (_credentials.clientId) {
-        NSString *oldChannel = [NSString stringWithFormat:@"camment/user/%@", _credentials.clientId];
+    if (self.cognitoUuid) {
+        NSString *oldChannel = [NSString stringWithFormat:@"camment/user/%@", self.cognitoUuid];
         [_dataManager unsubscribeTopic:oldChannel];
         DDLogInfo(@"Unsubscribed from %@", oldChannel);
     }
@@ -142,20 +130,9 @@ static CMServerListener *_instance = nil;
                        messageCallback:^(NSData *data) {
                            [self processMessage:data];
                        }];
+        self.cognitoUuid = newIdentity;
         DDLogInfo(@"Subscribed to %@", newChannel);
     }
-}
-
-- (void)subscribeToGroup:(CMUsersGroup *)group {
-    [_dataManager subscribeToTopic:[NSString stringWithFormat:@"camment/group/%@",group.uuid]
-                               QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
-                   messageCallback:^(NSData *data) {
-                       [self processMessage:data];
-                   }];
-}
-
-- (void)unsubscribeFromGroup:(CMUsersGroup *)group {
-    [_dataManager unsubscribeTopic:[NSString stringWithFormat:@"camment/group/%@",group.uuid]];
 }
 
 - (void)processMessage:(NSData *)messageData {
@@ -176,4 +153,14 @@ static CMServerListener *_instance = nil;
     [_messageSubject sendNext:serverMessage];
 }
 
+- (void)redubscribeToNewIdentity:(NSString *)newIdentity {
+    _dataManager = [AWSIoTDataManager IoTDataManagerForKey:CMIotManagerName];
+    if (self.isConnected) {
+        [self subscribeToNewIdentity:newIdentity];
+        return;
+    }
+
+    self.cognitoUuid = newIdentity;
+    [self connect];
+}
 @end

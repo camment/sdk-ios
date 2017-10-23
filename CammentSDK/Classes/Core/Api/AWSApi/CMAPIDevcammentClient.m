@@ -229,6 +229,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIUsergroupList class]];
 }
 
+- (AWSTask *)meUuidPut {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"PUT"
+                         URLString:@"/me/uuid"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
 - (AWSTask *)showsGet:(NSString *)passcode {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",

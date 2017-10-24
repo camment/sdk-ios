@@ -104,5 +104,9 @@
     return YES;
 }
 
+- (NSArray *)videoPlayerNodeNeededDefaultControls:(ASVideoPlayerNode *)videoPlayer {
+    return @[];
+}
+
 
 @end

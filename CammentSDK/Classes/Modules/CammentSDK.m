@@ -186,9 +186,8 @@
         AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
         NSLog(@"current dataSet%@", dataset.getAll);
         [[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
-            if (oldIdentity && newIdentity) {
-                [dataset setString:oldIdentity forKey:newIdentity];
-                [dataset setString:newIdentity forKey:@"current"];
+            if (oldIdentity && newIdentity && ![oldIdentity isEqualToString:newIdentity]) {
+                    [dataset setString:oldIdentity forKey:newIdentity];
             }
             
             NSLog(@"dataSet before sync %@", dataset.getAll);

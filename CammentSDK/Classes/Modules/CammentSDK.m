@@ -78,7 +78,10 @@
 
 #ifdef INTERNALSDK
         [[CMStore instance] setupTweaks];
+#else
+        [CMStore instance].isOfflineMode = NO;
 #endif
+    
         [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
         [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
         [[NSNotificationCenter defaultCenter] addObserver:self

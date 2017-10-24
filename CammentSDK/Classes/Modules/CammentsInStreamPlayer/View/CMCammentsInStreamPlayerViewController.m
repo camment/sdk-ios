@@ -53,7 +53,6 @@
 
     CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
     overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
-    overlayLayoutConfig.leftSidebarWidth = 400.0f;
     _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata
                                                                      overlayLayoutConfig:overlayLayoutConfig];
     _cammentOverlayController.overlayDelegate = self;

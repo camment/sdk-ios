@@ -10,6 +10,7 @@
 #import <CammentSDK/CMCammentAnonymousIdentity.h>
 #import <CammentSDK/CMCammentFacebookIdentity.h>
 #import <CammentSDK/CMShowMetadata.h>
+#import <CammentSDK/CMCammentOverlayLayoutConfig.h>
 #import <CammentSDK/CMCammentOverlayController.h>
 
 @class CMConnectionReachability;

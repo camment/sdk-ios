@@ -7,6 +7,8 @@
 #import <UIKit/UIKit.h>
 #import "CMShowMetadata.h"
 
+@class CMCammentOverlayLayoutConfig;
+
 @protocol CMCammentOverlayControllerDelegate<NSObject>
 
 @optional
@@ -24,6 +26,9 @@
 @property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> _Nullable overlayDelegate;
 
 - (instancetype _Nonnull)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata;
+
+- (instancetype _Nonnull)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *_Nonnull)overlayLayoutConfig;
 
 - (void)addToParentViewController:(UIViewController * _Nonnull)viewController;
 - (void)removeFromParentViewController;

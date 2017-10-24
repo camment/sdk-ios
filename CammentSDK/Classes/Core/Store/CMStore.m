@@ -16,6 +16,7 @@
 #import "CMGroupsListInteractor.h"
 #import "CMGroupInfoInteractor.h"
 #import "CMUserBuilder.h"
+#import "CMCammentOverlayLayoutConfig.h"
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 

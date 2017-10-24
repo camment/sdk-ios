@@ -14,14 +14,12 @@
 #import "CMCammentsBlockNode.h"
 #import "CMCammentRecorderPreviewNode.h"
 #import "UIColorMacros.h"
-#import "MBProgressHUD.h"
-#import "CammentSDK.h"
 #import "CMCammentRecorderInteractorInput.h"
 #import "CMCamment.h"
 #import "CMUserJoinedMessage.h"
 #import "CMCammentCell.h"
-#import "CMGroupsListWireframe.h"
 #import "CMGroupInfoWireframe.h"
+#import "CMCammentOverlayLayoutConfig.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate>
 
@@ -32,13 +30,15 @@
 
 @implementation CMCammentViewController
 
-- (instancetype)init {
-    self = [super initWithNode:[CMCammentViewNode new]];
+- (instancetype)initWithOverlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig {
+    self = [super initWithNode:[[CMCammentsOverlayViewNode alloc] initWithLayoutConfig:overlayLayoutConfig]];
     if (self) {
         self.currentOnboardingAlert = CMOnboardingAlertNone;
     }
+
     return self;
 }
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -271,11 +271,16 @@
             break;
         case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
             frame = self.node.cammentButton.frame;
-//            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-                text = CMLocalized(@"help.swipe_up_to_invite");
-//            } else {
-//                text = CMLocalized(@"help.swipe_down_to_invite");
-//            }
+            switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
+
+                case CMCammentOverlayLayoutPositionTopRight:
+                    text = CMLocalized(@"help.swipe_down_to_invite");
+                    break;
+                case CMCammentOverlayLayoutPositionBottomRight:
+                    text = CMLocalized(@"help.swipe_up_to_invite");
+                    break;
+            }
+
             direction = AMPopTipDirectionLeft;
             delay = 1;
             break;

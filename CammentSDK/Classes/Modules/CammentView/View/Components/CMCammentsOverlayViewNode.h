@@ -31,6 +31,7 @@
 @property(nonatomic, assign) BOOL showCammentsBlock;
 @property(nonatomic, assign) BOOL showLestSidebarNode;
 @property(nonatomic, assign) BOOL showCammentRecorderNode;
+@property(nonatomic, strong) CMCammentOverlayLayoutConfig *layoutConfig;
 
 @property(nonatomic, weak) id<CMCammentsOverlayViewNodeDelegate> delegate;
 

@@ -12,6 +12,7 @@
 #import "CMCammentViewWireframe.h"
 #import "CMShow.h"
 #import "CMStore.h"
+#import "CMCammentOverlayLayoutConfig.h"
 
 @interface CMCammentOverlayController ()
 @property(nonatomic, strong) CMCammentViewController *cammentViewController;
@@ -22,12 +23,19 @@
 @implementation CMCammentOverlayController
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata {
+    return [self initWithShowMetadata:metadata
+                  overlayLayoutConfig:[CMCammentOverlayLayoutConfig defaultLayoutConfig]];
+}
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *_Nonnull)overlayLayoutConfig {
     self = [super init];
     if (self) {
         CMStore *store = [CMStore instance];
         store.currentShowMetadata = metadata;
 
-        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShowMetadata:metadata];
+        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShowMetadata:metadata
+                                                                                 overlayLayoutConfig:overlayLayoutConfig];
         self.cammentViewController = [viewWireframe controller];
         self.wireframe = viewWireframe;
 

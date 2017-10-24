@@ -18,17 +18,19 @@
 
 @implementation CMCammentViewWireframe
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata {
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata 
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig {
     self = [super init];
     if (self) {
         self.metadata = metadata;
+        self.overlayLayoutConfig = overlayLayoutConfig;
     }
 
     return self;
 }
 
 - (CMCammentViewController *)controller {
-    CMCammentViewController *view = [CMCammentViewController new];
+    CMCammentViewController *view = [[CMCammentViewController alloc] initWithOverlayLayoutConfig:_overlayLayoutConfig];
     CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata];
     CMCammentViewInteractor *interactor = [CMCammentViewInteractor new];
 

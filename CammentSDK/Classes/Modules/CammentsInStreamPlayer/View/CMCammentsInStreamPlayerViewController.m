@@ -51,7 +51,11 @@
     CMShowMetadata *metadata = [CMShowMetadata new];
     metadata.uuid = self.showUuid;
 
-    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata];
+    CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
+    overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
+    overlayLayoutConfig.leftSidebarWidth = 400.0f;
+    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata
+                                                                     overlayLayoutConfig:overlayLayoutConfig];
     _cammentOverlayController.overlayDelegate = self;
     [_cammentOverlayController addToParentViewController:self];
     [self.view addSubview:[_cammentOverlayController cammentView]];

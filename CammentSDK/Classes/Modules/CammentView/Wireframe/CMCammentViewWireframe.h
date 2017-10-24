@@ -26,7 +26,10 @@
 
 @property(nonatomic, strong) CMShowMetadata *metadata;
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata;
+@property(nonatomic, strong) CMCammentOverlayLayoutConfig *overlayLayoutConfig;
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig NS_DESIGNATED_INITIALIZER;
 
 - (CMCammentViewController *)controller;
 

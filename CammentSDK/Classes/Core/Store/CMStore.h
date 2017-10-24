@@ -12,6 +12,7 @@
 @class CMShow;
 @class CMShowMetadata;
 @class CMInvitation;
+@class CMCammentOverlayLayoutConfig;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -51,7 +52,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property RACSubject<NSNumber *> *cleanUpSignal;
 
 @property(nonatomic) BOOL isOfflineMode;
-
 
 + (CMStore *)instance;
 

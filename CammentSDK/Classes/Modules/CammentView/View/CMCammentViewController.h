@@ -14,14 +14,15 @@
 #import "CMCammentViewPresenterInput.h"
 #import "CMCammentViewPresenterOutput.h"
 #import "CMLoadingHUD.h"
-#import "CMCammentViewNode.h"
+#import "CMCammentsOverlayViewNode.h"
 
 @class CMGroupsListWireframe;
 @class CMGroupInfoWireframe;
 
-@interface CMCammentViewController : ASViewController<CMCammentViewNode *><CMCammentViewPresenterOutput, CMCammentsOverlayViewNodeDelegate>
+@interface CMCammentViewController : ASViewController<CMCammentsOverlayViewNode *><CMCammentViewPresenterOutput, CMCammentsOverlayViewNodeDelegate>
 
 @property (nonatomic, strong) id<CMCammentViewPresenterInput> presenter;
 @property (nonatomic, strong) CMGroupInfoWireframe *sidebarWireframe;
 
+- (instancetype)initWithOverlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig NS_DESIGNATED_INITIALIZER;
 @end

@@ -39,6 +39,7 @@
 #import "CMCammentCell.h"
 #import "CMBotRegistry.h"
 #import "CMAnalytics.h"
+#import "CMInternalCammentSDKProtocol.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
 
@@ -401,7 +402,7 @@
 }
 
 - (void)authInteractorDidSignedIn {
-    [[CammentSDK instance] renewUserIdentitySuccess:^{
+    [(id<CMInternalCammentSDKProtocol>)[CammentSDK instance] renewUserIdentitySuccess:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.output hideLoadingHUD];
             [self inviteFriendsAction];

@@ -8,7 +8,7 @@
 #import "CMStore.h"
 #import "CMSettingsNode.h"
 #import "CammentSDK.h"
-
+#import "CMInternalCammentSDKProtocol.h"
 
 @interface CMProfileViewNode () <CMSettingsNodeDelegate>
 @property(nonatomic, strong) ASTextNode *usernameTextNode;
@@ -191,7 +191,7 @@
 - (void)settingsNodeDidLogout:(CMSettingsNode *)node {
     self.showSettingsNode = NO;
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
-    [[CammentSDK instance] logout];
+    [(id<CMInternalCammentSDKProtocol>)[CammentSDK instance] logout];
 }
 
 

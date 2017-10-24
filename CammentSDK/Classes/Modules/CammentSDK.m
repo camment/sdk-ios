@@ -34,8 +34,9 @@
 #import "NSArray+RacSequence.h"
 #import "AWSCognito.h"
 #import "AWSCore.h"
+#import "CMInternalCammentSDKProtocol.h"
 
-@interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput>
+@interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput, CMInternalCammentSDKProtocol>
 
 @property(nonatomic, strong) CMCognitoAuthService *authService;
 @property(nonatomic) BOOL connectionAvailable;

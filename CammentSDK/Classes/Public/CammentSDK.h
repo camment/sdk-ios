@@ -55,7 +55,8 @@
             openURL:(NSURL * _Nonnull)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> * _Nullable)options;
 
-- (void)renewUserIdentitySuccess:(void (^ _Nullable)())successBlock error:(void (^ _Nullable)(NSError *error))errorBlock;
+- (void)renewUserIdentitySuccess:(void (^ _Nullable)(void))successBlock
+                           error:(void (^ _Nullable)(NSError * _Nullable error))errorBlock;
 
 - (void)logout;
 @end

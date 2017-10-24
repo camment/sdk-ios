@@ -138,10 +138,9 @@
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
     if (newIdentity == nil) { return; }
     [[CMAnalytics instance] setMixpanelID:newIdentity];
-    CMUser *currentUser = [[[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
+    CMUser *currentUser = [[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
             withCognitoUserId:newIdentity]
             withFbUserId:[FBSDKAccessToken currentAccessToken].userID]
-            withStatus:CMUserStatusOnline]
             build];
     [[CMStore instance] setCurrentUser:currentUser];
     [CMStore instance].isSignedIn = newIdentity != nil;

@@ -13,6 +13,7 @@
 #import "TLIndexPathSectionInfo.h"
 #import "TLIndexPathUpdates.h"
 #import "TLIndexPathDataModel.h"
+#import "CMUserStatus.h"
 
 @interface CMInvitationListPresenter ()
 @property(nonatomic) BOOL isFetchingNextPage;
@@ -44,10 +45,10 @@
 - (void)tableNode:(ASTableNode *)tableNode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     CMUser *user = self.items[(NSUInteger) indexPath.row];
 
-    if (user.status == CMUserStatusBusy) {
-        [tableNode deselectRowAtIndexPath:indexPath animated:YES];
-        return;
-    }
+//    if (user.status == CMUserStatusBusy) {
+//        [tableNode deselectRowAtIndexPath:indexPath animated:YES];
+//        return;
+//    }
 
     if ([self.selectedUsersId containsObject:user.fbUserId]) {
         [self.selectedUsersId removeObject:user.fbUserId];

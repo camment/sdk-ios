@@ -247,6 +247,17 @@
         case CMOnboardingAlertTapAndHoldToRecordTooltip:
             frame = self.node.cammentButton.frame;
             text = CMLocalized(@"help.tap_and_hold_to_record");
+            
+            switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
+                    
+                case CMCammentOverlayLayoutPositionTopRight:
+                    direction = AMPopTipDirectionDown;
+                    break;
+                case CMCammentOverlayLayoutPositionBottomRight:
+                    direction = AMPopTipDirectionUp;
+                    break;
+            }
+            
             break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];

@@ -21,6 +21,7 @@
 #import "FBTweakCollection.h"
 #import "FBTweakStore.h"
 #import "ReactiveObjC.h"
+#import "CMErrorWireframe.h"
 
 @interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver, CMCammentSDKDelegate>
 
@@ -153,7 +154,10 @@
 }
 
 - (void)showListFetchingFailed:(NSError *)error {
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
     DDLogError(@"Show list fetch error %@", error);
+    [self.output hideLoadingIndicator];
 }
 
 - (void)didSelectShow:(CMShow *)show rect:(CGRect)rect image:(UIImage *)image {

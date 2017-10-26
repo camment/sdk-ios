@@ -40,6 +40,7 @@
 #import "CMBotRegistry.h"
 #import "CMAnalytics.h"
 #import "CMInternalCammentSDKProtocol.h"
+#import "CMErrorWireframe.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
 
@@ -345,6 +346,8 @@
 
 - (void)interactorFailedToUploadCamment:(CMCamment *)camment error:(NSError *)error {
     DDLogError(@"Failed to upload camment %@ with error %@", camment, error);
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
 
@@ -364,7 +367,7 @@
     BOOL isNewItem = filteredItemsArray.count == 0;
 
     if ([camment.userGroupUuid isEqualToString:[[CMStore instance].activeGroup uuid]]
-                    || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID]) {
+            || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID]) {
         if (isNewItem) {
             [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment] completion:^{
             }];
@@ -402,24 +405,23 @@
 }
 
 - (void)authInteractorDidSignedIn {
-    [(id<CMInternalCammentSDKProtocol>)[CammentSDK instance] renewUserIdentitySuccess:^{
+    [(id <CMInternalCammentSDKProtocol>) [CammentSDK instance] renewUserIdentitySuccess:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.output hideLoadingHUD];
             [self inviteFriendsAction];
         });
-    }                                         error:^(NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.output hideLoadingHUD];
-        });
-        NSLog(@"Error %@", error);
+    }                                                                             error:^(NSError *error) {
+        [self authInteractorFailedToSignIn:error];
     }];
 }
 
 - (void)authInteractorFailedToSignIn:(NSError *)error {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.output hideLoadingHUD];
+        [[CMErrorWireframe new] presentErrorViewWithError:error
+                                         inViewController:(id) self.output];
     });
-    NSLog(@"Error %@", error);
+    DDLogError(@"Error %@", error);
 }
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
@@ -544,22 +546,15 @@
 }
 
 - (void)didFailToInviteUsersWithError:(NSError *)error {
-
+    [self.output hideLoadingHUD];
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
 - (void)didFailToGetInvitationLink:(NSError *)error {
     [self.output hideLoadingHUD];
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"Ooops")]
-                                                                             message:CMLocalized(@"Couldn't get the invitation link. Check your internet connection and try again.")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {
-                                                      }]];
-
-    [self.wireframe.parentViewController presentViewController:alertController
-                                                      animated:YES
-                                                    completion:nil];
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
 

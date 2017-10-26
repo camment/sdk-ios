@@ -11,6 +11,7 @@
 #import "CMLoadingHUD.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMErrorWireframe.h"
 
 @interface CMCammentsInStreamPlayerPresenter ()
 
@@ -56,7 +57,7 @@
 
         if (t.error || ![t.result isKindOfClass:[CMAPIShow class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output hideLoadingHUD];
+                [self getShowInfoFailed:t.error];
             });
             return nil;
         }
@@ -76,6 +77,12 @@
 
         return nil;
     }];
+}
+
+- (void)getShowInfoFailed:(NSError *)error {
+    [self.output hideLoadingHUD];
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
 @end

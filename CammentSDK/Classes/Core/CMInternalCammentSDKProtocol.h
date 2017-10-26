@@ -11,4 +11,6 @@
 
 - (void)logout;
 
+- (DDFileLogger *)getFileLogger;
+
 @end

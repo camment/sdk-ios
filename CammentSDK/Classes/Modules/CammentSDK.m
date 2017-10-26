@@ -48,6 +48,9 @@
 
 @property(nonatomic, strong) CMConnectionReachability *connectionReachibility;
 @property(nonatomic, strong) RACDisposable *iotSubscriptionDisposable;
+
+@property(nonatomic, strong) DDFileLogger *fileLogger;
+
 @end
 
 @implementation CammentSDK
@@ -71,9 +74,11 @@
         [self loadAssets];
 #ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
-#else
-        [DDLog addLogger:[[DDFileLogger alloc] init]];
 #endif
+        self.fileLogger = [[DDFileLogger alloc] init]; // File Logger
+        self.fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
+        self.fileLogger.logFileManager.maximumNumberOfLogFiles = 3;
+        [DDLog addLogger:self.fileLogger];
 
         DDLogInfo(@"Camment SDK has started");
 
@@ -738,6 +743,11 @@
     [self renewUserIdentitySuccess:^{
     } error:^(NSError *error) {}];
 }
+
+- (DDFileLogger *)getFileLogger {
+    return _fileLogger;
+}
+
 
 - (void)renewUserIdentitySuccess:(void (^ _Nullable)())successBlock
                            error:(void (^ _Nullable)(NSError *error))errorBlock {

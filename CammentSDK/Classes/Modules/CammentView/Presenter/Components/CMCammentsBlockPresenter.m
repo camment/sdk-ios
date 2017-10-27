@@ -11,6 +11,8 @@
 #import "AWSCognito.h"
 #import "NSArray+RacSequence.h"
 #import "CMCammentBuilder.h"
+#import "AWSS3Model.h"
+#import "CMAdsDemoBot.h"
 
 @interface CMCammentsBlockPresenter () <CMBotCammentCellDelegate, CMCammentCellDelegate>
 
@@ -132,13 +134,22 @@
     }                          completion:nil];
 }
 
-- (void) collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+- (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     CMCammentsBlockItem *cammentsBlockItem = self.items[(NSUInteger) indexPath.row];
     [cammentsBlockItem matchCamment:^(CMCamment *camment) {
         BOOL shouldPlay = ![camment.uuid isEqualToString:[[CMStore instance] playingCammentId]];
         [[CMStore instance] setPlayingCammentId:shouldPlay ? camment.uuid : kCMStoreCammentIdIfNotPlaying];
     }                    botCamment:^(CMBotCamment *botCamment) {
-        [self.output runBotCammentAction:botCamment.botAction];
+
+        ASCellNode *node = [collectionNode nodeForItemAtIndexPath:indexPath];
+        CGRect frame = node.frame;
+        frame = [collectionNode.supernode.view convertRect:frame fromView:node.view];
+
+        CMBotAction *action = botCamment.botAction;
+        NSMutableDictionary *params = [(NSDictionary *)botCamment.botAction.params mutableCopy];
+        params[kCMAdsDemoBotRectParam] = [NSValue valueWithCGRect:frame];
+        action.params = params;
+        [self.output runBotCammentAction:action];
     }];
 }
 

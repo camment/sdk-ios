@@ -25,4 +25,6 @@ extern NSString * const kCMPresentationBuilderUtilityAnyShowUUID;
 - (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalVideo:(NSString *)filename;
 
 - (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalGif:(NSString *)filename url:(NSString *)url;
+
+- (CMDisplayCammentPresentationAction *)displayBotActionWithLocalGif:(NSString *)filename action:(CMBotAction *)action;
 @end

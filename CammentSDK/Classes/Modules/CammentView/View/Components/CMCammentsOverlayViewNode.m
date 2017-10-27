@@ -9,6 +9,7 @@
 #import "CMCammentButton.h"
 #import "CMCammentRecorderPreviewNode.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMAdsVideoPlayerNode.h"
 
 @interface CMCammentsOverlayViewNode ()
 
@@ -29,6 +30,7 @@
         _leftSidebarNode = [ASDisplayNode new];
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
+        _adsVideoPlayerNode = [CMAdsVideoPlayerNode new];
         _contentView = [UIView new];
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
             return _contentView ?: [UIView new];
@@ -151,6 +153,13 @@
 
     ASOverlayLayoutSpec *cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentButtonOverlay
                                                                                         overlay:stackLayoutInsetSpec];
+    if (self.showVideoAdsPlayerNode) {
+        _adsVideoPlayerNode.style.layoutPosition = CGPointMake(
+                self.videoAdsPlayerNodeAppearsFrame.origin.x - 15.0f,
+                self.videoAdsPlayerNodeAppearsFrame.origin.y - 8.0f);
+        cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
+                                                                       overlay:[ASAbsoluteLayoutSpec absoluteLayoutSpecWithChildren:@[_adsVideoPlayerNode]]];
+    }
     return cammentsBlockOverlay;
 }
 

@@ -12,6 +12,7 @@
 @protocol CMContentViewerNode;
 @class CMCammentOverlayLayoutConfig;
 @class CMGroupsListNode;
+@class CMAdsVideoPlayerNode;
 
 @protocol CMCammentsOverlayViewNodeDelegate<NSObject>
 
@@ -28,9 +29,12 @@
 @property(nonatomic, strong) ASDisplayNode *leftSidebarNode;
 @property(nonatomic, strong, readonly) CMCammentRecorderPreviewNode *cammentRecorderNode;
 @property(nonatomic, strong, readonly) CMCammentButton *cammentButton;
+@property(nonatomic, strong, readonly) CMAdsVideoPlayerNode *adsVideoPlayerNode;
 @property(nonatomic, assign) BOOL showCammentsBlock;
 @property(nonatomic, assign) BOOL showLestSidebarNode;
 @property(nonatomic, assign) BOOL showCammentRecorderNode;
+@property(nonatomic, assign) BOOL showVideoAdsPlayerNode;
+@property(nonatomic, assign) CGRect videoAdsPlayerNodeAppearsFrame;
 @property(nonatomic, strong) CMCammentOverlayLayoutConfig *layoutConfig;
 
 @property(nonatomic, weak) id<CMCammentsOverlayViewNodeDelegate> delegate;

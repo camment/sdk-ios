@@ -8,9 +8,11 @@
 #import "CMCammentsLoaderInteractorOutput.h"
 
 @protocol CMPresentationInstructionInterface;
+@class CMVideoAd;
 
 @protocol CMPresentationInstructionOutput <CMCammentsLoaderInteractorOutput>
 
 - (void)presentationInstruction:(id<CMPresentationInstructionInterface>)instruction presentsViewController:(UIViewController *)viewController;
+- (void)presentationInstruction:(id<CMPresentationInstructionInterface>)instruction playVideoAds:(CMVideoAd *)botCamment playStartingFromRect:(CGRect)rect;
 
 @end

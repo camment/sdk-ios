@@ -20,8 +20,10 @@
 #import "CMCammentCell.h"
 #import "CMGroupInfoWireframe.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMAdsVideoPlayerNode.h"
+#import "CMVideoAd.h"
 
-@interface CMCammentViewController () <CMCammentButtonDelegate>
+@interface CMCammentViewController () <CMCammentButtonDelegate, CMAdsVideoPlayerNodeDelegate>
 
 @property CMOnboardingAlertType currentOnboardingAlert;
 @property (nonatomic, strong) AMPopTip *popTip;
@@ -55,6 +57,7 @@
 
     self.node.cammentButton.delegate = self;
     self.node.delegate = self;
+    self.node.adsVideoPlayerNode.delegate = self;
 
     [self.sidebarWireframe addToViewController:self];
     self.node.leftSidebarNode = self.sidebarWireframe.view.node;
@@ -379,6 +382,18 @@
 - (void)presentViewController:(UIViewController *)controller {
     controller.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:controller animated:YES completion:nil];
+}
+
+- (void)cmAdsVideoPlayerNodeDidClose {
+    self.node.showVideoAdsPlayerNode = NO;
+    [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
+- (void)playAdVideo:(CMVideoAd *)videoAd startingFromRect:(CGRect)startsRect {
+    self.node.videoAdsPlayerNodeAppearsFrame = startsRect;
+    [self.node.adsVideoPlayerNode play:videoAd];
+    self.node.showVideoAdsPlayerNode = YES;
+    [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 @end

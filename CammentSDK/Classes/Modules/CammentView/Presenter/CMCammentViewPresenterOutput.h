@@ -13,6 +13,7 @@
 @class CMCamment;
 @protocol CMCammentsBlockDelegate;
 @class CMCammentCell;
+@class CMVideoAd;
 
 typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
     CMCammentActionsMaskNone,
@@ -34,4 +35,6 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 - (void)presentUserJoinedMessage:(CMUserJoinedMessage *)message;
 
 - (void)presentViewController:(UIViewController *)controller;
+
+- (void)playAdVideo:(CMVideoAd *)videoAd startingFromRect:(CGRect)startsRect;
 @end

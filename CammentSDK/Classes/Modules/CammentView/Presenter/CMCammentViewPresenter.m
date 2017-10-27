@@ -592,4 +592,11 @@
                                                     completion:nil];
 }
 
+- (void)presentationInstruction:(id <CMPresentationInstructionInterface>)instruction
+                   playVideoAds:(CMVideoAd *)videoAd
+           playStartingFromRect:(CGRect)rect
+{
+    [self.output playAdVideo:videoAd startingFromRect:rect];
+}
+
 @end

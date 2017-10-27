@@ -25,7 +25,7 @@ NSString * const tweakSettingsVideoAdCollectionName = @"Video ad settings";
     action.action = kCMAdsDemoBotPlayVideoAction;
     action.params = @{
             kCMAdsDemoBotVideoURLParam : [[NSURL alloc] initFileURLWithPath:filepath].absoluteString,
-            kCMAdsDemoBotURLParam : @"http://zara.com",
+            kCMAdsDemoBotURLParam : @"http://cr7.com",
     };
 
     return @[

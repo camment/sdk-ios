@@ -74,6 +74,7 @@
         [self loadAssets];
 #ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
+        [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
 #endif
         self.fileLogger = [[DDFileLogger alloc] init]; // File Logger
         self.fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
@@ -87,7 +88,7 @@
 #else
         [CMStore instance].isOfflineMode = NO;
 #endif
-    
+
         [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
         [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -130,6 +131,14 @@
         [self identityHasChangedOldIdentity:[CMStore instance].currentUser.cognitoUserId newIdentity:cognitoIdentityId];
         [self checkIfDeferredDeepLinkExists];
     } error:^(NSError *error) {
+        if ([error.domain isEqualToString:AWSCognitoIdentityErrorDomain]) {
+            [[FBSDKLoginManager new] logOut];
+            [FBSDKAccessToken setCurrentAccessToken:nil];
+            
+            [[CMStore instance] cleanUp];
+            [self.authService signOut];
+            [self configureWithApiKey:apiKey];
+        }
         DDLogError(@"Error on signing in at configureWithApiKey: method %@", error);
     }];
 }
@@ -193,22 +202,22 @@
         AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
         AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
         NSLog(@"current dataSet%@", dataset.getAll);
-        [[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
-            if (oldIdentity && newIdentity && ![oldIdentity isEqualToString:newIdentity]) {
-                    [dataset setString:oldIdentity forKey:newIdentity];
+        [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
+            if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
+                return nil;
             }
-            
-            NSLog(@"dataSet before sync %@", dataset.getAll);
+            [dataset setString:oldIdentity forKey:newIdentity];
             return [dataset synchronize];
         }] continueWithBlock:^id(AWSTask<id> *t) {
             NSLog(@"sync dataSet %@", dataset.getAll);
+            return [[CMAPIDevcammentClient defaultAPIClient] meUuidPut];
+        }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {
+            if (t.error) {
+                DDLogError(@"%@", t);
+            } else {
+                DDLogInfo(@"Profiles synced from %@  to %@", oldIdentity, newIdentity);
+            }
             return nil;
-        }];
-        
-        [dataset setDatasetMergedHandler:^(NSString *datasetName, NSArray *datasets) {
-            [[[CMAPIDevcammentClient defaultAPIClient] meUuidPut] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {
-                return nil;
-            }];
         }];
         
         [dataset setConflictHandler:^AWSCognitoResolvedConflict *(NSString *datasetName, AWSCognitoConflict *conflict) {
@@ -588,6 +597,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     DDLogInfo(@"didFinishLaunchingWithOptions hook has been installed");
+    
+#ifdef DEBUG
+    [AWSDDLog sharedInstance].logLevel = AWSLogLevelDebug;
+    [AWSDDLog addLogger:[AWSDDTTYLogger sharedInstance]];
+#endif
+
     [[CMAnalytics instance] configureMixpanelAnalytics];
     [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAppStart];
 

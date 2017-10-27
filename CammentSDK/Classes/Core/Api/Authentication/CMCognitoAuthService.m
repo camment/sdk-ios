@@ -29,7 +29,6 @@
            identityProviderManager:[CMCognitoFacebookAuthProvider new]];
     }
 
-    [self updateAWSServicesConfiguration];
     return self;
 }
 
@@ -47,21 +46,31 @@
 
 - (RACSignal<NSString *> *)signIn {
     __weak typeof(self) __weak_self = self;
+    __block NSString *cognitoUserIdentity = @"";
     return [RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
 
         AWSTask *getIdentityTask = [_credentialsProvider getIdentityId];
-        [getIdentityTask continueWithBlock:^id(AWSTask<id> *task) {
-                    if (task.error) {
-                        [subscriber sendError:task.error];
-                        return nil;
-                    } else {
-                        [self updateAWSServicesConfiguration];
-                        NSString *cognitoUserIdentity = [task result];
-                        [subscriber sendNext:cognitoUserIdentity];
-                    }
+        [[getIdentityTask continueWithBlock:^id(AWSTask<id> *task) {
 
-                    return nil;
-                } cancellationToken:nil];
+            if (task.error) {
+                [subscriber sendError:task.error];
+                return nil;
+            }
+            [__weak_self updateAWSServicesConfiguration];
+            cognitoUserIdentity = [task result];
+
+            return [[CMAPIDevcammentClient defaultAPIClient] userinfoGet];
+        } cancellationToken:nil] continueWithBlock:^id(AWSTask<id> *task) {
+
+            if (task.error) {
+                [subscriber sendError:task.error];
+                return nil;
+            }
+
+            [subscriber sendNext:cognitoUserIdentity];
+
+            return nil;
+        }];
         return nil;
     }];
 }

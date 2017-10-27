@@ -68,71 +68,75 @@ static CMServerListener *_instance = nil;
     if (![self importIdentity]) {
         DDLogError(@"Couldn't import iot certificate");
     }
-
-    BOOL initialized = [_dataManager connectWithClientId:_credentials.clientId
-                                            cleanSession:YES
-                                           certificateId:_credentials.certificateId
-                                          statusCallback:^(AWSIoTMQTTStatus status) {
-
-                                              switch (status) {
-
-                                                  case AWSIoTMQTTStatusUnknown:
-                                                      break;
-                                                  case AWSIoTMQTTStatusConnecting:
-                                                      break;
-                                                  case AWSIoTMQTTStatusConnected:
-                                                      DDLogInfo(@"Iot connected");
-                                                      break;
-                                                  case AWSIoTMQTTStatusDisconnected:
-                                                      break;
-                                                  case AWSIoTMQTTStatusConnectionRefused:
-                                                      DDLogError(@"Iot connection refused");
-                                                      break;
-                                                  case AWSIoTMQTTStatusConnectionError:
-                                                      DDLogError(@"Iot connection error");
-                                                      break;
-                                                  case AWSIoTMQTTStatusProtocolError:
-                                                      DDLogError(@"Iot protocol error");
-                                                      break;
-                                              }
-                                              _isConnected = status == AWSIoTMQTTStatusConnected;
-                                              [CMStore instance].isConnected = _isConnected;
-                                              if (_isConnected) {
-                                                  [self subscribe];
-                                              }
-                                          }];
-    if (!initialized) {
-        DDLogError(@"Iot client wasn't initialized");
-    }
-
+    dispatch_async(dispatch_get_main_queue(), ^{
+        BOOL initialized = [_dataManager connectWithClientId:_credentials.clientId
+                                                cleanSession:YES
+                                               certificateId:_credentials.certificateId
+                                              statusCallback:^(AWSIoTMQTTStatus status) {
+                                                  
+                                                  switch (status) {
+                                                          
+                                                      case AWSIoTMQTTStatusUnknown:
+                                                          break;
+                                                      case AWSIoTMQTTStatusConnecting:
+                                                          break;
+                                                      case AWSIoTMQTTStatusConnected:
+                                                          DDLogInfo(@"Iot connected");
+                                                          break;
+                                                      case AWSIoTMQTTStatusDisconnected:
+                                                          break;
+                                                      case AWSIoTMQTTStatusConnectionRefused:
+                                                          DDLogError(@"Iot connection refused");
+                                                          break;
+                                                      case AWSIoTMQTTStatusConnectionError:
+                                                          DDLogError(@"Iot connection error");
+                                                          break;
+                                                      case AWSIoTMQTTStatusProtocolError:
+                                                          DDLogError(@"Iot protocol error");
+                                                          break;
+                                                  }
+                                                  _isConnected = status == AWSIoTMQTTStatusConnected;
+                                                  [CMStore instance].isConnected = _isConnected;
+                                                  if (_isConnected) {
+                                                      [self subscribe];
+                                                  }
+                                              }];
+        if (!initialized) {
+            DDLogError(@"Iot client wasn't initialized");
+        }
+    });
 }
 
 - (void)subscribe {
-    [_dataManager subscribeToTopic:@"camment/app"
-                               QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
-                   messageCallback:^(NSData *data) {
-                       [self processMessage:data];
-                   }];
-    [self subscribeToNewIdentity:self.cognitoUuid];
-}
-
-- (void)subscribeToNewIdentity:(NSString *)newIdentity {
-    if (self.cognitoUuid) {
-        NSString *oldChannel = [NSString stringWithFormat:@"camment/user/%@", self.cognitoUuid];
-        [_dataManager unsubscribeTopic:oldChannel];
-        DDLogInfo(@"Unsubscribed from %@", oldChannel);
-    }
-
-    if (newIdentity) {
-        NSString *newChannel = [NSString stringWithFormat:@"camment/user/%@", newIdentity];
-        [_dataManager subscribeToTopic:newChannel
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_dataManager subscribeToTopic:@"camment/app"
                                    QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
                        messageCallback:^(NSData *data) {
                            [self processMessage:data];
                        }];
-        self.cognitoUuid = newIdentity;
-        DDLogInfo(@"Subscribed to %@", newChannel);
-    }
+        [self subscribeToNewIdentity:self.cognitoUuid];
+    });
+}
+
+- (void)subscribeToNewIdentity:(NSString *)newIdentity {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (self.cognitoUuid) {
+            NSString *oldChannel = [NSString stringWithFormat:@"camment/user/%@", self.cognitoUuid];
+            [_dataManager unsubscribeTopic:oldChannel];
+            DDLogInfo(@"Unsubscribed from %@", oldChannel);
+        }
+        
+        if (newIdentity) {
+            NSString *newChannel = [NSString stringWithFormat:@"camment/user/%@", newIdentity];
+            [_dataManager subscribeToTopic:newChannel
+                                       QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
+                           messageCallback:^(NSData *data) {
+                               [self processMessage:data];
+                           }];
+            self.cognitoUuid = newIdentity;
+            DDLogInfo(@"Subscribed to %@", newChannel);
+        }
+    });
 }
 
 - (void)processMessage:(NSData *)messageData {

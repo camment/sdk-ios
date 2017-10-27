@@ -5,6 +5,7 @@
 #import "CMAdsVideoPlayerNode.h"
 #import "UIColorMacros.h"
 #import "CMVideoAd.h"
+#import "CMStore.h"
 
 
 @implementation CMAdsVideoPlayerNode {
@@ -74,19 +75,24 @@
 }
 
 - (void)didTapCloseOnButton {
+    [CMStore instance].playingCammentId = kCMStoreCammentIdIfNotPlaying;
+    [self.videoPlayerNode pause];
     [self.delegate cmAdsVideoPlayerNodeDidClose];
 }
 
 - (void)play:(CMVideoAd *)videoAd {
+    [CMStore instance].playingCammentId = @"kVideoAds";
     self.videoAd = videoAd;
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.videoPlayerNode pause];
+        [self.videoPlayerNode.player seekToTime:kCMTimeZero];
         [self.videoPlayerNode setAssetURL:self.videoAd.videoURL];
         [self.videoPlayerNode play];
     });
 }
 
 - (void)tapOpenLinkButton {
+    [self didTapCloseOnButton];
     NSURL *url = self.videoAd.targetUrl;
     [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
 }

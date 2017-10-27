@@ -221,6 +221,10 @@
         self.cammentButton.transform = CATransform3DIdentity;
         self.cammentButton.layer.transform = CATransform3DIdentity;
         self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
+        if (_showVideoAdsPlayerNode) {
+            self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
+        }
+
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];
         self.cammentsBlockNode.frame = cammentBlockFinalFrame;

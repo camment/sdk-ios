@@ -30,9 +30,9 @@ NSString * const tweakSettingsVideoAdCollectionName = @"Video ad settings";
 
     return @[
             [[CMPositionPresentationInstruction alloc]
-                    initWithPosition:1
-                              action:[utility displayBotActionWithLocalGif:@"wolt" action:action]
-                               delay:.0f],
+                    initWithPosition:3
+                              action:[utility displayBotActionWithLocalGif:@"ronaldo" action:action]
+                               delay:1.0f],
     ];
 }
 

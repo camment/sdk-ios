@@ -4,6 +4,7 @@
 //
 
 #import "CMServerListenerCredentials.h"
+#import "CMAppConfig.h"
 
 const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertificate";
 
@@ -14,10 +15,15 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
 }
 
 - (instancetype)init {
+    NSString *defaultSertificateId = [NSString stringWithFormat:@"%@-%@",
+                                          kCMServerCredetialsDefaultCertificateId,
+                                          [CMAppConfig instance].sdkEnvironment
+                                      ];
+    
     return [self initWithClientId:[NSUUID new].UUIDString
-                          keyFile:@"awsiot-identity"
-                       passPhrase:@"8uT$BwY+x=DF,M"
-                    certificateId:nil];
+                          keyFile:[CMAppConfig instance].iotCertFile
+                       passPhrase:[CMAppConfig instance].iotCertPassPhrase
+                    certificateId:defaultSertificateId];
 }
 
 - (instancetype)initWithClientId:(NSString *)clientId
@@ -30,7 +36,7 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
         self.clientId = clientId;
         self.p12KeyFile = p12KeyFile;
         self.passPhrase = passPhrase;
-        self.certificateId = (NSString *) (certificateId ?: kCMServerCredetialsDefaultCertificateId);
+        self.certificateId = certificateId;
     }
     return self;
 }

@@ -18,17 +18,23 @@
 #ifdef DEBUG
     static const DDLogLevel ddLogLevel = DDLogLevelAll;
 #else
-    static const DDLogLevel ddLogLevel = DDLogLevelError;
+    static const DDLogLevel ddLogLevel = DDLogLevelAll;
 #endif
 
 #ifdef POD_CONFIGURATION_BETA
     #define INTERNALSDK
     #define INTERNALBUILD
+    static const NSString *CMSDKEnvironment = @"beta";
 #endif
 
 #ifdef POD_CONFIGURATION_DEBUG
     #define INTERNALSDK
     #define INTERNALBUILD
+    static const NSString *CMSDKEnvironment = @"debug";
+#endif
+
+#ifdef POD_CONFIGURATION_RELEASE
+    static const NSString *CMSDKEnvironment = @"production";
 #endif
 
 #ifdef INTERNALSDK

@@ -64,7 +64,7 @@
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                     switch ((AWSS3TransferManagerErrorType)task.error.code) {
                         case AWSS3TransferManagerErrorCancelled: break;
-                        case AWSS3TransferManagerErrorPaused: break;
+                        case AWSS3TransferManagerErrorPaused:break;
                         case AWSS3TransferManagerErrorUnknown:break;
                         case AWSS3TransferManagerErrorCompleted:break;
                         case AWSS3TransferManagerErrorInternalInConsistency:break;
@@ -74,7 +74,6 @@
                 }
 
                 DDLogError(@"Uploading camment failed with error %@", task.error);
-
                 [subscriber sendError:task.error];
             }
 

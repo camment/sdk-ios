@@ -29,10 +29,17 @@ NSString* const CMCognitoName = @"defaultCognito";
     if (self) {
         NSString *propertyListPath = [[NSBundle cammentSDKBundle] pathForResource:@"Config" ofType:@"plist"];
         NSDictionary *propertyList = [NSDictionary dictionaryWithContentsOfFile:propertyListPath];
-        _awsCognitoIdenityPoolId = [propertyList valueForKey:@"awsCognitoPoolId"] ?: @"";
-        _awsS3BucketName = [propertyList valueForKey:@"awsS3BucketName"] ?: @"";
-        _hockeyAppId = [propertyList valueForKey:@"hockeyAppId"] ?: @"";
-        _fbAppId = [propertyList valueForKey:@"facebookAppId"] ?: @"";
+        _sdkEnvironment = (NSString *) CMSDKEnvironment;
+        NSLog(@"active sdk environment %@", _sdkEnvironment);
+        NSDictionary *envPropertyList = [propertyList valueForKey:_sdkEnvironment];
+        DDLogInfo(@"env config %@", envPropertyList);
+        _awsCognitoIdenityPoolId = [envPropertyList valueForKey:@"awsCognitoPoolId"] ?: @"";
+        _awsS3BucketName = [envPropertyList valueForKey:@"awsS3BucketName"] ?: @"";
+        _hockeyAppId = [envPropertyList valueForKey:@"hockeyAppId"] ?: @"";
+        _fbAppId = [envPropertyList valueForKey:@"facebookAppId"] ?: @"";
+        _apiHost = [envPropertyList valueForKey:@"apiHost"] ?: @"";
+        _iotCertFile = [envPropertyList valueForKey:@"iotCertFile"] ?: @"";
+        _iotCertPassPhrase = [envPropertyList valueForKey:@"iotCertPassPhrase"] ?: @"";
     }
     return self;
 }

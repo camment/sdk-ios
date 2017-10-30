@@ -35,6 +35,7 @@
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
+#import "CMAppConfig.h"
 
 @interface AWSAPIGatewayClient()
 
@@ -144,7 +145,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     if (self = [super init]) {
         _configuration = [configuration copy];
 
-        NSString *URLString = @"https://76unbx2jub.execute-api.eu-central-1.amazonaws.com/dev";
+        NSString *URLString = [CMAppConfig instance].apiHost;
         if ([URLString hasSuffix:@"/"]) {
             URLString = [URLString substringToIndex:[URLString length] - 1];
         }

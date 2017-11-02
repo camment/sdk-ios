@@ -8,12 +8,12 @@
 #import "CMPositionPresentationInstruction.h"
 #import "CMAdsDemoBot.h"
 
-NSString * const tweakSettingsVideoAdCollectionName = @"Video ad settings";
+NSString * const tweakSettingsVideoAdCollectionName = @"Programmatic demo settings";
 
 @implementation CMVideoAdPresentationBuilder
 
 - (NSString *)presentationName {
-    return @"Video ad";
+    return @"Programmatic ad demo";
 }
 
 - (NSArray *)instructions {

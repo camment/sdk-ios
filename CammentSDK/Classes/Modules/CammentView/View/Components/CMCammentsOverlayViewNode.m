@@ -154,11 +154,12 @@
     ASOverlayLayoutSpec *cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentButtonOverlay
                                                                                         overlay:stackLayoutInsetSpec];
     if (self.showVideoAdsPlayerNode) {
-        _adsVideoPlayerNode.style.layoutPosition = CGPointMake(
-                self.videoAdsPlayerNodeAppearsFrame.origin.x - 15.0f,
-                self.videoAdsPlayerNodeAppearsFrame.origin.y - 8.0f);
         cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
-                                                                       overlay:[ASAbsoluteLayoutSpec absoluteLayoutSpecWithChildren:@[_adsVideoPlayerNode]]];
+                                                                       overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.y - 8.0f,
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.x - 15.0f,
+                                                                                       INFINITY, INFINITY)
+                                                                                                                      child:_adsVideoPlayerNode]];
     }
     return cammentsBlockOverlay;
 }

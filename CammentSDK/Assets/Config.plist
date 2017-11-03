@@ -4,6 +4,8 @@
 <dict>
 	<key>production</key>
 	<dict>
+		<key>iotHost</key>
+		<string>https://a1ptuiv94cuwdn.iot.eu-central-1.amazonaws.com</string>
 		<key>hockeyAppId</key>
 		<string>de051234e09f49ac8fd6e017af139f19</string>
 		<key>awsCognitoPoolId</key>
@@ -21,6 +23,8 @@
 	</dict>
 	<key>beta</key>
 	<dict>
+		<key>iotHost</key>
+		<string>https://a20d2b0kg5jg1.iot.eu-central-1.amazonaws.com</string>
 		<key>hockeyAppId</key>
 		<string>de051234e09f49ac8fd6e017af139f19</string>
 		<key>awsCognitoPoolId</key>
@@ -38,6 +42,8 @@
 	</dict>
 	<key>debug</key>
 	<dict>
+		<key>iotHost</key>
+		<string>https://a20d2b0kg5jg1.iot.eu-central-1.amazonaws.com</string>
 		<key>hockeyAppId</key>
 		<string>de051234e09f49ac8fd6e017af139f19</string>
 		<key>awsCognitoPoolId</key>

@@ -40,6 +40,7 @@ NSString* const CMCognitoName = @"defaultCognito";
         _apiHost = [envPropertyList valueForKey:@"apiHost"] ?: @"";
         _iotCertFile = [envPropertyList valueForKey:@"iotCertFile"] ?: @"";
         _iotCertPassPhrase = [envPropertyList valueForKey:@"iotCertPassPhrase"] ?: @"";
+        _iotHost = [envPropertyList valueForKey:@"iotHost"] ?: @"";
     }
     return self;
 }

@@ -38,7 +38,13 @@
 
     [AWSCognito registerCognitoWithConfiguration:configuration forKey:CMCognitoName];
     [AWSS3TransferManager registerS3TransferManagerWithConfiguration:configuration forKey:CMS3TransferManagerName];
-    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:configuration forKey:CMIotManagerName];
+    
+    AWSEndpoint *iotEndpoint = [[AWSEndpoint alloc] initWithURLString:[CMAppConfig instance].iotHost];
+    AWSServiceConfiguration *iotConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
+                                                                                       endpoint:iotEndpoint
+                                                                            credentialsProvider:_credentialsProvider];
+    
+    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:iotConfiguration forKey:CMIotManagerName];
     [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
     [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
     self.cognitoHasBeenConfigured = YES;

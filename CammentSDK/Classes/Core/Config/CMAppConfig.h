@@ -19,6 +19,7 @@ extern NSString* const  CMCognitoName;
 @property (nonatomic, strong, readonly) NSString *fbAppId;
 @property (nonatomic, strong, readonly) NSString *apiHost;
 @property (nonatomic, strong, readonly) NSString *iotCertFile;
+@property (nonatomic, strong, readonly) NSString *iotHost;
 
 @property(nonatomic, copy) NSString *iotCertPassPhrase;
 

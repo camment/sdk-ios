@@ -63,14 +63,18 @@
         }
         return;
     }
-
+    
     NSURL *assetURL;
+    BOOL localFileExists = NO;
     if (_camment.localURL != nil) {
         assetURL = [[NSURL alloc] initFileURLWithPath:_camment.localURL];
-    } else if (_camment.remoteURL != nil) {
+        localFileExists = [[NSFileManager defaultManager] fileExistsAtPath:_camment.localURL];
+    }
+    
+    if (_camment.remoteURL != nil && !localFileExists) {
         assetURL = [[NSURL alloc] initWithString:_camment.remoteURL];
     }
-
+    
     if (assetURL == nil) { return; }
     _videoPlayerNode.asset = [AVAsset assetWithURL:assetURL];
     if (_camment.thumbnailURL) {
@@ -113,6 +117,14 @@
 
 - (void)videoDidPlayToEnd:(ASVideoNode *)videoNode {
     [[CMStore instance] setPlayingCammentId: kCMStoreCammentIdIfNotPlaying];
+}
+
+- (void)videoNodeDidStartInitialLoading:(ASVideoNode *)videoNode {
+    self.alpha = 0.2;
+}
+
+- (void)videoNodeDidFinishInitialLoading:(ASVideoNode *)videoNode {
+    self.alpha = 1;
 }
 
 @end

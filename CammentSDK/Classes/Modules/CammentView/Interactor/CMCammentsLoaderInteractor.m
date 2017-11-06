@@ -16,9 +16,14 @@
 #import "CMAPIDevcammentClient.h"
 #import "CMServerMessage.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "TCBlobDownloader.h"
+#import "TCBlobDownloadManager.h"
+#import "CMCammentBuilder.h"
 
 @interface CMCammentsLoaderInteractor ()
+
 @property(nonatomic, strong) RACDisposable *disposable;
+
 @end
 
 @implementation CMCammentsLoaderInteractor
@@ -26,17 +31,18 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.disposable = [[[[CMServerListener instance] messageSubject] deliverOnMainThread] subscribeNext:^(CMServerMessage *_Nullable message) {
+        __weak typeof (self) __weakSelf = self;
+        self.disposable = [[[[[CMServerListener instance] messageSubject] deliverOnMainThread] takeUntil:self.rac_willDeallocSignal]subscribeNext:^(CMServerMessage *_Nullable message) {
             [message matchInvitation:^(CMInvitation *invitation) {
                     }
                              camment:^(CMCamment *camment) {
-                                 [self.output didReceiveNewCamment:camment];
+                                 [__weakSelf downloadCamment:camment];
                              }
                           userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
-                              [self.output didReceiveUserJoinedMessage:userJoinedMessage];
+                              [__weakSelf.output didReceiveUserJoinedMessage:userJoinedMessage];
                           }
                       cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
-                          [self.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
+                          [__weakSelf.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
                       }
                    membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
                    }
@@ -48,6 +54,7 @@
 
 - (void)fetchCachedCamments:(NSString *)groupUUID {
     if (!groupUUID) {return;}
+    @weakify(self);
     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID] continueWithBlock:^id(AWSTask<CMAPICammentList *> *t) {
 
         if ([t.result isKindOfClass:[CMAPICammentList class]]) {
@@ -66,15 +73,43 @@
                                                  botAction:nil];
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [_output didFetchCamments:result];
+                [self.output didFetchCamments:result];
             });
         };
         return nil;
     }];
 }
 
-- (void)dealloc {
+- (void)downloadCamment:(CMCamment *)camment {
+    TCBlobDownloadManager *sharedManager = [TCBlobDownloadManager sharedInstance];
+    if (!camment.remoteURL) {
+        NSLog(@"no remote url for %@", camment);
+        return;
+    }
+    
+    TCBlobDownloader *downloader = [sharedManager startDownloadWithURL:[[NSURL alloc] initWithString:camment.remoteURL]
+                                                            customPath:nil
+                                                         firstResponse:^(NSURLResponse *response) {
 
+                                                         }
+                                                              progress:^(uint64_t receivedLength, uint64_t totalLength, NSInteger remainingTime, float progress) {
+
+                                                              }
+                                                                 error:^(NSError *error) {
+
+                                                                 }
+                                                              complete:^(BOOL downloadFinished, NSString *pathToFile) {
+                                                                    if (downloadFinished && pathToFile) {
+                                                                        CMCammentBuilder *builder = [[CMCammentBuilder cammentFromExistingCamment:camment]
+                                                                                withLocalURL:pathToFile];
+                                                                        [self.output didReceiveNewCamment:[builder build]];
+                                                                    }
+                                                              }];
+}
+
+- (void)dealloc {
+    [[TCBlobDownloadManager sharedInstance] cancelAllDownloadsAndRemoveFiles:YES];
+    [self.disposable dispose];
 }
 
 @end

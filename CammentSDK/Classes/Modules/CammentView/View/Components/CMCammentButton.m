@@ -27,7 +27,7 @@
         } didLoadBlock:^(__kindof ASDisplayNode * _Nonnull node) {
             UIImageView *imageView = (UIImageView *)node.view;
             imageView.image = [UIImage imageNamed:@"cammentButton"
-                                                inBundle:[NSBundle cammentSDKBundle]
+                                         inBundle:[NSBundle cammentSDKBundle]
                            compatibleWithTraitCollection:nil];
             imageView.contentMode = UIViewContentModeScaleAspectFit;
             imageView.backgroundColor = [UIColor clearColor];
@@ -61,6 +61,7 @@
     if (sender.state == UIGestureRecognizerStateEnded
             || sender.state == UIGestureRecognizerStateFailed
             || sender.state == UIGestureRecognizerStateCancelled) {
+        [self pop_removeAllAnimations];
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleDownAnimation] forKey:@"scale"];
         [self pop_addAnimation:[CMHalfOpacityAnimation opacityDownAnimation] forKey:@"opacity"];
         if (sender.state == UIGestureRecognizerStateEnded) {
@@ -69,6 +70,7 @@
             [self.delegate didCancelCammentButton];
         }
     } else if (sender.state == UIGestureRecognizerStateBegan) {
+        [self pop_removeAllAnimations];
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleUpAnimation] forKey:@"scale"];
         [self pop_addAnimation:[CMHalfOpacityAnimation opacityUpAnimation] forKey:@"opacity"];
         [self.delegate didPressCammentButton];

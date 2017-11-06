@@ -219,8 +219,6 @@
         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
-        self.cammentButton.transform = CATransform3DIdentity;
-        self.cammentButton.layer.transform = CATransform3DIdentity;
         self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
         if (_showVideoAdsPlayerNode) {
             self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];

@@ -42,7 +42,7 @@
 }
 
 - (void)openContentAtUrl:(NSURL *)url {
-    self.videoPlayerNode.assetURL = url;
+    self.videoPlayerNode.asset = [[AVURLAsset alloc] initWithURL:url options:nil];
 }
 
 - (void)dealloc {
@@ -52,7 +52,6 @@
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
 }
-
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, .0f, .0f)
@@ -108,5 +107,12 @@
     return @[];
 }
 
+- (void)videoPlayerNodeDidStartInitialLoading:(ASVideoPlayerNode *)videoPlayer {
+
+}
+
+- (void)videoPlayerNodeDidFinishInitialLoading:(ASVideoPlayerNode *)videoPlayer {
+    
+}
 
 @end

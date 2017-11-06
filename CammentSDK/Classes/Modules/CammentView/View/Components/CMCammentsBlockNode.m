@@ -5,10 +5,10 @@
 
 #import "CMCammentsBlockNode.h"
 #import "CMLeftAlignedLayout.h"
+#import "CMLeftAlignedLayoutDelegate.h"
 
 
 @interface CMCammentsBlockNode ()
-@property(nonatomic, strong) UICollectionViewFlowLayout* flowLayout;
 @end
 
 @implementation CMCammentsBlockNode
@@ -18,13 +18,8 @@
 
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        self.flowLayout = [CMLeftAlignedLayout new];
-        self.collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout: self.flowLayout];
+        self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMLeftAlignedLayoutDelegate new] layoutFacilitator:nil];
         self.collectionNode.backgroundColor = [UIColor clearColor];
-        self.flowLayout.minimumInteritemSpacing = 400.f;
-        self.flowLayout.minimumLineSpacing = 10.f;
-        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        self.collectionNode.collectionViewLayout = self.flowLayout;
         self.automaticallyManagesSubnodes = YES;
     }
 

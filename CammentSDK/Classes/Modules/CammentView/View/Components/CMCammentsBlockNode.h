@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@protocol CMCammentsBlockDelegate<ASCollectionDelegate, ASCollectionDataSource, UICollectionViewDelegateFlowLayout>
+@protocol CMCammentsBlockDelegate<ASCollectionDelegate, ASCollectionDataSource>
  - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
 @end
 

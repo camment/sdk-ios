@@ -45,7 +45,7 @@ s.frameworks = [
 ]
 
 s.dependency  'AMPopTip', '1.5'
-s.dependency  'Texture', '2.3.4'
+s.dependency  'Texture', '2.5.1'
 s.dependency  'FLAnimatedImage'
 s.dependency  'AWSCognito'
 s.dependency  'AWSCognitoIdentityProvider'
@@ -65,5 +65,6 @@ s.dependency  'CocoaLumberjack'
 s.dependency  'GVUserDefaults'
 s.dependency  'TLIndexPathTools'
 s.dependency  'Mixpanel'
+s.dependency  'TCBlobDownload'
 
 end

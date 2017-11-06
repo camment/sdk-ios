@@ -15,7 +15,7 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
 }
 
 - (instancetype)init {
-    NSString *defaultSertificateId = [NSString stringWithFormat:@"%@-%@",
+    NSString *defaultSertificateId = [NSString stringWithFormat:@"%@-new_%@",
                                           kCMServerCredetialsDefaultCertificateId,
                                           [CMAppConfig instance].sdkEnvironment
                                       ];

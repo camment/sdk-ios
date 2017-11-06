@@ -554,7 +554,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       };
     NSDictionary *pathParameters = @{
                                      @"groupUuid": groupUuid,
-                                     
                                      };
     
     return [self invokeHTTPRequest:@"POST"

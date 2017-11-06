@@ -70,7 +70,6 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-
         [self loadAssets];
 #ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
@@ -120,6 +119,7 @@
                                                    object:nil];
 
         self.authService = [CMCognitoAuthService new];
+        [self clearTmpDirectory];
     }
 
     return self;
@@ -775,6 +775,22 @@
             errorBlock(error);
         });
     }];
+}
+
+- (void)clearTmpDirectory
+{
+    NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL] ?: @[];
+    tmpDirectory = [tmpDirectory.rac_sequence filter:^BOOL(NSString * _Nullable value) {
+        return [value hasSuffix:@".mp4"];
+    }].array ?: @[];
+    DDLogInfo(@"Cleaned up %d cache files", tmpDirectory.count);
+    for (NSString *file in tmpDirectory) {
+        NSError *error;
+        [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:&error];
+        if (error) {
+            DDLogError(@"error on cleaning up cache", error);
+        }
+    }
 }
 
 @end

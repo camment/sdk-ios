@@ -90,6 +90,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)layoutCollectionViewIfNeeded {
+    [self.collectionNode invalidateCalculatedLayout];
     [self.collectionNode reloadData];
 }
 

@@ -47,8 +47,9 @@
 
         self.inviteFriendsButtonNode = [ASButtonNode new];
         self.inviteFriendsButtonNode.backgroundColor = UIColorFromRGB(0xD0021B);
-        self.inviteFriendsButtonNode.style.width = ASDimensionMake(120.0f);
-        self.inviteFriendsButtonNode.style.height = ASDimensionMake(30.0f);
+        self.inviteFriendsButtonNode.style.minWidth = ASDimensionMake(120.0f);
+        self.inviteFriendsButtonNode.style.minHeight = ASDimensionMake(30.0f);
+        self.inviteFriendsButtonNode.contentEdgeInsets = UIEdgeInsetsMake(.0f, 10.0f, .0f, 10.0f);
         [self.inviteFriendsButtonNode setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"Invite friends")
                                                                                      attributes:@{
                                                                                              NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],

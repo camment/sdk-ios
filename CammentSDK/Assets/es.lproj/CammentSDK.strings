@@ -1,0 +1,50 @@
+/****************************************************************************/
+/* Localization file */
+
+"User invited you to a private chat" = "El usuario te invitó a un chat privado";
+"Would you like to join the conversation?" = "¿Te gustaría unirte a la conversación?";
+"Join" = "Unirse";
+"No" = "No";
+"Yes" = "Si";
+"Login" = "Ingresar";
+
+"help.tap_and_hold_to_record" = "Toca y mantén la presión para grabar un Video (Camment)";
+"help.swipe_left_to_hide_camments" = "Desliza los camments hacia la izquierda para ocultarlos";
+"help.swipe_right_to_show_camments" = "Desliza los camments hacia la derecha para que vuelvan a aparecer";
+"help.tap_to_play" = "Bien hecho! Ahora presiona sobre el Camment para poder escucharlo";
+"help.swipe_down_to_invite" = "Deslice el botón de Camment hacia abajo para invitar amigos a este chat";
+"help.swipe_up_to_invite" = "Deslice el botón Camment hacia arriba para invitar amigos a este chat";
+"help.tap_and_hold_to_delete" = "Toca y mantén presionado tu Camment para eliminarlo";
+"setup.use_camment_chat" = "¿Te gustaría chatear a través de videos con amigos mientras miras este programa?";
+"setup.what_is_camment" = "es como si enviaras un SMS pero enviando videos de 5 segundos (Camments) que aparecerán en una ventana en la parte superior de la pantalla, a la vez que ves este programa";
+"setup.sounds_fun" = "Suena divertido";
+"setup.maybe_later" = "Quizás más tarde";
+"camment_actions.delete_camment" = "Eliminar tu Camment";
+
+"group_message.join_title" = "%@ ya ingresó a su chat Camment!";
+"group_message.join_desc" = "Te recomendamos saludar a través de un Camment?";
+
+"ok" = "OK";
+"cancel" = "Cancelar";
+
+"user_status.online" = "Conectado";
+"user_status.offline" = "Desconectado";
+"user_status.busy" = "Ocupado";
+
+"Login with your Facebook account?" = "Quieres iniciar la sesión con tu cuenta de Facebook?";
+"You are not allowed to join this group" = "No puedes unirte a este grupo ";
+"User wants to join the group" = "%@ quieres unirte a tu grupo";
+
+"Send the invitation link" = "Enviar el enlace de invitación";
+"Invite users by sharing the invitation link via channel of your choice" = "Invita a tus amigos compartiendo este enlace de invitación a través del canal que prefieras";
+"You have joined the private chat!" = "¡Te has unido al chat privado!";
+"Do you accept the join request?" = "¿Aceptas la solicitud / invitación?";
+"You are not allowed to join this group" = "No puedes unirte a este grupo";
+"We found a link in your clipboard" = "Encontramos un enlace en tu portapapeles";
+"Would you like to open it and join the group? It will redirect you to your web browser first." = "¿Te gustaría abrirlo y unirte al grupo? Se abrirá tu navegador web.";
+"Invite friends to chat with short videos in top of your stream." = "Invita a tus amigos a chatear contigo vía video comentarios que aparecera´n en la parte superior de tu transmisión.";
+"Learn more" = "Para aprender más";
+"Invite friends" = "Para invitar a tus amigos";
+"People joined to your Camment chat" = "Otras personas se unieron a su chat Camment";
+"Logout" = "Cerrar sesión";
+"Logout from Facebook account will remove your from current discussion." = "Si sale de su cuenta de Facebook, eliminará de la discusión actual.";

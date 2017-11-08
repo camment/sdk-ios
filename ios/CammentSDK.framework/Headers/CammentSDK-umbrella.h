@@ -11,12 +11,9 @@
 #endif
 
 #import "CammentSDK.h"
-#import "CMCammentAnonymousIdentity.h"
-#import "CMCammentFacebookIdentity.h"
-#import "CMCammentIdentity.h"
 #import "CMCammentOverlayController.h"
+#import "CMCammentOverlayLayoutConfig.h"
 #import "CMShowMetadata.h"
-#import "CMInternalDefines.h"
 #import "CMPublicModuleInterface.h"
 #import "CMShowsListModule.h"
 

@@ -9,7 +9,7 @@ To use the SDK, install the following on your development machine:
 > Important:
 > Use `com.camment.sdkdemo` bundle id if you are setting up demo app for CammentSDK.
 > In other way login with Facebook account will not work
-
+> Make sure you send us your Bundle ID when got API key
 
 ### Add CammentSDK framework to your Xcode project
 
@@ -141,21 +141,25 @@ Create a new property with `CMCammentOverlayController` class. This class is a c
 ```obj-c
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 ```
-Instantiate controller and add it's subview on your view controller's view:
-```obj-c
-CMShowMetadata *metadata = [CMShowMetadata new];
-metadata.uuid = @"Any string unique identifier of your show";
-self.cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata];
-[self.cammentOverlayController addToParentViewController:self];
-[self.view addSubview:[_cammentOverlayController cammentView]];
-```
-
-Notice that we ask you to provide identifier of your show:
+Before creating Camment overlay we need to provide few configuration options. First of all, create show metadata object which holds identifier of your show:
 ```obj-c
 CMShowMetadata *metadata = [CMShowMetadata new];
 metadata.uuid = @"Any string unique identifier of your show";
 ```
 Show identifier is any string which defines your show. Choose any uuid which is meaningfull for you.
+After that we need to create an object describing visual configuration for overlay layout.
+```obj-c
+CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
+// Let's display camment button at bottom right corner
+overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
+```
+
+Now instantiate controller and add it's subview on your view controller's view:
+```obj-c
+self.cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata overlayLayoutConfig:overlayLayoutConfig];
+[self.cammentOverlayController addToParentViewController:self];
+[self.view addSubview:[_cammentOverlayController cammentView]];
+```
 
 Layout overlay subview properly:
 ```obj-c
@@ -194,8 +198,25 @@ The protocol provides four methods to notify your if camment is being recording 
     // Restore normal volume
 }
 ```
+### Setup CammentSDK UI Delegate
+Camment SDK uses UIAlertController to present important messages, like invitations from other users. In order to make UIAlertController will be presented at correct place in view controllers hierarchy we need to handle UI delegate events. UI delegate has a method which will be called when SDK wants to present a notification:
+```obj-c
+- (void)cammentSDKWantsPresentViewController:(UIViewController * _Nonnull)viewController;
+```
+Place where to handle it properly depends on your app architecture, but at very basic setup you can handle this method at visible view controller:
 
-### Setup CammentSDK Delegate (Optional)
+```obj-c
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [CammentSDK instance].sdkUIDelegate = self;
+}
+
+- (void)cammentSDKWantsPresentViewController:(UIViewController *_Nonnull)viewController {
+    [self presentViewController:viewController animated:YES completion:nil];
+}
+```
+
+### Setup CammentSDK Delegate
 When user accepts an invitation to any show SDK will notify you by `CMCammentSDKDelegate` delegate.
 This step is optional, but usefull if you want to open a proper show when someone invites user to a group chat.
 Implement `CMCammentSDKDelegate` wherever it works better for your app. General idea is implement the delegate in an object which can manage internal navigation between screens.
@@ -204,9 +225,8 @@ Implement `CMCammentSDKDelegate` wherever it works better for your app. General 
 @end
 ```
 ```obj-c
-- (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata {
+- (void)didJoinToShow:(CMShowMetadata *)metadata {
   NSString *showUuid = metadata.uuid;
   // open video player for show with uuid
 }
 ```
-

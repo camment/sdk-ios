@@ -77,7 +77,7 @@ The SDK requires access to Camment server as well as access to Facebook API. Add
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb1630695620500234</string>
+				<string>fb272405646569362</string>
 			</array>
 		</dict>
 		<dict>

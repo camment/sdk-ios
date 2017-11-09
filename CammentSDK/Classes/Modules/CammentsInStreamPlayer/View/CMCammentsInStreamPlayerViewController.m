@@ -25,7 +25,7 @@
 
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 @property(nonatomic) RACDisposable *countDownSignalDisposable;
-
+@property(nonatomic, assign) BOOL viewIsReady;
 @property(nonatomic, copy) NSString *showUuid;
 @end
 
@@ -74,7 +74,10 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self.presenter setupView];
+    if (!_viewIsReady) {
+        _viewIsReady = YES;
+        [self.presenter setupView];
+    }
 }
     
 -(void)viewWillLayoutSubviews {

@@ -746,7 +746,7 @@
     }];
 }
 
-- (void)authInteractorFailedToSignIn:(NSError *)error {
+- (void)authInteractorFailedToSignIn:(NSError *)error isCancelled:(BOOL)isCancelled {
 }
 
 - (void)logout {

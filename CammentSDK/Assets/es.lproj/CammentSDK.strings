@@ -52,3 +52,5 @@
 "error.no_camera_permissions_title" = "Allow camera and microphone access";
 "error.no_camera_permissions_alert" = "Open application settings and allow us to use you camera and microphone.";
 "error.open_settings" = "Open settings";
+
+"invitations.text" = "Hey, join our private chat!";

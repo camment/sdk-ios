@@ -9,6 +9,7 @@
 #import "CMAuthInteractor.h"
 #import "CMStore.h"
 #import "CMCognitoAuthService.h"
+@import SafariServices;
 
 @implementation CMAuthInteractor
 
@@ -23,13 +24,17 @@
                                   @strongify(self);
                                   if (!self) { return; }
                                   
+                                  BOOL isCancelled =
+                                    ([error.domain isEqualToString:@"com.apple.SafariServices.Authentication"] && error.code == 1)
+                                    || result.isCancelled;
+                                  
                                   if (error) {
-                                      [self.output authInteractorFailedToSignIn:error];
+                                      [self.output authInteractorFailedToSignIn:error isCancelled:isCancelled];
                                       return;
                                   }
 
                                   if (result.token == nil) {
-                                      [self.output authInteractorFailedToSignIn:[NSError errorWithDomain:@"ios.camment.tv" code:1 userInfo:nil]];
+                                      [self.output authInteractorFailedToSignIn:[NSError errorWithDomain:@"ios.camment.tv" code:1 userInfo:nil] isCancelled:isCancelled];
                                       return;
                                   }
 

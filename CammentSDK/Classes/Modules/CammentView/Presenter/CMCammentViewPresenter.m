@@ -416,17 +416,21 @@
             [self inviteFriendsAction];
         });
     }                                                                             error:^(NSError *error) {
-        [self authInteractorFailedToSignIn:error];
+        [self authInteractorFailedToSignIn:error isCancelled:NO];
     }];
 }
 
-- (void)authInteractorFailedToSignIn:(NSError *)error {
+- (void)authInteractorFailedToSignIn:(NSError *)error isCancelled:(BOOL)isCancelled {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.output hideLoadingHUD];
-        [[CMErrorWireframe new] presentErrorViewWithError:error
-                                         inViewController:(id) self.output];
+
+        if (!isCancelled && error) {
+            [[CMErrorWireframe new] presentErrorViewWithError:error
+                                             inViewController:(id) self.output];
+            return;
+        }
     });
-    DDLogError(@"Error %@", error);
+
 }
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
@@ -573,7 +577,7 @@
                                                                              message:CMLocalized(@"Invite users by sharing the invitation link via channel of your choice")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        NSString *textToShare = @"Hey, join our private chat!";
+        NSString *textToShare = [CMStore instance].currentShowMetadata.invitationText;
         NSURL *url = [NSURL URLWithString:link];
 
         NSArray *objectsToShare = @[textToShare, url];

@@ -12,4 +12,6 @@
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid;
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid;
+
+- (void)recorderNoticedDeniedCameraOrMicrophonePermission;
 @end

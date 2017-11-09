@@ -12,7 +12,10 @@
 
 
 @interface CMCammentRecorderInteractor () <SCRecorderDelegate>
-@property(nonatomic, strong) SCRecorder *recorder;
+
+@property (nonatomic, strong) SCRecorder *recorder;
+@property (nonatomic, assign) BOOL permissionsDenied;
+
 @end
 
 @implementation CMCammentRecorderInteractor
@@ -68,8 +71,24 @@
     self.recorder.session = [SCRecordSession recordSession];
 }
 
+- (void)checkCameraAndMicrophonePermissions {
+
+    AVAuthorizationStatus cameraPermissions = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    AVAuthorizationStatus microphonePermissions = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+
+    BOOL cameraDenied = cameraPermissions == AVAuthorizationStatusDenied || cameraPermissions == AVAuthorizationStatusRestricted;
+    BOOL microphoneDenied = microphonePermissions == AVAuthorizationStatusDenied || microphonePermissions == AVAuthorizationStatusRestricted;
+
+    self.permissionsDenied = cameraDenied || microphoneDenied;
+
+    if (self.permissionsDenied) {
+        [self.output recorderNoticedDeniedCameraOrMicrophonePermission];
+    }
+}
+
 - (void)startRecording {
-    if (self.recorder.isRecording) {return;}
+    [self checkCameraAndMicrophonePermissions];
+    if (self.recorder.isRecording || self.permissionsDenied) { return; }
     [self.recorder.session removeAllSegments];
     [self.recorder record];
 }

@@ -384,6 +384,25 @@
     [self presentViewController:controller animated:YES completion:nil];
 }
 
+- (void)showAllowCameraPermissionsView {
+    [self.node.cammentButton cancelLongPressGestureRecognizer];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"error.no_camera_permissions_title")]
+                                                                             message:CMLocalized(@"error.no_camera_permissions_alert")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
+    
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"error.open_settings")
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                      }]];
+    [self presentViewController:alertController];
+}
+
 - (void)cmAdsVideoPlayerNodeDidClose {
     self.node.showVideoAdsPlayerNode = NO;
     [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];

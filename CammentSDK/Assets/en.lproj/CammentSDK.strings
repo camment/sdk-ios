@@ -38,3 +38,7 @@
 
 "Send the invitation link" = "Send the invitation link";
 "Invite users by sharing the invitation link via channel of your choice" = "Invite users by sharing the invitation link via channel of your choice";
+
+"error.no_camera_permissions_title" = "Allow camera and microphone access";
+"error.no_camera_permissions_alert" = "Open application settings and allow us to use you camera and microphone.";
+"error.open_settings" = "Open settings";

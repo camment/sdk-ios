@@ -37,4 +37,6 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 - (void)presentViewController:(UIViewController *)controller;
 
 - (void)playAdVideo:(CMVideoAd *)videoAd startingFromRect:(CGRect)startsRect;
+
+- (void)showAllowCameraPermissionsView;
 @end

@@ -48,3 +48,7 @@
 "People joined to your Camment chat" = "Otras personas se unieron a su chat Camment";
 "Logout" = "Cerrar sesión";
 "Logout from Facebook account will remove your from current discussion." = "Si sale de su cuenta de Facebook, eliminará de la discusión actual.";
+
+"error.no_camera_permissions_title" = "Allow camera and microphone access";
+"error.no_camera_permissions_alert" = "Open application settings and allow us to use you camera and microphone.";
+"error.open_settings" = "Open settings";

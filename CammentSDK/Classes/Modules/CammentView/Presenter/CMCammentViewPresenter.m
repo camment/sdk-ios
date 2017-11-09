@@ -279,6 +279,11 @@
     [_recorderInteractor connectPreviewViewToRecorder:view];
 }
 
+- (void)recorderNoticedDeniedCameraOrMicrophonePermission {
+    [CMStore instance].cammentRecordingState = CMCammentRecordingStateCancelled;
+    [self.output showAllowCameraPermissionsView];
+}
+
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
     if (asset) {
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}

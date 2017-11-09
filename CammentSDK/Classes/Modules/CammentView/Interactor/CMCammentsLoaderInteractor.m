@@ -96,7 +96,7 @@
 
                                                               }
                                                                  error:^(NSError *error) {
-
+                                                                     DDLogError(@"Error on downloading camment %@", error);
                                                                  }
                                                               complete:^(BOOL downloadFinished, NSString *pathToFile) {
                                                                     if (downloadFinished && pathToFile) {

@@ -19,8 +19,10 @@
 @property (nonatomic, readonly) BOOL isMadeByBot;
 @property (nonatomic, readonly, copy) NSString *botUuid;
 @property (nonatomic, readonly, copy) NSString *botAction;
+@property (nonatomic, readonly) BOOL isDeleted;
+@property (nonatomic, readonly) BOOL shouldBeDeleted;
 
-- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset isMadeByBot:(BOOL)isMadeByBot botUuid:(NSString *)botUuid botAction:(NSString *)botAction;
+- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset isMadeByBot:(BOOL)isMadeByBot botUuid:(NSString *)botUuid botAction:(NSString *)botAction isDeleted:(BOOL)isDeleted shouldBeDeleted:(BOOL)shouldBeDeleted;
 
 @end
 

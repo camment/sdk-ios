@@ -11,4 +11,6 @@ CMCamment includes(RMBuilder) {
   BOOL isMadeByBot
   NSString *botUuid
   NSString *botAction
+  BOOL isDeleted
+  BOOL shouldBeDeleted
 }

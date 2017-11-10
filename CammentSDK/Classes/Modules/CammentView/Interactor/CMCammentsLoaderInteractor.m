@@ -70,7 +70,9 @@
                                                 localAsset:nil
                                                isMadeByBot:NO
                                                    botUuid:nil
-                                                 botAction:nil];
+                                                 botAction:nil
+                                                 isDeleted:NO
+                                           shouldBeDeleted:NO];
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output didFetchCamments:result];

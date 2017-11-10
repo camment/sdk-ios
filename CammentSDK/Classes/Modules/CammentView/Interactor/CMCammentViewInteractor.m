@@ -165,7 +165,7 @@
                 if (t.error) {
                     DDLogError(@"Error while camment deletion %@", t.error);
                 } else {
-                    DDLogVerbose(@"Camment has been deleted %@", camment);
+                    [self.output interactorDidDeleteCamment:camment];
                 }
                 return nil;
             }];

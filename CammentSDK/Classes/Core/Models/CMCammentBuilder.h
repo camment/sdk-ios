@@ -33,5 +33,9 @@
 
 - (instancetype)withBotAction:(NSString *)botAction;
 
+- (instancetype)withIsDeleted:(BOOL)isDeleted;
+
+- (instancetype)withShouldBeDeleted:(BOOL)shouldBeDeleted;
+
 @end
 

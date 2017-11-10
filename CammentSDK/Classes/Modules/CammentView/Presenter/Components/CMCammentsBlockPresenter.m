@@ -26,7 +26,7 @@
     self = [super init];
     if (self) {
         self.items = @[];
-
+        self.deletedCamments = @[];
         self.updatesQueue = [[NSOperationQueue alloc] init];
         self.updatesQueue.underlyingQueue = dispatch_get_main_queue();
         self.updatesQueue.maxConcurrentOperationCount = 1;
@@ -146,17 +146,17 @@
         frame = [collectionNode.supernode.view convertRect:frame fromView:node.view];
 
         CMBotAction *action = botCamment.botAction;
-        NSMutableDictionary *params = [(NSDictionary *)botCamment.botAction.params mutableCopy];
+        NSMutableDictionary *params = [(NSDictionary *) botCamment.botAction.params mutableCopy];
         params[kCMAdsDemoBotRectParam] = [NSValue valueWithCGRect:frame];
         action.params = params;
         [self.output runBotCammentAction:action];
     }];
 }
 
-- (void)insertNewItem:(CMCammentsBlockItem *)item completion: (void (^)())completion {
+- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion {
     [self.updatesQueue addOperationWithBlock:^{
         [_collectionNode performBatchAnimated:YES updates:^{
-            @synchronized(self.items) {
+            @synchronized (self.items) {
                 self.items = [@[item] arrayByAddingObjectsFromArray:[_items copy]];
             }
             [_collectionNode insertItemsAtIndexPaths:@[
@@ -170,7 +170,7 @@
     }];
 }
 
-- (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath: (NSIndexPath *)indexPath {
+- (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
 
     __block CGSize result = CGSizeZero;
 
@@ -209,12 +209,17 @@
     }
 }
 
+- (void)markCammentAsDeleted:(CMCamment *)camment {
+    self.deletedCamments = [self.deletedCamments arrayByAddingObject:camment];
+}
+
 - (void)deleteItem:(CMCammentsBlockItem *)blockItem {
     for (NSUInteger i = 0; i < self.items.count; i++) {
         CMCammentsBlockItem *item = self.items[i];
         [blockItem matchCamment:^(CMCamment *camment) {
             [item matchCamment:^(CMCamment *itemCamment) {
                 if ([camment.uuid isEqualToString:itemCamment.uuid])
+                    [self markCammentAsDeleted:camment];
                     [self removeItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
             }       botCamment:^(CMBotCamment *ads) {
             }];
@@ -226,7 +231,7 @@
 - (void)reloadItems:(NSArray<CMCammentsBlockItem *> *)newItems
            animated:(BOOL)animated {
     if (!animated) {
-        @synchronized(self.items) {
+        @synchronized (self.items) {
             self.items = newItems;
         }
         [self.collectionNode reloadData];
@@ -242,10 +247,10 @@
             [itemsToInsert addObject:[NSIndexPath indexPathForItem:i inSection:0]];
         }
 
-        @synchronized(self.items) {
+        @synchronized (self.items) {
             self.items = newItems;
         }
-    
+
         [self.collectionNode performBatchAnimated:YES
                                           updates:^{
                                               if ([itemsToRemove count] > 0) {
@@ -263,18 +268,18 @@
 
 
 - (void)updateCammentData:(CMCamment *)camment {
-    @synchronized(self.items) {
+    @synchronized (self.items) {
         self.items = [self.items map:^CMCammentsBlockItem *(CMCammentsBlockItem *item) {
             __block CMCammentsBlockItem *updatedItem = item;
             [item matchCamment:^(CMCamment *oldCamment) {
                 if ([oldCamment.uuid isEqualToString:camment.uuid]) {
                     updatedItem = [CMCammentsBlockItem
-                                   cammentWithCamment:camment];
+                            cammentWithCamment:camment];
                 }
             }       botCamment:^(CMBotCamment *botCamment) {
-                
+
             }];
-            
+
             return updatedItem;
         }];
     }

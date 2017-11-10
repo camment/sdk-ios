@@ -20,6 +20,8 @@
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate>
 
 @property (nonatomic, strong) NSArray<CMCammentsBlockItem *> *items;
+@property (nonatomic, strong) NSArray<CMCamment *> *deletedCamments;
+
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
 @property (nonatomic, weak) id<CMCammentsBlockPresenterOutput> output;
 

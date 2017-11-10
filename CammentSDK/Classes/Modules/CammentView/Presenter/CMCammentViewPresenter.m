@@ -356,8 +356,45 @@
                                      inViewController:(id) self.output];
 }
 
+- (void)checkIfCammentShouldBeDeleted:(CMCamment *)camment {
+    NSArray *deletedCamments = [self.cammentsBlockNodePresenter.deletedCamments.rac_sequence
+            filter:^BOOL(CMCamment *deletedCamment) {
+                return [deletedCamment.uuid isEqualToString:camment.uuid]
+                        && !deletedCamment.isDeleted;
+            }].array ?: @[];
+
+    for (CMCamment * cammentToDelete in deletedCamments) {
+        DDLogVerbose(@"Run postponed camment deletion on uuid %@", cammentToDelete.uuid);
+        [self.interactor deleteCament:cammentToDelete];
+    }
+}
+
+- (void)interactorDidDeleteCamment:(CMCamment *)camment {
+    self.cammentsBlockNodePresenter.deletedCamments = [self.cammentsBlockNodePresenter.deletedCamments.rac_sequence map:^id(CMCamment *value) {
+        if ([value.uuid isEqualToString:camment.uuid]) {
+            DDLogVerbose(@"Camment has been deleted %@", value.uuid);
+            CMCammentBuilder *builder = [[CMCammentBuilder cammentFromExistingCamment:value] withIsDeleted:YES];
+            return [builder build];
+        }
+        return value;
+    }].array;
+}
+
+- (BOOL)isCammentMarkedAsDeleted:(CMCamment *)camment {
+    NSArray *deletedCamments = [self.cammentsBlockNodePresenter.deletedCamments.rac_sequence
+            filter:^BOOL(CMCamment *deletedCamment) {
+                return [deletedCamment.uuid isEqualToString:camment.uuid];
+            }].array ?: @[];
+    return deletedCamments.count > 0;
+}
 
 - (void)didReceiveNewCamment:(CMCamment *)camment {
+
+    if ([self isCammentMarkedAsDeleted:camment]) {
+        DDLogVerbose(@"Camment has been marked as deleted %@", camment.uuid);
+        [self checkIfCammentShouldBeDeleted:camment];
+        return;
+    }
 
     NSArray *filteredItemsArray = [self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *value) {
         __block BOOL result = NO;
@@ -604,8 +641,7 @@
 
 - (void)presentationInstruction:(id <CMPresentationInstructionInterface>)instruction
                    playVideoAds:(CMVideoAd *)videoAd
-           playStartingFromRect:(CGRect)rect
-{
+           playStartingFromRect:(CGRect)rect {
     [self.output playAdVideo:videoAd startingFromRect:rect];
 }
 

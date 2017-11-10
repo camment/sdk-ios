@@ -42,7 +42,9 @@
                                                       localAsset:nil
                                                      isMadeByBot:NO
                                                          botUuid:nil
-                                                       botAction:nil];
+                                                       botAction:nil
+                                                       isDeleted:NO
+                                                 shouldBeDeleted:NO];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"invitation"]) {
@@ -83,7 +85,9 @@
                                                       localAsset:nil
                                                      isMadeByBot:NO
                                                          botUuid:nil
-                                                       botAction:nil];
+                                                       botAction:nil
+                                                       isDeleted:NO
+                                                 shouldBeDeleted:NO];
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     } else if ([type isEqualToString:@"membership-request"]) {
         NSDictionary *userJson = body[@"joiningUser"];

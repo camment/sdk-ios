@@ -20,14 +20,12 @@
 #import "CMCammentPostingOperation.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
 
-NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camment-camments/uploads/%@.mp4";
-
 @interface CMCammentViewInteractor ()
 
 @property(nonatomic, strong) CMAPIDevcammentClient *client;
 @property(nonatomic, strong) NSOperationQueue *cammentPostingQueue;
 
-@property(nonatomic, strong) NSMutableArray *cammentsToUpload;
+@property(nonatomic, strong) NSMutableDictionary<NSString *, NSNumber *> *cammentUploadingRetries;
 
 @end
 
@@ -37,10 +35,12 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
     self = [super init];
     if (self) {
         self.client = [CMAPIDevcammentClient defaultAPIClient];
+        self.maxUploadRetries = 3;
         self.cammentPostingQueue = [[NSOperationQueue alloc] init];
         self.cammentPostingQueue.name = @"Camment posting queue";
         self.cammentPostingQueue.maxConcurrentOperationCount = 1;
         self.cammentPostingQueue.qualityOfService = NSOperationQualityOfServiceBackground;
+        self.cammentUploadingRetries = [NSMutableDictionary new];
     }
     return self;
 }
@@ -51,9 +51,9 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
             if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
                 CMAPIUsergroup *group = t.result;
                 CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
-                                                   ownerCognitoUserId:group.userCognitoIdentityId
-                                                            timestamp:group.timestamp
-                                                           invitationLink: nil];
+                                                       ownerCognitoUserId:group.userCognitoIdentityId
+                                                                timestamp:group.timestamp
+                                                           invitationLink:nil];
                 DDLogVerbose(@"Created new group %@", result);
                 [subscriber sendNext:result];
             } else {
@@ -68,6 +68,12 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
 
 - (void)uploadCamment:(CMCamment *)camment {
 
+    if (camment.uuid) {
+        NSNumber *retriesCount = self.cammentUploadingRetries[camment.uuid] ?: @0;
+        NSInteger nextAttemptNumber = retriesCount.integerValue + 1;
+        self.cammentUploadingRetries[camment.uuid] = @(nextAttemptNumber);
+    }
+    
     RACSignal<CMUsersGroup *> *createUserGroupIfNeededSignal = nil;
 
     CMUsersGroup *group = [CMStore instance].activeGroup;
@@ -85,53 +91,76 @@ NSString *const bucketFormatPath = @"https://s3.eu-central-1.amazonaws.com/camme
                 withUserGroupUuid:usersGroup.uuid]
                 build];
         [self postCamment:cammentToUpload];
-    } error:^(NSError *error) {
-
+    }                                      error:^(NSError *error) {
+        [self handleCammentUploadingError:error camment:camment];
     }];
 }
 
 - (void)postCamment:(CMCamment *)camment {
-    [[[CMCammentUploader instance]uploadVideoAsset:[[NSURL alloc] initWithString:camment.localURL]
-                                       uuid:camment.uuid]
-     subscribeError:^(NSError *error) {
+    __weak typeof(self) __weakSelf = self;
+    [[[CMCammentUploader instance] uploadVideoAsset:[[NSURL alloc] initWithString:camment.localURL]
+                                               uuid:camment.uuid]
+            subscribeError:^(NSError *error) {
+                [__weakSelf handleCammentUploadingError:error camment:camment];
+            }
+                 completed:^{
+                     CMAPICammentInRequest *cammentInRequest = [[CMAPICammentInRequest alloc] init];
+                     cammentInRequest.uuid = camment.uuid;
+                     DDLogVerbose(@"Posting camment %@", camment);
 
-     } completed:^{
-         CMAPICammentInRequest *cammentInRequest = [[CMAPICammentInRequest alloc] init];
-         cammentInRequest.uuid = camment.uuid;
-         DDLogVerbose(@"Posting camment %@", camment);
+                     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
+                                                                                           body:cammentInRequest]
+                             continueWithBlock:^id(AWSTask<CMAPICamment *> *t) {
+                                 if (t.error) {
+                                     [__weakSelf handleCammentUploadingError:t.error camment:camment];
+                                 } else {
+                                     CMAPICamment *cmCamment = t.result;
+                                     CMCamment *uploadedCamment = [[[[[[[CMCammentBuilder cammentFromExistingCamment:camment]
+                                             withUuid:cmCamment.uuid]
+                                             withShowUuid:cmCamment.showUuid]
+                                             withRemoteURL:cmCamment.url]
+                                             withUserGroupUuid:cmCamment.userGroupUuid]
+                                             withLocalURL:nil]
+                                             build];
+                                     [__weakSelf completeCammentUploadingTask:uploadedCamment];
+                                 }
 
-         [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
-                                                                               body:cammentInRequest]
-          continueWithBlock:^id(AWSTask<CMAPICamment *> *t) {
-              if (t.error) {
-
-              } else {
-                  CMAPICamment *cmCamment = t.result;
-                  CMCamment *uploadedCamment = [[[[[[[CMCammentBuilder cammentFromExistingCamment:camment]
-                                                   withUuid:cmCamment.uuid]
-                                                  withShowUuid:cmCamment.showUuid]
-                                                 withRemoteURL:cmCamment.url]
-                                                withUserGroupUuid:cmCamment.userGroupUuid]
-                                               withLocalURL:nil]
-                                              build];
-                  DDLogVerbose(@"Camment has been sent %@", uploadedCamment);
-                  dispatch_async(dispatch_get_main_queue(), ^{
-                      [self.output interactorDidUploadCamment:uploadedCamment];
-                  });
-              }
-
-              return nil;
-          }];
-     }];
+                                 return nil;
+                             }];
+                 }];
 }
 
+- (void)handleCammentUploadingError:(NSError *)error camment:(CMCamment *)camment {
+    DDLogVerbose(@"Camment uploading error %@", error);
+
+    if (!camment.uuid) { return; }
+
+    NSNumber *retriesCount = self.cammentUploadingRetries[camment.uuid] ?: @0;
+    NSInteger nextAttemptNumber = retriesCount.integerValue + 1;
+
+    if (nextAttemptNumber > _maxUploadRetries) { return; }
+    DDLogVerbose(@"Start uploading attempt %d", nextAttemptNumber);
+    [self uploadCamment:camment];
+}
+
+- (void)completeCammentUploadingTask:(CMCamment *)camment {
+    DDLogVerbose(@"Camment has been sent %@", camment);
+
+    if (camment.uuid) {
+        [self.cammentUploadingRetries removeObjectForKey:camment.uuid];
+    }
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.output interactorDidUploadCamment:camment];
+    });
+}
 
 - (void)deleteCament:(CMCamment *)camment {
     NSString *cammentUuid = camment.uuid;
     NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
     if (!cammentUuid || !groupUuid) {return;}
     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
-                                                                            groupUuid:groupUuid]
+                                                                                  groupUuid:groupUuid]
             continueWithBlock:^id(AWSTask<id> *t) {
                 if (t.error) {
                     DDLogError(@"Error while camment deletion %@", t.error);

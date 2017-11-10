@@ -91,8 +91,6 @@
 
 - (void)setContentView:(UIView *_Nonnull)contentView {
     [self.cammentViewController.node setContentView:contentView];
-    [self.cammentViewController.node setNeedsLayout];
-    [self.cammentViewController.node setNeedsDisplay];
 }
 
 

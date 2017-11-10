@@ -14,4 +14,5 @@
 
 @property (nonatomic, weak) id<CMCammentViewInteractorOutput> output;
 
+@property(nonatomic) int maxUploadRetries;
 @end

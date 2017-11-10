@@ -55,6 +55,9 @@
             return _contentView;
         }];
     }
+    
+    [self setNeedsLayout];
+    [self setNeedsDisplay];
 }
 
 - (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {

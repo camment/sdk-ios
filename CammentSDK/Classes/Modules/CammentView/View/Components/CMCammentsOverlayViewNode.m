@@ -31,6 +31,8 @@
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
         _adsVideoPlayerNode = [CMAdsVideoPlayerNode new];
+        _adsVideoPlayerNode.debugName = @"CMAdsVideoPlayerNode";
+        
         _contentView = [UIView new];
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
             return _contentView ?: [UIView new];
@@ -53,8 +55,6 @@
             return _contentView;
         }];
     }
-
-    [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 - (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {

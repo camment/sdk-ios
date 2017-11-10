@@ -136,6 +136,7 @@
             CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
 
             if (cammentRecordingState == CMCammentRecordingStateFinished) {
+                [weakSelf.willStartRecordSignal dispose];
                 [weakSelf.recorderInteractor stopRecording];
                 return [RACSignal empty];
             }

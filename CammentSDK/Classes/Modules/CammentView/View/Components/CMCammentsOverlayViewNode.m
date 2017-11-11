@@ -63,6 +63,9 @@
 
 - (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {
     _leftSidebarNode = leftSidebarNode;
+    
+    [self setNeedsLayout];
+    [self setNeedsDisplay];
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
@@ -200,6 +203,12 @@
 }
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
+    if (![context isAnimated]) {
+        self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
+        [super animateLayoutTransition:context];
+        return;
+    }
+    
     UIView * snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
     snapshot.frame = self.cammentRecorderNode.view.bounds;
     snapshot.alpha = 1.0f;
@@ -224,6 +233,11 @@
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
         self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
+        
+        if (self.contentNode) {
+            self.contentNode.frame = [context finalFrameForNode:self.contentNode];
+        }
+        
         if (_showVideoAdsPlayerNode) {
             self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
         }

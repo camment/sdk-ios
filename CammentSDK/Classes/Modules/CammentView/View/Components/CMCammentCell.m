@@ -56,6 +56,11 @@
 }
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
+    if (![context isAnimated]) {
+        [super animateLayoutTransition:context];
+        return;
+    }
+
     [UIView animateWithDuration:0.5 animations:^{
         _cammentNode.frame = CGRectMake(
                 [context finalFrameForNode:self.cammentNode].origin.x,

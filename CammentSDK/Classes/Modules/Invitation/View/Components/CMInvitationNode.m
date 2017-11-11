@@ -58,8 +58,4 @@
     [delegate setItemListDisplayNode:self.tableNode];
 }
 
-- (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
-    [super animateLayoutTransition:context];
-}
-
 @end

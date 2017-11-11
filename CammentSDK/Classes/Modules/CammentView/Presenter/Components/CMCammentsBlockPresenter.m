@@ -218,9 +218,10 @@
         CMCammentsBlockItem *item = self.items[i];
         [blockItem matchCamment:^(CMCamment *camment) {
             [item matchCamment:^(CMCamment *itemCamment) {
-                if ([camment.uuid isEqualToString:itemCamment.uuid])
+                if ([camment.uuid isEqualToString:itemCamment.uuid]){
                     [self markCammentAsDeleted:camment];
                     [self removeItemAtIndexPath:[NSIndexPath indexPathForRow:i inSection:0]];
+                }
             }       botCamment:^(CMBotCamment *ads) {
             }];
         }            botCamment:^(CMBotCamment *ads) {

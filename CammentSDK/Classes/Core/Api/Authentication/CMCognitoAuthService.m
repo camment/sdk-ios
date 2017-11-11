@@ -44,7 +44,16 @@
                                                                                        endpoint:iotEndpoint
                                                                             credentialsProvider:_credentialsProvider];
     
-    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:iotConfiguration forKey:CMIotManagerName];
+    AWSIoTMQTTConfiguration *mqttConfig = [[AWSIoTMQTTConfiguration alloc]
+                                           initWithKeepAliveTimeInterval:60.0
+                                           baseReconnectTimeInterval:1.0
+                                           minimumConnectionTimeInterval:20.0
+                                           maximumReconnectTimeInterval:128.0
+                                           runLoop:[NSRunLoop mainRunLoop]
+                                           runLoopMode:NSDefaultRunLoopMode
+                                           autoResubscribe:YES
+                                           lastWillAndTestament:[AWSIoTMQTTLastWillAndTestament new]];
+    [AWSIoTDataManager registerIoTDataManagerWithConfiguration:iotConfiguration withMQTTConfiguration:mqttConfig forKey:CMIotManagerName];
     [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
     [[CMAPIDevcammentClient defaultAPIClient] setAPIKey:[CMStore instance].apiKey];
     self.cognitoHasBeenConfigured = YES;

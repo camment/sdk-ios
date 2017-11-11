@@ -793,4 +793,12 @@
     }
 }
 
+- (BOOL)openURL:(NSURL *)url sourceApplication:(NSString *)application annotation:(id)annotation {
+    [self verifyURL:url];
+
+    return [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication]
+                                                          openURL:url
+                                                sourceApplication:application
+                                                       annotation:annotation];
+}
 @end

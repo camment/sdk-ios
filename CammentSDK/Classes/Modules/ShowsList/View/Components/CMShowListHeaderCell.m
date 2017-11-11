@@ -44,7 +44,7 @@
         self.headerTextNode = [ASTextNode new];
         self.headerTextNode.attributedText = [[NSAttributedString alloc] initWithString:@"Camment"
                                                                              attributes:@{
-                                                                                     NSFontAttributeName: [UIFont boldSystemFontOfSize:36],
+                                                                                     NSFontAttributeName: [UIFont boldSystemFontOfSize:28],
                                                                                      NSForegroundColorAttributeName: [UIColor blackColor]
                                                                              }];
         self.onlineStatusTextNode = [ASTextNode new];

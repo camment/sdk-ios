@@ -22,6 +22,7 @@
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMAdsVideoPlayerNode.h"
 #import "CMVideoAd.h"
+#import "CMInternalCammentSDKProtocol.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate, CMAdsVideoPlayerNodeDelegate>
 
@@ -398,7 +399,8 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"error.open_settings")
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {
-                                                          [[UIApplication sharedApplication] openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
+                                                          id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+                                                          [SDK openURL:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
                                                       }]];
     [self presentViewController:alertController];
 }

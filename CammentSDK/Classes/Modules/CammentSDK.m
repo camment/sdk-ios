@@ -513,7 +513,8 @@
                                                                              message:CMLocalized(@"Would you like to open it and join the group? It will redirect you to your web browser first.")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+        id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+        [SDK openURL:url];
     }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
@@ -801,4 +802,19 @@
                                                 sourceApplication:application
                                                        annotation:annotation];
 }
+
+- (void)openURL:(NSURL *)url {
+    UIApplication *application = [UIApplication sharedApplication];
+
+    if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) {
+        [application openURL:url options:@{}
+           completionHandler:^(BOOL success) {
+               DDLogVerbose(@"Open %@: %d",url,success);
+           }];
+    } else {
+        BOOL success = [application openURL:url];
+        DDLogVerbose(@"Open %@: %d",url,success);
+    }
+}
+
 @end

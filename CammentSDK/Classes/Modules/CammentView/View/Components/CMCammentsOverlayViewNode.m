@@ -58,6 +58,7 @@
     
     [self setNeedsLayout];
     [self setNeedsDisplay];
+    [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 - (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {

@@ -6,7 +6,8 @@
 #import "CMPresentationInstructionOutput.h"
 #import "CMBotAction.h"
 #import "CMVideoAd.h"
-
+#import "CMInternalCammentSDKProtocol.h"
+#import "CammentSDK.h"
 
 @implementation CMAdsDemoBot {
 
@@ -30,7 +31,8 @@
         if (urlString.length > 0) {
 
             if (url && [[UIApplication sharedApplication] canOpenURL:url]) {
-                [[UIApplication sharedApplication] openURL:url options:nil completionHandler:nil];
+                id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+                [SDK openURL:url];
             }
         }
     }

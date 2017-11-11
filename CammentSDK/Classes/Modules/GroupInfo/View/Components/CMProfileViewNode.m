@@ -136,11 +136,8 @@
 
 - (void)openUserProfile {
     NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMStore instance].currentUser.fbUserId]];
-    if ([[UIApplication sharedApplication] canOpenURL:url]) {
-        [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:^(BOOL success) {
-
-        }];
-    }
+    id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+    [SDK openURL:url];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

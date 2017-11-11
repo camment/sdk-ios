@@ -6,7 +6,8 @@
 #import "UIColorMacros.h"
 #import "CMVideoAd.h"
 #import "CMStore.h"
-
+#import "CMInternalCammentSDKProtocol.h"
+#import "CammentSDK.h"
 
 @implementation CMAdsVideoPlayerNode {
 
@@ -94,7 +95,8 @@
 - (void)tapOpenLinkButton {
     [self didTapCloseOnButton];
     NSURL *url = self.videoAd.targetUrl;
-    [[UIApplication sharedApplication] openURL:url options:@{} completionHandler:nil];
+    id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+    [SDK openURL:url];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

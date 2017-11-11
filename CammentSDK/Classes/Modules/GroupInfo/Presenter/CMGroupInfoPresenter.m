@@ -15,6 +15,7 @@
 #import "CMPeopleJoinedHeaderCell.h"
 #import "CMGroupInfoUserCell.h"
 #import "CMUserBuilder.h"
+#import "CMInternalCammentSDKProtocol.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
@@ -96,9 +97,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 - (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
     NSURL *infoURL = [[NSURL alloc] initWithString:@"http://camment.tv"];
-    [[UIApplication sharedApplication] openURL:infoURL
-                                       options:@{}
-                             completionHandler:nil];
+    id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+    [SDK openURL:infoURL];
 }
 
 - (void)inviteFriendsGroupInfoDidTapInviteFriendsButton:(CMInviteFriendsGroupInfoNode *)node {

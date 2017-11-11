@@ -3,6 +3,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CammentSDK.h"
 
 @protocol CMInternalCammentSDKProtocol <NSObject>
 
@@ -12,5 +13,7 @@
 - (void)logout;
 
 - (DDFileLogger *)getFileLogger;
+
+-  (void)openURL:(NSURL *)url;
 
 @end

@@ -47,5 +47,7 @@
             openURL:(NSURL * _Nonnull)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> * _Nullable)options;
 
-- (BOOL)openURL:(NSURL *)url sourceApplication:(NSString *)application annotation:(id)annotation NS_DEPRECATED_IOS(4_2, 9_0, "Please use application:openURL:options:") __TVOS_PROHIBITED;
+- (BOOL)openURL:(NSURL * _Nonnull)url sourceApplication:(NSString * _Nullable)application
+     annotation:(id _Nullable)annotation NS_DEPRECATED_IOS(4_2, 9_0, "Please use application:openURL:options:") __TVOS_PROHIBITED;
+
 @end

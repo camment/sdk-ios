@@ -9,11 +9,11 @@ To use the SDK, install the following on your development machine:
 > Important:
 > Use `com.camment.sdkdemo` bundle id if you are setting up demo app for CammentSDK.
 > In other way login with Facebook account will not work
-> Make sure you send us your Bundle ID when got API key
+
 
 ### Add CammentSDK framework to your Xcode project
 
-Open yout Podfile and add 'CammentSDK' there
+Open yout Podfile and add `pod 'CammentSDK'` there
 
 ```ruby
 platform :ios, '8.1'
@@ -77,7 +77,7 @@ The SDK requires access to Camment server as well as access to Facebook API. Add
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb272405646569362</string>
+				<string>fb1630695620500234</string>
 			</array>
 		</dict>
 		<dict>
@@ -113,6 +113,14 @@ Add following lines to AppDelegate's methods
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
     ...
     return [[CammentSDK instance] application:application openURL:url options:options];
+}
+
+// Make sure you support iOS versions prior to 9.0
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
+  sourceApplication:(nullable NSString *)sourceApplication
+         annotation:(id)annotation
+{
+    return [[CammentSDK instance] openURL:url sourceApplication:sourceApplication annotation:annotation];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {

@@ -17,14 +17,26 @@ s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag =>
 s.ios.deployment_target = '8.1'
 
 s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
+s.default_subspec = 'Public'
 
-s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
+s.subspec 'Public' do |ss|
+   ss.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
+   ss.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
+end
+
+s.subspec 'Tests' do |ss|
+   ss.public_header_files = 'CammentSDK/Tests/**/*.h'
+   ss.source_files = 'CammentSDK/Tests/**/*.{m,mm,cpp}'
+   ss.dependency  'Specta'
+   ss.dependency  'Expecta'
+   ss.dependency  'OCMock'
+   ss.frameworks = ['XCTest']
+end
 
 s.resource_bundles = {
 'CammentSDK' => ['CammentSDK/Assets/**/*']
 }
 
-s.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
 s.library = 'sqlite3', 'z'
 s.frameworks = [
   'Foundation',

@@ -10,9 +10,14 @@
 #import "CMCammentViewInteractorInput.h"
 #import "CMCammentViewInteractorOutput.h"
 
+@class CMAPIDevcammentClient;
+
 @interface CMCammentViewInteractor : NSObject<CMCammentViewInteractorInput>
 
 @property (nonatomic, weak) id<CMCammentViewInteractorOutput> output;
 
 @property(nonatomic) int maxUploadRetries;
+
+- (instancetype)initWithAPIClient:(CMAPIDevcammentClient *)APIClient NS_DESIGNATED_INITIALIZER;
+
 @end

@@ -32,9 +32,13 @@
 @implementation CMCammentViewInteractor
 
 - (instancetype)init {
+    return [self initWithAPIClient:[CMAPIDevcammentClient defaultAPIClient]];
+}
+
+- (instancetype)initWithAPIClient:(CMAPIDevcammentClient *)APIClient {
     self = [super init];
     if (self) {
-        self.client = [CMAPIDevcammentClient defaultAPIClient];
+        self.client = APIClient;
         self.maxUploadRetries = 3;
         self.cammentPostingQueue = [[NSOperationQueue alloc] init];
         self.cammentPostingQueue.name = @"Camment posting queue";

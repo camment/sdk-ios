@@ -24,14 +24,14 @@ s.subspec 'Public' do |ss|
    ss.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
 end
 
-s.subspec 'Tests' do |ss|
-   ss.public_header_files = 'CammentSDK/Tests/**/*.h'
-   ss.source_files = 'CammentSDK/Tests/**/*.{m,mm,cpp}'
-   ss.dependency  'Specta'
-   ss.dependency  'Expecta'
-   ss.dependency  'OCMock'
-   ss.frameworks = ['XCTest']
-end
+s.test_spec 'Tests' do |test_spec|
+    test_spec.source_files = 'CammentSDK/Tests/**/*.{m,mm,cpp}'
+    test_spec.dependency  'Specta'
+    test_spec.dependency  'Expecta'
+    test_spec.dependency  'OCMock'
+    test_spec.frameworks = ['XCTest']
+  end
+
 
 s.resource_bundles = {
 'CammentSDK' => ['CammentSDK/Assets/**/*']

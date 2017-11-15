@@ -33,13 +33,18 @@
 }
 
 - (instancetype)init {
+    return [self initWithBucketName:[CMAppConfig instance].awsS3BucketName
+                aws3TransferManager:[AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName]];
+}
+
+- (instancetype)initWithBucketName:(NSString *)bucketName aws3TransferManager:(AWSS3TransferManager *)awss3TransferManager {
     self = [super init];
 
     if (self) {
-        self.bucketName = [CMAppConfig instance].awsS3BucketName;
-        self.transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
+        self.bucketName = bucketName;
+        self.transferManager = awss3TransferManager;
     }
-
+    
     return self;
 }
 
@@ -58,7 +63,7 @@
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
-        
+
         [[self.transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {

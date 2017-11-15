@@ -10,7 +10,15 @@
 #import "CMCammentViewInteractorInput.h"
 #import "CMCammentViewInteractorOutput.h"
 
+FOUNDATION_EXPORT NSString *const CMCammentViewInteractorErrorDomain;
+typedef NS_ENUM(NSInteger, CMCammentViewInteractorErrorType) {
+    CMCammentViewInteractorErrorUnknown,
+    CMCammentViewInteractorErrorMissingRequiredParameters,
+    CMCammentViewInteractorErrorProvidedParametersAreIncorrect
+};
+
 @class CMAPIDevcammentClient;
+@class CMCammentUploader;
 
 @interface CMCammentViewInteractor : NSObject<CMCammentViewInteractorInput>
 
@@ -18,6 +26,6 @@
 
 @property(nonatomic) int maxUploadRetries;
 
-- (instancetype)initWithAPIClient:(CMAPIDevcammentClient *)APIClient NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithAPIClient:(CMAPIDevcammentClient *)APIClient cammentUploader:(CMCammentUploader *)cammentUploader;
 
 @end

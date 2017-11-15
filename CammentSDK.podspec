@@ -25,7 +25,7 @@ s.subspec 'Public' do |ss|
 end
 
 s.test_spec 'Tests' do |test_spec|
-    test_spec.source_files = 'CammentSDK/Tests/**/*.{m,mm,cpp}'
+    test_spec.source_files = 'CammentSDK/Tests/**/*.{h,m,mm,cpp}'
     test_spec.dependency  'Specta'
     test_spec.dependency  'Expecta'
     test_spec.dependency  'OCMock'

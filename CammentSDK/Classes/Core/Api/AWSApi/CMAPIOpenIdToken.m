@@ -14,13 +14,15 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIOpenIdToken.h"
 
- 
-@interface CMAPIError : AWSModel
+@implementation CMAPIOpenIdToken
 
-@property (nonatomic, strong, nullable) NSString *message;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"identityId": @"IdentityId",
+             @"token": @"Token"
+             };
+}
 
 @end

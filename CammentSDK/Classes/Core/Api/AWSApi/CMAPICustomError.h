@@ -18,15 +18,9 @@
 #import <AWSCore/AWSCore.h>
 
  
-/**
- Request model for sending facebook id lists (usually can contain show uuid also).
- */
-@interface CMAPIUserFacebookIdListInRequest : AWSModel
+@interface CMAPICustomError : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *showUuid;
-
-
-@property (nonatomic, strong, nullable) NSArray *userFacebookIdList;
+@property (nonatomic, strong, nullable) NSString *message;
 
 
 @end

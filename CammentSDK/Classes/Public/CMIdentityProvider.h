@@ -6,11 +6,17 @@
 
 FOUNDATION_EXPORT NSString *const _Nonnull CMCammentIdentityProviderFacebook;
 
-typedef void(^CMIdentityProviderTokensBlock)(NSDictionary<NSString *, id> * _Nonnull tokens);
+FOUNDATION_EXPORT NSString *const _Nonnull CMCammentIdentityUUID;
+FOUNDATION_EXPORT NSString *const _Nonnull CMCammentIdentityUsername;
+FOUNDATION_EXPORT NSString *const _Nonnull CMCammentIdentityEmail;
+FOUNDATION_EXPORT NSString *const _Nonnull CMCammentIdentityProfilePicture;
+
+typedef void(^CMIdentityProvidedIdentityBlock)(NSDictionary<NSString *, id> * _Nonnull identity);
 
 @protocol CMIdentityProvider <NSObject>
 
-- (void)signIn:(CMIdentityProviderTokensBlock _Nonnull)tokensBlock;
+- (void)refreshUserIdentity:(CMIdentityProvidedIdentityBlock _Nonnull)identityBlock
+                forceSignin:(BOOL)forceSignin;
 - (void)signOut;
 
 @end

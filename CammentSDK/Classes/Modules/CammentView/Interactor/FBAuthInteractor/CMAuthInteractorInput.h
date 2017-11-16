@@ -12,6 +12,6 @@
 
 @protocol CMAuthInteractorInput <NSObject>
 
-- (void)signIn;
+- (void)signIn:(BOOL)forceSignin;
 
 @end

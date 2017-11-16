@@ -17,7 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <AWSAPIGateway/AWSAPIGateway.h>
 
-#import "CMAPIError.h"
+#import "CMAPICustomError.h"
 #import "CMAPIDeeplink.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIUsergroupList.h"
@@ -32,6 +32,7 @@
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
+#import "CMAPIOpenIdToken.h"
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -384,6 +385,15 @@ NS_ASSUME_NONNULL_BEGIN
  return type: 
  */
 - (AWSTask *)userinfoPost:( CMAPIUserinfoInRequest *)body;
+
+/**
+ 
+ 
+ @param fbAccessToken 
+ 
+ return type: CMAPIOpenIdToken *
+ */
+- (AWSTask *)usersGetOpenIdTokenGet:(nullable NSString *)fbAccessToken;
 
 @end
 

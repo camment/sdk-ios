@@ -14,15 +14,19 @@
  */
  
 
-#import "CMAPIUserFacebookIdListInRequest.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMAPIUserFacebookIdListInRequest
+ 
+/**
+ Open ID Token.
+ */
+@interface CMAPIOpenIdToken : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"showUuid": @"showUuid",
-             @"userFacebookIdList": @"userFacebookIdList"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *identityId;
+
+
+@property (nonatomic, strong, nullable) NSString *token;
+
 
 @end

@@ -14,16 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPICustomError.h"
 
- 
-/**
- Passcode for validation.
- */
-@interface CMAPIPasscodeInRequest : AWSModel
+@implementation CMAPICustomError
 
-@property (nonatomic, strong, nullable) NSString *passcode;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"message": @"message"
+             };
+}
 
 @end

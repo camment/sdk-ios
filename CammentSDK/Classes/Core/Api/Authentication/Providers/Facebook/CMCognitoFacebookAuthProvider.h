@@ -6,5 +6,6 @@
 #import <Foundation/Foundation.h>
 #import <AWSCore/AWSIdentityProvider.h>
 
-@interface CMCognitoFacebookAuthProvider : NSObject <AWSIdentityProviderManager>
+@interface CMCognitoFacebookAuthProvider : AWSCognitoCredentialsProviderHelper
+
 @end

@@ -23,10 +23,18 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+
+        CMCognitoFacebookAuthProvider *cognitoFacebookAuthProvider = [[CMCognitoFacebookAuthProvider alloc] initWithRegionType:AWSRegionEUCentral1
+                                                                                                                identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
+                                                                                                               useEnhancedFlow:YES
+                                                                                                       identityProviderManager:nil];
         self.credentialsProvider = [[AWSCognitoCredentialsProvider alloc]
                 initWithRegionType:AWSRegionEUCentral1
-                    identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
-           identityProviderManager:[CMCognitoFacebookAuthProvider new]];
+                identityProvider:cognitoFacebookAuthProvider];
+
+        AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
+                                                                             credentialsProvider:nil];
+        [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAnonymousAPIClientName];
     }
 
     return self;

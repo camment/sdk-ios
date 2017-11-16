@@ -40,6 +40,9 @@
 
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider;
 
+- (void)refreshUserIdentity:(BOOL)forceSignin;
+- (void)logOut;
+
 - (void)applicationDidBecomeActive:(UIApplication * _Nonnull)application;
 
 - (BOOL)application:(UIApplication * _Nonnull)application didFinishLaunchingWithOptions:(NSDictionary * _Nullable)launchOptions;

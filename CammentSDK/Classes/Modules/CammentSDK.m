@@ -152,13 +152,11 @@
             withCognitoUserId:newIdentity]
             build];
     [[CMStore instance] setCurrentUser:currentUser];
-    
-    if (newIdentity != nil) {
-        if ([CMStore instance].tokens.allKeys > 0) {
-            [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAsKnownUser;
-        } else {
-            [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAnonymoius;
-        }
+
+    if ([CMStore instance].facebookAccessToken) {
+        [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAsKnownUser;
+    } else {
+        [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAnonymoius;
     }
 
     if (oldIdentity) {
@@ -221,68 +219,40 @@
 }
 
 - (void)updateUserInfo {
-//
-//    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
-//            initWithGraphPath:@"/me"
-//                   parameters:@{@"fields": @"email"}
-//                   HTTPMethod:@"GET"];
-//    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
-//            id result,
-//            NSError *error) {
-//        if (result && !error) {
-//            NSString *email = (NSString *) [result valueForKey:@"email"];
-//            [CMStore instance].currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-//                    withEmail:email]
-//                    build];
-//        }
-//    }];
-//
-//    FBSDKProfile *profile = [FBSDKProfile currentProfile];
-//    if (!profile) {
-//        DDLogVerbose(@"FB profile not found");
-//        return;
-//    }
-//
-//    CMUserBuilder *userBuilder = [CMStore instance].currentUser ? [CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] : [CMUserBuilder new];
-//
-//    NSMutableDictionary *userInfo = [NSMutableDictionary new];
-//    if (profile.userID) {
-//        userInfo[@"facebookId"] = profile.userID;
-//        userBuilder = [userBuilder withFbUserId:profile.userID];
-//    }
-//
-//    if (profile.name) {
-//        userInfo[@"name"] = profile.name;
-//        userBuilder = [userBuilder withUsername:profile.name];
-//    }
-//
-//    NSURL *imageUrl = [profile imageURLForPictureMode:FBSDKProfilePictureModeSquare size:CGSizeMake(270, 270)];
-//    if (imageUrl) {
-//        userInfo[@"picture"] = imageUrl.absoluteString;
-//        userBuilder = [userBuilder withUserPhoto:imageUrl.absoluteString];
-//    }
-//
-//    [[CMStore instance] setCurrentUser:[userBuilder build]];
-//
-//    NSError *error;
-//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
-//                                                       options:0
-//                                                         error:&error];
-//    if (!jsonData) {return;}
-//
-//    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-//    if (!jsonString) {return;}
-//
-//    CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
-//    userinfoInRequest.userinfojson = jsonString;
-//
-//    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-//    [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
-//        if (!t.error) {
-//            DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
-//        }
-//        return nil;
-//    }];
+    CMUser * user = [CMStore instance].currentUser;
+    NSMutableDictionary *userInfo = [NSMutableDictionary new];
+
+    if (user.fbUserId) {
+        userInfo[@"facebookId"] = user.fbUserId;
+    }
+
+    if (user.username) {
+        userInfo[@"name"] = user.username;
+    }
+
+     if (user.userPhoto) {
+        userInfo[@"picture"] = user.userPhoto;
+    }
+
+    NSError *error;
+    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
+                                                       options:0
+                                                         error:&error];
+    if (!jsonData) {return;}
+
+    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+    if (!jsonString) {return;}
+
+    CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
+    userinfoInRequest.userinfojson = jsonString;
+
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+        if (!t.error) {
+            DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
+        }
+        return nil;
+    }];
 }
 
 - (void)configure {
@@ -530,7 +500,7 @@
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.authInteractor signIn];
+            [self.authInteractor signIn:YES];
         });
     }]];
 
@@ -572,6 +542,19 @@
     } else {
         [[CMStore instance].userHasJoinedSignal sendNext:@YES];
     }
+}
+
+- (void)refreshUserIdentity:(BOOL)forceSignin {
+    [self.authInteractor signIn:forceSignin];
+}
+
+- (void)logOut {
+    [[CMStore instance].identityProvider signOut];
+    [[CMStore instance] cleanUp];
+
+    [self.authService signOut];
+    [self renewUserIdentitySuccess:^{
+    } error:^(NSError *error) {}];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -729,15 +712,6 @@
 }
 
 - (void)authInteractorDidFailToSignIn:(id <CMAuthInteractorInput>)authInteractor withError:(NSError *)error {
-}
-
-- (void)logout {
-    [[CMStore instance].identityProvider signOut];
-    [[CMStore instance] cleanUp];
-
-    [self.authService signOut];
-    [self renewUserIdentitySuccess:^{
-    } error:^(NSError *error) {}];
 }
 
 - (DDFileLogger *)getFileLogger {

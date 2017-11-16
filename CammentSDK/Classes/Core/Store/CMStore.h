@@ -34,7 +34,8 @@ typedef NS_ENUM(NSInteger, CMCammentUserAuthentificationState) {
 
 @property (nonatomic, assign) CMCammentUserAuthentificationState userAuthentificationState;
 @property (nonatomic, assign) BOOL isConnected;
-@property (nonatomic, copy) NSDictionary<NSString *, id> *tokens;
+
+@property (nonatomic, copy) NSString *facebookAccessToken;
 
 @property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;
 @property (nonatomic, copy) NSString *playingCammentId;

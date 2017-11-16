@@ -210,7 +210,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 - (void)cleanUp {
     [self.cleanUpSignal sendNext:@YES];
 
-    self.tokens = nil;
+    self.facebookAccessToken = nil;
     self.userAuthentificationState = CMCammentUserNotAuthentificated;
 
     self.playingCammentId = kCMStoreCammentIdIfNotPlaying;

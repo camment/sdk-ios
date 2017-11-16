@@ -434,7 +434,7 @@
         [self getInvitationDeeplink];
     } else {
         [self.output showLoadingHUD];
-        [_authInteractor signIn];
+        [_authInteractor signIn:YES];
     }
     [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventInvite];
 }

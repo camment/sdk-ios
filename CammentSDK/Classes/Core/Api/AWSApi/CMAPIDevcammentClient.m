@@ -20,7 +20,7 @@
 #import <AWSCore/AWSSignature.h>
 #import <AWSCore/AWSSynchronizedMutableDictionary.h>
 
-#import "CMAPIError.h"
+#import "CMAPICustomError.h"
 #import "CMAPIDeeplink.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIUsergroupList.h"
@@ -35,6 +35,7 @@
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
+#import "CMAPIOpenIdToken.h"
 #import "CMAppConfig.h"
 
 @interface AWSAPIGatewayClient()
@@ -554,6 +555,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       };
     NSDictionary *pathParameters = @{
                                      @"groupUuid": groupUuid,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"POST"
@@ -654,6 +656,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                   headerParameters:headerParameters
                               body:body
                      responseClass:nil];
+}
+
+- (AWSTask *)usersGetOpenIdTokenGet:(NSString *)fbAccessToken {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      @"fbAccessToken": fbAccessToken
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/users/get-open-id-token"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMAPIOpenIdToken class]];
 }
 
 

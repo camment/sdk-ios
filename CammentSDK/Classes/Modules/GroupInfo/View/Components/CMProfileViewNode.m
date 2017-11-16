@@ -188,7 +188,7 @@
 - (void)settingsNodeDidLogout:(CMSettingsNode *)node {
     self.showSettingsNode = NO;
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
-    [(id<CMInternalCammentSDKProtocol>)[CammentSDK instance] logout];
+    [[CammentSDK instance] logOut];
 }
 
 

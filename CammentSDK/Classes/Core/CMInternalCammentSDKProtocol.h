@@ -10,8 +10,6 @@
 - (void)renewUserIdentitySuccess:(void (^ _Nullable)(void))successBlock
                            error:(void (^ _Nullable)(NSError * _Nullable error))errorBlock;
 
-- (void)logout;
-
 - (DDFileLogger *)getFileLogger;
 
 -  (void)openURL:(NSURL *)url;

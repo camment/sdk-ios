@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "CMIdentityProvider.h"
 
 @protocol CMAuthInteractorInput <NSObject>
 
-- (void)signInWithFacebookProvider:(UIViewController *)viewController;
+- (void)signIn;
 
 @end

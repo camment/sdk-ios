@@ -14,6 +14,7 @@
 #import "CMCammentViewController.h"
 
 @class CMShowMetadata;
+@protocol CMIdentityProvider;
 
 @interface CMCammentViewWireframe : NSObject
 
@@ -28,8 +29,11 @@
 
 @property(nonatomic, strong) CMCammentOverlayLayoutConfig *overlayLayoutConfig;
 
+@property(nonatomic, strong) id <CMIdentityProvider> identityProvider;
+
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
-                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig NS_DESIGNATED_INITIALIZER;
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
+                    identityProvider:(id <CMIdentityProvider>)identityProvider NS_DESIGNATED_INITIALIZER;
 
 - (CMCammentViewController *)controller;
 

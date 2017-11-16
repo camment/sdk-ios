@@ -6,6 +6,7 @@
 #import <CammentSDK/CMShowMetadata.h>
 #import <CammentSDK/CMCammentOverlayLayoutConfig.h>
 #import <CammentSDK/CMCammentOverlayController.h>
+#import <CammentSDK/CMIdentityProvider.h>
 
 @protocol CMCammentSDKDelegate <NSObject>
 
@@ -37,7 +38,7 @@
 
 + (CammentSDK * _Nonnull)instance;
 
-- (void)configureWithApiKey:(NSString * _Nonnull)apiKey;
+- (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider;
 
 - (void)applicationDidBecomeActive:(UIApplication * _Nonnull)application;
 

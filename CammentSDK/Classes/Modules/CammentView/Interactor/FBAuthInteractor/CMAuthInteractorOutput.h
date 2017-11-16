@@ -7,10 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "CMAuthInteractorInput.h"
+
+FOUNDATION_EXPORT NSString *const CMAuthInteractorErrorDomain;
+
+typedef NS_ENUM(NSInteger, CMAuthInteractorErrorType) {
+    CMAuthInteractorErrorUnknown,
+    CMAuthInteractorErrorAuthProviderIsEmpty,
+    CMAuthInteractorErrorAuthProviderReturnsIncorrectParameters,
+};
 
 @protocol CMAuthInteractorOutput <NSObject>
 
-- (void)authInteractorDidSignedIn;
+- (void)authInteractorDidSignIn:(id <CMAuthInteractorInput>)authInteractor;
+- (void)authInteractorDidFailToSignIn:(id <CMAuthInteractorInput>)authInteractor withError:(NSError *)error;
 
-- (void)authInteractorFailedToSignIn:(NSError *)error isCancelled:(BOOL)isCancelled;
 @end

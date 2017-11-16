@@ -5,7 +5,6 @@
 
 @import CoreText;
 #import <ReactiveObjC/ReactiveObjC.h>
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "CammentSDK.h"
 #import "CMStore.h"
 #import "CMAnalytics.h"
@@ -88,17 +87,7 @@
         [CMStore instance].isOfflineMode = NO;
 #endif
 
-        [FBSDKSettings setAppID:[CMAppConfig instance].fbAppId];
-        [FBSDKProfile enableUpdatesOnAccessTokenChange:YES];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(updateUserInfo)
-                                                     name:FBSDKProfileDidChangeNotification
-                                                   object:nil];
-
         [[CMAnalytics instance] configureAWSMobileAnalytics];
-
-        self.authInteractor = [CMAuthInteractor new];
-        [(CMAuthInteractor *) self.authInteractor setOutput:self];
 
         self.groupManagmentInteractor = [CMGroupManagementInteractor new];
         [(CMGroupManagementInteractor *) self.groupManagmentInteractor setOutput:self];
@@ -125,21 +114,24 @@
     return self;
 }
 
-- (void)configureWithApiKey:(NSString *)apiKey {
+- (void)configureWithApiKey:(NSString *_Nonnull)apiKey
+           identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider {
     [CMStore instance].apiKey = apiKey;
+    [CMStore instance].identityProvider = identityProvider;
+
+    self.authInteractor = [[CMAuthInteractor alloc] initWithIdentityProvider:identityProvider];
+    [(CMAuthInteractor *) self.authInteractor setOutput:self];
+
     [[self.authService signIn] subscribeNext:^(NSString *cognitoIdentityId) {
         [self identityHasChangedOldIdentity:[CMStore instance].currentUser.cognitoUserId newIdentity:cognitoIdentityId];
         [self checkIfDeferredDeepLinkExists];
     } error:^(NSError *error) {
         if ([error.domain isEqualToString:AWSCognitoIdentityErrorDomain]) {
-            [[FBSDKLoginManager new] logOut];
-            [FBSDKAccessToken setCurrentAccessToken:nil];
-            
             [[CMStore instance] cleanUp];
             [self.authService signOut];
-            [self configureWithApiKey:apiKey];
+            [self configureWithApiKey:apiKey identityProvider:nil];
         }
-        DDLogError(@"Error on signing in at configureWithApiKey: method %@", error);
+        DDLogError(@"Error on signing in at configureWithApiKey:identityProvider: method %@", error);
     }];
 }
 
@@ -156,17 +148,17 @@
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
     if (newIdentity == nil) { return; }
     [[CMAnalytics instance] setMixpanelID:newIdentity];
-    CMUser *currentUser = [[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
+    CMUser *currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
             withCognitoUserId:newIdentity]
-            withFbUserId:[FBSDKAccessToken currentAccessToken].userID]
             build];
     [[CMStore instance] setCurrentUser:currentUser];
-    [CMStore instance].isSignedIn = newIdentity != nil;
-    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-    if ([CMStore instance].isFBConnected) {
-        [self updateUserInfo];
-        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventFbSignin];
+    
+    if (newIdentity != nil) {
+        if ([CMStore instance].tokens.allKeys > 0) {
+            [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAsKnownUser;
+        } else {
+            [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAnonymoius;
+        }
     }
 
     if (oldIdentity) {
@@ -229,68 +221,68 @@
 }
 
 - (void)updateUserInfo {
-
-    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
-            initWithGraphPath:@"/me"
-                   parameters:@{@"fields": @"email"}
-                   HTTPMethod:@"GET"];
-    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
-            id result,
-            NSError *error) {
-        if (result && !error) {
-            NSString *email = (NSString *) [result valueForKey:@"email"];
-            [CMStore instance].currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-                    withEmail:email]
-                    build];
-        }
-    }];
-
-    FBSDKProfile *profile = [FBSDKProfile currentProfile];
-    if (!profile) {
-        DDLogVerbose(@"FB profile not found");
-        return;
-    }
-
-    CMUserBuilder *userBuilder = [CMStore instance].currentUser ? [CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] : [CMUserBuilder new];
-
-    NSMutableDictionary *userInfo = [NSMutableDictionary new];
-    if (profile.userID) {
-        userInfo[@"facebookId"] = profile.userID;
-        userBuilder = [userBuilder withFbUserId:profile.userID];
-    }
-
-    if (profile.name) {
-        userInfo[@"name"] = profile.name;
-        userBuilder = [userBuilder withUsername:profile.name];
-    }
-
-    NSURL *imageUrl = [profile imageURLForPictureMode:FBSDKProfilePictureModeSquare size:CGSizeMake(270, 270)];
-    if (imageUrl) {
-        userInfo[@"picture"] = imageUrl.absoluteString;
-        userBuilder = [userBuilder withUserPhoto:imageUrl.absoluteString];
-    }
-
-    [[CMStore instance] setCurrentUser:[userBuilder build]];
-
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
-                                                       options:0
-                                                         error:&error];
-    if (!jsonData) {return;}
-
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    if (!jsonString) {return;}
-
-    CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
-    userinfoInRequest.userinfojson = jsonString;
-
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-    [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
-        if (!t.error) {
-            DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
-        }
-        return nil;
-    }];
+//
+//    FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
+//            initWithGraphPath:@"/me"
+//                   parameters:@{@"fields": @"email"}
+//                   HTTPMethod:@"GET"];
+//    [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
+//            id result,
+//            NSError *error) {
+//        if (result && !error) {
+//            NSString *email = (NSString *) [result valueForKey:@"email"];
+//            [CMStore instance].currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
+//                    withEmail:email]
+//                    build];
+//        }
+//    }];
+//
+//    FBSDKProfile *profile = [FBSDKProfile currentProfile];
+//    if (!profile) {
+//        DDLogVerbose(@"FB profile not found");
+//        return;
+//    }
+//
+//    CMUserBuilder *userBuilder = [CMStore instance].currentUser ? [CMUserBuilder userFromExistingUser:[CMStore instance].currentUser] : [CMUserBuilder new];
+//
+//    NSMutableDictionary *userInfo = [NSMutableDictionary new];
+//    if (profile.userID) {
+//        userInfo[@"facebookId"] = profile.userID;
+//        userBuilder = [userBuilder withFbUserId:profile.userID];
+//    }
+//
+//    if (profile.name) {
+//        userInfo[@"name"] = profile.name;
+//        userBuilder = [userBuilder withUsername:profile.name];
+//    }
+//
+//    NSURL *imageUrl = [profile imageURLForPictureMode:FBSDKProfilePictureModeSquare size:CGSizeMake(270, 270)];
+//    if (imageUrl) {
+//        userInfo[@"picture"] = imageUrl.absoluteString;
+//        userBuilder = [userBuilder withUserPhoto:imageUrl.absoluteString];
+//    }
+//
+//    [[CMStore instance] setCurrentUser:[userBuilder build]];
+//
+//    NSError *error;
+//    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
+//                                                       options:0
+//                                                         error:&error];
+//    if (!jsonData) {return;}
+//
+//    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+//    if (!jsonString) {return;}
+//
+//    CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
+//    userinfoInRequest.userinfojson = jsonString;
+//
+//    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+//    [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+//        if (!t.error) {
+//            DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
+//        }
+//        return nil;
+//    }];
 }
 
 - (void)configure {
@@ -355,7 +347,7 @@
     BOOL connectionAvailable = netStatus != NotReachable;
     if (connectionAvailable && connectionAvailable != self.connectionAvailable) {
         connectionAvailable = YES;
-        if (![CMStore instance].isSignedIn) {
+        if (![CMStore instance].userAuthentificationState) {
             [[self.authService signIn] subscribeNext:^(NSString *x) {
             }];
         }
@@ -538,7 +530,7 @@
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.authInteractor signInWithFacebookProvider:rootViewController.topVisibleViewController];
+            [self.authInteractor signIn];
         });
     }]];
 
@@ -584,7 +576,6 @@
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     DDLogInfo(@"applicationDidBecomeActive hook has been installed");
-    [FBSDKAppEvents activateApp];
 
     UIPasteboard *pb = [UIPasteboard generalPasteboard];
     if (pb.URL) {
@@ -610,18 +601,7 @@
     [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayAndRecord
                                      withOptions:AVAudioSessionCategoryOptionDefaultToSpeaker | AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionInterruptSpokenAudioAndMixWithOthers error:nil];
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
-    return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                    didFinishLaunchingWithOptions:launchOptions];
-}
-
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
-    [self verifyURL:url];
-
-    return [[FBSDKApplicationDelegate sharedInstance] application:application
-                                                          openURL:url
-                                                sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
-                                                       annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
-    ];
+    return YES;
 }
 
 - (void)checkIfDeferredDeepLinkExists {
@@ -645,13 +625,13 @@
             }];
 }
 
-- (void)verifyURL:(NSURL *)url {
+- (BOOL)verifyURL:(NSURL *)url {
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
 
     if ([urlComponents.scheme isEqualToString:@"camment"]
             && [urlComponents.host isEqualToString:@"group"]) {
         NSArray *components = [urlComponents.path pathComponents];
-        if (components.count < 4) { return; }
+        if (components.count < 4) { return NO; }
         
         NSString *groupUuid = components[1];
         NSString *showUuid = components[3];
@@ -665,17 +645,18 @@
                 [self verifyInvitation:invitation];
             });
         }
+
+        return YES;
     }
+
+    return NO;
 }
 
 
 - (void)verifyInvitation:(CMInvitation *)invitation {
     if (!invitation || !invitation.userGroupUuid) { return; }
-
-    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
     
-    if ([CMStore instance].isFBConnected) {
+    if ([CMStore instance].userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
         //for external invitations key should be nil for now
         NSString *invitationKey = nil;
         CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder
@@ -735,7 +716,7 @@
     }
 }
 
-- (void)authInteractorDidSignedIn {
+- (void)authInteractorDidSignIn:(id <CMAuthInteractorInput>)authInteractor {
     [[self.authService refreshCredentials] subscribeNext:^(NSString *x) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.onSignedInOperationsQueue setSuspended:NO];
@@ -747,14 +728,13 @@
     }];
 }
 
-- (void)authInteractorFailedToSignIn:(NSError *)error isCancelled:(BOOL)isCancelled {
+- (void)authInteractorDidFailToSignIn:(id <CMAuthInteractorInput>)authInteractor withError:(NSError *)error {
 }
 
 - (void)logout {
-    [[FBSDKLoginManager new] logOut];
-    [FBSDKAccessToken setCurrentAccessToken:nil];
-
+    [[CMStore instance].identityProvider signOut];
     [[CMStore instance] cleanUp];
+
     [self.authService signOut];
     [self renewUserIdentitySuccess:^{
     } error:^(NSError *error) {}];
@@ -794,13 +774,12 @@
     }
 }
 
-- (BOOL)openURL:(NSURL *)url sourceApplication:(NSString *)application annotation:(id)annotation {
-    [self verifyURL:url];
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options {
+    return [self verifyURL:url];
+}
 
-    return [[FBSDKApplicationDelegate sharedInstance] application:[UIApplication sharedApplication]
-                                                          openURL:url
-                                                sourceApplication:application
-                                                       annotation:annotation];
+- (BOOL)openURL:(NSURL *)url sourceApplication:(NSString *)application annotation:(id)annotation {
+    return [self verifyURL:url];
 }
 
 - (void)openURL:(NSURL *)url {

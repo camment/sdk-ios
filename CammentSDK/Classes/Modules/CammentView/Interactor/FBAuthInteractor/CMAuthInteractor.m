@@ -7,39 +7,66 @@
 //
 
 #import "CMAuthInteractor.h"
-#import "CMStore.h"
 #import "CMCognitoAuthService.h"
-@import SafariServices;
+#import "CMStore.h"
+
+NSString *const CMAuthInteractorErrorDomain = @"tv.camment.CMCammentViewInteractorErrorDomain";
 
 @implementation CMAuthInteractor
 
-- (void)signInWithFacebookProvider:(UIViewController *)viewController {
-    self.manager = [FBSDKLoginManager new];
-    self.manager.loginBehavior = FBSDKLoginBehaviorNative;
-    
-    @weakify(self);
-    [self.manager logInWithReadPermissions:@[@"public_profile", @"user_friends", @"email", @"read_custom_friendlists"]
-                   fromViewController:viewController
-                              handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
-                                  @strongify(self);
-                                  if (!self) { return; }
-                                  
-                                  BOOL isCancelled =
-                                    ([error.domain isEqualToString:@"com.apple.SafariServices.Authentication"] && error.code == 1)
-                                    || result.isCancelled;
-                                  
-                                  if (error) {
-                                      [self.output authInteractorFailedToSignIn:error isCancelled:isCancelled];
-                                      return;
-                                  }
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `- initWithIdentityProvider` instead."
+                                 userInfo:nil];
+    return nil;
+}
 
-                                  if (result.token == nil) {
-                                      [self.output authInteractorFailedToSignIn:[NSError errorWithDomain:@"ios.camment.tv" code:1 userInfo:nil] isCancelled:isCancelled];
-                                      return;
-                                  }
+- (instancetype)initWithIdentityProvider:(id <CMIdentityProvider>)identityProvider {
+    self = [super init];
+    if (self) {
+        _identityProvider = identityProvider;
+    }
 
-                                  [self.output authInteractorDidSignedIn];
-                              }];
+    return self;
+}
+
+- (void)signIn {
+    if (!_identityProvider) {
+        NSError *error = [NSError errorWithDomain:CMAuthInteractorErrorDomain
+                                             code:CMAuthInteractorErrorAuthProviderIsEmpty
+                                         userInfo:@{}];
+        [self.output authInteractorDidFailToSignIn:self withError:error];
+        return;
+    }
+
+    [_identityProvider signIn:^void(NSDictionary<NSString *, id> *tokens) {
+
+        if (tokens.allKeys.count == 0) {
+            return;
+        }
+
+        NSSet *validProviders = [NSSet setWithObjects:CMCammentIdentityProviderFacebook, nil];
+
+        NSArray *incorrectProviders = [tokens.allKeys.rac_sequence filter:^BOOL(NSString *providerKey) {
+            return ![validProviders containsObject:providerKey];
+        }].array;
+
+        if (incorrectProviders.count > 0) {
+            NSError *error = [NSError errorWithDomain:CMAuthInteractorErrorDomain
+                                                 code:CMAuthInteractorErrorAuthProviderReturnsIncorrectParameters
+                                             userInfo:@{
+                                                     @"Unknown providers" : incorrectProviders,
+                                             }];
+            [self.output authInteractorDidFailToSignIn:self withError:error];
+            return;
+        }
+
+        [CMStore instance].tokens = tokens;
+
+        [self.output authInteractorDidSignIn:self];
+
+        return;
+    }];
 }
 
 @end

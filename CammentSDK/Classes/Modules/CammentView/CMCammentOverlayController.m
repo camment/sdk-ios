@@ -34,8 +34,10 @@
         CMStore *store = [CMStore instance];
         store.currentShowMetadata = metadata;
 
-        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShowMetadata:metadata
-                                                                                 overlayLayoutConfig:overlayLayoutConfig];
+        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc]
+                initWithShowMetadata:metadata
+                 overlayLayoutConfig:overlayLayoutConfig
+                    identityProvider:store.identityProvider];
         self.cammentViewController = [viewWireframe controller];
         self.wireframe = viewWireframe;
 

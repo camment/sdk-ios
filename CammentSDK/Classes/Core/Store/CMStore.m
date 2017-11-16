@@ -77,7 +77,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         NSArray *updateGroupsSignals = @[
                 RACObserve(self, activeGroup),
                 RACObserve(self, isConnected),
-                RACObserve(self, isSignedIn),
+                RACObserve(self, userAuthentificationState),
                 self.userHasJoinedSignal,
         ];
 
@@ -210,8 +210,8 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 - (void)cleanUp {
     [self.cleanUpSignal sendNext:@YES];
 
-    self.isSignedIn = NO;
-    self.isFBConnected = NO;
+    self.tokens = nil;
+    self.userAuthentificationState = CMCammentUserNotAuthentificated;
 
     self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
     self.cammentRecordingState = CMCammentRecordingStateNotRecording;

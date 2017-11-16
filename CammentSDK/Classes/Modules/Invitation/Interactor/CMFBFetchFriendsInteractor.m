@@ -7,7 +7,6 @@
 #import "CMUser.h"
 #import "CMUserBuilder.h"
 #import "ReactiveObjC.h"
-#import "FBSDKGraphRequest.h"
 
 
 @interface CMFBFetchFriendsInteractor ()
@@ -37,29 +36,29 @@
             params[@"after"] = self.cursorAfter;
         }
 
-        FBSDKGraphRequest * request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends"
-                                          parameters:params];
-        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
-            if (error) {
-                [subscriber sendError: error];
-            } else {
-                NSArray<NSDictionary *> *friends = [result valueForKey:@"data"] ?: @[];
-                NSDictionary *paging = [result valueForKey:@"paging"];
-                NSDictionary *cursors = [paging valueForKey:@"cursors"];
-                self.cursorAfter = [cursors valueForKey:@"after"];
-                self.isFinished = self.cursorAfter == nil;
-
-                NSArray<CMUser *> *users = [friends.rac_sequence map:^CMUser *(NSDictionary *value) {
-                    return [[[[[CMUserBuilder new]
-                            withUsername:value[@"name"]]
-                            withFbUserId:value[@"id"]]
-                            withUserPhoto:[[@"https://graph.facebook.com/v2.5/" stringByAppendingString:value[@"id"]] stringByAppendingString:@"/picture?type=normal"]]
-                            build];
-                }].array;
-                [subscriber sendNext:users];
-                [subscriber sendCompleted];
-            }
-        }];
+//        FBSDKGraphRequest * request = [[FBSDKGraphRequest alloc] initWithGraphPath:@"me/friends"
+//                                          parameters:params];
+//        [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error) {
+//            if (error) {
+//                [subscriber sendError: error];
+//            } else {
+//                NSArray<NSDictionary *> *friends = [result valueForKey:@"data"] ?: @[];
+//                NSDictionary *paging = [result valueForKey:@"paging"];
+//                NSDictionary *cursors = [paging valueForKey:@"cursors"];
+//                self.cursorAfter = [cursors valueForKey:@"after"];
+//                self.isFinished = self.cursorAfter == nil;
+//
+//                NSArray<CMUser *> *users = [friends.rac_sequence map:^CMUser *(NSDictionary *value) {
+//                    return [[[[[CMUserBuilder new]
+//                            withUsername:value[@"name"]]
+//                            withFbUserId:value[@"id"]]
+//                            withUserPhoto:[[@"https://graph.facebook.com/v2.5/" stringByAppendingString:value[@"id"]] stringByAppendingString:@"/picture?type=normal"]]
+//                            build];
+//                }].array;
+//                [subscriber sendNext:users];
+//                [subscriber sendCompleted];
+//            }
+//        }];
 
         return nil;
     }];

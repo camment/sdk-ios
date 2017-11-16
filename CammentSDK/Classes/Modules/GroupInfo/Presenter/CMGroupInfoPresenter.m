@@ -40,11 +40,11 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
         self.profileViewNode = [CMProfileViewNode new];
         @weakify(self);
-        [[[RACObserve([CMStore instance], isFBConnected)
+        [[[RACObserve([CMStore instance], userAuthentificationState)
                 takeUntil:self.rac_willDeallocSignal]
-                deliverOnMainThread] subscribeNext:^(NSNumber *isFBConnected) {
+                deliverOnMainThread] subscribeNext:^(NSNumber *userAuthentificationState) {
             @strongify(self);
-            self.showProfileInfo = isFBConnected.boolValue;
+            self.showProfileInfo = [userAuthentificationState integerValue] == CMCammentUserAuthentificatedAsKnownUser;
             [self reloadData];
         }];
 

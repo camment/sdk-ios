@@ -9,11 +9,14 @@
 #import <Foundation/Foundation.h>
 #import "CMAuthInteractorInput.h"
 #import "CMAuthInteractorOutput.h"
-#import <FBSDKLoginKit/FBSDKLoginKit.h>
+#import "CMIdentityProvider.h"
 
 @interface CMAuthInteractor : NSObject<CMAuthInteractorInput>
 
 @property (nonatomic, weak) id<CMAuthInteractorOutput> output;
-@property (nonatomic, strong) FBSDKLoginManager *manager;
+
+@property(nonatomic, readonly) id <CMIdentityProvider> identityProvider;
+
+- (instancetype)initWithIdentityProvider:(id <CMIdentityProvider>)identityProvider NS_DESIGNATED_INITIALIZER;
 
 @end

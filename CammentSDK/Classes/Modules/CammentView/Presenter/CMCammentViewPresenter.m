@@ -7,47 +7,38 @@
 //
 
 #import <ReactiveObjC/ReactiveObjC.h>
-#import "FBSDKAccessToken.h"
-#import <DateTools/DateTools.h>
 #import "CMCammentViewPresenter.h"
 #import "CMCammentViewWireframe.h"
 #import "CMInvitationWireframe.h"
 #import "CMPresentationInstructionOutput.h"
 #import "CMPresentationPlayerInteractor.h"
-#import "CMCammentsBlockPresenter.h"
 #import "CMShow.h"
 #import "CMStore.h"
-#import "CMCammentRecorderInteractorInput.h"
 #import "CMPresentationState.h"
-#import "CMCammentsLoaderInteractorInput.h"
 #import "FBTweakStore.h"
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
-#import "FBTweak.h"
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
 #import "CMCammentUploader.h"
-#import "CMAPICammentInRequest.h"
-#import "CMAPIDevcammentClient.h"
 #import "CMAuthInteractor.h"
 #import "CammentSDK.h"
 #import "CMCammentBuilder.h"
-#import "CMShowMetadata.h"
 #import "CMUserJoinedMessage.h"
 #import "CMCammentDeletedMessage.h"
-#import "RACSignal+SignalHelpers.h"
 #import "CMCammentCell.h"
 #import "CMBotRegistry.h"
 #import "CMAnalytics.h"
 #import "CMInternalCammentSDKProtocol.h"
 #import "CMErrorWireframe.h"
+#import "CMCammentsBlockPresenterInput.h"
 
-@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
+@interface CMCammentViewPresenter () <CMPresentationInstructionOutput>
 
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
-@property(nonatomic, strong) CMAuthInteractor *authInteractor;
-@property(nonatomic, strong) CMInvitationInteractor *invitationInteractor;
-@property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
+@property(nonatomic, strong) id <CMAuthInteractorInput> authInteractor;
+@property(nonatomic, strong) id <CMInvitationInteractorInput> invitationInteractor;
+@property(nonatomic, strong) id <CMCammentsBlockPresenterInput> cammentsBlockNodePresenter;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
 
 @property(nonatomic, assign) BOOL isOnboardingRunning;
@@ -62,19 +53,27 @@
 
 @implementation CMCammentViewPresenter
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata {
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `- initWithShowMetadata:(CMShowMetadata *)metadata\n"
+                                           "                      authInteractor:(id <CMAuthInteractorInput>)authInteractor\n"
+                                           "                invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor\n"
+                                           "              cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter` instead."
+                                 userInfo:nil];
+    return nil;
+}
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+                      authInteractor:(id <CMAuthInteractorInput>)authInteractor
+                invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor
+              cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter {
     self = [super init];
 
     if (self) {
-        self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
-        self.cammentsBlockNodePresenter.output = self;
+        self.cammentsBlockNodePresenter = cammentsBlockPresenter;
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
-
-        self.authInteractor = [CMAuthInteractor new];
-        self.authInteractor.output = self;
-
-        self.invitationInteractor = [CMInvitationInteractor new];
-        self.invitationInteractor.output = self;
+        self.authInteractor = authInteractor;
+        self.invitationInteractor = invitationInteractor;
 
         self.presentationPlayerInteractor.instructionOutput = self;
         self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
@@ -431,13 +430,11 @@
     [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
     [CMStore instance].isOnboardingFinished = YES;
 
-    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-    if ([CMStore instance].isFBConnected) {
+    if ([CMStore instance].userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
         [self getInvitationDeeplink];
     } else {
         [self.output showLoadingHUD];
-        [_authInteractor signInWithFacebookProvider:(id) self.output];
+        [_authInteractor signIn];
     }
     [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventInvite];
 }
@@ -447,22 +444,22 @@
     [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid];
 }
 
-- (void)authInteractorDidSignedIn {
+- (void)authInteractorDidSignIn:(id <CMAuthInteractorInput>)authInteractor {
     [(id <CMInternalCammentSDKProtocol>) [CammentSDK instance] renewUserIdentitySuccess:^{
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.output hideLoadingHUD];
             [self inviteFriendsAction];
         });
     }                                                                             error:^(NSError *error) {
-        [self authInteractorFailedToSignIn:error isCancelled:NO];
+        [self authInteractorDidFailToSignIn:authInteractor withError:error];
     }];
 }
 
-- (void)authInteractorFailedToSignIn:(NSError *)error isCancelled:(BOOL)isCancelled {
+- (void)authInteractorDidFailToSignIn:(id <CMAuthInteractorInput>)authInteractor withError:(NSError *)error {
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.output hideLoadingHUD];
 
-        if (!isCancelled && error) {
+        if (!error) {
             [[CMErrorWireframe new] presentErrorViewWithError:error
                                              inViewController:(id) self.output];
             return;

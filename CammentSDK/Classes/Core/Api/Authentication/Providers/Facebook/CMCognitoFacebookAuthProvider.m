@@ -3,24 +3,20 @@
 // Copyright (c) 2017 Sportacam. All rights reserved.
 //
 
-#import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <AWSCore/AWSCore.h>
 #import "CMCognitoFacebookAuthProvider.h"
+#import "CMStore.h"
 
 @implementation CMCognitoFacebookAuthProvider
 
 - (AWSTask<NSDictionary<NSString *, NSString *> *> *)logins {
-    FBSDKAccessToken* fbToken = [FBSDKAccessToken currentAccessToken];
-    NSDictionary *logins;
+    NSDictionary *logins = @{};
 
-    if(fbToken) {
-        NSString *token = fbToken.tokenString;
-        logins = token ? @{ AWSIdentityProviderFacebook : token } : @{};
-    } else {
-        logins = @{};
+    if ([CMStore instance].tokens && [CMStore instance].tokens[CMCammentIdentityProviderFacebook]) {
+        NSString *token = [CMStore instance].tokens[CMCammentIdentityProviderFacebook];
+        logins =  @{ AWSIdentityProviderFacebook : token };
     }
-
-    return [AWSTask taskWithResult: logins];
+    return [AWSTask taskWithResult:logins];
 }
 
 @end

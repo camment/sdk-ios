@@ -14,16 +14,30 @@
 #import "CMShowMetadata.h"
 #import "CMGroupsListWireframe.h"
 #import "CMGroupInfoWireframe.h"
-
+#import "CMAuthInteractor.h"
+#import "CMIdentityProvider.h"
+#import "CMInvitationInteractor.h"
 
 @implementation CMCammentViewWireframe
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata 
-                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig {
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `(instancetype)initWithShowMetadata:(CMShowMetadata *)metadata \n"
+                                           "                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig \n"
+                                           "                    identityProvider:(id <CMIdentityProvider>)identityProvider` instead."
+                                 userInfo:nil];
+    return nil;
+}
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
+                    identityProvider:(id <CMIdentityProvider>)identityProvider {
     self = [super init];
+
     if (self) {
         self.metadata = metadata;
         self.overlayLayoutConfig = overlayLayoutConfig;
+        self.identityProvider = identityProvider;
     }
 
     return self;
@@ -31,7 +45,18 @@
 
 - (CMCammentViewController *)controller {
     CMCammentViewController *view = [[CMCammentViewController alloc] initWithOverlayLayoutConfig:_overlayLayoutConfig];
-    CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata];
+
+    CMAuthInteractor *authInteractor = [[CMAuthInteractor alloc] initWithIdentityProvider:self.identityProvider];
+    CMInvitationInteractor *invitationInteractor = [[CMInvitationInteractor alloc] init];
+    CMCammentsBlockPresenter *cammentsBlockPresenter = [[CMCammentsBlockPresenter alloc] init];
+    CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata
+                                                                              authInteractor:authInteractor
+                                                                        invitationInteractor:invitationInteractor
+                                                                      cammentsBlockPresenter:cammentsBlockPresenter];
+    authInteractor.output = presenter;
+    invitationInteractor.output = presenter;
+    cammentsBlockPresenter.output = presenter;
+
     CMCammentViewInteractor *interactor = [CMCammentViewInteractor new];
 
     view.presenter = presenter;

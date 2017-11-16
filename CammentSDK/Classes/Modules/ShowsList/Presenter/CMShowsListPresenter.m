@@ -51,7 +51,7 @@
 }
 
 - (void)networkDidBecomeAvailable {
-    if ([CMStore instance].isSignedIn) {
+    if ([CMStore instance].userAuthentificationState) {
         [self.output setLoadingIndicator];
         [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     }
@@ -63,16 +63,17 @@
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
 
     NSArray *updateShowsListSignals = @[
-            RACObserve([CMStore instance], isSignedIn),
+            RACObserve([CMStore instance], userAuthentificationState),
             RACObserve([CMStore instance], isConnected),
             RACObserve([CMStore instance], isOfflineMode)
     ];
     [[[[RACSignal combineLatest:updateShowsListSignals] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
-        NSNumber *isSignedIn = tuple.first;
+        NSNumber *userAuthentificationState = tuple.first;
         NSNumber *isConnected = tuple.second;
         NSNumber *isOfflineMode = tuple.third;
-
-        if (isSignedIn.boolValue && isConnected.boolValue || isOfflineMode.boolValue) {
+        BOOL isSignedIn = [userAuthentificationState integerValue] != CMCammentUserNotAuthentificated;
+        
+        if (isSignedIn && isConnected.boolValue || isOfflineMode.boolValue) {
             [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
     }];

@@ -17,11 +17,18 @@ s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag =>
 s.ios.deployment_target = '8.1'
 
 s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
-s.default_subspec = 'Public'
+s.default_subspec = 'SDK'
 
-s.subspec 'Public' do |ss|
+s.subspec 'SDK' do |ss|
    ss.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
    ss.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
+end
+
+s.subspec 'FacebookAuthProvider' do |ss|
+   ss.public_header_files = 'CammentSDK/AuthProviders/Facebook/**/*.h'
+   ss.source_files = 'CammentSDK/AuthProviders/Facebook/**/*.{h,m,mm,cpp}'
+   ss.dependency  'FBSDKCoreKit'
+   ss.dependency  'FBSDKLoginKit'
 end
 
 s.test_spec 'Tests' do |test_spec|
@@ -29,7 +36,6 @@ s.test_spec 'Tests' do |test_spec|
     test_spec.dependency  'Specta'
     test_spec.dependency  'Expecta'
     test_spec.dependency  'OCMock'
-    test_spec.frameworks = ['XCTest']
   end
 
 
@@ -65,9 +71,6 @@ s.dependency  'AWSIoT'
 s.dependency  'AWSMobileAnalytics'
 s.dependency  'AWSS3'
 s.dependency  'AWSAPIGateway'
-s.dependency  'FBSDKCoreKit'
-s.dependency  'FBSDKLoginKit'
-s.dependency  'FBSDKMessengerShareKit'
 s.dependency  'ReactiveObjC'
 s.dependency  'pop'
 s.dependency  'MBProgressHUD'

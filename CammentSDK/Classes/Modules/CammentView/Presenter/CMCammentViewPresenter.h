@@ -16,16 +16,25 @@
 #import "CMCammentRecorderInteractorInput.h"
 #import "CMCammentRecorderInteractorOutput.h"
 #import "CMLoadingHUD.h"
+#import "CMAuthInteractorOutput.h"
+#import "CMCammentsBlockPresenter.h"
+#import "CMInvitationInteractorOutput.h"
 
 @class CMCammentViewWireframe;
 @class CMShow;
 @class CMShowMetadata;
+@protocol CMAuthInteractorInput;
+@protocol CMInvitationInteractorInput;
+@protocol CMCammentsBlockPresenterInput;
 
 @interface CMCammentViewPresenter : NSObject<
         CMCammentViewPresenterInput,
         CMCammentViewInteractorOutput,
         CMCammentsLoaderInteractorOutput,
-        CMCammentRecorderInteractorOutput>
+        CMCammentRecorderInteractorOutput,
+        CMAuthInteractorOutput,
+        CMCammentsBlockPresenterOutput,
+        CMInvitationInteractorOutput>
 
 @property (nonatomic, weak) id<CMCammentViewPresenterOutput, CMLoadingHUD> output;
 @property (nonatomic) id<CMCammentViewInteractorInput> interactor;
@@ -34,5 +43,8 @@
 @property (nonatomic) id<CMCammentsLoaderInteractorInput> loaderInteractor;
 @property (nonatomic) id<CMCammentRecorderInteractorInput> recorderInteractor;
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata;
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+                      authInteractor:(id <CMAuthInteractorInput>)authInteractor
+                invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor
+              cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter NS_DESIGNATED_INITIALIZER;
 @end

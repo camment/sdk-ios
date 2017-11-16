@@ -11,22 +11,39 @@
 @protocol CMCammentSDKDelegate <NSObject>
 
 @optional
-// Calls when user joined to show.
-// Deprecated: use didJoinToShow: instead
+
+/**
+ * Calls when user joined to show.
+ * @deprecated: use didJoinToShow: instead
+ * @param CMShowMetadata Class provides additional information related to your show
+ */
 - (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
 
-// Calls when user joined to show
+/**
+ * Calls when user joined to show
+ * @param metadata Class provides additional information related to your show
+ */
 - (void)didJoinToShow:(CMShowMetadata * _Nonnull)metadata;
-// Calls when user opened invitation to show
+
+/**
+ * Calls when user opened invitation to show
+ * @param CMShowMetadata metadata
+ */
 - (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
-// Calls when user accept someone's joining request
+/**
+ * Calls when user accept someone's joining request
+ * @param metadata Class provides additional information related to your show
+ */
 - (void)didAcceptJoiningRequest:(CMShowMetadata * _Nonnull)metadata;
 @end
 
 @protocol CMCammentSDKUIDelegate <NSObject>
 
-// SDK use the method to display important alerts (invitations, joining requests etc)
+/**
+ * SDK use the method to display important alerts (invitations, joining requests etc)
+ * @param viewController UIViewController needed to be presented
+ */
 - (void)cammentSDKWantsPresentViewController:(UIViewController * _Nonnull)viewController;
 
 @end
@@ -38,11 +55,37 @@
 
 + (CammentSDK * _Nonnull)instance;
 
+/**
+ * Use this method to provide your API key and identityProvider
+ * As identity provider you can use default CMFacebookIdentityProvider
+ * @param apiKey The API key provided to client allows to get access to Camment backend
+ * @param identityProvider Any class which implements CMIdentityProvider protocol.
+ *                          Needs to perform authentication for a Camment user
+ */
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider;
 
+/**
+ * Asks CMIdentityProvider to pass user credentials to CammentSDK.
+ * Use refreshUserIdentity:NO right after application has started in order to check if cached credentials are available
+ * Use refreshUserIdentity:YES if you want force user to login to CammentSDK. In most cases you will not use it.
+ *
+ * Normal workflow for getting cammentSDK ready is
+ *      [[CammentSDK instance] configureWithApiKey@"YOUR_API_KEY" identityProvider:[CMFacebookIdentityProvider new]];
+ *      [[CammentSDK instance] refreshUserIdentity:NO];
+ *
+ * @param forceSignin The flag tells to CMIdentityProvider if it should force user to login if there no cached credentials found
+ */
 - (void)refreshUserIdentity:(BOOL)forceSignin;
+
+/**
+ * Cleans up all user credentials and log user out of CammentSDK
+ * Also, runs -logOut method for identityProvider class
+ */
 - (void)logOut;
 
+/**
+ * Proxy methods for appDelegate. Used for additional SDK configuration and handling invitations by deeplink
+ */
 - (void)applicationDidBecomeActive:(UIApplication * _Nonnull)application;
 
 - (BOOL)application:(UIApplication * _Nonnull)application didFinishLaunchingWithOptions:(NSDictionary * _Nullable)launchOptions;

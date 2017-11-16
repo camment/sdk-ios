@@ -9,12 +9,14 @@
 @implementation GVUserDefaults (CammentSDKConfig)
 
 @dynamic isOnboardingFinished;
+@dynamic isFirstSDKLaunch;
 @dynamic broadcasterPasscode;
 @dynamic isInstallationDeeplinkChecked;
 
 - (NSDictionary *)setupDefaults {
     return @{
             @"isOnboardingFinished": @NO,
+            @"isFirstSDKLaunch" : @YES,
             @"broadcasterPasscode": @"",
             @"isInstallationDeeplinkChecked": @"NO",
     };

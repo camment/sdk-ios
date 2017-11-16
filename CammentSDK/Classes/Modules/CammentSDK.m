@@ -107,6 +107,10 @@
                                                      name:AWSCognitoIdentityIdChangedNotification
                                                    object:nil];
 
+        [RACObserve([CMStore instance], currentUser) subscribeNext:^(id  _Nullable x) {
+            [self updateUserInfo];
+        }];
+        
         self.authService = [CMCognitoAuthService new];
         [self clearTmpDirectory];
     }
@@ -116,6 +120,11 @@
 
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey
            identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider {
+    if ([GVUserDefaults standardUserDefaults].isFirstSDKLaunch) {
+        [self.authService signOut];
+        [GVUserDefaults standardUserDefaults].isFirstSDKLaunch = NO;
+        
+    }
     [CMStore instance].apiKey = apiKey;
     [CMStore instance].identityProvider = identityProvider;
 
@@ -219,6 +228,10 @@
 }
 
 - (void)updateUserInfo {
+    if ([CMStore instance].userAuthentificationState != CMCammentUserAuthentificatedAsKnownUser) {
+        return;
+    }
+
     CMUser * user = [CMStore instance].currentUser;
     NSMutableDictionary *userInfo = [NSMutableDictionary new];
 
@@ -233,7 +246,9 @@
      if (user.userPhoto) {
         userInfo[@"picture"] = user.userPhoto;
     }
-
+    
+    if (userInfo.allKeys.count == 0) { return; }
+    
     NSError *error;
     NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
                                                        options:0

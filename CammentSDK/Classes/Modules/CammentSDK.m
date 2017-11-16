@@ -549,7 +549,7 @@
 }
 
 - (void)logOut {
-    [[CMStore instance].identityProvider signOut];
+    [[CMStore instance].identityProvider logOut];
     [[CMStore instance] cleanUp];
 
     [self.authService signOut];

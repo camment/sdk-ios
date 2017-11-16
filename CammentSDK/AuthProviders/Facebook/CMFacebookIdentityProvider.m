@@ -115,7 +115,7 @@ typedef void(^CMFBProfileDataFetcherBlock)(NSDictionary<NSString *, NSString *> 
     }];
 }
 
-- (void)signOut {
+- (void)logOut {
     [[FBSDKLoginManager new] logOut];
     [FBSDKAccessToken setCurrentAccessToken:nil];
 }

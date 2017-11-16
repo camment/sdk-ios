@@ -17,6 +17,6 @@ typedef void(^CMIdentityProvidedIdentityBlock)(NSDictionary<NSString *, id> * _N
 
 - (void)refreshUserIdentity:(CMIdentityProvidedIdentityBlock _Nonnull)identityBlock
                 forceSignin:(BOOL)forceSignin;
-- (void)signOut;
+- (void)logOut;
 
 @end

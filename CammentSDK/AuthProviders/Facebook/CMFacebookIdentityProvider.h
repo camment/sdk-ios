@@ -4,7 +4,7 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "CMIdentityProvider.h"
+#import <CammentSDK/CammentSDK.h>
 
 @class FBSDKLoginManager;
 

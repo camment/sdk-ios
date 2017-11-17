@@ -8,7 +8,6 @@
 #import "FBSDKGraphRequest.h"
 #import "FBSDKProfilePictureView.h"
 #import "FBSDKProfile.h"
-#import "CammentSDK.h"
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 
 typedef void(^CMFBProfileDataFetcherBlock)(NSDictionary<NSString *, NSString *> * _Nonnull fbProfileData);

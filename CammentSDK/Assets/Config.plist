@@ -6,14 +6,10 @@
 	<dict>
 		<key>iotHost</key>
 		<string>https://a1ptuiv94cuwdn.iot.eu-central-1.amazonaws.com</string>
-		<key>hockeyAppId</key>
-		<string>de051234e09f49ac8fd6e017af139f19</string>
 		<key>awsCognitoPoolId</key>
 		<string>eu-central-1:a57fbb10-a8ff-49e0-a69b-b6903a058868</string>
 		<key>awsS3BucketName</key>
 		<string>camment-prod-camments</string>
-		<key>facebookAppId</key>
-		<string>272405646569362</string>
 		<key>apiHost</key>
 		<string>https://k0ujcx8gu4.execute-api.eu-central-1.amazonaws.com/prod</string>
 		<key>iotCertFile</key>
@@ -25,14 +21,10 @@
 	<dict>
 		<key>iotHost</key>
 		<string>https://a33ob3cdhetxbp.iot.eu-central-1.amazonaws.com</string>
-		<key>hockeyAppId</key>
-		<string>de051234e09f49ac8fd6e017af139f19</string>
 		<key>awsCognitoPoolId</key>
 		<string>eu-central-1:aa96090c-0423-46d1-a584-20086c0e134d</string>
 		<key>awsS3BucketName</key>
 		<string>camment-dev-camments</string>
-		<key>facebookAppId</key>
-		<string>272405646569362</string>
 		<key>apiHost</key>
 		<string>https://61a4mjm5gl.execute-api.eu-central-1.amazonaws.com/dev</string>
 		<key>iotCertFile</key>
@@ -44,14 +36,10 @@
 	<dict>
 		<key>iotHost</key>
 		<string>https://a33ob3cdhetxbp.iot.eu-central-1.amazonaws.com</string>
-		<key>hockeyAppId</key>
-		<string>de051234e09f49ac8fd6e017af139f19</string>
 		<key>awsCognitoPoolId</key>
 		<string>eu-central-1:aa96090c-0423-46d1-a584-20086c0e134d</string>
 		<key>awsS3BucketName</key>
 		<string>camment-dev-camments</string>
-		<key>facebookAppId</key>
-		<string>272405646569362</string>
 		<key>apiHost</key>
 		<string>https://61a4mjm5gl.execute-api.eu-central-1.amazonaws.com/dev</string>
 		<key>iotCertFile</key>

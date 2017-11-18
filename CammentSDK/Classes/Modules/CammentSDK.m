@@ -70,10 +70,10 @@
     self = [super init];
     if (self) {
         [self loadAssets];
-#ifdef DEBUG
+//#ifdef DEBUG
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
-#endif
+//#endif
         self.fileLogger = [[DDFileLogger alloc] init]; // File Logger
         self.fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
         self.fileLogger.logFileManager.maximumNumberOfLogFiles = 3;
@@ -157,16 +157,17 @@
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
     if (newIdentity == nil) { return; }
     [[CMAnalytics instance] setMixpanelID:newIdentity];
-    CMUser *currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-            withCognitoUserId:newIdentity]
-            build];
-    [[CMStore instance] setCurrentUser:currentUser];
-
+    
     if ([CMStore instance].facebookAccessToken) {
         [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAsKnownUser;
     } else {
         [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAnonymoius;
     }
+    
+    CMUser *currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
+            withCognitoUserId:newIdentity]
+            build];
+    [[CMStore instance] setCurrentUser:currentUser];
 
     if (oldIdentity) {
         if ([[[CMStore instance].activeGroup ownerCognitoUserId] isEqualToString:oldIdentity]) {
@@ -200,7 +201,6 @@
     if (_authService.cognitoHasBeenConfigured) {
         AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
         AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
-        NSLog(@"current dataSet%@", dataset.getAll);
         [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
             if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
                 return nil;
@@ -208,7 +208,6 @@
             [dataset setString:oldIdentity forKey:newIdentity];
             return [dataset synchronize];
         }] continueWithBlock:^id(AWSTask<id> *t) {
-            NSLog(@"sync dataSet %@", dataset.getAll);
             return [[CMAPIDevcammentClient defaultAPIClient] meUuidPut];
         }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {
             if (t.error) {
@@ -264,7 +263,9 @@
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
         if (!t.error) {
-            DDLogVerbose(@"CMUser info has been updated with data %@", userInfo);
+            DDLogDeveloperInfo(@"User profile have been updated with data %@", userInfo);
+        } else {
+            DDLogError(@"Error during updating user profile %@", t.error);
         }
         return nil;
     }];
@@ -306,7 +307,7 @@
         CGFontRef font = CGFontCreateWithDataProvider(provider);
         if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
             CFStringRef errorDescription = CFErrorCopyDescription(error);
-            DDLogInfo(@"Failed to load font: %@", errorDescription);
+            DDLogError(@"Failed to load font: %@", errorDescription);
             CFRelease(errorDescription);
         }
         CFRelease(font);

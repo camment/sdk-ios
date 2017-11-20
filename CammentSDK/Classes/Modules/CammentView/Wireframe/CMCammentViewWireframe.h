@@ -29,11 +29,11 @@
 
 @property(nonatomic, strong) CMCammentOverlayLayoutConfig *overlayLayoutConfig;
 
-@property(nonatomic, strong) id <CMIdentityProvider> identityProvider;
+@property(nonatomic, strong) CMUserSessionController *userSessionController;
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
                  overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
-                    identityProvider:(id <CMIdentityProvider>)identityProvider NS_DESIGNATED_INITIALIZER;
+               userSessionController:(CMUserSessionController *)userSessionController NS_DESIGNATED_INITIALIZER;
 
 - (CMCammentViewController *)controller;
 

@@ -8,12 +8,11 @@
 #import "CammentSDK.h"
 #import "CMStore.h"
 #import "CMAnalytics.h"
-#import "CMCognitoAuthService.h"
+#import "CMAWSServicesFactory.h"
 #import "CMServerListenerCredentials.h"
 #import "CMServerListener.h"
 #import "CMServerMessage.h"
 #import "CMUsersGroupBuilder.h"
-#import "UIViewController+topVisibleViewController.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMAppConfig.h"
 #import "CMInvitationViewController.h"
@@ -32,24 +31,27 @@
 #import "AWSIotDataManager.h"
 #import "NSArray+RacSequence.h"
 #import "AWSCognito.h"
-#import "AWSCore.h"
 #import "CMInternalCammentSDKProtocol.h"
+#import "CMUserSessionController.h"
+#import "CMCognitoFacebookAuthProvider.h"
 
-@interface CammentSDK () <CMAuthInteractorOutput, CMGroupManagementInteractorOutput, CMInternalCammentSDKProtocol>
+@interface CammentSDK () <CMGroupManagementInteractorOutput, CMInternalCammentSDKProtocol>
 
-@property(nonatomic, strong) CMCognitoAuthService *authService;
+@property(nonatomic, strong) CMAWSServicesFactory *awsServicesFactory;
 @property(nonatomic) BOOL connectionAvailable;
 
 @property(nonatomic) id <CMAuthInteractorInput> authInteractor;
 @property(nonatomic) id <CMGroupManagementInteractorInput> groupManagmentInteractor;
 
 @property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
+@property(nonatomic) NSOperationQueue *onSDKHasBeenConfiguredQueue;
 
 @property(nonatomic, strong) CMConnectionReachability *connectionReachibility;
 @property(nonatomic, strong) RACDisposable *iotSubscriptionDisposable;
 
 @property(nonatomic, strong) DDFileLogger *fileLogger;
 
+@property(nonatomic, strong) CMUserSessionController *userSessionController;
 @end
 
 @implementation CammentSDK
@@ -70,16 +72,13 @@
     self = [super init];
     if (self) {
         [self loadAssets];
-//#ifdef DEBUG
+
         [DDLog addLogger:[DDTTYLogger sharedInstance]];
         [[DDTTYLogger sharedInstance] setColorsEnabled:YES];
-//#endif
         self.fileLogger = [[DDFileLogger alloc] init]; // File Logger
         self.fileLogger.rollingFrequency = 60 * 60 * 24; // 24 hour rolling
         self.fileLogger.logFileManager.maximumNumberOfLogFiles = 3;
         [DDLog addLogger:self.fileLogger];
-
-        DDLogInfo(@"Camment SDK has started");
 
 #ifdef INTERNALSDK
         [[CMStore instance] setupTweaks];
@@ -95,8 +94,13 @@
         self.onSignedInOperationsQueue = [[NSOperationQueue alloc] init];
         self.onSignedInOperationsQueue.maxConcurrentOperationCount = 1;
 
+        self.onSDKHasBeenConfiguredQueue = [[NSOperationQueue alloc] init];
+        self.onSDKHasBeenConfiguredQueue.maxConcurrentOperationCount = 1;
+        [self.onSDKHasBeenConfiguredQueue setSuspended:YES];
+
         self.connectionAvailable = YES;
         self.connectionReachibility = [CMConnectionReachability reachabilityForInternetConnection];
+
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
                                                      name:kReachabilityChangedNotification
@@ -107,12 +111,9 @@
                                                      name:AWSCognitoIdentityIdChangedNotification
                                                    object:nil];
 
-        [RACObserve([CMStore instance], currentUser) subscribeNext:^(id  _Nullable x) {
-            [self updateUserInfo];
-        }];
-        
-        self.authService = [CMCognitoAuthService new];
         [self clearTmpDirectory];
+
+        DDLogDeveloperInfo(@"Camment SDK instantiated");
     }
 
     return self;
@@ -120,54 +121,70 @@
 
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey
            identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider {
-    if ([GVUserDefaults standardUserDefaults].isFirstSDKLaunch) {
-        [self.authService signOut];
-        [GVUserDefaults standardUserDefaults].isFirstSDKLaunch = NO;
-        
-    }
-    [CMStore instance].apiKey = apiKey;
-    [CMStore instance].identityProvider = identityProvider;
+    [CMAppConfig instance].apiKey = apiKey;
 
+    self.awsServicesFactory = [[CMAWSServicesFactory alloc] initWithAppConfig:[CMAppConfig instance]];
+
+    CMCognitoFacebookAuthProvider *cognitoFacebookIdentityProvider = [[CMCognitoFacebookAuthProvider alloc] initWithRegionType:AWSRegionEUCentral1
+                                                                                                                identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
+                                                                                                               useEnhancedFlow:YES
+                                                                                                       identityProviderManager:nil
+                                                                                                                     APIClient:self.awsServicesFactory.anonymousAPIClient];
+    AWSCognitoCredentialsProvider *cognitoCredentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionEUCentral1
+                                                                                                         identityProvider:cognitoFacebookIdentityProvider];
     self.authInteractor = [[CMAuthInteractor alloc] initWithIdentityProvider:identityProvider];
-    [(CMAuthInteractor *) self.authInteractor setOutput:self];
+    self.userSessionController = [CMUserSessionController registerInstanceWithUser:nil
+                                                                            tokens:nil
+                                                        cognitoCredentialsProvider:cognitoCredentialsProvider
+                                                        authentificationInteractor:self.authInteractor
+                                                   cognitoFacebookIdentityProvider:cognitoFacebookIdentityProvider
+                                                           authChangedEventSubject:[CMStore instance].authentificationStatusSubject];
 
-    [[self.authService signIn] subscribeNext:^(NSString *cognitoIdentityId) {
-        [self identityHasChangedOldIdentity:[CMStore instance].currentUser.cognitoUserId newIdentity:cognitoIdentityId];
+    if ([GVUserDefaults standardUserDefaults].isFirstSDKLaunch) {
+        [self.userSessionController endSession];
+        [GVUserDefaults standardUserDefaults].isFirstSDKLaunch = NO;
+    }
+
+    [self.onSDKHasBeenConfiguredQueue addOperationWithBlock:^{
+        [self.awsServicesFactory configureAWSServices:cognitoCredentialsProvider];
+        [self configureIoTListeneWithNewIdentity:cognitoCredentialsProvider.identityId];
+        DDLogDeveloperInfo(@"all services are up and running");
         [self checkIfDeferredDeepLinkExists];
-    } error:^(NSError *error) {
-        if ([error.domain isEqualToString:AWSCognitoIdentityErrorDomain]) {
-            [[CMStore instance] cleanUp];
-            [self.authService signOut];
-            [self configureWithApiKey:apiKey identityProvider:nil];
-        }
-        DDLogError(@"Error on signing in at configureWithApiKey:identityProvider: method %@", error);
     }];
+
+    [self wakeUpUserSession];
 }
 
--(void)identityIdDidChange:(NSNotification*)notification {
+- (void)wakeUpUserSession {
+    [[self.userSessionController refreshSession:NO]
+            continueWithBlock:^id(AWSTask<id> *task) {
+                if (task.error) {
+                    DDLogError(@"Error on signing in at configureWithApiKey:identityProvider: method %@", task.error);
+                    return nil;
+                } else {
+                    DDLogDeveloperInfo(@"user session is ready, continue with SDK configuration");
+                    [self.onSDKHasBeenConfiguredQueue setSuspended:NO];
+                }
+
+                return nil;
+            }];
+}
+
+- (void)identityIdDidChange:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
     DDLogInfo(@"identity changed from %@ to %@",
             [userInfo objectForKey:AWSCognitoNotificationPreviousId],
             [userInfo objectForKey:AWSCognitoNotificationNewId]);
     NSString *newIdentity = [userInfo objectForKey:AWSCognitoNotificationNewId];
     NSString *oldIdentity = [userInfo objectForKey:AWSCognitoNotificationPreviousId];
+
     [self identityHasChangedOldIdentity:oldIdentity newIdentity:newIdentity];
 }
 
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
-    if (newIdentity == nil) { return; }
+    if (newIdentity == nil) {return;}
+
     [[CMAnalytics instance] setMixpanelID:newIdentity];
-    
-    if ([CMStore instance].facebookAccessToken) {
-        [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAsKnownUser;
-    } else {
-        [CMStore instance].userAuthentificationState = CMCammentUserAuthentificatedAnonymoius;
-    }
-    
-    CMUser *currentUser = [[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-            withCognitoUserId:newIdentity]
-            build];
-    [[CMStore instance] setCurrentUser:currentUser];
 
     if (oldIdentity) {
         if ([[[CMStore instance].activeGroup ownerCognitoUserId] isEqualToString:oldIdentity]) {
@@ -198,74 +215,35 @@
     }
 
 
-    if (_authService.cognitoHasBeenConfigured) {
-        AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
-        AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
-        [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
-            if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
-                return nil;
-            }
-            [dataset setString:oldIdentity forKey:newIdentity];
-            return [dataset synchronize];
-        }] continueWithBlock:^id(AWSTask<id> *t) {
-            return [[CMAPIDevcammentClient defaultAPIClient] meUuidPut];
-        }] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {
-            if (t.error) {
-                DDLogError(@"%@", t);
-            } else {
-                DDLogInfo(@"Profiles synced from %@  to %@", oldIdentity, newIdentity);
-            }
-            return nil;
-        }];
-        
-        [dataset setConflictHandler:^AWSCognitoResolvedConflict *(NSString *datasetName, AWSCognitoConflict *conflict) {
-            return [conflict resolveWithLocalRecord];
-        }];
-
+    if (_awsServicesFactory.cognitoHasBeenConfigured) {
+        [self syncCognitoProfiles:oldIdentity newIdentity:newIdentity];
         [self configureIoTListeneWithNewIdentity:newIdentity];
     }
 }
 
-- (void)updateUserInfo {
-    if ([CMStore instance].userAuthentificationState != CMCammentUserAuthentificatedAsKnownUser) {
+- (void)syncCognitoProfiles:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
+    if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
         return;
     }
-
-    CMUser * user = [CMStore instance].currentUser;
-    NSMutableDictionary *userInfo = [NSMutableDictionary new];
-
-    if (user.fbUserId) {
-        userInfo[@"facebookId"] = user.fbUserId;
-    }
-
-    if (user.username) {
-        userInfo[@"name"] = user.username;
-    }
-
-     if (user.userPhoto) {
-        userInfo[@"picture"] = user.userPhoto;
-    }
     
-    if (userInfo.allKeys.count == 0) { return; }
+    AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
     
-    NSError *error;
-    NSData *jsonData = [NSJSONSerialization dataWithJSONObject:userInfo
-                                                       options:0
-                                                         error:&error];
-    if (!jsonData) {return;}
-
-    NSString *jsonString = [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
-    if (!jsonString) {return;}
-
-    CMAPIUserinfoInRequest *userinfoInRequest = [CMAPIUserinfoInRequest new];
-    userinfoInRequest.userinfojson = jsonString;
-
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-    [[client userinfoPost:userinfoInRequest] continueWithBlock:^id(AWSTask<id> *t) {
-        if (!t.error) {
-            DDLogDeveloperInfo(@"User profile have been updated with data %@", userInfo);
+    AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
+    [dataset setConflictHandler:^AWSCognitoResolvedConflict *(NSString *datasetName, AWSCognitoConflict *conflict) {
+        return [conflict resolveWithLocalRecord];
+    }];
+    
+    [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
+        [dataset setString:oldIdentity forKey:newIdentity];
+        
+        return [dataset synchronize];
+    }] continueWithBlock:^id(AWSTask<id> *t) {
+        return [[CMAPIDevcammentClient defaultAPIClient] meUuidPut];
+    }] continueWithBlock:^id _Nullable(AWSTask *_Nonnull t) {
+        if (t.error) {
+            DDLogError(@"%@", t);
         } else {
-            DDLogError(@"Error during updating user profile %@", t.error);
+            DDLogInfo(@"Profile switched from %@  to %@", oldIdentity, newIdentity);
         }
         return nil;
     }];
@@ -297,13 +275,13 @@
     ];
     [customFonts map:^id(NSString *fileName) {
         NSString *filePath = [[NSBundle cammentSDKBundle] pathForResource:fileName ofType:nil];
-        if (!filePath) { return nil; }
+        if (!filePath) {return nil;}
 
         NSData *inData = [NSData dataWithContentsOfFile:filePath];
-        if (!inData) { return nil; }
+        if (!inData) {return nil;}
 
         CFErrorRef error;
-        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef)inData);
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef) inData);
         CGFontRef font = CGFontCreateWithDataProvider(provider);
         if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
             CFStringRef errorDescription = CFErrorCopyDescription(error);
@@ -331,11 +309,12 @@
 - (void)updateInterfaceWithReachability:(CMConnectionReachability *)reachability {
     NetworkStatus netStatus = [reachability currentReachabilityStatus];
     BOOL connectionAvailable = netStatus != NotReachable;
+
     if (connectionAvailable && connectionAvailable != self.connectionAvailable) {
-        connectionAvailable = YES;
-        if (![CMStore instance].userAuthentificationState) {
-            [[self.authService signIn] subscribeNext:^(NSString *x) {
-            }];
+
+        if (self.userSessionController.userAuthentificationState == CMCammentUserNotAuthentificated) {
+            DDLogDeveloperInfo(@"Reachability changed, updating user session..");
+            [self wakeUpUserSession];
         }
     }
 
@@ -357,8 +336,8 @@
 
             [message matchInvitation:^(CMInvitation *invitation) {
                 if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
-                        && [invitation.invitedUserFacebookId isEqualToString:[CMStore instance].currentUser.fbUserId]
-                        && ![invitation.invitationIssuer.fbUserId isEqualToString:[CMStore instance].currentUser.fbUserId]) {
+                        && [invitation.invitedUserFacebookId isEqualToString:self.userSessionController.user.fbUserId]
+                        && ![invitation.invitationIssuer.fbUserId isEqualToString:self.userSessionController.user.fbUserId]) {
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [self presentChatInvitation:invitation];
                     });
@@ -474,9 +453,10 @@
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
                                                         style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {}]];
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
 
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]){
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
         });
@@ -491,15 +471,16 @@
                                                                              message:CMLocalized(@"Would you like to open it and join the group? It will redirect you to your web browser first.")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
+        id <CMInternalCammentSDKProtocol> SDK = (id) [CammentSDK instance];
         [SDK openURL:url];
     }]];
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
                                                         style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {}]];
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
 
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]){
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
         });
@@ -509,14 +490,20 @@
 }
 
 - (void)presentLoginSuggestion:(NSString *)reason {
-    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"Login with your Facebook account?")
                                                                              message:reason
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.authInteractor signIn:YES];
+            [[self.userSessionController refreshSession:YES] continueWithBlock:^id(AWSTask<id> *task) {
+                if (task.error) {
+                    [self.onSignedInOperationsQueue cancelAllOperations];
+                } else {
+                    [self.onSignedInOperationsQueue setSuspended:NO];
+                }
+                return nil;
+            }];
         });
     }]];
 
@@ -524,7 +511,7 @@
         [self.onSignedInOperationsQueue cancelAllOperations];
     }]];
 
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]){
+    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
         });
@@ -561,16 +548,17 @@
 }
 
 - (void)refreshUserIdentity:(BOOL)forceSignin {
-    [self.authInteractor signIn:forceSignin];
+    [[self.userSessionController refreshSession:forceSignin]
+            continueWithBlock:^id(AWSTask<id> *t) {
+                return nil;
+            }];
 }
 
 - (void)logOut {
-    [[CMStore instance].identityProvider logOut];
+    [self.userSessionController endSession];
     [[CMStore instance] cleanUp];
 
-    [self.authService signOut];
-    [self renewUserIdentitySuccess:^{
-    } error:^(NSError *error) {}];
+    [self refreshUserIdentity:NO];
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
@@ -580,7 +568,7 @@
     if (pb.URL) {
 
         NSURLComponents *components = [NSURLComponents componentsWithURL:pb.URL resolvingAgainstBaseURL:NO];
-        if (![components.host isEqualToString:@"camment.sportacam.com"]) { return; }
+        if (![components.host isEqualToString:@"camment.sportacam.com"]) {return;}
         [self presentOpenURLSuggestion:pb.URL];
         [pb setValue:@"" forPasteboardType:UIPasteboardNameGeneral];
     }
@@ -588,7 +576,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     DDLogInfo(@"didFinishLaunchingWithOptions hook has been installed");
-    
+
 #ifdef DEBUG
     [AWSDDLog sharedInstance].logLevel = AWSLogLevelDebug;
     [AWSDDLog addLogger:[AWSDDTTYLogger sharedInstance]];
@@ -630,17 +618,17 @@
     if ([urlComponents.scheme isEqualToString:@"camment"]
             && [urlComponents.host isEqualToString:@"group"]) {
         NSArray *components = [urlComponents.path pathComponents];
-        if (components.count < 4) { return NO; }
-        
+        if (components.count < 4) {return NO;}
+
         NSString *groupUuid = components[1];
         NSString *showUuid = components[3];
         if (groupUuid.length > 0 && showUuid.length > 0) {
             [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOpenDeeplink];
             dispatch_async(dispatch_get_main_queue(), ^{
                 CMInvitation *invitation = [[[[[CMInvitationBuilder alloc] init]
-                                             withUserGroupUuid:groupUuid]
-                                            withShowUuid:showUuid]
-                                            build];
+                        withUserGroupUuid:groupUuid]
+                        withShowUuid:showUuid]
+                        build];
                 [self verifyInvitation:invitation];
             });
         }
@@ -653,16 +641,27 @@
 
 
 - (void)verifyInvitation:(CMInvitation *)invitation {
-    if (!invitation || !invitation.userGroupUuid) { return; }
-    
-    if ([CMStore instance].userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
+    if (!invitation || !invitation.userGroupUuid) {return;}
+
+    if ([self.onSDKHasBeenConfiguredQueue isSuspended]) {
+        @weakify(self);
+        [self.onSDKHasBeenConfiguredQueue addOperationWithBlock:^{
+            @strongify(self);
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self verifyInvitation:invitation];
+            });
+        }];
+        return;
+    }
+
+    if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
         //for external invitations key should be nil for now
         NSString *invitationKey = nil;
         CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder
-                                                    invitationFromExistingInvitation:invitation]
-                                                   withInvitationKey:invitationKey] build];
+                invitationFromExistingInvitation:invitation]
+                withInvitationKey:invitationKey] build];
         NSString *groupUuid = invitation.userGroupUuid;
-        AWSTask * task =[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidGet:groupUuid];
+        AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidGet:groupUuid];
 
         __weak typeof(self) weakSelf = self;
         dispatch_block_t presentChatInvitationBlock = ^{
@@ -675,7 +674,7 @@
             [task continueWithBlock:^id(AWSTask<id> *t) {
                 if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
                     CMAPIUsergroup *usergroup = t.result;
-                    if ([usergroup.userCognitoIdentityId isEqualToString:[CMStore instance].currentUser.cognitoUserId]) {
+                    if ([usergroup.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]) {
                         CMUsersGroup *group = [[[[[CMUsersGroupBuilder new]
                                 withUuid:invitation.userGroupUuid]
                                 withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
@@ -698,8 +697,6 @@
         } else {
             presentChatInvitationBlock();
         }
-
-
     } else {
         [self.onSignedInOperationsQueue setSuspended:YES];
         @weakify(self);
@@ -715,43 +712,9 @@
     }
 }
 
-- (void)authInteractorDidSignIn:(id <CMAuthInteractorInput>)authInteractor {
-    [[self.authService refreshCredentials] subscribeNext:^(NSString *x) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.onSignedInOperationsQueue setSuspended:NO];
-        });
-    } error:^(NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.onSignedInOperationsQueue cancelAllOperations];
-        });
-    }];
-}
-
-- (void)authInteractorDidFailToSignIn:(id <CMAuthInteractorInput>)authInteractor withError:(NSError *)error {
-}
-
-- (DDFileLogger *)getFileLogger {
-    return _fileLogger;
-}
-
-
-- (void)renewUserIdentitySuccess:(void (^ _Nullable)())successBlock
-                           error:(void (^ _Nullable)(NSError *error))errorBlock {
-    [[self.authService refreshCredentials] subscribeNext:^(NSString *cognitoUserId) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            successBlock();
-        });
-    } error:^(NSError *error) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            errorBlock(error);
-        });
-    }];
-}
-
-- (void)clearTmpDirectory
-{
-    NSArray* tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL] ?: @[];
-    tmpDirectory = [tmpDirectory.rac_sequence filter:^BOOL(NSString * _Nullable value) {
+- (void)clearTmpDirectory {
+    NSArray *tmpDirectory = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:NSTemporaryDirectory() error:NULL] ?: @[];
+    tmpDirectory = [tmpDirectory.rac_sequence filter:^BOOL(NSString *_Nullable value) {
         return [value hasSuffix:@".mp4"];
     }].array ?: @[];
     DDLogInfo(@"Cleaned up %d cache files", tmpDirectory.count);
@@ -778,11 +741,11 @@
     if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) {
         [application openURL:url options:@{}
            completionHandler:^(BOOL success) {
-               DDLogVerbose(@"Open %@: %d",url,success);
+               DDLogVerbose(@"Open %@: %d", url, success);
            }];
     } else {
         BOOL success = [application openURL:url];
-        DDLogVerbose(@"Open %@: %d",url,success);
+        DDLogVerbose(@"Open %@: %d", url, success);
     }
 }
 

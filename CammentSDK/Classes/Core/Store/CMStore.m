@@ -13,17 +13,17 @@
 #import "CMPresentationUtility.h"
 #import "CMInvitation.h"
 #import "CMAnalytics.h"
-#import "CMGroupsListInteractor.h"
 #import "CMGroupInfoInteractor.h"
 #import "CMUserBuilder.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMAuthStatusChangedEventContext.h"
+#import "CMGroupsListInteractor.h"
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
-@interface CMStore () <CMGroupsListInteractorOutput, CMGroupInfoInteractorOutput>
+@interface CMStore () <CMGroupInfoInteractorOutput, CMGroupsListInteractorOutput>
 @property(nonatomic, strong) FBTweak *offlineTweak;
 
-@property(nonatomic, strong) CMGroupsListInteractor *groupsListInteractor;
 @property(nonatomic, strong) CMGroupInfoInteractor *groupInfoInteractor;
 
 @end
@@ -54,13 +54,14 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.inviteFriendsActionSubject = [RACSubject new];
         self.userHasJoinedSignal = [RACSubject new];
         self.cleanUpSignal = [RACSubject new];
-
-        self.groupsListInteractor = [CMGroupsListInteractor new];
-        self.groupsListInteractor.output = self;
+        self.authentificationStatusSubject = [RACReplaySubject replaySubjectWithCapacity:1];
 
         self.groupInfoInteractor = [CMGroupInfoInteractor new];
         self.groupInfoInteractor.output = self;
 
+        self.groupListInteractor = [CMGroupsListInteractor new];
+        self.groupListInteractor.output = self;
+        
         @weakify(self)
         [RACObserve(self, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
             if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
@@ -77,13 +78,23 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         NSArray *updateGroupsSignals = @[
                 RACObserve(self, activeGroup),
                 RACObserve(self, isConnected),
-                RACObserve(self, userAuthentificationState),
                 self.userHasJoinedSignal,
+                self.authentificationStatusSubject
         ];
 
         [[RACSignal combineLatest:updateGroupsSignals] subscribeNext:^(RACTuple *tuple) {
-            [self.groupsListInteractor fetchUserGroups];
-            [self.groupInfoInteractor fetchUsersInGroup:self.activeGroup.uuid];
+            CMUsersGroup *group = tuple.first;
+            CMAuthStatusChangedEventContext *statusChangedEventContext = tuple.fourth;
+
+            if (statusChangedEventContext.state == CMCammentUserNotAuthentificated) {
+                return;
+            }
+            
+            if (group.uuid) {
+                [self.groupInfoInteractor fetchUsersInGroup:self.activeGroup.uuid];
+            }
+            
+            [self.groupListInteractor fetchUserGroups];
         }];
 
         [self.userHasJoinedSignal sendNext:@YES];
@@ -91,14 +102,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
     return self;
 }
-
-- (void)didFetchUserGroups:(NSArray *)groups {
-    self.userGroups = groups;
-}
-
-- (void)didFailToFetchUserGroups:(NSError *)error {
-}
-
 
 - (void)setupTweaks {
     FBTweakStore *store = [FBTweakStore sharedInstance];
@@ -207,11 +210,18 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     }
 }
 
+- (void)didFetchUserGroups:(NSArray *)groups {
+    self.userGroups = groups;
+}
+
+- (void)didFailToFetchUserGroups:(NSError *)error {
+
+}
+
 - (void)cleanUp {
     [self.cleanUpSignal sendNext:@YES];
 
     self.facebookAccessToken = nil;
-    self.userAuthentificationState = CMCammentUserNotAuthentificated;
 
     self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
     self.cammentRecordingState = CMCammentRecordingStateNotRecording;
@@ -221,8 +231,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     self.userGroups = @[];
 
     self.isOnboardingFinished = YES;
-
-    self.currentUser = [[CMUserBuilder user] build];
 }
 
 @end

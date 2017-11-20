@@ -31,13 +31,13 @@
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
                  overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
-                    identityProvider:(id <CMIdentityProvider>)identityProvider {
+               userSessionController:(CMUserSessionController *)userSessionController {
     self = [super init];
 
     if (self) {
         self.metadata = metadata;
         self.overlayLayoutConfig = overlayLayoutConfig;
-        self.identityProvider = identityProvider;
+        self.userSessionController = userSessionController;
     }
 
     return self;
@@ -45,15 +45,13 @@
 
 - (CMCammentViewController *)controller {
     CMCammentViewController *view = [[CMCammentViewController alloc] initWithOverlayLayoutConfig:_overlayLayoutConfig];
-
-    CMAuthInteractor *authInteractor = [[CMAuthInteractor alloc] initWithIdentityProvider:self.identityProvider];
+    
     CMInvitationInteractor *invitationInteractor = [[CMInvitationInteractor alloc] init];
     CMCammentsBlockPresenter *cammentsBlockPresenter = [[CMCammentsBlockPresenter alloc] init];
     CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata
-                                                                              authInteractor:authInteractor
+                                                                       userSessionController:_userSessionController
                                                                         invitationInteractor:invitationInteractor
                                                                       cammentsBlockPresenter:cammentsBlockPresenter];
-    authInteractor.output = presenter;
     invitationInteractor.output = presenter;
     cammentsBlockPresenter.output = presenter;
 

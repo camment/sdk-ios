@@ -19,8 +19,10 @@ s.ios.deployment_target = '8.1'
 s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
 s.default_subspec = 'SDK'
 
+# s.user_target_xcconfig = {'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES'}
+
 s.subspec 'SDK' do |ss|
-   ss.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
+   ss.public_header_files = 'CammentSDK/Classes/Public/*.{h}', 'CammentSDK/Classes/Internal/*.{h}'
    ss.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
 end
 
@@ -36,8 +38,8 @@ s.test_spec 'Tests' do |test_spec|
     test_spec.dependency  'Specta'
     test_spec.dependency  'Expecta'
     test_spec.dependency  'OCMock'
-  end
-
+    test_spec.requires_app_host = true
+end
 
 s.resource_bundles = {
 'CammentSDK' => ['CammentSDK/Assets/**/*']

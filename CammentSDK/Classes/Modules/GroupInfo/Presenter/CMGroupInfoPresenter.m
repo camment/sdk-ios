@@ -16,6 +16,7 @@
 #import "CMGroupInfoUserCell.h"
 #import "CMUserBuilder.h"
 #import "CMInternalCammentSDKProtocol.h"
+#import "CMUserSessionController.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
@@ -29,7 +30,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 @property(nonatomic) TLIndexPathDataModel *dataModel;
 @property(nonatomic) NSArray<CMUser *> *users;
 @property(nonatomic) BOOL showProfileInfo;
-@property(nonatomic, strong) CMProfileViewNode *profileViewNode;
+
 @end
 
 @implementation CMGroupInfoPresenter
@@ -38,26 +39,29 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     self = [super init];
     if (self) {
         self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
-        self.profileViewNode = [CMProfileViewNode new];
-        @weakify(self);
-        [[[RACObserve([CMStore instance], userAuthentificationState)
-                takeUntil:self.rac_willDeallocSignal]
-                deliverOnMainThread] subscribeNext:^(NSNumber *userAuthentificationState) {
-            @strongify(self);
-            self.showProfileInfo = [userAuthentificationState integerValue] == CMCammentUserAuthentificatedAsKnownUser;
-            [self reloadData];
-        }];
 
+        @weakify(self);
+        [[[[CMStore instance].authentificationStatusSubject
+                takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+                subscribeNext:^(CMAuthStatusChangedEventContext *x) {
+                    @strongify(self);
+                    self.showProfileInfo = x.state == CMCammentUserAuthentificatedAsKnownUser;
+                    [self reloadData];
+        }];
+        
         [[[RACObserve([CMStore instance], activeGroupUsers)
                 takeUntil:self.rac_willDeallocSignal]
                 deliverOnMainThread] subscribeNext:^(NSArray *currentGroupUsers) {
-            @strongify(self);
             [self reloadData];
         }];
     }
 
     return self;
 }
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+};
 
 - (void)reloadData {
     NSMutableArray *items = [NSMutableArray new];
@@ -67,7 +71,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     }
 
     self.users = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *user) {
-        return ![user.cognitoUserId isEqualToString:[CMStore instance].currentUser.cognitoUserId];
+        return ![user.cognitoUserId isEqualToString:user.cognitoUserId];
     }].array ?: @[];
 
     if (self.users.count == 0) {
@@ -124,9 +128,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         CMGroupInfoSection section = (CMGroupInfoSection) [model integerValue];
         switch (section) {
             case CMGroupInfoSectionUserProfile: {
-                CMProfileViewNode *profileNode = self.profileViewNode;
                 cellNodeBlock = ^ASCellNode *() {
-                    return profileNode ?: [ASCellNode new];
+                    return [CMProfileViewNode new];
                 };
                 break;
             }
@@ -174,8 +177,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
             CGSize size;
             CGFloat profileCellHeight = 100.0f;
 
-            if (self.profileViewNode) {
-                profileCellHeight = [self.profileViewNode layoutThatFits:ASSizeRangeMake(CGSizeMake(collectionNode.bounds.size.width, .0f),
+            if (self.showProfileInfo) {
+                profileCellHeight = [[CMProfileViewNode new] layoutThatFits:ASSizeRangeMake(CGSizeMake(collectionNode.bounds.size.width, .0f),
                                                                                         CGSizeMake(collectionNode.bounds.size.width, CGFLOAT_MAX))].size.height;
             }
             profileCellHeight += 20.0f;

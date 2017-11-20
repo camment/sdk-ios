@@ -5,28 +5,37 @@
 
 #import <AWSCore/AWSCore.h>
 #import "CMCognitoFacebookAuthProvider.h"
-#import "CMStore.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
-#import "CMCognitoAuthService.h"
-#import "CMAppConfig.h"
 
 @implementation CMCognitoFacebookAuthProvider
 
+- (instancetype)initWithRegionType:(AWSRegionType)regionType
+                    identityPoolId:(NSString *)identityPoolId
+                   useEnhancedFlow:(BOOL)useEnhancedFlow
+           identityProviderManager:(id <AWSIdentityProviderManager>)identityProviderManager
+                         APIClient:(CMAPIDevcammentClient *)APIClient {
+    self = [super initWithRegionType:regionType
+                      identityPoolId:identityPoolId
+                     useEnhancedFlow:useEnhancedFlow
+             identityProviderManager:identityProviderManager];
+    if (self) {
+        _APIClient = APIClient;
+    }
+
+    return self;
+}
+
 - (AWSTask<NSDictionary<NSString *, NSString *> *> *)logins {
-    if ([CMStore instance].facebookAccessToken) {
+    if (_facebookAccessToken) {
         return [super logins];
     }
+    
     return [AWSTask taskWithResult:nil];
 }
 
 - (AWSTask<NSString *> *)token {
 
-    NSString *fbAccessToken = [CMStore instance].facebookAccessToken ?: @"";
-
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient clientForKey:CMAnonymousAPIClientName];
-    [client setAPIKey:[CMStore instance].apiKey];
-    return [[client usersGetOpenIdTokenGet:fbAccessToken]
+    return [[_APIClient usersGetOpenIdTokenGet:_facebookAccessToken]
             continueWithBlock:^id(AWSTask<CMAPIOpenIdToken *> *task) {
 
                 if (task.error || ![task.result isKindOfClass:[CMAPIOpenIdToken class]]) {
@@ -36,7 +45,7 @@
 
                 CMAPIOpenIdToken *token = task.result;
                 self.identityId = token.identityId;
-
+                
                 return [AWSTask taskWithResult:token.token];
             }];
 }

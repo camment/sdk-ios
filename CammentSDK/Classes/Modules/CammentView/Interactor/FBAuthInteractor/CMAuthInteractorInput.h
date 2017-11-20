@@ -8,10 +8,13 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
-#import "CMIdentityProvider.h"
+#import <AWSCore/AWSCore.h>
+
+@class RACSignal;
 
 @protocol CMAuthInteractorInput <NSObject>
 
-- (void)signIn:(BOOL)forceSignin;
+- (AWSTask *)refreshIdentity:(BOOL)forceSignIn;
+- (void)logOut;
 
 @end

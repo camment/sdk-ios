@@ -83,7 +83,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
         return;
     }
     
-    if (!camment || !camment.uuid) {
+    if (!camment.uuid) {
         [self handleCammentUploadingError:[NSError errorWithDomain:CMCammentViewInteractorErrorDomain
                                                               code:CMCammentViewInteractorErrorProvidedParametersAreIncorrect
                                                           userInfo:@{}]
@@ -210,7 +210,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
 - (void)deleteCament:(CMCamment *)camment {
     NSString *cammentUuid = camment.uuid;
     NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
-    if (!cammentUuid || !groupUuid) {return;}
+    if (!cammentUuid || !groupUuid) { return; }
     [[self.client usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
                                                      groupUuid:groupUuid]
             continueWithBlock:^id(AWSTask<id> *t) {

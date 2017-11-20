@@ -21,7 +21,6 @@
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
 #import "CMCammentUploader.h"
-#import "CMAuthInteractor.h"
 #import "CammentSDK.h"
 #import "CMCammentBuilder.h"
 #import "CMUserJoinedMessage.h"
@@ -32,11 +31,11 @@
 #import "CMInternalCammentSDKProtocol.h"
 #import "CMErrorWireframe.h"
 #import "CMCammentsBlockPresenterInput.h"
+#import "CMUserSessionController.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput>
 
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
-@property(nonatomic, strong) id <CMAuthInteractorInput> authInteractor;
 @property(nonatomic, strong) id <CMInvitationInteractorInput> invitationInteractor;
 @property(nonatomic, strong) id <CMCammentsBlockPresenterInput> cammentsBlockNodePresenter;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
@@ -64,7 +63,7 @@
 }
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
-                      authInteractor:(id <CMAuthInteractorInput>)authInteractor
+               userSessionController:(CMUserSessionController *)userSessionController
                 invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor
               cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter {
     self = [super init];
@@ -72,7 +71,7 @@
     if (self) {
         self.cammentsBlockNodePresenter = cammentsBlockPresenter;
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
-        self.authInteractor = authInteractor;
+        self.userSessionController = userSessionController;
         self.invitationInteractor = invitationInteractor;
 
         self.presentationPlayerInteractor.instructionOutput = self;
@@ -292,7 +291,7 @@
         CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
                 withShowUuid:[CMStore instance].currentShowMetadata.uuid]
                 withUserGroupUuid:groupUUID]
-                withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
+                withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
                 withLocalAsset:asset] build];
         @weakify(self);
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
@@ -321,7 +320,7 @@
             withLocalURL:url.absoluteString]
             withShowUuid:[CMStore instance].currentShowMetadata.uuid]
             withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
-            withUserCognitoIdentityId:[CMStore instance].currentUser.cognitoUserId]
+            withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
             build];
     [self.interactor uploadCamment:cammentToUpload];
 }
@@ -362,7 +361,7 @@
                         && !deletedCamment.isDeleted;
             }].array ?: @[];
 
-    for (CMCamment * cammentToDelete in deletedCamments) {
+    for (CMCamment *cammentToDelete in deletedCamments) {
         DDLogVerbose(@"Run postponed camment deletion on uuid %@", cammentToDelete.uuid);
         [self.interactor deleteCament:cammentToDelete];
     }
@@ -430,11 +429,21 @@
     [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
     [CMStore instance].isOnboardingFinished = YES;
 
-    if ([CMStore instance].userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
+    if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
         [self getInvitationDeeplink];
     } else {
         [self.output showLoadingHUD];
-        [_authInteractor signIn:YES];
+        [[self.userSessionController refreshSession:YES]
+                continueWithExecutor:[AWSExecutor mainThreadExecutor]
+                           withBlock:^id(AWSTask<id> *task) {
+                               if (task.error) {
+                                   [self.output hideLoadingHUD];
+                                   [self inviteFriendsAction];
+                               } else {
+                                   [self.output hideLoadingHUD];
+                               }
+                               return nil;
+                           }];
     }
     [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventInvite];
 }
@@ -442,30 +451,6 @@
 - (void)getInvitationDeeplink {
     [self.output showLoadingHUD];
     [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid];
-}
-
-- (void)authInteractorDidSignIn:(id <CMAuthInteractorInput>)authInteractor {
-    [(id <CMInternalCammentSDKProtocol>) [CammentSDK instance] renewUserIdentitySuccess:^{
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.output hideLoadingHUD];
-            [self inviteFriendsAction];
-        });
-    }                                                                             error:^(NSError *error) {
-        [self authInteractorDidFailToSignIn:authInteractor withError:error];
-    }];
-}
-
-- (void)authInteractorDidFailToSignIn:(id <CMAuthInteractorInput>)authInteractor withError:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.output hideLoadingHUD];
-
-        if (!error) {
-            [[CMErrorWireframe new] presentErrorViewWithError:error
-                                             inViewController:(id) self.output];
-            return;
-        }
-    });
-
 }
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
@@ -549,8 +534,8 @@
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
-    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].currentUser.cognitoUserId]
-            || [CMStore instance].currentUser.cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil) {
+    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]
+            || self.userSessionController.user.cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil) {
         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }
@@ -566,7 +551,7 @@
 
 - (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {
     if ([message.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
-            ![message.joinedUser.cognitoUserId isEqualToString:[CMStore instance].currentUser.cognitoUserId]) {
+            ![message.joinedUser.cognitoUserId isEqualToString:self.userSessionController.user.cognitoUserId]) {
         [self.output presentUserJoinedMessage:message];
     }
 }

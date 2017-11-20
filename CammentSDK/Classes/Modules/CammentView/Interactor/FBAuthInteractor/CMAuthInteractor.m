@@ -7,9 +7,7 @@
 //
 
 #import "CMAuthInteractor.h"
-#import "CMCognitoAuthService.h"
-#import "CMStore.h"
-#import "CMUserBuilder.h"
+#import "CMAWSServicesFactory.h"
 
 NSString *const CMAuthInteractorErrorDomain = @"tv.camment.CMCammentViewInteractorErrorDomain";
 
@@ -31,28 +29,20 @@ NSString *const CMAuthInteractorErrorDomain = @"tv.camment.CMCammentViewInteract
     return self;
 }
 
-- (void)updateUserProfileData:(NSDictionary *)profileData {
-    CMUser *currentUser = [[[[[[CMUserBuilder userFromExistingUser:[CMStore instance].currentUser]
-            withUsername:profileData[CMCammentIdentityUsername]]
-            withFbUserId:profileData[CMCammentIdentityUUID]]
-            withUserPhoto:profileData[CMCammentIdentityProfilePicture]]
-            withEmail:profileData[CMCammentIdentityEmail]]
-            build];
-    [[CMStore instance] setCurrentUser:currentUser];
-}
-
-- (void)signIn:(BOOL)forceSignin {
+- (AWSTask *)refreshIdentity:(BOOL)forceSignIn {
     if (!_identityProvider) {
         NSError *error = [NSError errorWithDomain:CMAuthInteractorErrorDomain
                                              code:CMAuthInteractorErrorAuthProviderIsEmpty
                                          userInfo:@{}];
-        [self.output authInteractorDidFailToSignIn:self withError:error];
-        return;
+        return [AWSTask taskWithError:error];
     }
+
+    AWSTaskCompletionSource *taskCompletionSource = [AWSTaskCompletionSource taskCompletionSource];
 
     [_identityProvider refreshUserIdentity:^void(NSDictionary<NSString *, id> *tokens) {
 
         if (tokens.allKeys.count == 0) {
+            [taskCompletionSource setResult:tokens];
             return;
         }
 
@@ -74,7 +64,7 @@ NSString *const CMAuthInteractorErrorDomain = @"tv.camment.CMCammentViewInteract
                                              userInfo:@{
                                                      @"Unknown providers or properties": incorrectProviders,
                                              }];
-            [self.output authInteractorDidFailToSignIn:self withError:error];
+            [taskCompletionSource setError:error];
             return;
         }
 
@@ -84,16 +74,20 @@ NSString *const CMAuthInteractorErrorDomain = @"tv.camment.CMCammentViewInteract
             NSError *error = [NSError errorWithDomain:CMAuthInteractorErrorDomain
                                                  code:CMAuthInteractorErrorAuthProviderReturnsIncorrectParameters
                                              userInfo:@{}];
-            [self.output authInteractorDidFailToSignIn:self withError:error];
+            [taskCompletionSource setError:error];
             return;
         }
 
-        [CMStore instance].facebookAccessToken = fbToken;
-        [self updateUserProfileData:tokens];
-        [self.output authInteractorDidSignIn:self];
+        [taskCompletionSource setResult:tokens];
 
         return;
-    }                          forceSignin:forceSignin];
+    }                          forceSignin:forceSignIn];
+
+    return taskCompletionSource.task;
+}
+
+- (void)logOut {
+    [self.identityProvider logOut];
 }
 
 @end

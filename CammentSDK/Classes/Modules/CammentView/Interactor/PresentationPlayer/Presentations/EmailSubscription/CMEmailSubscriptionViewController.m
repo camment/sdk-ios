@@ -25,7 +25,7 @@
     self.webView = [[UIWebView alloc] init];
     NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"emailform" ofType:@"html"];
     NSString *html = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:NULL];
-    html = [html stringByReplacingOccurrencesOfString:@"${email}" withString:[CMStore instance].currentUser.email ?: @""];
+    html = [html stringByReplacingOccurrencesOfString:@"${email}" withString:@""];
 
     [self.webView loadHTMLString:html baseURL:nil];
     self.webView.delegate = self;

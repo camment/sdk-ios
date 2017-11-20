@@ -14,6 +14,8 @@
 @class CMShowMetadata;
 @class CMInvitation;
 @class CMCammentOverlayLayoutConfig;
+@class CMAuthStatusChangedEventContext;
+@class CMGroupsListInteractor;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -24,15 +26,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
     CMCammentRecordingStateCancelled
 };
 
-typedef NS_ENUM(NSInteger, CMCammentUserAuthentificationState) {
-    CMCammentUserNotAuthentificated,
-    CMCammentUserAuthentificatedAnonymoius,
-    CMCammentUserAuthentificatedAsKnownUser,
-};
-
 @interface CMStore: NSObject <FBTweakObserver>
 
-@property (nonatomic, assign) CMCammentUserAuthentificationState userAuthentificationState;
 @property (nonatomic, assign) BOOL isConnected;
 
 @property (nonatomic, copy) NSString *facebookAccessToken;
@@ -51,10 +46,7 @@ typedef NS_ENUM(NSInteger, CMCammentUserAuthentificationState) {
 
 @property(nonatomic) CMShowMetadata *currentShowMetadata;
 
-@property(nonatomic, strong) CMUser *currentUser;
-
-@property(nonatomic, copy) NSString *apiKey;
-
+@property RACSubject<CMAuthStatusChangedEventContext *> *authentificationStatusSubject;
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 @property RACSubject<NSNumber *> *inviteFriendsActionSubject;
 @property RACSubject<NSNumber *> *userHasJoinedSignal;
@@ -62,7 +54,8 @@ typedef NS_ENUM(NSInteger, CMCammentUserAuthentificationState) {
 
 @property(nonatomic) BOOL isOfflineMode;
 
-@property(nonatomic, strong) id <CMIdentityProvider> identityProvider;
+
+@property(nonatomic, strong) CMGroupsListInteractor *groupListInteractor;
 
 + (CMStore *)instance;
 

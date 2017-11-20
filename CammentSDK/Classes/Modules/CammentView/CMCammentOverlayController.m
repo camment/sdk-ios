@@ -13,6 +13,7 @@
 #import "CMShow.h"
 #import "CMStore.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMUserSessionController.h"
 
 @interface CMCammentOverlayController ()
 @property(nonatomic, strong) CMCammentViewController *cammentViewController;
@@ -37,7 +38,7 @@
         CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc]
                 initWithShowMetadata:metadata
                  overlayLayoutConfig:overlayLayoutConfig
-                    identityProvider:store.identityProvider];
+               userSessionController:[CMUserSessionController instance]];
         self.cammentViewController = [viewWireframe controller];
         self.wireframe = viewWireframe;
 

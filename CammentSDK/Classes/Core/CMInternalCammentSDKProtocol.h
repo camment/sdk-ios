@@ -7,11 +7,6 @@
 
 @protocol CMInternalCammentSDKProtocol <NSObject>
 
-- (void)renewUserIdentitySuccess:(void (^ _Nullable)(void))successBlock
-                           error:(void (^ _Nullable)(NSError * _Nullable error))errorBlock;
-
-- (DDFileLogger *)getFileLogger;
-
--  (void)openURL:(NSURL *)url;
+-  (void)openURL:(NSURL * _Nullable)url;
 
 @end

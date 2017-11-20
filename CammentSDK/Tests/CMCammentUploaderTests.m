@@ -11,7 +11,6 @@
 #import <OCMock/OCMock.h>
 #import <ReactiveObjC/ReactiveObjC.h>
 #import <AWSS3/AWSS3.h>
-
 #import "CMCammentUploader.h"
 
 SpecBegin(CMCammentUploaderTests)

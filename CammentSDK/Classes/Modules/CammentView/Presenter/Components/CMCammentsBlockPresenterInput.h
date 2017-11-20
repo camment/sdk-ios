@@ -12,7 +12,7 @@
 
 - (void)playCamment:(NSString *)cammentId;
 
-- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion;
+- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)(void))completion;
 
 - (void)deleteItem:(CMCammentsBlockItem *)blockItem;
 - (void)reloadItems:(NSArray<CMCammentsBlockItem *> *)newItems animated:(BOOL)animated;

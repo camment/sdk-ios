@@ -8,6 +8,8 @@
 #import <CammentSDK/CMCammentOverlayController.h>
 #import <CammentSDK/CMIdentityProvider.h>
 
+@class CMUserSessionController;
+
 @protocol CMCammentSDKDelegate <NSObject>
 
 @optional

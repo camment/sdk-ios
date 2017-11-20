@@ -16,23 +16,21 @@
 #import "CMCammentRecorderInteractorInput.h"
 #import "CMCammentRecorderInteractorOutput.h"
 #import "CMLoadingHUD.h"
-#import "CMAuthInteractorOutput.h"
 #import "CMCammentsBlockPresenter.h"
 #import "CMInvitationInteractorOutput.h"
 
 @class CMCammentViewWireframe;
 @class CMShow;
 @class CMShowMetadata;
-@protocol CMAuthInteractorInput;
 @protocol CMInvitationInteractorInput;
 @protocol CMCammentsBlockPresenterInput;
+@class CMUserSessionController;
 
 @interface CMCammentViewPresenter : NSObject<
         CMCammentViewPresenterInput,
         CMCammentViewInteractorOutput,
         CMCammentsLoaderInteractorOutput,
         CMCammentRecorderInteractorOutput,
-        CMAuthInteractorOutput,
         CMCammentsBlockPresenterOutput,
         CMInvitationInteractorOutput>
 
@@ -42,9 +40,10 @@
 
 @property (nonatomic) id<CMCammentsLoaderInteractorInput> loaderInteractor;
 @property (nonatomic) id<CMCammentRecorderInteractorInput> recorderInteractor;
+@property (nonatomic) CMUserSessionController *userSessionController;
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
-                      authInteractor:(id <CMAuthInteractorInput>)authInteractor
+               userSessionController:(CMUserSessionController *)userSessionController
                 invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor
               cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter NS_DESIGNATED_INITIALIZER;
 @end

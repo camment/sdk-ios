@@ -9,8 +9,6 @@
 #import <Specta/Specta.h>
 #import <Expecta/Expecta.h>
 #import <OCMock/OCMock.h>
-#import <ReactiveObjC/ReactiveObjC.h>
-
 #import "CMCammentBuilder.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMCammentViewInteractor.h"
@@ -73,7 +71,7 @@ SpecBegin(CMCammentViewInteractorTests)
                                                                         body:[OCMArg checkWithBlock:^BOOL(CMAPICammentInRequest *obj) {
                                                                             expect(obj).toNot.beNil();
                                                                             expect(obj).to.beKindOf([CMAPICammentInRequest class]);
-                                                                            expect(obj.uuid).to.beIdenticalTo(cammentToUpload.uuid);
+                                                                            expect(obj.uuid).to.equal(cammentToUpload.uuid);
                                                                             return YES;
                                                                         }]]);
             [cammentViewInteractor uploadCamment:cammentToUpload];

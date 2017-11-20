@@ -22,6 +22,7 @@
 #import "FBTweakStore.h"
 #import "ReactiveObjC.h"
 #import "CMErrorWireframe.h"
+#import "CMUserSessionController.h"
 
 @interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver, CMCammentSDKDelegate>
 
@@ -51,7 +52,7 @@
 }
 
 - (void)networkDidBecomeAvailable {
-    if ([CMStore instance].userAuthentificationState) {
+    if ([CMUserSessionController instance].userAuthentificationState) {
         [self.output setLoadingIndicator];
         [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     }
@@ -63,17 +64,14 @@
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
 
     NSArray *updateShowsListSignals = @[
-            RACObserve([CMStore instance], userAuthentificationState),
             RACObserve([CMStore instance], isConnected),
             RACObserve([CMStore instance], isOfflineMode)
     ];
     [[[[RACSignal combineLatest:updateShowsListSignals] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
-        NSNumber *userAuthentificationState = tuple.first;
-        NSNumber *isConnected = tuple.second;
-        NSNumber *isOfflineMode = tuple.third;
-        BOOL isSignedIn = [userAuthentificationState integerValue] != CMCammentUserNotAuthentificated;
+        NSNumber *isConnected = tuple.first;
+        NSNumber *isOfflineMode = tuple.second;
         
-        if (isSignedIn && isConnected.boolValue || isOfflineMode.boolValue) {
+        if (isConnected.boolValue || isOfflineMode.boolValue) {
             [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
         }
     }];

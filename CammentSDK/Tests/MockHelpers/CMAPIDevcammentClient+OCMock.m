@@ -6,7 +6,6 @@
 //
 
 #import "CMAPIDevcammentClient+OCMock.h"
-#import <OCMock/OCMock.h>
 
 @implementation CMAPIDevcammentClient (OCMock)
 

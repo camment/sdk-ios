@@ -4,13 +4,16 @@
 //
 
 #import "CMProfileViewNode.h"
+#import "ReactiveObjC.h"
 #import "UIColorMacros.h"
-#import "CMStore.h"
+#import "CMUserSessionController.h"
 #import "CMSettingsNode.h"
 #import "CammentSDK.h"
+#import "CMStore.h"
 #import "CMInternalCammentSDKProtocol.h"
 
 @interface CMProfileViewNode () <CMSettingsNodeDelegate>
+
 @property(nonatomic, strong) ASTextNode *usernameTextNode;
 @property(nonatomic, strong) ASTextNode *userinfoTextNode;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
@@ -19,6 +22,7 @@
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
 @property(nonatomic, strong) CMSettingsNode *settingsNode;
 @property BOOL showSettingsNode;
+
 @end
 
 @implementation CMProfileViewNode {
@@ -88,10 +92,13 @@
     mutableParagraphStyle.alignment = NSTextAlignmentCenter;
 
     @weakify(self);
-    [[[RACObserve([CMStore instance], currentUser) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+    [[[RACObserve([CMUserSessionController instance], user) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
             subscribeNext:^(CMUser *user) {
                 @strongify(self);
 
+                if (!user) {
+                    _showSettingsNode = NO;
+                }
                 self.usernameTextNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
                                                                                        attributes:@{
                                                                                                NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
@@ -135,7 +142,7 @@
 }
 
 - (void)openUserProfile {
-    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMStore instance].currentUser.fbUserId]];
+    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMUserSessionController instance].user.fbUserId]];
     id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
     [SDK openURL:url];
 }
@@ -168,12 +175,13 @@
 
     ASOverlayLayoutSpec *overlayLayout = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:componentsStack
                                                                                  overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f) child:_settingsButtonNode]];
-
+    NSArray *childen = @[ _showSettingsNode ? _settingsNode : overlayLayout, _bottomSeparatorNode];
+    
     return [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                    spacing:.0f
                                             justifyContent:ASStackLayoutJustifyContentStart
                                                 alignItems:ASStackLayoutAlignItemsStretch
-                                                  children:@[ _showSettingsNode ? _settingsNode : overlayLayout, _bottomSeparatorNode]];
+                                                  children:childen];
 }
 
 - (void)settingsNodeDidCloseSettingsView:(CMSettingsNode *)node {
@@ -186,8 +194,6 @@
 }
 
 - (void)settingsNodeDidLogout:(CMSettingsNode *)node {
-    self.showSettingsNode = NO;
-    [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
     [[CammentSDK instance] logOut];
 }
 

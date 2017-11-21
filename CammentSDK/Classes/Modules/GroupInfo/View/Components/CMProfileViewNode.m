@@ -10,7 +10,7 @@
 #import "CMSettingsNode.h"
 #import "CammentSDK.h"
 #import "CMStore.h"
-#import "CMInternalCammentSDKProtocol.h"
+#import "CMOpenURLHelper.h"
 
 @interface CMProfileViewNode () <CMSettingsNodeDelegate>
 
@@ -143,8 +143,7 @@
 
 - (void)openUserProfile {
     NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMUserSessionController instance].user.fbUserId]];
-    id<CMInternalCammentSDKProtocol> SDK = (id)[CammentSDK instance];
-    [SDK openURL:url];
+    [[CMOpenURLHelper new] openURL:url];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

@@ -17,14 +17,6 @@ s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag =>
 s.ios.deployment_target = '8.1'
 
 s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
-s.default_subspec = 'SDK'
-
-# s.user_target_xcconfig = {'CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES' => 'YES'}
-
-s.subspec 'SDK' do |ss|
-   ss.public_header_files = 'CammentSDK/Classes/Public/*.{h}', 'CammentSDK/Classes/Internal/*.{h}'
-   ss.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
-end
 
 s.subspec 'FacebookAuthProvider' do |ss|
    ss.public_header_files = 'CammentSDK/AuthProviders/Facebook/**/*.h'
@@ -41,9 +33,9 @@ s.test_spec 'Tests' do |test_spec|
     test_spec.requires_app_host = true
 end
 
-s.resource_bundles = {
-'CammentSDK' => ['CammentSDK/Assets/**/*']
-}
+s.resources = 'CammentSDK/Assets/**/*'
+s.public_header_files = 'CammentSDK/Classes/Public/*.{h}', 'CammentSDK/Classes/Internal/*.{h}'
+s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
 
 s.library = 'sqlite3', 'z'
 s.frameworks = [

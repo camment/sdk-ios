@@ -31,16 +31,17 @@
 #import "AWSIotDataManager.h"
 #import "NSArray+RacSequence.h"
 #import "AWSCognito.h"
-#import "CMInternalCammentSDKProtocol.h"
 #import "CMUserSessionController.h"
 #import "CMCognitoFacebookAuthProvider.h"
+#import "CMSDKNotificationPresenterWireframe.h"
+#import "CMSDKNotificationPresenterPresenterInput.h"
+#import "CMOpenURLHelper.h"
 
-@interface CammentSDK () <CMGroupManagementInteractorOutput, CMInternalCammentSDKProtocol>
+@interface CammentSDK () <CMGroupManagementInteractorOutput>
 
 @property(nonatomic, strong) CMAWSServicesFactory *awsServicesFactory;
 @property(nonatomic) BOOL connectionAvailable;
 
-@property(nonatomic) id <CMAuthInteractorInput> authInteractor;
 @property(nonatomic) id <CMGroupManagementInteractorInput> groupManagmentInteractor;
 
 @property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
@@ -52,6 +53,7 @@
 @property(nonatomic, strong) DDFileLogger *fileLogger;
 
 @property(nonatomic, strong) CMUserSessionController *userSessionController;
+@property(nonatomic, strong) id <CMSDKNotificationPresenterPresenterInput> notificationPresenter;
 @end
 
 @implementation CammentSDK
@@ -88,6 +90,9 @@
 
         [[CMAnalytics instance] configureAWSMobileAnalytics];
 
+
+        self.notificationPresenter = [CMSDKNotificationPresenterWireframe defaultPresenter];
+
         self.groupManagmentInteractor = [CMGroupManagementInteractor new];
         [(CMGroupManagementInteractor *) self.groupManagmentInteractor setOutput:self];
 
@@ -117,6 +122,11 @@
     }
 
     return self;
+}
+
+- (void)setSdkUIDelegate:(id <CMCammentSDKUIDelegate>)sdkUIDelegate {
+    _sdkUIDelegate = sdkUIDelegate;
+    self.notificationPresenter.output = _sdkUIDelegate;
 }
 
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey
@@ -218,17 +228,17 @@
     if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
         return;
     }
-    
+
     AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
-    
+
     AWSCognitoDataset *dataset = [cognito openOrCreateDataset:@"identitySet"];
     [dataset setConflictHandler:^AWSCognitoResolvedConflict *(NSString *datasetName, AWSCognitoConflict *conflict) {
         return [conflict resolveWithLocalRecord];
     }];
-    
+
     [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
         [dataset setString:oldIdentity forKey:newIdentity];
-        
+
         return [dataset synchronize];
     }] continueWithBlock:^id(AWSTask<id> *t) {
         return [[CMAPIDevcammentClient defaultAPIClient] meUuidPut];
@@ -342,175 +352,114 @@
             }];
 
             [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
-                [self presentMembershipAcceptedAlert:membershipAcceptedMessage];
+                [self joinUserToGroup:membershipAcceptedMessage.group.uuid];
+                [self handleMembershipAcceptedMessage:membershipAcceptedMessage];
             }];
         }];
     }
 }
 
-- (void)presentMembershipAcceptedAlert:(CMMembershipAcceptedMessage *)message {
+- (void)handleMembershipAcceptedMessage:(CMMembershipAcceptedMessage *)message {
+
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    CMShow *show = message.show;
+    if (show) {
+        metadata.uuid = show.uuid;
+    }
+
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self joinUserToGroup:message.group.uuid];
-
-        CMShowMetadata *metadata = [CMShowMetadata new];
-        CMShow *show = message.show;
-        if (show) {
-            metadata.uuid = show.uuid;
-        }
-
         if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
             [self.sdkDelegate didJoinToShow:metadata];
         } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
             [self.sdkDelegate didAcceptInvitationToShow:metadata];
         }
 
-        [self showHud:CMLocalized(@"You have joined the private chat!") hideAfter:2];
+        [self.notificationPresenter presentMembershipAcceptedAlert:message];
     });
 }
 
-- (void)showHud:(NSString *)status hideAfter:(NSUInteger)delay {
-    UIWindow *window = [[UIApplication sharedApplication] delegate].window;
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:window animated:YES];
-    hud.removeFromSuperViewOnHide = YES;
-    hud.mode = MBProgressHUDModeText;
-    hud.label.text = status;
-    [hud hideAnimated:YES afterDelay:delay];
-}
-
 - (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message {
+    __weak typeof(self) __weakSelf = self;
+    [self.notificationPresenter presentMembershipRequestAlert:message
+                                                     onAccept:^{
+                                                         typeof(__weakSelf) __strongSelf = __weakSelf;
+                                                         if (!__strongSelf) {return;}
 
-    CMUsersGroup *group = message.group;
-    CMUser *user = message.joiningUser;
+                                                         if (__strongSelf.sdkDelegate && [__strongSelf.sdkDelegate respondsToSelector:@selector(didAcceptJoiningRequest:)]) {
+                                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                                 CMShowMetadata *metadata = [CMShowMetadata new];
+                                                                 metadata.uuid = message.show.uuid;
+                                                                 [__strongSelf.sdkDelegate didAcceptJoiningRequest:metadata];
+                                                             });
+                                                         }
+                                                         [__strongSelf joinUserToGroup:message.group.uuid];
+                                                         [__strongSelf.groupManagmentInteractor replyWithJoiningPermissionForUser:message.joiningUser
+                                                                                                                            group:message.group
+                                                                                                                  isAllowedToJoin:YES
+                                                                                                                             show:message.show];
+                                                         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAcceptJoinRequest];
+                                                     }
+                                                    onDecline:^{
+                                                        typeof(__weakSelf) __strongSelf = __weakSelf;
+                                                        if (!__strongSelf) {return;}
 
-    NSString *username = user.username ?: @"Your friend";
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User wants to join the group"), username]
-                                                                             message:CMLocalized(@"Do you accept the join request?")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptJoiningRequest:)]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                CMShowMetadata *metadata = [CMShowMetadata new];
-                metadata.uuid = message.show.uuid;
-                [self.sdkDelegate didAcceptJoiningRequest:metadata];
-            });
-        }
-        [self joinUserToGroup:group.uuid];
-        [self.groupManagmentInteractor replyWithJoiningPermissionForUser:user
-                                                                   group:group
-                                                         isAllowedToJoin:YES
-                                                                    show:message.show];
-        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAcceptJoinRequest];
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        [self.groupManagmentInteractor replyWithJoiningPermissionForUser:user
-                                                                   group:group
-                                                         isAllowedToJoin:NO
-                                                                    show:message.show];
-        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventDeclineJoinRequest];
-    }]];
-
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
-        });
-    } else {
-        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
-    }
+                                                        [__strongSelf.groupManagmentInteractor replyWithJoiningPermissionForUser:message.joiningUser
+                                                                                                                           group:message.group
+                                                                                                                 isAllowedToJoin:NO
+                                                                                                                            show:message.show];
+                                                        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventDeclineJoinRequest];
+                                                    }];
 }
 
 - (void)presentChatInvitation:(CMInvitation *)invitation {
 
-    NSString *username = invitation.invitationIssuer.username ?: @"Your friend";
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User invited you to a private chat"), username]
-                                                                             message:CMLocalized(@"Would you like to join the conversation?")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+    __weak typeof(self) __weakSelf = self;
+    [self.notificationPresenter presentInvitationToChat:invitation
+                                                 onJoin:^{
+                                                     CMShowMetadata *metadata = [CMShowMetadata new];;
+                                                     metadata.uuid = invitation.showUuid;
+                                                     typeof(__weakSelf) __strongSelf = __weakSelf;
+                                                     if (!__strongSelf) {return;}
 
-        CMShowMetadata *metadata = [CMShowMetadata new];;
-        metadata.uuid = invitation.showUuid;
+                                                     if (__strongSelf.sdkDelegate && [__strongSelf.sdkDelegate respondsToSelector:@selector(didOpenInvitationToShow:)]) {
+                                                         [__strongSelf.sdkDelegate didOpenInvitationToShow:metadata];
+                                                     }
 
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didOpenInvitationToShow:)]) {
-            [self.sdkDelegate didOpenInvitationToShow:metadata];
-        }
-
-        [[self acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (t.error) {
-                    [self showHud:CMLocalized(@"You are not allowed to join this group") hideAfter:2];
-                }
-            });
-            return nil;
-        }];
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
-                                                        style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {
-                                                      }]];
-
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
-        });
-    } else {
-        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
-    }
+                                                     [[__strongSelf acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
+                                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                                             if (t.error) {
+                                                                 [__strongSelf.notificationPresenter showToastMessage:CMLocalized(@"You are not allowed to join this group")];
+                                                             }
+                                                         });
+                                                         return nil;
+                                                     }];
+                                                 }];
 }
 
 - (void)presentOpenURLSuggestion:(NSURL *)url {
-
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"We found a link in your clipboard")]
-                                                                             message:CMLocalized(@"Would you like to open it and join the group? It will redirect you to your web browser first.")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Join") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        id <CMInternalCammentSDKProtocol> SDK = (id) [CammentSDK instance];
-        [SDK openURL:url];
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No")
-                                                        style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {
-                                                      }]];
-
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
-        });
-    } else {
-        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
-    }
+    [self.notificationPresenter presentInvitationToChatByLinkInClipboard:url
+                                                                  onJoin:^{
+                                                                      [[CMOpenURLHelper new] openURL:url];
+                                                                  }];
 }
 
 - (void)presentLoginSuggestion:(NSString *)reason {
-
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"Login with your Facebook account?")
-                                                                             message:reason
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Login") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[self.userSessionController refreshSession:YES] continueWithBlock:^id(AWSTask<id> *task) {
-                if (task.error) {
-                    [self.onSignedInOperationsQueue cancelAllOperations];
-                } else {
-                    [self.onSignedInOperationsQueue setSuspended:NO];
-                }
-                return nil;
-            }];
-        });
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        [self.onSignedInOperationsQueue cancelAllOperations];
-    }]];
-
-    if (self.sdkUIDelegate && [self.sdkUIDelegate respondsToSelector:@selector(cammentSDKWantsPresentViewController:)]) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.sdkUIDelegate cammentSDKWantsPresentViewController:alertController];
-        });
-    } else {
-        DDLogError(@"CammentSDK UI delegate is nil or not implemented");
-    }
+    [self.notificationPresenter presentLoginAlert:reason
+                                          onLogin:^{
+                                              dispatch_async(dispatch_get_main_queue(), ^{
+                                                  [[self.userSessionController refreshSession:YES] continueWithBlock:^id(AWSTask<id> *task) {
+                                                      if (task.error) {
+                                                          [self.onSignedInOperationsQueue cancelAllOperations];
+                                                      } else {
+                                                          [self.onSignedInOperationsQueue setSuspended:NO];
+                                                      }
+                                                      return nil;
+                                                  }];
+                                              });
+                                          }
+                                         onCancel:^{
+                                             [self.onSignedInOperationsQueue cancelAllOperations];
+                                         }];
 }
 
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
@@ -680,7 +629,8 @@
                                                            startsAt:nil];
 
                         CMMembershipAcceptedMessage *message = [[CMMembershipAcceptedMessage alloc] initWithGroup:group show:show];
-                        [weakSelf presentMembershipAcceptedAlert:message];
+                        [self joinUserToGroup:message.group.uuid];
+                        [weakSelf handleMembershipAcceptedMessage:message];
                     } else {
                         presentChatInvitationBlock();
                     }
@@ -726,20 +676,6 @@
 
 - (BOOL)openURL:(NSURL *)url sourceApplication:(NSString *)application annotation:(id)annotation {
     return [self verifyURL:url];
-}
-
-- (void)openURL:(NSURL *)url {
-    UIApplication *application = [UIApplication sharedApplication];
-
-    if ([application respondsToSelector:@selector(openURL:options:completionHandler:)]) {
-        [application openURL:url options:@{}
-           completionHandler:^(BOOL success) {
-               DDLogVerbose(@"Open %@: %d", url, success);
-           }];
-    } else {
-        BOOL success = [application openURL:url];
-        DDLogVerbose(@"Open %@: %d", url, success);
-    }
 }
 
 @end

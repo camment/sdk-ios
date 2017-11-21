@@ -214,9 +214,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     self.userGroups = groups;
 }
 
-- (void)didFailToFetchUserGroups:(NSError *)error {
-
-}
+- (void)didFailToFetchUserGroups:(NSError *)error {}
 
 - (void)cleanUp {
     [self.cleanUpSignal sendNext:@YES];

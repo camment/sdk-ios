@@ -28,7 +28,6 @@
 #import "CMCammentCell.h"
 #import "CMBotRegistry.h"
 #import "CMAnalytics.h"
-#import "CMInternalCammentSDKProtocol.h"
 #import "CMErrorWireframe.h"
 #import "CMCammentsBlockPresenterInput.h"
 #import "CMUserSessionController.h"

@@ -9,6 +9,7 @@
 #import <CammentSDK/CMIdentityProvider.h>
 
 @class CMUserSessionController;
+@class CMSDKNotificationPresenterPresenter;
 
 @protocol CMCammentSDKDelegate <NSObject>
 

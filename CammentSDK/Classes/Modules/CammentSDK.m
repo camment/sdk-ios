@@ -125,19 +125,12 @@
 
     self.awsServicesFactory = [[CMAWSServicesFactory alloc] initWithAppConfig:[CMAppConfig instance]];
 
-    CMCognitoFacebookAuthProvider *cognitoFacebookIdentityProvider = [[CMCognitoFacebookAuthProvider alloc] initWithRegionType:AWSRegionEUCentral1
-                                                                                                                identityPoolId:[CMAppConfig instance].awsCognitoIdenityPoolId
-                                                                                                               useEnhancedFlow:YES
-                                                                                                       identityProviderManager:nil
-                                                                                                                     APIClient:self.awsServicesFactory.anonymousAPIClient];
-    AWSCognitoCredentialsProvider *cognitoCredentialsProvider = [[AWSCognitoCredentialsProvider alloc] initWithRegionType:AWSRegionEUCentral1
-                                                                                                         identityProvider:cognitoFacebookIdentityProvider];
-    self.authInteractor = [[CMAuthInteractor alloc] initWithIdentityProvider:identityProvider];
+
     self.userSessionController = [CMUserSessionController registerInstanceWithUser:nil
                                                                             tokens:nil
-                                                        cognitoCredentialsProvider:cognitoCredentialsProvider
-                                                        authentificationInteractor:self.authInteractor
-                                                   cognitoFacebookIdentityProvider:cognitoFacebookIdentityProvider
+                                                        cognitoCredentialsProvider:self.awsServicesFactory.cognitoCredentialsProvider
+                                                        authentificationInteractor:[[CMAuthInteractor alloc] initWithIdentityProvider:identityProvider]
+                                                   cognitoFacebookIdentityProvider:self.awsServicesFactory.cognitoFacebookIdentityProvider
                                                            authChangedEventSubject:[CMStore instance].authentificationStatusSubject];
 
     if ([GVUserDefaults standardUserDefaults].isFirstSDKLaunch) {
@@ -146,8 +139,8 @@
     }
 
     [self.onSDKHasBeenConfiguredQueue addOperationWithBlock:^{
-        [self.awsServicesFactory configureAWSServices:cognitoCredentialsProvider];
-        [self configureIoTListeneWithNewIdentity:cognitoCredentialsProvider.identityId];
+        [self.awsServicesFactory configureAWSServices:self.awsServicesFactory.cognitoCredentialsProvider];
+        [self configureIoTListeneWithNewIdentity:self.awsServicesFactory.cognitoCredentialsProvider.identityId];
         DDLogDeveloperInfo(@"all services are up and running");
         [self checkIfDeferredDeepLinkExists];
     }];

@@ -90,6 +90,7 @@ static CMUserSessionController *_instance = nil;
     self.userAuthentificationState = CMCammentUserNotAuthentificated;
     self.user = nil;
     [self.authentificationInteractor logOut];
+    self.cognitoFacebookIdentityProvider.facebookAccessToken = nil;
     [self.cognitoCredentialsProvider clearKeychain];
     [self notifyAboutAuthStatusChanged];
 }

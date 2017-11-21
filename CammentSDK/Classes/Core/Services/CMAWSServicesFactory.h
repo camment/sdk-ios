@@ -28,6 +28,10 @@
 
 @property(nonatomic, strong) CMAPIDevcammentClient *APIClient;
 
+@property(nonatomic, strong) CMCognitoFacebookAuthProvider *cognitoFacebookIdentityProvider;
+
+@property(nonatomic, strong) AWSCognitoCredentialsProvider *cognitoCredentialsProvider;
+
 - (instancetype)initWithAppConfig:(CMAppConfig *)appConfig;
 
 - (void)configureAWSServices:(AWSCognitoCredentialsProvider *)credentialsProvider;

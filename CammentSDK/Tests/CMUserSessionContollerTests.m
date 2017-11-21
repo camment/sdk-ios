@@ -10,19 +10,13 @@
 #import <OCMock/OCMock.h>
 #import <AWSS3/AWSS3.h>
 #import "CMCognitoFacebookAuthProvider.h"
-#import "CMAppConfig.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import "CMStore.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMUserSessionController.h"
 #import "CMAuthInteractor.h"
 #import "CMTestFacebookIdentityProvider.h"
-
-static NSString *const facebookAppID = @"272405646569362";
-
-static NSString *const facebookAppSecret = @"02cd77cb360ba35e5f9bdfa038f091ca";
-
-static NSString *const apiKey = @"iYeooUSdMZ8FOBMZeL2zb9YDLdW0uvbVlitykh7d";
+#import "CMTestAppConfig.h"
 
 SpecBegin(CMUserSessionContollerTests)
 
@@ -35,13 +29,16 @@ SpecBegin(CMUserSessionContollerTests)
     __block id <CMAuthInteractorInput> authInteractor;
     __block CMTestFacebookIdentityProvider *facebookIdentityProvider;
     __block RACReplaySubject<CMAuthStatusChangedEventContext *> *authChangedEventSubject;
+    __block CMTestAppConfig *appConfig;
 
     describe(@"CMUserSessionContollerTests", ^{
 
         beforeAll(^{
             [AWSDDLog sharedInstance].logLevel = AWSDDLogLevelVerbose;
-            fbsdkTestUsersManager = [FBSDKTestUsersManager sharedInstanceForAppID:facebookAppID
-                                                                        appSecret:facebookAppSecret];
+            appConfig = [CMTestAppConfig new];
+            
+            fbsdkTestUsersManager = [FBSDKTestUsersManager sharedInstanceForAppID:appConfig.facebookAppId
+                                                                        appSecret:appConfig.facebookAppSecret];
             waitUntil(^(DoneCallback done) {
                 [fbsdkTestUsersManager requestTestAccountTokensWithArraysOfPermissions:nil
                                                                       createIfNotFound:YES
@@ -53,16 +50,17 @@ SpecBegin(CMUserSessionContollerTests)
         });
 
         beforeEach(^{
+            
             authChangedEventSubject = [RACReplaySubject replaySubjectWithCapacity:1];
 
             AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
                                                                                  credentialsProvider:nil];
             [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAnonymousAPIClientName];
             APIClient = OCMPartialMock([CMAPIDevcammentClient clientForKey:CMAnonymousAPIClientName]);
-            [APIClient setAPIKey:apiKey];
+            [APIClient setAPIKey:appConfig.apiKey];
 
             cognitoFacebookAuthProvider = OCMPartialMock([[CMCognitoFacebookAuthProvider alloc] initWithRegionType:AWSRegionEUCentral1
-                                                                                                    identityPoolId:@"eu-central-1:aa96090c-0423-46d1-a584-20086c0e134d"
+                                                                                                    identityPoolId:appConfig.awsCognitoIdenityPoolId
                                                                                                    useEnhancedFlow:YES
                                                                                            identityProviderManager:nil
                                                                                                          APIClient:APIClient]);
@@ -86,7 +84,7 @@ SpecBegin(CMUserSessionContollerTests)
         });
 
         afterAll(^{
-            [credentialsProvider clearKeychain];
+            [userSessionController endSession];
         });
 
         it(@"should be created", ^{
@@ -165,6 +163,9 @@ SpecBegin(CMUserSessionContollerTests)
             expect(authContext.user).to.beNil();
             expect(authContext.state).to.equal(CMCammentUserNotAuthentificated);
 
+            expect(credentialsProvider.identityId).to.beNil();
+            expect(facebookIdentityProvider.facebookAccessToken).toNot.beNil();
+            
             // logout, then login and compare identities
             waitUntil(^(DoneCallback done) {
                 [[userSessionController refreshSession:NO]
@@ -186,6 +187,35 @@ SpecBegin(CMUserSessionContollerTests)
             });
 
             cognitoIdentity = nil;
+        });
+
+        it(@"should fail on error while getting a facebook identity", ^{
+            facebookIdentityProvider.facebookAccessToken = testUserToken.tokenString;
+            NSError *apiClientError = [NSError errorWithDomain:AWSAPIGatewayErrorDomain
+                                                          code:AWSAPIGatewayErrorTypeClient
+                                                      userInfo:nil];
+            OCMStub([APIClient usersGetOpenIdTokenGet:OCMOCK_ANY]).andReturn([AWSTask taskWithError:apiClientError]);
+ 
+            waitUntil(^(DoneCallback done) {
+                [[userSessionController refreshSession:NO]
+                 continueWithBlock:^id _Nullable(AWSTask<CMUser *> *_Nonnull task) {
+                     
+                     expect(task).toNot.beNil();
+                     expect(task.result).to.beNil();
+                     expect(task.error).toNot.beNil();
+                     
+                     CMAuthStatusChangedEventContext *authContext = authChangedEventSubject.first;
+                     expect(authContext).toNot.beNil();
+                     expect(authContext.user).to.beNil();
+                     expect(authContext.state).to.equal(CMCammentUserNotAuthentificated);
+                     
+                     done();
+                     
+                     return nil;
+                 }];
+            });
+            NSString *facebookToken = testUserToken.tokenString;
+            OCMVerify([APIClient usersGetOpenIdTokenGet:facebookToken]);
         });
 
     });

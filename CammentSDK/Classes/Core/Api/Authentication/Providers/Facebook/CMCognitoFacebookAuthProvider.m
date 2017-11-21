@@ -40,7 +40,7 @@
 
                 if (task.error || ![task.result isKindOfClass:[CMAPIOpenIdToken class]]) {
                     DDLogError(@"Could not exchange facebook token to openID token Error: %@. Response: ", task.error, task.result);
-                    return [AWSTask taskWithResult:nil];
+                    return [AWSTask taskWithError:task.error];
                 }
 
                 CMAPIOpenIdToken *token = task.result;

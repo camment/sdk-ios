@@ -7,7 +7,6 @@
 
 @interface CMServerMessage (TypeMatching)
 
-- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler;
 - (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler;
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler;
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler;

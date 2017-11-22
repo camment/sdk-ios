@@ -49,4 +49,5 @@ cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebook
 - (AWSTask *)refreshSession:(BOOL)forceSignIn;
 - (void)endSession;
 
+- (void)syncCognitoProfiles:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity;
 @end

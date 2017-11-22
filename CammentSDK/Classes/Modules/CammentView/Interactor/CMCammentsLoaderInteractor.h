@@ -10,8 +10,13 @@
 #import "CMCammentsLoaderInteractorInput.h"
 #import "CMCammentsLoaderInteractorOutput.h"
 
+@class RACSubject;
+
 @interface CMCammentsLoaderInteractor : NSObject<CMCammentsLoaderInteractorInput>
 
 @property (nonatomic, weak) id<CMCammentsLoaderInteractorOutput> output;
+
+- (instancetype)initWithNewMessageSubject:(RACSubject *)serverMessageSubject;
+
 
 @end

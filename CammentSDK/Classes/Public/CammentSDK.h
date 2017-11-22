@@ -8,9 +8,6 @@
 #import <CammentSDK/CMCammentOverlayController.h>
 #import <CammentSDK/CMIdentityProvider.h>
 
-@class CMUserSessionController;
-@class CMSDKNotificationPresenterPresenter;
-
 @protocol CMCammentSDKDelegate <NSObject>
 
 @optional
@@ -18,7 +15,7 @@
 /**
  * Calls when user joined to show.
  * @deprecated: use didJoinToShow: instead
- * @param CMShowMetadata Class provides additional information related to your show
+ * @param metadata Class provides additional information related to your show
  */
 - (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
 
@@ -30,7 +27,7 @@
 
 /**
  * Calls when user opened invitation to show
- * @param CMShowMetadata metadata
+ * @param metadata Class provides additional information related to your show
  */
 - (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
@@ -69,16 +66,13 @@
 
 /**
  * Asks CMIdentityProvider to pass user credentials to CammentSDK.
- * Use refreshUserIdentity:NO right after application has started in order to check if cached credentials are available
- * Use refreshUserIdentity:YES if you want force user to login to CammentSDK. In most cases you will not use it.
  *
- * Normal workflow for getting cammentSDK ready is
- *      [[CammentSDK instance] configureWithApiKey@"YOUR_API_KEY" identityProvider:[CMFacebookIdentityProvider new]];
- *      [[CammentSDK instance] refreshUserIdentity:NO];
+ * Use refreshUserIdentity:NO to update user session with cached credentials
+ * Use refreshUserIdentity:YES if you want force user to login to CammentSDK. In most cases you will not use it directly.
  *
- * @param forceSignin The flag tells to CMIdentityProvider if it should force user to login if there no cached credentials found
+ * @param forceSignIn The flag tells to CMIdentityProvider if it should force user to login if there no cached credentials found
  */
-- (void)refreshUserIdentity:(BOOL)forceSignin;
+- (void)refreshUserIdentity:(BOOL)forceSignIn;
 
 /**
  * Cleans up all user credentials and log user out of CammentSDK

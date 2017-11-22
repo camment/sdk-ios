@@ -7,18 +7,9 @@
 
 @implementation CMServerMessage (TypeMatching)
 
-- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler {
-    [self matchInvitation:invitationMatchHandler
-                  camment:^(CMCamment *camment) {}
-               userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
-           cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-        membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
-       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}];
-}
 
 - (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler {
-    [self matchInvitation:^(CMInvitation *invitation) {}
-                  camment:cammentMatchHandler
+    [self matchCamment:cammentMatchHandler
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
@@ -26,8 +17,7 @@
 }
 
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler {
-    [self matchInvitation:^(CMInvitation *invitation) {}
-                  camment:^(CMCamment *camment) {}
+    [self matchCamment:^(CMCamment *camment) {}
                userJoined:userJoinedMatchHandler
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
@@ -35,8 +25,7 @@
 }
 
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler {
-    [self matchInvitation:^(CMInvitation *invitation) {}
-                  camment:^(CMCamment *camment) {}
+    [self matchCamment:^(CMCamment *camment) {}
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:cammentDeletedMatchHandler
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
@@ -44,8 +33,7 @@
 }
 
 - (void)matchMembershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler {
-    [self matchInvitation:^(CMInvitation *invitation) {}
-                  camment:^(CMCamment *camment) {}
+    [self matchCamment:^(CMCamment *camment) {}
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:membershipRequestMatchHandler
@@ -53,8 +41,7 @@
 }
 
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler {
-    [self matchInvitation:^(CMInvitation *invitation) {}
-                  camment:^(CMCamment *camment) {}
+    [self matchCamment:^(CMCamment *camment) {}
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}

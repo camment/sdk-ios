@@ -63,18 +63,23 @@
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
 
-    NSArray *updateShowsListSignals = @[
-            RACObserve([CMStore instance], isConnected),
-            RACObserve([CMStore instance], isOfflineMode)
+    NSArray *signals = @[
+            RACObserve([CMStore instance], isOfflineMode),
+            [CMStore instance].authentificationStatusSubject,
+            RACObserve([CMStore instance], awsServicesConfigured),
     ];
-    [[[[RACSignal combineLatest:updateShowsListSignals] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
-        NSNumber *isConnected = tuple.first;
-        NSNumber *isOfflineMode = tuple.second;
-        
-        if (isConnected.boolValue || isOfflineMode.boolValue) {
-            [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
-        }
-    }];
+
+    @weakify(self);
+    [[[[RACSignal combineLatest:signals]
+            takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+            subscribeNext:^(RACTuple *_Nullable tuple) {
+                @strongify(self);
+                CMAuthStatusChangedEventContext *context = tuple.second;
+                NSNumber *awsServicesConfigured = tuple.third;
+                if (context.state != CMCammentUserNotAuthentificated && [awsServicesConfigured boolValue]) {
+                    [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
+                }
+            }];
 }
 
 - (void)updateShows:(NSString *)passcode {
@@ -174,7 +179,7 @@
 }
 
 - (void)openShowIfNeeded:(CMShow *)show {
-    if ([self.cammentsInStreamPlayerWireframe.show.uuid isEqualToString:show.uuid] && self.cammentsInStreamPlayerWireframe.view) { return; }
+    if ([self.cammentsInStreamPlayerWireframe.show.uuid isEqualToString:show.uuid] && self.cammentsInStreamPlayerWireframe.view) {return;}
 
     if (self.cammentsInStreamPlayerWireframe.view) {
         [self.cammentsInStreamPlayerWireframe.view dismissViewControllerAnimated:YES completion:^{

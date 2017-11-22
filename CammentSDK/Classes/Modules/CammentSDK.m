@@ -4,6 +4,7 @@
 //
 
 @import CoreText;
+@import AVFoundation;
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CammentSDK.h"
 #import "CMStore.h"
@@ -15,45 +16,41 @@
 #import "CMUsersGroupBuilder.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMAppConfig.h"
-#import "CMInvitationViewController.h"
-#import "CMUserBuilder.h"
 #import "CMInvitationBuilder.h"
 #import "CMConnectionReachability.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMAuthInteractor.h"
-#import "MBProgressHUD.h"
 
 #import "CMGroupManagementInteractorInput.h"
 #import "CMGroupManagementInteractor.h"
-#import "CMServerMessage+TypeMatching.h"
 #import "GVUserDefaults.h"
 #import "GVUserDefaults+CammentSDKConfig.h"
-#import "AWSIotDataManager.h"
 #import "NSArray+RacSequence.h"
 #import "AWSCognito.h"
 #import "CMUserSessionController.h"
 #import "CMCognitoFacebookAuthProvider.h"
 #import "CMSDKNotificationPresenterWireframe.h"
-#import "CMSDKNotificationPresenterPresenterInput.h"
 #import "CMOpenURLHelper.h"
+#import "CMServerMessageController.h"
+#import "CMInvitation.h"
 
 @interface CammentSDK () <CMGroupManagementInteractorOutput>
 
 @property(nonatomic, strong) CMAWSServicesFactory *awsServicesFactory;
 @property(nonatomic) BOOL connectionAvailable;
 
-@property(nonatomic) id <CMGroupManagementInteractorInput> groupManagmentInteractor;
-
 @property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
 @property(nonatomic) NSOperationQueue *onSDKHasBeenConfiguredQueue;
 
 @property(nonatomic, strong) CMConnectionReachability *connectionReachibility;
-@property(nonatomic, strong) RACDisposable *iotSubscriptionDisposable;
 
 @property(nonatomic, strong) DDFileLogger *fileLogger;
 
 @property(nonatomic, strong) CMUserSessionController *userSessionController;
 @property(nonatomic, strong) id <CMSDKNotificationPresenterPresenterInput> notificationPresenter;
+@property(nonatomic, strong) CMServerListener *serverListener;
+@property(nonatomic, strong) CMServerMessageController *serverMessageController;
+
 @end
 
 @implementation CammentSDK
@@ -84,17 +81,11 @@
 
 #ifdef INTERNALSDK
         [[CMStore instance] setupTweaks];
-#else
-        [CMStore instance].isOfflineMode = NO;
 #endif
 
         [[CMAnalytics instance] configureAWSMobileAnalytics];
 
-
         self.notificationPresenter = [CMSDKNotificationPresenterWireframe defaultPresenter];
-
-        self.groupManagmentInteractor = [CMGroupManagementInteractor new];
-        [(CMGroupManagementInteractor *) self.groupManagmentInteractor setOutput:self];
 
         self.onSignedInOperationsQueue = [[NSOperationQueue alloc] init];
         self.onSignedInOperationsQueue.maxConcurrentOperationCount = 1;
@@ -118,10 +109,15 @@
 
         [self clearTmpDirectory];
 
-        DDLogDeveloperInfo(@"Camment SDK instantiated");
+        DDLogDeveloperInfo(@"SDK started");
     }
 
     return self;
+}
+
+- (void)setSdkDelegate:(id <CMCammentSDKDelegate>)sdkDelegate {
+    _sdkDelegate = sdkDelegate;
+    self.serverMessageController.sdkDelegate = sdkDelegate;
 }
 
 - (void)setSdkUIDelegate:(id <CMCammentSDKUIDelegate>)sdkUIDelegate {
@@ -150,11 +146,12 @@
 
     [self.onSDKHasBeenConfiguredQueue addOperationWithBlock:^{
         [self.awsServicesFactory configureAWSServices:self.awsServicesFactory.cognitoCredentialsProvider];
-        [self configureIoTListeneWithNewIdentity:self.awsServicesFactory.cognitoCredentialsProvider.identityId];
+        [self configureIoTListenerWithNewIdentity:self.awsServicesFactory.cognitoCredentialsProvider.identityId];
+        [CMStore instance].awsServicesConfigured = YES;
         DDLogDeveloperInfo(@"all services are up and running");
         [self checkIfDeferredDeepLinkExists];
     }];
-
+    
     [self wakeUpUserSession];
 }
 
@@ -175,56 +172,29 @@
 
 - (void)identityIdDidChange:(NSNotification *)notification {
     NSDictionary *userInfo = notification.userInfo;
-    DDLogInfo(@"identity changed from %@ to %@",
-            [userInfo objectForKey:AWSCognitoNotificationPreviousId],
-            [userInfo objectForKey:AWSCognitoNotificationNewId]);
-    NSString *newIdentity = [userInfo objectForKey:AWSCognitoNotificationNewId];
-    NSString *oldIdentity = [userInfo objectForKey:AWSCognitoNotificationPreviousId];
+    NSString *newIdentity = userInfo[AWSCognitoNotificationNewId];
+    NSString *oldIdentity = userInfo[AWSCognitoNotificationPreviousId];
 
     [self identityHasChangedOldIdentity:oldIdentity newIdentity:newIdentity];
 }
 
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
-    if (newIdentity == nil) {return;}
+    if (newIdentity == nil) { return; }
 
     [[CMAnalytics instance] setMixpanelID:newIdentity];
 
     if (oldIdentity) {
-        if ([[[CMStore instance].activeGroup ownerCognitoUserId] isEqualToString:oldIdentity]) {
-            [CMStore instance].activeGroup = [[[CMUsersGroupBuilder
-                    usersGroupFromExistingUsersGroup:
-                            [CMStore instance].activeGroup]
-                    withOwnerCognitoUserId:newIdentity]
-                    build];
-        }
-
-        [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers map:^CMUser *(CMUser *oldUser) {
-            if ([[oldUser cognitoUserId] isEqualToString:oldIdentity]) {
-                return [[[CMUserBuilder userFromExistingUser:oldUser]
-                        withCognitoUserId:newIdentity]
-                        build];
-            }
-
-            return oldUser;
-        }];
-
-        [CMStore instance].userGroups = [[CMStore instance].userGroups map:^CMUsersGroup *(CMUsersGroup *oldGroup) {
-            if ([oldGroup.ownerCognitoUserId isEqualToString:oldIdentity]) {
-                return [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:oldGroup]
-                        withOwnerCognitoUserId:newIdentity] build];
-            }
-            return oldGroup;
-        }];
+        [[CMStore instance] updateUserDataOnIdentityChangeOldIdentity:oldIdentity newIdentity:newIdentity];
     }
-
 
     if (_awsServicesFactory.cognitoHasBeenConfigured) {
         [self syncCognitoProfiles:oldIdentity newIdentity:newIdentity];
-        [self configureIoTListeneWithNewIdentity:newIdentity];
+        [self configureIoTListenerWithNewIdentity:newIdentity];
     }
 }
 
 - (void)syncCognitoProfiles:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
+
     if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
         return;
     }
@@ -249,26 +219,6 @@
             DDLogInfo(@"Profile switched from %@  to %@", oldIdentity, newIdentity);
         }
         return nil;
-    }];
-}
-
-- (void)configure {
-    @weakify(self);
-
-    [[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread] subscribeNext:^(NSNumber *isOfflineMode) {
-        @strongify(self);
-        if (isOfflineMode.boolValue) {
-            [self.connectionReachibility stopNotifier];
-
-            CMServerListener *listener = [CMServerListener instance];
-            [self.iotSubscriptionDisposable dispose];
-            [[listener dataManager] disconnect];
-
-            return;
-        } else {
-            [self updateInterfaceWithReachability:self.connectionReachibility];
-            [self.connectionReachibility startNotifier];
-        }
     }];
 }
 
@@ -329,86 +279,30 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (void)configureIoTListeneWithNewIdentity:(NSString *)newIdentity {
+- (void)configureIoTListenerWithNewIdentity:(NSString *)newIdentity {
 
-    CMServerListener *listener = [CMServerListener instance];
-    [listener redubscribeToNewIdentity:newIdentity];
+    if (!self.serverListener) {
+        self.serverMessageController = [[CMServerMessageController alloc]
+                initWithSdkDelegate:self.sdkDelegate
+              notificationPresenter:self.notificationPresenter
+                              store:[CMStore instance]
+          groupManagementInteractor:[[CMGroupManagementInteractor alloc] initWithOutput:nil
+                                                                                  store:[CMStore instance]]];
 
-    if (!self.iotSubscriptionDisposable) {
-        self.iotSubscriptionDisposable = [listener.messageSubject subscribeNext:^(CMServerMessage *message) {
-
-            [message matchInvitation:^(CMInvitation *invitation) {
-                if (![invitation.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]
-                        && [invitation.invitedUserFacebookId isEqualToString:self.userSessionController.user.fbUserId]
-                        && ![invitation.invitationIssuer.fbUserId isEqualToString:self.userSessionController.user.fbUserId]) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [self presentChatInvitation:invitation];
-                    });
-                }
-            }];
-
-            [message matchMembershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
-                [self presentMembershipRequestAlert:membershipRequestMessage];
-            }];
-
-            [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
-                [self joinUserToGroup:membershipAcceptedMessage.group.uuid];
-                [self handleMembershipAcceptedMessage:membershipAcceptedMessage];
-            }];
-        }];
-    }
-}
-
-- (void)handleMembershipAcceptedMessage:(CMMembershipAcceptedMessage *)message {
-
-    CMShowMetadata *metadata = [CMShowMetadata new];
-    CMShow *show = message.show;
-    if (show) {
-        metadata.uuid = show.uuid;
+        CMServerListenerCredentials *credentials = [CMServerListenerCredentials defaultCredentials];
+        self.serverListener = [[CMServerListener alloc] initWithCredentials:credentials
+                                                          messageController:self.serverMessageController
+                                                                dataManager:self.awsServicesFactory.IoTDataManager];
     }
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
-            [self.sdkDelegate didJoinToShow:metadata];
-        } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
-            [self.sdkDelegate didAcceptInvitationToShow:metadata];
-        }
-
-        [self.notificationPresenter presentMembershipAcceptedAlert:message];
-    });
+    [self.serverListener resubscribeToNewIdentity:newIdentity];
 }
 
-- (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message {
-    __weak typeof(self) __weakSelf = self;
-    [self.notificationPresenter presentMembershipRequestAlert:message
-                                                     onAccept:^{
-                                                         typeof(__weakSelf) __strongSelf = __weakSelf;
-                                                         if (!__strongSelf) {return;}
-
-                                                         if (__strongSelf.sdkDelegate && [__strongSelf.sdkDelegate respondsToSelector:@selector(didAcceptJoiningRequest:)]) {
-                                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                                 CMShowMetadata *metadata = [CMShowMetadata new];
-                                                                 metadata.uuid = message.show.uuid;
-                                                                 [__strongSelf.sdkDelegate didAcceptJoiningRequest:metadata];
-                                                             });
-                                                         }
-                                                         [__strongSelf joinUserToGroup:message.group.uuid];
-                                                         [__strongSelf.groupManagmentInteractor replyWithJoiningPermissionForUser:message.joiningUser
-                                                                                                                            group:message.group
-                                                                                                                  isAllowedToJoin:YES
-                                                                                                                             show:message.show];
-                                                         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAcceptJoinRequest];
-                                                     }
-                                                    onDecline:^{
-                                                        typeof(__weakSelf) __strongSelf = __weakSelf;
-                                                        if (!__strongSelf) {return;}
-
-                                                        [__strongSelf.groupManagmentInteractor replyWithJoiningPermissionForUser:message.joiningUser
-                                                                                                                           group:message.group
-                                                                                                                 isAllowedToJoin:NO
-                                                                                                                            show:message.show];
-                                                        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventDeclineJoinRequest];
-                                                    }];
+- (void)presentOpenURLSuggestion:(NSURL *)url {
+    [self.notificationPresenter presentInvitationToChatByLinkInClipboard:url
+                                                                  onJoin:^{
+                                                                      [[CMOpenURLHelper new] openURL:url];
+                                                                  }];
 }
 
 - (void)presentChatInvitation:(CMInvitation *)invitation {
@@ -436,13 +330,6 @@
                                                  }];
 }
 
-- (void)presentOpenURLSuggestion:(NSURL *)url {
-    [self.notificationPresenter presentInvitationToChatByLinkInClipboard:url
-                                                                  onJoin:^{
-                                                                      [[CMOpenURLHelper new] openURL:url];
-                                                                  }];
-}
-
 - (void)presentLoginSuggestion:(NSString *)reason {
     [self.notificationPresenter presentLoginAlert:reason
                                           onLogin:^{
@@ -463,34 +350,14 @@
 }
 
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
-    if (invitation.invitationKey == nil) {
-        CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-        CMAPIShowUuid *showUuid = [CMAPIShowUuid new];
-        showUuid.showUuid = invitation.showUuid;
-        return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid body:showUuid];
-    }
-
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-    CMAPIAcceptInvitationRequest *invitationRequest = [CMAPIAcceptInvitationRequest new];
-    invitationRequest.invitationKey = invitation.invitationKey;
-    return [client usergroupsGroupUuidInvitationsPut:invitation.userGroupUuid
-                                                body:invitationRequest];
+    CMAPIShowUuid *showUuid = [CMAPIShowUuid new];
+    showUuid.showUuid = invitation.showUuid;
+    return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid body:showUuid];
 }
 
-- (void)joinUserToGroup:(NSString *)groupId {
-    DDLogInfo(@"Join group id %@", groupId);
-    if (![groupId isEqualToString:[CMStore instance].activeGroup.uuid]) {
-        CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
-        [[CMStore instance] setActiveGroup:usersGroup];
-        [[[CMStore instance] reloadActiveGroupSubject] sendNext:@YES];
-        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventJoinGroup];
-    } else {
-        [[CMStore instance].userHasJoinedSignal sendNext:@YES];
-    }
-}
-
-- (void)refreshUserIdentity:(BOOL)forceSignin {
-    [[self.userSessionController refreshSession:forceSignin]
+- (void)refreshUserIdentity:(BOOL)forceSignIn {
+    [[self.userSessionController refreshSession:forceSignIn]
             continueWithBlock:^id(AWSTask<id> *t) {
                 return nil;
             }];
@@ -597,18 +464,14 @@
     }
 
     if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
-        //for external invitations key should be nil for now
-        NSString *invitationKey = nil;
-        CMInvitation *invitationWithUpdatedKey = [[[CMInvitationBuilder
-                invitationFromExistingInvitation:invitation]
-                withInvitationKey:invitationKey] build];
+
         NSString *groupUuid = invitation.userGroupUuid;
         AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidGet:groupUuid];
 
         __weak typeof(self) weakSelf = self;
         dispatch_block_t presentChatInvitationBlock = ^{
             dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf presentChatInvitation:invitationWithUpdatedKey];
+                [weakSelf presentChatInvitation:invitation];
             });
         };
 
@@ -629,8 +492,7 @@
                                                            startsAt:nil];
 
                         CMMembershipAcceptedMessage *message = [[CMMembershipAcceptedMessage alloc] initWithGroup:group show:show];
-                        [self joinUserToGroup:message.group.uuid];
-                        [weakSelf handleMembershipAcceptedMessage:message];
+                        [weakSelf.serverMessageController handleServerMessage:[CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:message]];
                     } else {
                         presentChatInvitationBlock();
                     }

@@ -1,14 +1,10 @@
 %type name="CMCamment"
-%type name="CMInvitation"
 %type name="CMUserJoinedMessage"
 %type name="CMCammentDeletedMessage"
 %type name="CMMembershipRequestMessage"
 %type name="CMMembershipAcceptedMessage"
 
 CMServerMessage includes(RMBuilder) {
-  invitation {
-    CMInvitation *invitation
-  }
   camment {
     CMCamment *camment
   }

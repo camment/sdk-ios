@@ -48,18 +48,14 @@
                                                                                      NSForegroundColorAttributeName: [UIColor blackColor]
                                                                              }];
         self.onlineStatusTextNode = [ASTextNode new];
-        [[[[RACSignal combineLatest:@[
-                RACObserve([CMStore instance], isConnected),
-                RACObserve([CMStore instance], isOfflineMode)
-        ]] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
-            NSNumber *isConnected = tuple.first;
-            NSNumber *isOffline = tuple.second;
-
+        @weakify(self);
+        [[[[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread]
+          takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *isOffline) {
+            @strongify(self);
+            
             NSString *title = @"online";
             if ([isOffline boolValue]) {
                 title = @"offline";
-            } else if (![isConnected boolValue]) {
-                title = @"...connecting";
             }
 
             self.onlineStatusTextNode.attributedText = [[NSAttributedString alloc] initWithString:[title uppercaseString]

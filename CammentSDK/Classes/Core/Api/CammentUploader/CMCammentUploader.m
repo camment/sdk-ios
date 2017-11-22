@@ -59,7 +59,6 @@
         uploadRequest.contentType = @"video/mp4";
         uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
         uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
-        uploadRequest.storageClass = AWSS3StorageClassStandardIa;
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };

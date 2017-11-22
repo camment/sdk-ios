@@ -29,15 +29,14 @@
     return nil;
 }
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
-                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
-               userSessionController:(CMUserSessionController *)userSessionController {
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig userSessionController:(CMUserSessionController *)userSessionController serverMessagesSubject:(RACSubject *)serverMessagesSubject {
     self = [super init];
 
     if (self) {
         self.metadata = metadata;
         self.overlayLayoutConfig = overlayLayoutConfig;
         self.userSessionController = userSessionController;
+        self.serverMessagesSubject = serverMessagesSubject;
     }
 
     return self;
@@ -65,7 +64,7 @@
     interactor.output = presenter;
 
     CMCammentRecorderInteractor *recorderInteractor = [CMCammentRecorderInteractor new];
-    CMCammentsLoaderInteractor *cammentsLoaderInteractor = [CMCammentsLoaderInteractor new];
+    CMCammentsLoaderInteractor *cammentsLoaderInteractor = [[CMCammentsLoaderInteractor alloc] initWithNewMessageSubject:self.serverMessagesSubject];
     presenter.recorderInteractor = recorderInteractor;
     presenter.loaderInteractor = cammentsLoaderInteractor;
     recorderInteractor.output = presenter;

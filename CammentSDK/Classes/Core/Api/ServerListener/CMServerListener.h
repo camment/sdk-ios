@@ -11,21 +11,21 @@
 @class CMServerMessage;
 @class CMUsersGroup;
 
+@class CMServerMessageController;
+
 @interface CMServerListener : NSObject
 
-@property (nonatomic, strong, readonly) AWSIoTDataManager *dataManager;
-@property (nonatomic, assign, readonly) BOOL isConnected;
-@property (nonatomic, readonly) CMServerListenerCredentials *credentials;
-@property (nonatomic, readonly) RACSubject<CMServerMessage *> *messageSubject;
+@property(nonatomic, strong, readonly) AWSIoTDataManager *dataManager;
+@property(nonatomic, readonly) CMServerListenerCredentials *credentials;
+@property(nonatomic, readonly) CMServerMessageController *messageController;
 
 @property(nonatomic, copy) NSString *cognitoUuid;
 
-- (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials;
+- (instancetype)initWithCredentials:(CMServerListenerCredentials *)credentials
+                  messageController:(CMServerMessageController *)messageController
+                        dataManager:(AWSIoTDataManager *)dataManager;
 
 - (void)connect;
-
-+ (CMServerListener *)instance;
-
-- (void)redubscribeToNewIdentity:(NSString *)newIdentity;
+- (void)resubscribeToNewIdentity:(NSString *)newIdentity;
 
 @end

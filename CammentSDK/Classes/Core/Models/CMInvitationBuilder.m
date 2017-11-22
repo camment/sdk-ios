@@ -10,7 +10,6 @@
   NSString *_userGroupUuid;
   NSString *_userCognitoUuid;
   NSString *_showUuid;
-  NSString *_invitationKey;
   NSString *_invitedUserFacebookId;
   CMUser *_invitationIssuer;
 }
@@ -22,18 +21,17 @@
 
 + (instancetype)invitationFromExistingInvitation:(CMInvitation *)existingInvitation
 {
-  return [[[[[[[CMInvitationBuilder invitation]
-               withUserGroupUuid:existingInvitation.userGroupUuid]
-              withUserCognitoUuid:existingInvitation.userCognitoUuid]
-             withShowUuid:existingInvitation.showUuid]
-            withInvitationKey:existingInvitation.invitationKey]
+  return [[[[[[CMInvitationBuilder invitation]
+              withUserGroupUuid:existingInvitation.userGroupUuid]
+             withUserCognitoUuid:existingInvitation.userCognitoUuid]
+            withShowUuid:existingInvitation.showUuid]
            withInvitedUserFacebookId:existingInvitation.invitedUserFacebookId]
           withInvitationIssuer:existingInvitation.invitationIssuer];
 }
 
 - (CMInvitation *)build
 {
-  return [[CMInvitation alloc] initWithUserGroupUuid:_userGroupUuid userCognitoUuid:_userCognitoUuid showUuid:_showUuid invitationKey:_invitationKey invitedUserFacebookId:_invitedUserFacebookId invitationIssuer:_invitationIssuer];
+  return [[CMInvitation alloc] initWithUserGroupUuid:_userGroupUuid userCognitoUuid:_userCognitoUuid showUuid:_showUuid invitedUserFacebookId:_invitedUserFacebookId invitationIssuer:_invitationIssuer];
 }
 
 - (instancetype)withUserGroupUuid:(NSString *)userGroupUuid
@@ -51,12 +49,6 @@
 - (instancetype)withShowUuid:(NSString *)showUuid
 {
   _showUuid = [showUuid copy];
-  return self;
-}
-
-- (instancetype)withInvitationKey:(NSString *)invitationKey
-{
-  _invitationKey = [invitationKey copy];
   return self;
 }
 

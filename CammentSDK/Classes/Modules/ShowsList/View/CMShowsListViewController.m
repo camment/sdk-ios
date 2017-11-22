@@ -45,18 +45,10 @@
                                                                             action:@selector(showPasscodeAlert)];
     self.navigationItem.rightBarButtonItem = passCodeButton;
     
-    [[[RACSignal combineLatest:@[
-                                 RACObserve([CMStore instance], isConnected),
-                                 RACObserve([CMStore instance], isOfflineMode)
-                                 ]] deliverOnMainThread] subscribeNext:^(RACTuple *tuple)
+    [[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread] subscribeNext:^(NSNumber *isOffline)
     {
-        NSNumber *isConnected = tuple.first;
-        NSNumber *isOffline = tuple.second;
-        
         if ([isOffline boolValue]) {
             self.title = @"Offline";
-        } else if (![isConnected boolValue]) {
-            self.title = @"...Connecting";
         } else {
             self.title = @"Online";
         }

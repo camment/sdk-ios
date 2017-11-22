@@ -16,6 +16,7 @@
 @class CMCammentOverlayLayoutConfig;
 @class CMAuthStatusChangedEventContext;
 @class CMGroupsListInteractor;
+@class CMServerMessage;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -28,8 +29,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @interface CMStore: NSObject <FBTweakObserver>
 
-@property (nonatomic, assign) BOOL isConnected;
-
 @property (nonatomic, copy) NSString *facebookAccessToken;
 
 @property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;
@@ -40,20 +39,21 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
 @property (nonatomic, strong) NSArray<CMUser *> *activeGroupUsers;
 @property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
-@property (nonatomic, copy) CMShow *activeShow;
 
 @property(nonatomic) BOOL isOnboardingFinished;
 
 @property(nonatomic) CMShowMetadata *currentShowMetadata;
 
 @property RACSubject<CMAuthStatusChangedEventContext *> *authentificationStatusSubject;
+@property RACSubject<CMServerMessage *> *serverMessagesSubject;
+
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 @property RACSubject<NSNumber *> *inviteFriendsActionSubject;
 @property RACSubject<NSNumber *> *userHasJoinedSignal;
 @property RACSubject<NSNumber *> *cleanUpSignal;
 
 @property(nonatomic) BOOL isOfflineMode;
-
+@property(nonatomic) BOOL awsServicesConfigured;
 
 @property(nonatomic, strong) CMGroupsListInteractor *groupListInteractor;
 
@@ -62,4 +62,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 - (void)setupTweaks;
 
 - (void)cleanUp;
+
+- (void)updateUserDataOnIdentityChangeOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity;
+
 @end

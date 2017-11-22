@@ -31,9 +31,9 @@
 
 @property(nonatomic, strong) CMUserSessionController *userSessionController;
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
-                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
-               userSessionController:(CMUserSessionController *)userSessionController NS_DESIGNATED_INITIALIZER;
+@property(nonatomic, strong) RACSubject *serverMessagesSubject;
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig userSessionController:(CMUserSessionController *)userSessionController serverMessagesSubject:(RACSubject *)serverMessagesSubject;
 
 - (CMCammentViewController *)controller;
 

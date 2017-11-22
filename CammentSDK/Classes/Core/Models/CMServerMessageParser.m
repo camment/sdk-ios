@@ -47,21 +47,6 @@
                                                  shouldBeDeleted:NO];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
-    } else if ([type isEqualToString:@"invitation"]) {
-
-        NSDictionary *userJson = body[@"invitingUser"];
-        CMUser *user = [[[[CMUserBuilder new]
-                withCognitoUserId:userJson[@"userCognitoIdentityId"]]
-                withUsername:userJson[@"name"]]
-                build];
-
-        CMInvitation *invitation = [[CMInvitation alloc] initWithUserGroupUuid:body[@"groupUuid"]
-                                                               userCognitoUuid:body[@"userCognitoIdentityId"]
-                                                                      showUuid:body[@"showUuid"]
-                                                                 invitationKey:body[@"key"]
-                                                         invitedUserFacebookId:body[@"userFacebookId"]
-                                                              invitationIssuer:user];
-        serverMessage = [CMServerMessage invitationWithInvitation:invitation];
     } else if ([type isEqualToString:@"new-user-in-group"]) {
         NSDictionary *userJson = body[@"user"];
         CMUser *user = [[[[[[CMUserBuilder new]

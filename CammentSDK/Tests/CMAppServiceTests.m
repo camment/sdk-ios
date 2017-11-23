@@ -13,6 +13,7 @@
 #import "CMTestAppConfig.h"
 #import "FBSDKTestUsersManager.h"
 #import "FBSDKAccessToken.h"
+#import "FBSDKSettings.h"
 #import "CMTestFacebookIdentityProvider.h"
 #import "CMAWSServicesFactory.h"
 #import "CMConnectionReachability.h"
@@ -33,6 +34,7 @@ SpecBegin(CMSDKServiceTests)
         beforeAll(^{
             appConfig = [CMTestAppConfig new];
             
+            [FBSDKSettings setAppID:appConfig.facebookAppId];
             fbsdkTestUsersManager = [FBSDKTestUsersManager sharedInstanceForAppID:appConfig.facebookAppId
                                                                         appSecret:appConfig.facebookAppSecret];
             facebookIdentityProvider = [[CMTestFacebookIdentityProvider alloc] init];

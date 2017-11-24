@@ -69,7 +69,6 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self.sidebarWireframe.presenter layoutCollectionViewIfNeeded];
     [self.presenter checkIfNeedForOnboarding];
     [self updateCameraOrientation];
 }
@@ -159,6 +158,7 @@
         typeof(self) strongSelf = __weakSelf;
         if (!strongSelf) {return;}
         strongSelf.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
+        [strongSelf.node cancelLayoutTransition];
         [strongSelf.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
     }];
 }

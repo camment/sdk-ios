@@ -112,13 +112,13 @@
 
     self.awsServicesFactory = [[CMAWSServicesFactory alloc] initWithAppConfig:[CMAppConfig instance]];
 
-
     self.userSessionController = [CMUserSessionController registerInstanceWithUser:nil
                                                                             tokens:nil
                                                         cognitoCredentialsProvider:self.awsServicesFactory.cognitoCredentialsProvider
                                                         authentificationInteractor:[[CMAuthInteractor alloc] initWithIdentityProvider:identityProvider]
                                                    cognitoFacebookIdentityProvider:self.awsServicesFactory.cognitoFacebookIdentityProvider
-                                                           authChangedEventSubject:[CMStore instance].authentificationStatusSubject];
+                                                           authChangedEventSubject:[CMStore instance].authentificationStatusSubject
+                                                                         appConfig:[CMAppConfig instance]];
 
     if ([GVUserDefaults standardUserDefaults].isFirstSDKLaunch) {
         [self.userSessionController endSession];

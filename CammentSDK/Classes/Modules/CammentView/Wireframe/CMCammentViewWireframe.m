@@ -29,7 +29,10 @@
     return nil;
 }
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig userSessionController:(CMUserSessionController *)userSessionController serverMessagesSubject:(RACSubject *)serverMessagesSubject {
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
+               userSessionController:(CMUserSessionController *)userSessionController
+               serverMessagesSubject:(RACSubject *)serverMessagesSubject {
     self = [super init];
 
     if (self) {

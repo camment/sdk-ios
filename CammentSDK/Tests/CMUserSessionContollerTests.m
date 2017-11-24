@@ -37,6 +37,7 @@ SpecBegin(CMUserSessionContollerTests)
             [AWSDDLog sharedInstance].logLevel = AWSDDLogLevelVerbose;
             appConfig = [CMTestAppConfig new];
             
+            [FBSDKSettings setAppID:appConfig.facebookAppId];
             fbsdkTestUsersManager = [FBSDKTestUsersManager sharedInstanceForAppID:appConfig.facebookAppId
                                                                         appSecret:appConfig.facebookAppSecret];
             waitUntil(^(DoneCallback done) {
@@ -70,11 +71,7 @@ SpecBegin(CMUserSessionContollerTests)
 
             facebookIdentityProvider = OCMPartialMock([CMTestFacebookIdentityProvider new]);
             authInteractor = [[CMAuthInteractor alloc] initWithIdentityProvider:facebookIdentityProvider];
-            userSessionController = [[CMUserSessionController alloc] initWithUser:nil
-                                                                           tokens:nil
-                                                       cognitoCredentialsProvider:credentialsProvider
-                                                       authentificationInteractor:authInteractor
-                                                  cognitoFacebookIdentityProvider:cognitoFacebookAuthProvider authChangedEventSubject:authChangedEventSubject];
+            userSessionController = [[CMUserSessionController alloc] initWithUser:nil tokens:nil cognitoCredentialsProvider:credentialsProvider authentificationInteractor:authInteractor cognitoFacebookIdentityProvider:cognitoFacebookAuthProvider authChangedEventSubject:authChangedEventSubject appConfig:appConfig];
             [userSessionController endSession];
         });
 
@@ -143,6 +140,10 @@ SpecBegin(CMUserSessionContollerTests)
                             expect(authContext.user).to.beIdenticalTo(task.result);
                             expect(authContext.state).to.equal(CMCammentUserAuthentificatedAsKnownUser);
 
+                            expect(authContext.user.cognitoUserId).toNot.beNil();
+                            expect(authContext.user.username).toNot.beNil();
+                            expect(authContext.user.userPhoto).toNot.beNil();
+                            
                             cognitoIdentity = task.result.cognitoUserId;
 
                             done();
@@ -180,6 +181,10 @@ SpecBegin(CMUserSessionContollerTests)
                             expect(authContext.user).to.beIdenticalTo(task.result);
                             expect(authContext.state).to.equal(CMCammentUserAuthentificatedAsKnownUser);
 
+                            expect(authContext.user.cognitoUserId).toNot.beNil();
+                            expect(authContext.user.username).toNot.beNil();
+                            expect(authContext.user.userPhoto).toNot.beNil();
+                            
                             expect(cognitoIdentity).to.equal(authContext.user.cognitoUserId);
                             done();
                             return nil;

@@ -14,5 +14,4 @@
 
 - (void)setupView;
 
-- (void)layoutCollectionViewIfNeeded;
 @end

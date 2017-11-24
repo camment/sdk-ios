@@ -111,27 +111,24 @@
 }
 
 - (void)playCamment:(NSString *)cammentId {
-    [_collectionNode.collectionViewLayout invalidateLayout];
-    [_collectionNode performBatchAnimated:YES updates:^{
-        for (ASCellNode *node in _collectionNode.visibleNodes) {
-            if (![node isKindOfClass:[CMCammentCell class]]) {continue;}
-
-            CMCammentCell *cammentCell = (CMCammentCell *) node;
-            BOOL oldExpandedValue = cammentCell.expanded;
-            BOOL shouldPlay = [cammentCell.cammentNode.camment.uuid isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
-
-            cammentCell.expanded = shouldPlay;
-            if (oldExpandedValue != cammentCell.expanded) {
-                [cammentCell transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
-            }
-            if (shouldPlay) {
-                [cammentCell.cammentNode playCamment];
-            } else {
-                [cammentCell.cammentNode stopCamment];
-            }
+    [self.collectionNode invalidateCalculatedLayout];
+    for (ASCellNode *node in _collectionNode.visibleNodes) {
+        if (![node isKindOfClass:[CMCammentCell class]]) {continue;}
+        
+        CMCammentCell *cammentCell = (CMCammentCell *) node;
+        BOOL oldExpandedValue = cammentCell.expanded;
+        BOOL shouldPlay = [cammentCell.cammentNode.camment.uuid isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
+        
+        cammentCell.expanded = shouldPlay;
+        if (oldExpandedValue != cammentCell.expanded) {
+            [cammentCell transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
         }
-
-    }                          completion:nil];
+        if (shouldPlay) {
+            [cammentCell.cammentNode playCamment];
+        } else {
+            [cammentCell.cammentNode stopCamment];
+        }
+    }
 }
 
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

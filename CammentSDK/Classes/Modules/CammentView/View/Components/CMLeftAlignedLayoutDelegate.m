@@ -31,6 +31,29 @@
 
     for (NSUInteger section = 0; section < numberOfSections; section++) {
         NSInteger numberOfItems = [elements numberOfItemsInSection:section];
+        for (NSUInteger idx = 0; idx < numberOfItems; idx++) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForItem:idx inSection:section];
+            ASCollectionElement *element = [elements elementForItemAtIndexPath:indexPath];
+            if ([element.node isKindOfClass:[CMCammentCell class]]) {
+                CMCammentCell *cell = (CMCammentCell *)element.node;
+                BOOL isFirst = section == 0 && idx == 0;
+                BOOL isLast = section == numberOfSections - 1 && idx == numberOfItems - 1;
+                if ([cell.camment.uuid isEqualToString:[CMStore instance].playingCammentId])
+                {
+                    if (!isFirst && !isLast) {
+                        top = -90/4.0f;
+                    } else if (isLast && !isFirst) {
+                        top = -45.0f;
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    for (NSUInteger section = 0; section < numberOfSections; section++) {
+        NSInteger numberOfItems = [elements numberOfItemsInSection:section];
 
         for (NSUInteger idx = 0; idx < numberOfItems; idx++) {
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:idx inSection:section];
@@ -67,6 +90,7 @@
             itemWidth = 90.0f;
         }
     }
+
     return ASSizeRangeMake(CGSizeMake(itemWidth, itemWidth));
 }
 

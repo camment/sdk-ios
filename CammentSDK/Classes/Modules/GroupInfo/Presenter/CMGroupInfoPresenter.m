@@ -70,8 +70,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         [items addObject:@(CMGroupInfoSectionUserProfile)];
     }
 
+    CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
     self.users = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *user) {
-        return ![user.cognitoUserId isEqualToString:user.cognitoUserId];
+        return ![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
     }].array ?: @[];
 
     if (self.users.count == 0) {
@@ -92,11 +93,6 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node {
     self.collectionNode = node;
     [self reloadData];
-}
-
-- (void)layoutCollectionViewIfNeeded {
-    [self.collectionNode invalidateCalculatedLayout];
-    [self.collectionNode reloadData];
 }
 
 - (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
@@ -158,39 +154,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     return cellNodeBlock;
 }
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    UIEdgeInsets result = UIEdgeInsetsMake(0.0f, 0.0f, 0.0f, 0.0f);
-    return result;
-}
-
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
-
-- (ASSizeRange)collectionNode:(ASCollectionNode *)collectionNode constrainedSizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-
-    id model = [self.dataModel itemAtIndexPath:indexPath];
-
-    if ([model isKindOfClass:[NSNumber class]]) {
-        CMGroupInfoSection section = (CMGroupInfoSection) [model integerValue];
-        if (section == CMGroupInfoInviteFriendsSection) {
-            CGSize size;
-            CGFloat profileCellHeight = 100.0f;
-
-            if (self.showProfileInfo) {
-                profileCellHeight = [[CMProfileViewNode new] layoutThatFits:ASSizeRangeMake(CGSizeMake(collectionNode.bounds.size.width, .0f),
-                                                                                        CGSizeMake(collectionNode.bounds.size.width, CGFLOAT_MAX))].size.height;
-            }
-            profileCellHeight += 20.0f;
-            size = CGSizeMake(collectionNode.frame.size.width, collectionNode.frame.size.height - (_showProfileInfo ? profileCellHeight : .0f));
-            
-            return ASSizeRangeMake(size);
-        }
-    }
-
-    return ASSizeRangeMake(CGSizeMake(collectionNode.bounds.size.width, .0f),
-            CGSizeMake(collectionNode.bounds.size.width, CGFLOAT_MAX));
-}
-
 
 - (void)updateDataModel:(TLIndexPathDataModel *)dataModel {
     TLIndexPathDataModel *oldDataModel = self.dataModel;

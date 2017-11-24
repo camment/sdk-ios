@@ -48,10 +48,6 @@ NSString *const CMAuthInteractorErrorDomain = @"tv.camment.CMCammentViewInteract
 
         NSSet *validProviders = [NSSet setWithObjects:
                 CMCammentIdentityProviderFacebook,
-                CMCammentIdentityUsername,
-                CMCammentIdentityUUID,
-                CMCammentIdentityProfilePicture,
-                CMCammentIdentityEmail,
                         nil];
 
         NSArray *incorrectProviders = [tokens.allKeys.rac_sequence filter:^BOOL(NSString *providerKey) {

@@ -196,5 +196,25 @@
     [[CammentSDK instance] logOut];
 }
 
+- (void)animateLayoutTransition:(id<ASContextTransitioning>)context {
+    if (![context isAnimated]) {
+        [super animateLayoutTransition:context];
+        return;
+    }
+    
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
+        
+        for (ASDisplayNode *node in context.removedSubnodes) {
+            node.alpha = .0f;
+        }
+        
+        for (ASDisplayNode *node in context.insertedSubnodes) {
+            node.alpha = 1.0f;
+        }
+        
+    } completion:^(BOOL finished) {
+        [context completeTransition:YES];
+    }];
+}
 
 @end

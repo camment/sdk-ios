@@ -437,8 +437,8 @@
                            withBlock:^id(AWSTask<id> *task) {
                                if (task.error) {
                                    [self.output hideLoadingHUD];
-                                   [self inviteFriendsAction];
                                } else {
+                                   [self inviteFriendsAction];
                                    [self.output hideLoadingHUD];
                                }
                                return nil;

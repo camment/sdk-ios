@@ -208,23 +208,23 @@
         [super animateLayoutTransition:context];
         return;
     }
-    
+
     UIView * snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
-    snapshot.frame = self.cammentRecorderNode.view.bounds;
+    snapshot.frame = self.cammentRecorderNode.bounds;
     snapshot.alpha = 1.0f;
     [self.cammentRecorderNode.view addSubview:snapshot];
 
     CGRect cammentBlockFinalFrame = [context finalFrameForNode:self.cammentsBlockNode];
     CGRect cammentBlockInitialFrame = [context initialFrameForNode:self.cammentsBlockNode];
 
-    self.cammentsBlockNode.view.frame = CGRectMake(
+    self.cammentsBlockNode.frame = CGRectMake(
             cammentBlockInitialFrame.origin.x,
             cammentBlockInitialFrame.origin.y,
             cammentBlockFinalFrame.size.width,
             MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
 
     [UIView animateWithDuration:0.3 animations:^{
-        self.cammentsBlockNode.view.frame = CGRectMake(
+        self.cammentsBlockNode.frame = CGRectMake(
                 cammentBlockFinalFrame.origin.x,
                 cammentBlockFinalFrame.origin.y,
                 cammentBlockFinalFrame.size.width,

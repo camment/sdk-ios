@@ -61,12 +61,8 @@
         return;
     }
 
-    [UIView animateWithDuration:0.5 animations:^{
-        _cammentNode.frame = CGRectMake(
-                [context finalFrameForNode:self.cammentNode].origin.x,
-                [context finalFrameForNode:self.cammentNode].origin.y,
-                _expanded ? 90.0f : 45.0f,
-                _expanded ? 90.0f : 45.0f);
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
+        _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
     } completion:^(BOOL finished) {
         [context completeTransition:finished];
     }];

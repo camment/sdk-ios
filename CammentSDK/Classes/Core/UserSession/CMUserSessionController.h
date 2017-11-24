@@ -13,6 +13,7 @@
 @protocol CMIdentityProvider;
 @protocol CMAuthInteractorInput;
 @class AWSTask;
+@class CMAppConfig;
 
 @interface CMUserSessionController : NSObject
 
@@ -30,24 +31,12 @@
 
 @property (nonatomic, strong, readonly) RACSubject<CMAuthStatusChangedEventContext *> *authChangedEventSubject;
 
-- (instancetype)initWithUser:(CMUser *)user
-                      tokens:(NSDictionary<NSString *, id> *)tokens
-  cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider
-  authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor
-cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider
-     authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject;
+- (instancetype)initWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject appConfig:(CMAppConfig *)appConfig;
 
 + (CMUserSessionController *)instance;
 
-+ (CMUserSessionController *)registerInstanceWithUser:(CMUser *)user
-                                               tokens:(NSDictionary<NSString *, id> *)tokens
-                           cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider
-                           authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor
-                      cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider
-                              authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject;
++ (CMUserSessionController *)registerInstanceWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject appConfig:(CMAppConfig *)appConfig;
 
 - (AWSTask *)refreshSession:(BOOL)forceSignIn;
 - (void)endSession;
-
-- (void)syncCognitoProfiles:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity;
 @end

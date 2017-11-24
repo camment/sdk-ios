@@ -11,8 +11,14 @@
 #import "CMCognitoFacebookAuthProvider.h"
 #import "RACSubject.h"
 #import "CMAuthStatusChangedEventContext.h"
+#import "CMAPIDevcammentClient.h"
+#import "CMAppConfig.h"
 
 static CMUserSessionController *_instance = nil;
+
+@interface CMUserSessionController ()
+@property(nonatomic, strong) CMAppConfig *appConfig;
+@end
 
 @implementation CMUserSessionController
 
@@ -20,20 +26,21 @@ static CMUserSessionController *_instance = nil;
     return _instance;
 }
 
-+ (CMUserSessionController *)registerInstanceWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject {
++ (CMUserSessionController *)registerInstanceWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject appConfig:(CMAppConfig *)appConfig {
     @synchronized (self) {
         if (_instance == nil) {
-            _instance = [[self alloc] initWithUser:user tokens:tokens cognitoCredentialsProvider:cognitoCredentialsProvider authentificationInteractor:authentificationInteractor cognitoFacebookIdentityProvider:cognitoFacebookIdentityProvider authChangedEventSubject:authChangedEventSubject];
+            _instance = [[self alloc] initWithUser:user tokens:tokens cognitoCredentialsProvider:cognitoCredentialsProvider authentificationInteractor:authentificationInteractor cognitoFacebookIdentityProvider:cognitoFacebookIdentityProvider authChangedEventSubject:authChangedEventSubject appConfig:appConfig];
         }
     }
 
     return _instance;
 }
 
-- (instancetype)initWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject {
+- (instancetype)initWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject appConfig:(CMAppConfig *)appConfig {
     self = [super init];
     if (self) {
         self.user = user;
+        self.appConfig = appConfig;
         _tokens = tokens;
         _cognitoCredentialsProvider = cognitoCredentialsProvider;
         _authentificationInteractor = authentificationInteractor;
@@ -46,16 +53,6 @@ static CMUserSessionController *_instance = nil;
     return self;
 }
 
-- (void)updateUserProfileData:(NSDictionary *)profileData {
-    CMUser *updatedUser = [[[[[[CMUserBuilder userFromExistingUser:self.user]
-            withUsername:profileData[CMCammentIdentityUsername]]
-            withFbUserId:profileData[CMCammentIdentityUUID]]
-            withUserPhoto:profileData[CMCammentIdentityProfilePicture]]
-            withEmail:profileData[CMCammentIdentityEmail]]
-            build];
-    self.user = updatedUser;
-}
-
 - (AWSTask *)refreshCognitoSession {
     [_cognitoCredentialsProvider clearCredentials];
     return [[_cognitoCredentialsProvider credentials]
@@ -64,10 +61,26 @@ static CMUserSessionController *_instance = nil;
             }];
 }
 
+- (AWSTask *)updateUserProfileInfo {
+    AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
+                                                                         credentialsProvider:_cognitoCredentialsProvider];
+    [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:@"UserSessionUpdater"];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient clientForKey:@"UserSessionUpdater"];
+    [client setAPIKey:_appConfig.apiKey];
+    return [[client userinfoGet] continueWithSuccessBlock:^id(AWSTask<id> *t) {
+        CMAPIUserinfo *userInfo = t.result;
+        if (userInfo) {
+            self.user = [[[[CMUserBuilder userFromExistingUser:self.user]
+                    withUsername:userInfo.name]
+                    withUserPhoto:userInfo.picture] build];
+        }
+        return nil;
+    }];
+}
+
 - (AWSTask *)refreshSession:(BOOL)forceSignIn {
-    return [[[_authentificationInteractor refreshIdentity:forceSignIn]
+    return [[[[_authentificationInteractor refreshIdentity:forceSignIn]
             continueWithSuccessBlock:^id(AWSTask<id> *task) {
-                [self updateUserProfileData:task.result];
                 _cognitoFacebookIdentityProvider.facebookAccessToken = task.result[CMCammentIdentityProviderFacebook];
                 return [self refreshCognitoSession];
             }]
@@ -78,7 +91,11 @@ static CMUserSessionController *_instance = nil;
                     self.userAuthentificationState = CMCammentUserAuthentificatedAnonymous;
                 }
 
-                self.user = [[[CMUserBuilder userFromExistingUser:self.user] withCognitoUserId:t.result] build];
+                _user = [[[CMUserBuilder userFromExistingUser:self.user] withCognitoUserId:t.result] build];
+
+                return [self updateUserProfileInfo];
+            }]
+            continueWithSuccessBlock:^id(AWSTask<id> *t) {
 
                 [self notifyAboutAuthStatusChanged];
 
@@ -95,7 +112,7 @@ static CMUserSessionController *_instance = nil;
     [self notifyAboutAuthStatusChanged];
 }
 
-- (void)notifyAboutAuthStatusChanged{
+- (void)notifyAboutAuthStatusChanged {
     CMAuthStatusChangedEventContext *context = [[CMAuthStatusChangedEventContext alloc] initWithState:self.userAuthentificationState
                                                                                                  user:self.user];
     [self.authChangedEventSubject sendNext:context];

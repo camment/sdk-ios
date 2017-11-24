@@ -34,8 +34,7 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    [self.node transitionLayoutWithSizeRange:ASSizeRangeMake(size) animated:YES shouldMeasureAsync:NO measurementCompletion:^{
-        [self.presenter layoutCollectionViewIfNeeded];
+    [self.node transitionLayoutWithSizeRange:ASSizeRangeMake(size, size) animated:YES shouldMeasureAsync:NO measurementCompletion:^{
     }];
 }
 

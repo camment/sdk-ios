@@ -8,6 +8,7 @@
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMGroupInfoNode.h"
+#import "CMGroupInfoCollectionViewDelegate.h"
 
 @interface CMGroupInfoNode ()
 
@@ -21,11 +22,8 @@
     self = [super init];
     if (self) {
 
-        UICollectionViewFlowLayout *flowLayout = [UICollectionViewFlowLayout new];
-        flowLayout.minimumInteritemSpacing = .0f;
-        flowLayout.minimumLineSpacing = .0f;
-
-        self.collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout:flowLayout];
+        self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
+                                                             layoutFacilitator:nil];
         self.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;
 

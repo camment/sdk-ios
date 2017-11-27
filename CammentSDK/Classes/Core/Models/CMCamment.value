@@ -13,4 +13,5 @@ CMCamment includes(RMBuilder) {
   NSString *botAction
   BOOL isDeleted
   BOOL shouldBeDeleted
+  CMCammentStatus *status;
 }

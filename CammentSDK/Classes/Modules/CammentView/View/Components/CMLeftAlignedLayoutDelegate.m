@@ -7,7 +7,7 @@
 #import "CMCamment.h"
 #import "CMStore.h"
 #import "ASCollectionElement.h"
-
+#import "CMCammentCellDisplayingContext.h"
 
 @implementation CMLeftAlignedLayoutDelegate {
 
@@ -38,7 +38,7 @@
                 CMCammentCell *cell = (CMCammentCell *)element.node;
                 BOOL isFirst = section == 0 && idx == 0;
                 BOOL isLast = section == numberOfSections - 1 && idx == numberOfItems - 1;
-                if ([cell.camment.uuid isEqualToString:[CMStore instance].playingCammentId])
+                if ([cell.displayingContext.camment.uuid isEqualToString:[CMStore instance].playingCammentId])
                 {
                     if (!isFirst && !isLast) {
                         top = -90/4.0f;
@@ -86,7 +86,7 @@
 
     if ([item isKindOfClass:[CMCammentCell class]]) {
         CMCammentCell *cell = (CMCammentCell *)item;
-        if ([cell.camment.uuid isEqualToString:[CMStore instance].playingCammentId]) {
+        if ([cell.displayingContext.camment.uuid isEqualToString:[CMStore instance].playingCammentId]) {
             itemWidth = 90.0f;
         }
     }

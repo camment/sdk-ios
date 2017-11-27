@@ -1,0 +1,6 @@
+%type name="CMCammentDeliveryStatus"
+
+CMCammentStatus {
+    CMCammentDeliveryStatus(NSInteger) deliveryStatus
+    BOOL isWatched
+}

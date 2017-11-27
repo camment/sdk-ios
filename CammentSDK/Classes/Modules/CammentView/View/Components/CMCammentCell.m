@@ -7,21 +7,24 @@
 #import "CMCammentNode.h"
 #import "CMCamment.h"
 #import "UIColorMacros.h"
+#import "CMCammentCellDisplayingContext.h"
+#import "CMCammentDeliveryIndicator.h"
 
 @interface CMCammentCell ()
+
 @property(nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
+@property(nonatomic, strong) CMCammentDeliveryIndicator *deliveryIndicator;
 @end
 
 @implementation CMCammentCell
 
-- (instancetype)initWithCamment:(CMCamment *)camment {
+- (instancetype)initWithDisplayContext:(CMCammentCellDisplayingContext *)context {
     self = [super init];
     if (self) {
-        _camment = camment;
-        self.cammentNode = [[CMCammentNode alloc] initWithCamment:camment];
-        self.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
-        self.borderWidth = 2.0f;
-        self.cornerRadius = 4.0f;
+        _displayingContext = context;
+        self.cammentNode = [[CMCammentNode alloc] initWithCamment:context.camment];
+        self.deliveryIndicator = [CMCammentDeliveryIndicator new];
+        self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -52,7 +55,11 @@
             _expanded ? 90.0f : 45.0f,
             _expanded ? 90.0f : 45.0f);
     ASWrapperLayoutSpec *layoutSpec = [ASWrapperLayoutSpec wrapperWithLayoutElement:_cammentNode];
-    return layoutSpec;
+    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(1.0f, 1.0f, INFINITY, INFINITY)
+                                                                                child:self.deliveryIndicator];
+    ASOverlayLayoutSpec *overlayLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:layoutSpec
+                                                                                     overlay:insetLayoutSpec];
+    return overlayLayoutSpec;
 }
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
@@ -63,9 +70,15 @@
 
     [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
         _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
-    } completion:^(BOOL finished) {
+    }                completion:^(BOOL finished) {
         [context completeTransition:finished];
     }];
+}
+
+- (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context {
+    _displayingContext = context;
+    self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
+    [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 @end

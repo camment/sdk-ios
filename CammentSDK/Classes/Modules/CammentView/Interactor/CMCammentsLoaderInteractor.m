@@ -19,6 +19,7 @@
 #import "TCBlobDownloader.h"
 #import "TCBlobDownloadManager.h"
 #import "CMCammentBuilder.h"
+#import "CMCammentStatus.h"
 
 @interface CMCammentsLoaderInteractor ()
 
@@ -64,19 +65,18 @@
         if ([t.result isKindOfClass:[CMAPICammentList class]]) {
             NSArray *camments = [t.result items];
             NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
-                return [[CMCamment alloc] initWithShowUuid:value.showUuid
-                                             userGroupUuid:value.userGroupUuid
-                                                      uuid:value.uuid
-                                                 remoteURL:value.url
-                                                  localURL:nil
-                                              thumbnailURL:value.thumbnail
-                                     userCognitoIdentityId:value.userCognitoIdentityId
-                                                localAsset:nil
-                                               isMadeByBot:NO
-                                                   botUuid:nil
-                                                 botAction:nil
-                                                 isDeleted:NO
-                                           shouldBeDeleted:NO];
+                CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
+                                                  initWithDeliveryStatus:CMCammentDeliveryStatusSeen
+                                                  isWatched:NO];
+                return [[[[[[[[[CMCammentBuilder camment]
+                               withShowUuid:value.showUuid]
+                              withUserGroupUuid:value.userGroupUuid]
+                             withUuid:value.uuid]
+                            withThumbnailURL:value.thumbnail]
+                           withUserCognitoIdentityId:value.userCognitoIdentityId]
+                          withIsDeleted:NO]
+                         withShouldBeDeleted:NO]
+                        withStatus:nil];
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output didFetchCamments:result];

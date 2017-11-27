@@ -23,6 +23,7 @@
 #import "CMAdsVideoPlayerNode.h"
 #import "CMVideoAd.h"
 #import "CMOpenURLHelper.h"
+#import "CMCammentCellDisplayingContext.h"
 
 @interface CMCammentViewController () <CMCammentButtonDelegate, CMAdsVideoPlayerNodeDelegate>
 
@@ -333,7 +334,7 @@
         return;
     }
 
-    CMCamment *camment = cammentCell.camment;
+    CMCamment *camment = cammentCell.displayingContext.camment;
 
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
                                                                              message:@""

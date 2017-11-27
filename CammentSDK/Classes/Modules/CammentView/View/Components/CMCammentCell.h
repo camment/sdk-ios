@@ -10,6 +10,7 @@
 @class CMCammentNode;
 @class CMCamment;
 @class CMCammentCell;
+@class CMCammentCellDisplayingContext;
 
 @protocol CMCammentCellDelegate<NSObject>
 
@@ -23,7 +24,9 @@
 @property (nonatomic, assign) BOOL expanded;
 @property (nonatomic, weak) id<CMCammentCellDelegate> delegate;
 
-@property(nonatomic, strong, readonly) CMCamment *camment;
+@property(nonatomic, strong, readonly) CMCammentCellDisplayingContext *displayingContext;
 
-- (instancetype)initWithCamment:(CMCamment *)camment;
+- (instancetype)initWithDisplayContext:(CMCammentCellDisplayingContext *)context;
+
+- (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context;
 @end

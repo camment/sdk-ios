@@ -2,6 +2,7 @@
 
 @class CMCamment;
 @class AVAsset;
+@class CMCammentStatus;
 
 @interface CMCammentBuilder : NSObject
 
@@ -36,6 +37,8 @@
 - (instancetype)withIsDeleted:(BOOL)isDeleted;
 
 - (instancetype)withShouldBeDeleted:(BOOL)shouldBeDeleted;
+
+- (instancetype)withStatus:(CMCammentStatus *)status;
 
 @end
 

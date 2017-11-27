@@ -11,7 +11,7 @@
 #import "CMMembershipRequestMessageBuilder.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMMembershipAcceptedMessageBuilder.h"
-
+#import "CMCammentStatus.h"
 
 @implementation CMServerMessageParser {
 
@@ -44,7 +44,10 @@
                                                          botUuid:nil
                                                        botAction:nil
                                                        isDeleted:NO
-                                                 shouldBeDeleted:NO];
+                                                 shouldBeDeleted:NO
+                                                          status:[[CMCammentStatus alloc]
+                                                                  initWithDeliveryStatus:CMCammentDeliveryStatusSeen
+                                                                  isWatched:NO]];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"new-user-in-group"]) {
@@ -72,7 +75,10 @@
                                                          botUuid:nil
                                                        botAction:nil
                                                        isDeleted:NO
-                                                 shouldBeDeleted:NO];
+                                                 shouldBeDeleted:NO
+                                                          status:[[CMCammentStatus alloc]
+                                                                            initWithDeliveryStatus:CMCammentDeliveryStatusSeen
+                                                                            isWatched:NO]];
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     } else if ([type isEqualToString:@"membership-request"]) {
         NSDictionary *userJson = body[@"joiningUser"];

@@ -7,6 +7,7 @@
 #import "CMCammentNode.h"
 #import "CMCamment.h"
 #import "CMStore.h"
+#import "UIColorMacros.h"
 
 @interface CMCammentNode () <ASVideoNodeDelegate>
 @property(nonatomic, strong) ASVideoNode *videoPlayerNode;
@@ -25,6 +26,13 @@
         self.videoPlayerNode.muted = NO;
         self.videoPlayerNode.delegate = self;
         self.videoPlayerNode.userInteractionEnabled = NO;
+
+        self.videoPlayerNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
+        self.videoPlayerNode.borderWidth = 2.0f;
+        self.videoPlayerNode.cornerRadius = 4.0f;
+        self.videoPlayerNode.cornerRoundingType = ASCornerRoundingTypeDefaultSlowCALayer;
+        self.videoPlayerNode.clipsToBounds = YES;
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -108,6 +116,7 @@
     ASInsetLayoutSpec *layoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
                                                                            child:[ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0f
                                                                                                                        child:_videoPlayerNode]];
+
     return layoutSpec;
 }
 

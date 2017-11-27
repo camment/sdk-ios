@@ -31,6 +31,7 @@
 #import "CMErrorWireframe.h"
 #import "CMCammentsBlockPresenterInput.h"
 #import "CMUserSessionController.h"
+#import "CMCammentCellDisplayingContext.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput>
 
@@ -287,11 +288,14 @@
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
         NSString *groupUUID = [[CMStore instance].activeGroup uuid];
         CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
-        CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
-                withShowUuid:[CMStore instance].currentShowMetadata.uuid]
-                withUserGroupUuid:groupUUID]
-                withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
-                withLocalAsset:asset] build];
+        CMCamment *camment = [[[[[[[cammentBuilder withUuid:uuid]
+                                   withShowUuid:[CMStore instance].currentShowMetadata.uuid]
+                                  withUserGroupUuid:groupUUID]
+                                 withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
+                                withLocalAsset:asset]
+                               withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
+                                                                                isWatched:YES]]
+                              build];
         @weakify(self);
         [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
                                             completion:^{
@@ -533,8 +537,8 @@
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
-    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]
-            || self.userSessionController.user.cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil) {
+    if ([cammentCell.displayingContext.camment.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]
+            || self.userSessionController.user.cognitoUserId == nil && cammentCell.displayingContext.camment.userCognitoIdentityId == nil) {
         [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
         actions = actions | CMCammentActionsMaskDelete;
     }

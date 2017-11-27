@@ -202,6 +202,9 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
         [self.cammentUploadingRetries removeObjectForKey:camment.uuid];
     }
 
+    CMCammentBuilder *cammentBuilder = [[CMCammentBuilder cammentFromExistingCamment:camment]
+                                        withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusSent
+                                                                                         isWatched:YES]];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.output interactorDidUploadCamment:camment];
     });

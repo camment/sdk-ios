@@ -13,10 +13,13 @@
 #import "CMCammentBuilder.h"
 #import "AWSS3Model.h"
 #import "CMAdsDemoBot.h"
+#import "CMCammentCellDisplayingContext.h"
+#import "CMAuthStatusChangedEventContext.h"
 
 @interface CMCammentsBlockPresenter () <CMBotCammentCellDelegate, CMCammentCellDelegate>
 
 @property(nonatomic, strong) NSOperationQueue *updatesQueue;
+@property(nonatomic, strong) NSString *userCognitoUuid;
 
 @end
 
@@ -31,6 +34,11 @@
         self.updatesQueue.underlyingQueue = dispatch_get_main_queue();
         self.updatesQueue.maxConcurrentOperationCount = 1;
         [self.updatesQueue setSuspended:NO];
+
+        [[[CMStore instance].authentificationStatusSubject takeUntil:self.rac_willDeallocSignal]
+                subscribeNext:^(CMAuthStatusChangedEventContext *x) {
+            self.userCognitoUuid = x.user.cognitoUserId;
+        }];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(identityIdDidChange:)
@@ -87,10 +95,13 @@
 
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
     CMCammentsBlockItem *item = self.items[(NSUInteger) indexPath.row];
+    NSString *userCognitoUuid = self.userCognitoUuid;
     return ^ASCellNode * {
         __block ASCellNode *node;
         [item matchCamment:^(CMCamment *camment) {
-            node = [[CMCammentCell alloc] initWithCamment:camment];
+            CMCammentCellDisplayingContext *context = [CMCammentCellDisplayingContext contextWithCamment:camment
+                                                                                shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:userCognitoUuid]];
+            node = [[CMCammentCell alloc] initWithDisplayContext:context];
             [(CMCammentCell *) node setDelegate:self];
         }       botCamment:^(CMBotCamment *botCamment) {
             node = [[CMBotCammentCell alloc] initWithBotCamment:botCamment];
@@ -113,12 +124,12 @@
 - (void)playCamment:(NSString *)cammentId {
     [self.collectionNode invalidateCalculatedLayout];
     for (ASCellNode *node in _collectionNode.visibleNodes) {
-        if (![node isKindOfClass:[CMCammentCell class]]) {continue;}
-        
+        if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
+
         CMCammentCell *cammentCell = (CMCammentCell *) node;
         BOOL oldExpandedValue = cammentCell.expanded;
         BOOL shouldPlay = [cammentCell.cammentNode.camment.uuid isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
-        
+
         cammentCell.expanded = shouldPlay;
         if (oldExpandedValue != cammentCell.expanded) {
             [cammentCell transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
@@ -281,6 +292,22 @@
             return updatedItem;
         }];
     }
+
+    [self updateVisibleCellWithCamment:camment];
+}
+
+- (void)updateVisibleCellWithCamment:(CMCamment *)camment {
+    [self.updatesQueue addOperationWithBlock:^{
+        for (ASCellNode *node in _collectionNode.visibleNodes) {
+            if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
+            CMCammentCell *cammentCell = (CMCammentCell *) node;
+            if ([cammentCell.displayingContext.camment.uuid isEqualToString:camment.uuid]) {
+                CMCammentCellDisplayingContext *context = [CMCammentCellDisplayingContext contextWithCamment:camment
+                                                                                    shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:self.userCognitoUuid]];
+                [cammentCell updateWithDisplayingContext:context];
+            }
+        }
+    }];
 }
 
 @end

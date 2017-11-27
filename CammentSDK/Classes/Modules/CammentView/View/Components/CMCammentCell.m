@@ -24,7 +24,7 @@
         _displayingContext = context;
         self.cammentNode = [[CMCammentNode alloc] initWithCamment:context.camment];
         self.deliveryIndicator = [CMCammentDeliveryIndicator new];
-        self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
+        self.deliveryIndicator.deliveryStatus = _displayingContext.camment.status.deliveryStatus;
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -38,6 +38,15 @@
     [longPressGestureRecognizer addTarget:self action:@selector(handleLongPressAction:)];
     [self.view addGestureRecognizer:longPressGestureRecognizer];
     self.longPressGestureRecognizer = longPressGestureRecognizer;
+}
+
+- (void)didEnterDisplayState {
+    [super didEnterDisplayState];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.deliveryIndicator transitionLayoutWithAnimation:YES
+                                           shouldMeasureAsync:NO
+                                        measurementCompletion:nil];
+    });
 }
 
 - (void)handleLongPressAction:(UILongPressGestureRecognizer *)recognizer {
@@ -55,11 +64,17 @@
             _expanded ? 90.0f : 45.0f,
             _expanded ? 90.0f : 45.0f);
     ASWrapperLayoutSpec *layoutSpec = [ASWrapperLayoutSpec wrapperWithLayoutElement:_cammentNode];
-    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(1.0f, 1.0f, INFINITY, INFINITY)
+    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(1.0f, 0.0f, INFINITY, 1.0f)
                                                                                 child:self.deliveryIndicator];
-    ASOverlayLayoutSpec *overlayLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:layoutSpec
-                                                                                     overlay:insetLayoutSpec];
-    return overlayLayoutSpec;
+    ASStackLayoutSpec *finalLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
+                                                                                 spacing:-1.0f
+                                                                          justifyContent:ASStackLayoutJustifyContentStart
+                                                                              alignItems:ASStackLayoutAlignItemsStart
+                                                                                children:@[insetLayoutSpec, layoutSpec]];
+    finalLayoutSpec.style.flexGrow = .0f;
+    finalLayoutSpec.style.flexShrink = .0f;
+    
+    return finalLayoutSpec;
 }
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
@@ -70,6 +85,7 @@
 
     [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
         _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
+        _deliveryIndicator.frame = [context finalFrameForNode:self.deliveryIndicator];
     }                completion:^(BOOL finished) {
         [context completeTransition:finished];
     }];
@@ -78,6 +94,7 @@
 - (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context {
     _displayingContext = context;
     self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
+    [self.deliveryIndicator transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 

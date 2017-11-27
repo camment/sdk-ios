@@ -329,26 +329,7 @@
 }
 
 - (void)interactorDidUploadCamment:(CMCamment *)uploadedCamment {
-    NSMutableArray<CMCammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
-    NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CMCammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
-        __block BOOL result = NO;
-
-        [obj matchCamment:^(CMCamment *camment) {
-            result = [camment.uuid isEqualToString:uploadedCamment.uuid];
-        }      botCamment:^(CMBotCamment *ads) {
-        }];
-
-        return result;
-    }];
-
-    if (index != NSNotFound) {
-        CMCammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
-        [cammentsBlockItem matchCamment:^(CMCamment *camment) {
-            mutableCamments[(NSUInteger) index] = [CMCammentsBlockItem cammentWithCamment:uploadedCamment];
-        }                    botCamment:^(CMBotCamment *ads) {
-        }];
-    }
-    self.cammentsBlockNodePresenter.items = mutableCamments.copy;
+    [self.cammentsBlockNodePresenter updateCammentData:uploadedCamment];
 }
 
 - (void)interactorFailedToUploadCamment:(CMCamment *)camment error:(NSError *)error {

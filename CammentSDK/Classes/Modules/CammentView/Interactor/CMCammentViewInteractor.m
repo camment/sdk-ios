@@ -206,7 +206,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                         withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusSent
                                                                                          isWatched:YES]];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.output interactorDidUploadCamment:camment];
+        [self.output interactorDidUploadCamment:[cammentBuilder build]];
     });
 }
 

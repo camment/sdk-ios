@@ -30,7 +30,7 @@
     [super didLoad];
     [self.collectionNode.view setShowsVerticalScrollIndicator: NO];
     [self.collectionNode.view setAlwaysBounceVertical: YES];
-    [self.collectionNode.view setContentInset:UIEdgeInsetsMake(10.0f, 20.0f, .0f, .0f)];
+    [self.collectionNode.view setContentInset:UIEdgeInsetsMake(10.0f, 0.0f, .0f, .0f)];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
@@ -42,6 +42,5 @@
     self.collectionNode.dataSource = delegate;
     self.collectionNode.delegate = delegate;
 }
-
 
 @end

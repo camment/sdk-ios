@@ -21,6 +21,9 @@
     if (self) {
         self.sentCheckMarkNode = [[ASImageNode alloc] init];
         self.deliveredCheckMarkNode = [[ASImageNode alloc] init];
+        self.sentCheckMarkNode.alpha = .0f;
+        self.deliveredCheckMarkNode.alpha = .0f;
+        
         self.automaticallyManagesSubnodes = YES;
     }
     return self;
@@ -35,20 +38,15 @@
 
     self.sentCheckMarkNode.image = image;
     self.deliveredCheckMarkNode.image = image;
-
 }
 
 - (void)setDeliveryStatus:(CMCammentDeliveryStatus)deliveryStatus {
     _deliveryStatus = deliveryStatus;
-
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self transitionLayoutWithAnimation:YES
-                         shouldMeasureAsync:NO
-                      measurementCompletion:nil];
-    });
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+    self.deliveredCheckMarkNode.style.preferredSize = CGSizeMake(6, 7);
+    self.sentCheckMarkNode.style.preferredSize = CGSizeMake(6, 7);
     ASStackLayoutSpec *layoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                             spacing:-1
                                                                      justifyContent:ASStackLayoutJustifyContentStart
@@ -57,11 +55,15 @@
                                                                                    self.deliveredCheckMarkNode,
                                                                                    self.sentCheckMarkNode
                                                                            ]];
-    return layoutSpec;
+    return [ASWrapperLayoutSpec wrapperWithLayoutElement:layoutSpec];
 }
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     if (![context isAnimated]) {
+        self.sentCheckMarkNode.alpha = (_deliveryStatus != CMCammentDeliveryStatusNotSent);
+        self.deliveredCheckMarkNode.alpha =
+        (_deliveryStatus != CMCammentDeliveryStatusDelivered)
+        || (_deliveryStatus != CMCammentDeliveryStatusSeen);
         [super animateLayoutTransition:context];
         return;
     }
@@ -72,8 +74,8 @@
                      animations:^{
                          self.sentCheckMarkNode.alpha = (_deliveryStatus != CMCammentDeliveryStatusNotSent);
                          self.deliveredCheckMarkNode.alpha =
-                                 (_deliveryStatus != CMCammentDeliveryStatusDelivered)
-                                         || (_deliveryStatus != CMCammentDeliveryStatusSeen);
+                                 (_deliveryStatus == CMCammentDeliveryStatusDelivered)
+                                         || (_deliveryStatus == CMCammentDeliveryStatusSeen);
                      }
                      completion:^(BOOL finished) {
                          [context completeTransition:finished];

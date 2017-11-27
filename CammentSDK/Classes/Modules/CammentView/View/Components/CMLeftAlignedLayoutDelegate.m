@@ -62,7 +62,7 @@
 
             ASSizeRange sizeRange = [self _sizeRangeForItem:element.node atIndexPath:indexPath withLayoutWidth:layoutWidth info:nil];
             CGSize size = [element.node layoutThatFits:sizeRange].size;
-            CGPoint position = CGPointMake(.0f, top);
+            CGPoint position = CGPointMake(4.0f, top);
             CGRect frame = CGRectMake(position.x, position.y, size.width, size.height);
 
             attrs.frame = frame;
@@ -80,7 +80,10 @@
     return nil;
 }
 
-+ (ASSizeRange)_sizeRangeForItem:(ASCellNode *)item atIndexPath:(NSIndexPath *)indexPath withLayoutWidth:(CGFloat)layoutWidth info:(id)info
++ (ASSizeRange)_sizeRangeForItem:(ASCellNode *)item
+                     atIndexPath:(NSIndexPath *)indexPath
+                 withLayoutWidth:(CGFloat)layoutWidth
+                            info:(id)info
 {
     CGFloat itemWidth = 45.0f;
 
@@ -91,7 +94,7 @@
         }
     }
 
-    return ASSizeRangeMake(CGSizeMake(itemWidth, itemWidth));
+    return ASSizeRangeMake(CGSizeMake(itemWidth, itemWidth), CGSizeMake(layoutWidth, itemWidth));
 }
 
 @end

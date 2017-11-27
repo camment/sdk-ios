@@ -68,15 +68,16 @@
                 CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
                                                   initWithDeliveryStatus:CMCammentDeliveryStatusSeen
                                                   isWatched:NO];
-                return [[[[[[[[[CMCammentBuilder camment]
-                               withShowUuid:value.showUuid]
-                              withUserGroupUuid:value.userGroupUuid]
-                             withUuid:value.uuid]
-                            withThumbnailURL:value.thumbnail]
-                           withUserCognitoIdentityId:value.userCognitoIdentityId]
-                          withIsDeleted:NO]
-                         withShouldBeDeleted:NO]
-                        withStatus:nil];
+                return [[[[[[[[[[[CMCammentBuilder camment]
+                                withShowUuid:value.showUuid]
+                               withUserGroupUuid:value.userGroupUuid]
+                              withUuid:value.uuid]
+                             withRemoteURL:value.url]
+                             withThumbnailURL:value.thumbnail]
+                            withUserCognitoIdentityId:value.userCognitoIdentityId]
+                           withIsDeleted:NO]
+                          withShouldBeDeleted:NO]
+                         withStatus:cammentStatus] build] ;
             }].array;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output didFetchCamments:result];

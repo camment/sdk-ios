@@ -22,7 +22,6 @@
 @property(nonatomic, strong) NSString *userCognitoUuid;
 
 @end
-
 @implementation CMCammentsBlockPresenter
 
 - (instancetype)init {
@@ -286,7 +285,6 @@
                             cammentWithCamment:camment];
                 }
             }       botCamment:^(CMBotCamment *botCamment) {
-
             }];
 
             return updatedItem;

@@ -56,18 +56,30 @@
         NSInteger numberOfItems = [elements numberOfItemsInSection:section];
 
         for (NSUInteger idx = 0; idx < numberOfItems; idx++) {
+            CGFloat leftLayoutGuide = 20.0f;
+            CGFloat topLayoutGuide = 10.0f;
+
             NSIndexPath *indexPath = [NSIndexPath indexPathForItem:idx inSection:section];
             ASCollectionElement *element = [elements elementForItemAtIndexPath:indexPath];
             UICollectionViewLayoutAttributes *attrs = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
 
             ASSizeRange sizeRange = [self _sizeRangeForItem:element.node atIndexPath:indexPath withLayoutWidth:layoutWidth info:nil];
             CGSize size = [element.node layoutThatFits:sizeRange].size;
-            CGPoint position = CGPointMake(4.0f, top);
+
+            UIEdgeInsets layoutGuidesOffsets = UIEdgeInsetsZero;
+            if ([element.node conformsToProtocol:@protocol(CMAlignableCell)]) {
+                id<CMAlignableCell> cell = (id)element.node;
+                layoutGuidesOffsets = [cell layoutGuidesOffsets];
+            }
+            top -= layoutGuidesOffsets.top;
+            leftLayoutGuide -= layoutGuidesOffsets.left;
+
+            CGPoint position = CGPointMake(leftLayoutGuide, top);
             CGRect frame = CGRectMake(position.x, position.y, size.width, size.height);
 
             attrs.frame = frame;
             [attrsMap setObject:attrs forKey:element];
-            top += size.height + 10.0f;
+            top += size.height + topLayoutGuide;
         }
     }
 
@@ -85,16 +97,16 @@
                  withLayoutWidth:(CGFloat)layoutWidth
                             info:(id)info
 {
-    CGFloat itemWidth = 45.0f;
+//    if ([item isKindOfClass:[CMCammentCell class]]) {
+//        CMCammentCell *cell = (CMCammentCell *)item;
+//        CGFloat itemWidth = 45.0f;
+//        if ([cell.displayingContext.camment.uuid isEqualToString:[CMStore instance].playingCammentId]) {
+//            itemWidth = 90.0f;
+//        }
+//        return ASSizeRangeMake(CGSizeMake(itemWidth, itemWidth), CGSizeMake(layoutWidth, itemWidth));
+//    }
 
-    if ([item isKindOfClass:[CMCammentCell class]]) {
-        CMCammentCell *cell = (CMCammentCell *)item;
-        if ([cell.displayingContext.camment.uuid isEqualToString:[CMStore instance].playingCammentId]) {
-            itemWidth = 90.0f;
-        }
-    }
-
-    return ASSizeRangeMake(CGSizeMake(itemWidth, itemWidth), CGSizeMake(layoutWidth, itemWidth));
+    return ASSizeRangeMake(CGSizeZero, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX));
 }
 
 @end

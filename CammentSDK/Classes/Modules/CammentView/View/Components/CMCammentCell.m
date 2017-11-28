@@ -63,14 +63,11 @@
     self.cammentNode.style.preferredSize = CGSizeMake(
             _expanded ? 90.0f : 45.0f,
             _expanded ? 90.0f : 45.0f);
-    ASWrapperLayoutSpec *layoutSpec = [ASWrapperLayoutSpec wrapperWithLayoutElement:_cammentNode];
-    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(1.0f, 0.0f, INFINITY, 1.0f)
-                                                                                child:self.deliveryIndicator];
     ASStackLayoutSpec *finalLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                                  spacing:-1.0f
                                                                           justifyContent:ASStackLayoutJustifyContentStart
                                                                               alignItems:ASStackLayoutAlignItemsStart
-                                                                                children:@[insetLayoutSpec, layoutSpec]];
+                                                                                children:@[_deliveryIndicator, _cammentNode]];
     finalLayoutSpec.style.flexGrow = .0f;
     finalLayoutSpec.style.flexShrink = .0f;
     
@@ -96,6 +93,10 @@
     self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
     [self.deliveryIndicator transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
+- (UIEdgeInsets)layoutGuidesOffsets {
+    return UIEdgeInsetsMake(.0f, 11.0f, .0f, .0f);
 }
 
 @end

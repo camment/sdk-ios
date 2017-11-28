@@ -5,6 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMAlignableCell.h"
 
 
 @class CMCammentNode;
@@ -18,7 +19,7 @@
 
 @end
 
-@interface CMCammentCell : ASCellNode
+@interface CMCammentCell : ASCellNode<CMAlignableCell>
 
 @property (nonatomic, strong) CMCammentNode *cammentNode;
 @property (nonatomic, assign) BOOL expanded;

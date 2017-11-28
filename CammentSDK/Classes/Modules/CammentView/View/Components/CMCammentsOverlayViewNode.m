@@ -163,8 +163,8 @@
     if (self.showVideoAdsPlayerNode) {
         cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
                                                                        overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(
-                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.y - 8.0f,
-                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.x - 15.0f,
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.y + 5,
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.x,
                                                                                        INFINITY, INFINITY)
                                                                                                                       child:_adsVideoPlayerNode]];
     }

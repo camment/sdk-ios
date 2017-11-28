@@ -5,6 +5,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMAlignableCell.h"
 
 @class CMBotCamment;
 @class CMBotCammentCell;
@@ -17,7 +18,7 @@
 @end
 
 
-@interface CMBotCammentCell: ASCellNode
+@interface CMBotCammentCell: ASCellNode<CMAlignableCell>
 
 @property (nonatomic, weak) id<CMBotCammentCellDelegate> delegate;
 @property (nonatomic, strong) CMBotCamment *botCamment;

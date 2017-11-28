@@ -55,6 +55,9 @@
                                                                                    self.deliveredCheckMarkNode,
                                                                                    self.sentCheckMarkNode
                                                                            ]];
+    layoutSpec.style.flexGrow = .0f;
+    layoutSpec.style.flexShrink = .0f;
+
     return [ASWrapperLayoutSpec wrapperWithLayoutElement:layoutSpec];
 }
 

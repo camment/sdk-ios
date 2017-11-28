@@ -263,4 +263,9 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     }];
 }
 
+- (void)cleanUpCurrentChatGroup {
+    self.activeGroup = nil;
+    self.activeGroupUsers = @[];
+}
+
 @end

@@ -56,4 +56,5 @@
      annotation:(id _Nullable)annotation NS_DEPRECATED_IOS(4_2, 9_0, "Please use application:openURL:options:") __TVOS_PROHIBITED;
 
 
+- (void)leaveCurrentChatGroup;
 @end

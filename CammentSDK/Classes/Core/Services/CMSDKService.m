@@ -519,4 +519,8 @@
     return [self verifyURL:url];
 }
 
+- (void)leaveCurrentChatGroup {
+    [[CMStore instance] cleanUpCurrentChatGroup];
+
+}
 @end

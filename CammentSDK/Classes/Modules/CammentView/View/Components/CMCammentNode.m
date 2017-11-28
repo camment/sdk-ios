@@ -25,6 +25,29 @@
         self.videoPlayerNode.muted = NO;
         self.videoPlayerNode.delegate = self;
         self.videoPlayerNode.userInteractionEnabled = NO;
+
+        if (!_camment.thumbnailURL) {
+            _videoPlayerNode.imageModificationBlock = ^UIImage * _Nullable(UIImage * _Nonnull image) {
+                
+                CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
+                CIContext *context = [CIContext contextWithOptions:nil];
+                
+                CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
+                [filter setValue:inputImage forKey:kCIInputImageKey];
+                [filter setValue:@(0.0) forKey:kCIInputSaturationKey];
+                
+                CIImage *outputImage = filter.outputImage;
+                
+                CGImageRef cgImageRef = [context createCGImage:outputImage fromRect:outputImage.extent];
+                
+                UIImage *result = [UIImage imageWithCGImage:cgImageRef];
+                CGImageRelease(cgImageRef);
+                
+                return result;
+            };
+            
+        }
+        
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -33,34 +56,9 @@
 
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
+
     if (_camment.localAsset) {
         _videoPlayerNode.asset = _camment.localAsset;
-        if (!_camment.thumbnailURL) {
-            AVAssetImageGenerator *imageGenerator = [[AVAssetImageGenerator alloc]initWithAsset:_camment.localAsset];
-            CMTime time = CMTimeMake(1, 1);
-            CGImageRef imageRef = [imageGenerator copyCGImageAtTime:time actualTime:NULL error:NULL];
-            if (imageRef == nil) { return; }
-
-            CIImage * ciimage = [[CIImage alloc] initWithCGImage:imageRef];
-            if (ciimage == nil) {
-                CGImageRelease(imageRef);
-                return;
-            }
-
-            CIFilter * filter = [CIFilter filterWithName:@"CIColorControls"
-                                     withInputParameters:
-                                             @{
-                                                     kCIInputSaturationKey : @0.0,
-                                                     kCIInputImageKey : ciimage
-                                             }
-            ];
-            CIImage * grayscale  = [filter outputImage];
-            UIImage *thumbnail = [UIImage imageWithCIImage:grayscale];
-            CGImageRelease(imageRef);
-            if (thumbnail) {
-                [_videoPlayerNode setImage:thumbnail];
-            }
-        }
         return;
     }
     

@@ -96,10 +96,8 @@ static CMUserSessionController *_instance = nil;
                 return [self updateUserProfileInfo];
             }]
             continueWithSuccessBlock:^id(AWSTask<id> *t) {
-
                 [self notifyAboutAuthStatusChanged];
-
-                return [AWSTask taskWithResult:self.user];
+                return [AWSTask taskWithResult:[self currentAuthenticationContext]];
             }];
 }
 
@@ -112,10 +110,14 @@ static CMUserSessionController *_instance = nil;
     [self notifyAboutAuthStatusChanged];
 }
 
-- (void)notifyAboutAuthStatusChanged {
+- (CMAuthStatusChangedEventContext *)currentAuthenticationContext {
     CMAuthStatusChangedEventContext *context = [[CMAuthStatusChangedEventContext alloc] initWithState:self.userAuthentificationState
                                                                                                  user:self.user];
-    [self.authChangedEventSubject sendNext:context];
+    return context;
+}
+
+- (void)notifyAboutAuthStatusChanged {
+    [self.authChangedEventSubject sendNext:[self currentAuthenticationContext]];
 }
 
 @end

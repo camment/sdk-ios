@@ -136,8 +136,8 @@
 
 - (void)wakeUpUserSession {
     [[self.userSessionController refreshSession:NO]
-            continueWithBlock:^id(AWSTask<id> *task) {
-                if (task.error) {
+            continueWithBlock:^id(AWSTask<CMAuthStatusChangedEventContext *> *task) {
+                if (task.error || task.result.state == CMCammentUserNotAuthentificated) {
                     DDLogError(@"Error on signing in at configureWithApiKey:identityProvider: method %@", task.error);
                     return nil;
                 } else {
@@ -313,8 +313,8 @@
     [self.notificationPresenter presentLoginAlert:reason
                                           onLogin:^{
                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                  [[self.userSessionController refreshSession:YES] continueWithBlock:^id(AWSTask<id> *task) {
-                                                      if (task.error) {
+                                                  [[self.userSessionController refreshSession:YES] continueWithBlock:^id(AWSTask<CMAuthStatusChangedEventContext *> *task) {
+                                                      if (task.error || task.result.state != CMCammentUserAuthentificatedAsKnownUser) {
                                                           [self.onSignedInOperationsQueue cancelAllOperations];
                                                       } else {
                                                           [self.onSignedInOperationsQueue setSuspended:NO];
@@ -519,4 +519,8 @@
     return [self verifyURL:url];
 }
 
+- (void)leaveCurrentChatGroup {
+    [[CMStore instance] cleanUpCurrentChatGroup];
+
+}
 @end

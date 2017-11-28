@@ -65,4 +65,5 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 - (void)updateUserDataOnIdentityChangeOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity;
 
+- (void)cleanUpCurrentChatGroup;
 @end

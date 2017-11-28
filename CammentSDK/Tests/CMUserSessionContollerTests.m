@@ -106,12 +106,11 @@ SpecBegin(CMUserSessionContollerTests)
                         continueWithBlock:^id _Nullable(AWSTask *_Nonnull task) {
 
                             expect(task).toNot.beNil();
-                            expect(task.result).to.beKindOf([CMUser class]);
+                            expect(task.result).to.beKindOf([CMAuthStatusChangedEventContext class]);
                             expect(task.error).to.beNil();
 
                             CMAuthStatusChangedEventContext *authContext = authChangedEventSubject.first;
                             expect(authContext).toNot.beNil();
-                            expect(authContext.user).to.beIdenticalTo(task.result);
                             expect(authContext.state).to.equal(CMCammentUserAuthentificatedAnonymous);
 
                             done();
@@ -129,22 +128,22 @@ SpecBegin(CMUserSessionContollerTests)
             __block NSString *cognitoIdentity;
             waitUntil(^(DoneCallback done) {
                 [[userSessionController refreshSession:NO]
-                        continueWithBlock:^id _Nullable(AWSTask<CMUser *> *_Nonnull task) {
+                        continueWithBlock:^id _Nullable(AWSTask<CMAuthStatusChangedEventContext *> *_Nonnull task) {
 
                             expect(task).toNot.beNil();
-                            expect(task.result).to.beKindOf([CMUser class]);
+                            expect(task.result).to.beKindOf([CMAuthStatusChangedEventContext class]);
                             expect(task.error).to.beNil();
 
                             CMAuthStatusChangedEventContext *authContext = authChangedEventSubject.first;
                             expect(authContext).toNot.beNil();
-                            expect(authContext.user).to.beIdenticalTo(task.result);
+                            expect(authContext.user).to.beIdenticalTo(task.result.user);
                             expect(authContext.state).to.equal(CMCammentUserAuthentificatedAsKnownUser);
 
                             expect(authContext.user.cognitoUserId).toNot.beNil();
                             expect(authContext.user.username).toNot.beNil();
                             expect(authContext.user.userPhoto).toNot.beNil();
                             
-                            cognitoIdentity = task.result.cognitoUserId;
+                            cognitoIdentity = task.result.user.cognitoUserId;
 
                             done();
 
@@ -170,15 +169,15 @@ SpecBegin(CMUserSessionContollerTests)
             // logout, then login and compare identities
             waitUntil(^(DoneCallback done) {
                 [[userSessionController refreshSession:NO]
-                        continueWithBlock:^id _Nullable(AWSTask<CMUser *> *_Nonnull task) {
+                        continueWithBlock:^id _Nullable(AWSTask<CMAuthStatusChangedEventContext *> *_Nonnull task) {
 
                             expect(task).toNot.beNil();
-                            expect(task.result).to.beKindOf([CMUser class]);
+                            expect(task.result).to.beKindOf([CMAuthStatusChangedEventContext class]);
                             expect(task.error).to.beNil();
 
                             CMAuthStatusChangedEventContext *authContext = authChangedEventSubject.first;
                             expect(authContext).toNot.beNil();
-                            expect(authContext.user).to.beIdenticalTo(task.result);
+                            expect(authContext.user).to.beIdenticalTo(task.result.user);
                             expect(authContext.state).to.equal(CMCammentUserAuthentificatedAsKnownUser);
 
                             expect(authContext.user.cognitoUserId).toNot.beNil();
@@ -203,10 +202,10 @@ SpecBegin(CMUserSessionContollerTests)
  
             waitUntil(^(DoneCallback done) {
                 [[userSessionController refreshSession:NO]
-                 continueWithBlock:^id _Nullable(AWSTask<CMUser *> *_Nonnull task) {
+                 continueWithBlock:^id _Nullable(AWSTask<CMAuthStatusChangedEventContext *> *_Nonnull task) {
                      
                      expect(task).toNot.beNil();
-                     expect(task.result).to.beNil();
+                     expect(task.result.user).to.beNil();
                      expect(task.error).toNot.beNil();
                      
                      CMAuthStatusChangedEventContext *authContext = authChangedEventSubject.first;

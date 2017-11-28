@@ -62,6 +62,12 @@
     [_sdkService refreshUserIdentity:forceSignIn];
 }
 
+- (void)leaveCurrentChatGroup {
+    [_sdkService leaveCurrentChatGroup];
+    DDLogDeveloperInfo(@"User left a discussion");
+}
+
+
 - (void)logOut {
     [_sdkService logOut];
 }

@@ -75,6 +75,11 @@
 - (void)refreshUserIdentity:(BOOL)forceSignIn;
 
 /**
+ * Cleans up current chat group
+ */
+- (void)leaveCurrentChatGroup;
+
+/**
  * Cleans up all user credentials and log user out of CammentSDK
  * Also, runs -logOut method for identityProvider class
  */

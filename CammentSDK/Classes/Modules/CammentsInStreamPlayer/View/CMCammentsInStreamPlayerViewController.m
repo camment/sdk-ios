@@ -79,7 +79,7 @@
         [self.presenter setupView];
     }
 }
-    
+
 -(void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     CGRect cammentViewFrame = self.view.bounds;
@@ -89,6 +89,7 @@
 }
 
 - (void)dismissViewController {
+    [[CammentSDK instance] leaveCurrentChatGroup];
     [self dismissViewControllerAnimated:YES completion:nil];
 }
 

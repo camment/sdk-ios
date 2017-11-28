@@ -419,8 +419,8 @@
         [self.output showLoadingHUD];
         [[self.userSessionController refreshSession:YES]
                 continueWithExecutor:[AWSExecutor mainThreadExecutor]
-                           withBlock:^id(AWSTask<id> *task) {
-                               if (task.error) {
+                           withBlock:^id(AWSTask<CMAuthStatusChangedEventContext *> *task) {
+                               if (task.error || task.result.state != CMCammentUserAuthentificatedAsKnownUser) {
                                    [self.output hideLoadingHUD];
                                } else {
                                    [self inviteFriendsAction];

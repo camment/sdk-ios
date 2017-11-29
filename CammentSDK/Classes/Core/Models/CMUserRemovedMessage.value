@@ -1,0 +1,6 @@
+%type name="CMUser"
+
+CMUserRemovedMessage includes(RMBuilder) {
+  NSString* userGroupUuid
+  CMUser* removedUser
+}

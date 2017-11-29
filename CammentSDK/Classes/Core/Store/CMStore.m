@@ -64,7 +64,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
         self.isOfflineMode = NO;
         self.awsServicesConfigured = NO;
-        
+
         @weakify(self)
         [RACObserve(self, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
             if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
@@ -94,7 +94,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
                 return;
             }
 
-            if (group.uuid) {
+            if (group && group.uuid) {
                 [self.groupInfoInteractor fetchUsersInGroup:group.uuid];
             }
 

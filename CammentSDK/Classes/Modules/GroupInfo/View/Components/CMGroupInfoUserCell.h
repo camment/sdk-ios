@@ -5,10 +5,18 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class CMUser;
+@class CMUser, CMGroupInfoUserCell;
+
+@protocol CMGroupInfoUserCellDelegate<NSObject>
+
+- (void)useCell:(CMGroupInfoUserCell *)cell didHandleDeleteUserAction:(CMUser *)user;
+
+@end
 
 @interface CMGroupInfoUserCell : ASCellNode
 
-- (instancetype)initWithUser:(CMUser *)user;
+@property (nonatomic, weak) id<CMGroupInfoUserCellDelegate> delegate;
+
+- (instancetype)initWithUser:(CMUser *)user showDeleteUserButton:(BOOL)showDeleteUserButton;
 
 @end

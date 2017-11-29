@@ -12,6 +12,7 @@
 #import "CMInvitation.h"
 #import "CammentSDK.h"
 #import "CMMembershipRequestMessage.h"
+#import "CMUserRemovedMessage.h"
 
 @implementation CMSDKNotificationPresenterPresenter
 
@@ -108,6 +109,16 @@
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         onDecline();
+    }]];
+
+    [self presentViewController:alertController];
+}
+
+- (void)presentRemovedFromGroupAlert:(CMUserRemovedMessage *)message {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.left_group.title")
+                                                                             message:CMLocalized(@"alert.left_group.description")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Ok") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
     }]];
 
     [self presentViewController:alertController];

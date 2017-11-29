@@ -10,7 +10,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMCammentSDKUIDelegate;
-@class CMMembershipAcceptedMessage, CMMembershipRequestMessage, CMInvitation;
+@class CMMembershipAcceptedMessage, CMMembershipRequestMessage, CMInvitation, CMUserRemovedMessage;
 
 @protocol CMSDKNotificationPresenterPresenterInput <NSObject>
 
@@ -23,5 +23,5 @@
 - (void)presentInvitationToChat:(CMInvitation *)invitation onJoin:(void (^)(void))onJoin;
 - (void)presentInvitationToChatByLinkInClipboard:(NSURL *)url onJoin:(void (^)(void))onJoin;
 - (void)presentLoginAlert:(NSString *)reason onLogin:(void (^)(void))onLogin onCancel:(void (^)(void))onCancel;
-
+- (void)presentRemovedFromGroupAlert:(CMUserRemovedMessage *)message;
 @end

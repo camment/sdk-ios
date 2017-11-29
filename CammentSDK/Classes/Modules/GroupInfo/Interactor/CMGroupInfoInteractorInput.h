@@ -8,8 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMUser;
+@class CMUsersGroup;
+
 @protocol CMGroupInfoInteractorInput <NSObject>
 
 - (void)fetchUsersInGroup:(NSString *)groupId;
+
+- (void)deleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group;
 
 @end

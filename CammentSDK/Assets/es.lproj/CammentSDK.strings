@@ -54,3 +54,7 @@
 "error.open_settings" = "Open settings";
 
 "invitations.text" = "Hey, join our private chat!";
+"alert.left_group.title" = "You left the group";
+"alert.left_group.description" = "Group owner has removed you from current conversation";
+
+"alert.confirm_remove_user.title" = "Do you want to remove %@ from the group?";

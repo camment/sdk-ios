@@ -13,7 +13,8 @@
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
-       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}];
+       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+    userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}];
 }
 
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler {
@@ -21,7 +22,8 @@
                userJoined:userJoinedMatchHandler
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
-       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}];
+       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}];
 }
 
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler {
@@ -29,7 +31,8 @@
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:cammentDeletedMatchHandler
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
-       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}];
+       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}];
 }
 
 - (void)matchMembershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler {
@@ -37,7 +40,8 @@
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:membershipRequestMatchHandler
-       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}];
+       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}];
 }
 
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler {
@@ -45,7 +49,18 @@
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
-       membershipAccepted:membershipAcceptedMatchHandler];
+       membershipAccepted:membershipAcceptedMatchHandler
+            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}];
 }
+
+- (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler {
+    [self matchCamment:^(CMCamment *camment) {}
+            userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
+        cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
+     membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
+    membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+           userRemoved:userRemovedMatchHandler];
+}
+
 
 @end

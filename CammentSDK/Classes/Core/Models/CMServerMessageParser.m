@@ -12,6 +12,7 @@
 #import "CMUsersGroupBuilder.h"
 #import "CMMembershipAcceptedMessageBuilder.h"
 #import "CMCammentStatus.h"
+#import "CMUserRemovedMessageBuilder.h"
 
 @implementation CMServerMessageParser {
 
@@ -62,6 +63,13 @@
                 withJoinedUser:user] build];
 
         serverMessage = [CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage];
+    } else if ([type isEqualToString:@"user-removed"]) {
+        CMUser *user = [[[CMUserBuilder new] withCognitoUserId:body[@"userCognitoIdentityId"]] build];
+        CMUserRemovedMessage *userRemovedMessage = [[[[CMUserRemovedMessageBuilder new]
+                withUserGroupUuid:body[@"groupUuid"]]
+                withRemovedUser:user] build];
+
+        serverMessage = [CMServerMessage userRemovedWithUserRemovedMessage:userRemovedMessage];
     } else if ([type isEqualToString:@"camment-deleted"]) {
         CMCamment *camment = [[CMCamment alloc] initWithShowUuid:body[@"showUuid"]
                                                    userGroupUuid:body[@"userGroupUuid"]

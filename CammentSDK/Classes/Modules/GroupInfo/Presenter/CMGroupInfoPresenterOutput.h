@@ -9,4 +9,7 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMGroupInfoPresenterOutput <NSObject>
+
+- (void)presentViewController:(UIViewController *)viewController;
+
 @end

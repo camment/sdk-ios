@@ -11,6 +11,7 @@ extern NSString *kAnalyticsEventShowScreen;
 extern NSString *kAnalyticsEventInvite;
 extern NSString *kAnalyticsEventOpenDeeplink;
 extern NSString *kAnalyticsEventJoinGroup;
+extern NSString *kAnalyticsEventRemovedFromGroup;
 extern NSString *kAnalyticsEventAcceptJoinRequest;
 extern NSString *kAnalyticsEventDeclineJoinRequest;
 extern NSString *kAnalyticsEventFbSignin;

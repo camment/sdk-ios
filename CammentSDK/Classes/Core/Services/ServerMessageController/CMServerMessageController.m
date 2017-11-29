@@ -15,6 +15,7 @@
 #import "CMServerMessage+TypeMatching.h"
 #import "CMGroupManagementInteractor.h"
 #import "CMAnalytics.h"
+#import "CMUsersGroupBuilder.h"
 
 @implementation CMServerMessageController
 
@@ -46,13 +47,28 @@
 
     [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
         shouldPassToObservers = NO;
-        [self.groupManagementInteractor joinUserToGroup:membershipAcceptedMessage.group.uuid];
+        [self.groupManagementInteractor joinUserToGroup:membershipAcceptedMessage.group];
         [self handleMembershipAcceptedMessage:membershipAcceptedMessage];
+    }];
+
+    [message matchUserRemoved:^(CMUserRemovedMessage *userRemovedMessage) {
+        shouldPassToObservers = NO;
+        CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+        if ([userRemovedMessage.removedUser.cognitoUserId isEqualToString:context.user.cognitoUserId]
+                && [userRemovedMessage.userGroupUuid isEqualToString:self.store.activeGroup.uuid])
+        {
+            [self.groupManagementInteractor removeUserFromGroup:userRemovedMessage.userGroupUuid];
+            [self handleRemovedFromGroupMessage:userRemovedMessage];
+        }
     }];
 
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
+}
+
+- (void)handleRemovedFromGroupMessage:(CMUserRemovedMessage *)message {
+    [self.notificationPresenter presentRemovedFromGroupAlert:message];
 }
 
 - (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message {
@@ -69,9 +85,14 @@
                                                                  [__strongSelf.sdkDelegate didAcceptJoiningRequest:metadata];
                                                              });
                                                          }
-                                                         [__strongSelf.groupManagementInteractor joinUserToGroup:message.group.uuid];
+
+                                                         CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
+
+                                                         CMUsersGroup *updatedGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:message.group]
+                                                                 withOwnerCognitoUserId:context.user.cognitoUserId] build];
+                                                         [__strongSelf.groupManagementInteractor joinUserToGroup:updatedGroup];
                                                          [__strongSelf.groupManagementInteractor replyWithJoiningPermissionForUser:message.joiningUser
-                                                                                                                             group:message.group
+                                                                                                                             group:updatedGroup
                                                                                                                    isAllowedToJoin:YES
                                                                                                                               show:message.show];
                                                          [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAcceptJoinRequest];

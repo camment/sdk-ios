@@ -20,6 +20,7 @@
 #import "TCBlobDownloadManager.h"
 #import "CMCammentBuilder.h"
 #import "CMCammentStatus.h"
+#import "CMServerMessage+TypeMatching.h"
 
 @interface CMCammentsLoaderInteractor ()
 
@@ -39,18 +40,16 @@
                 takeUntil:self.rac_willDeallocSignal]
                 subscribeNext:^(CMServerMessage *_Nullable message) {
                     [message matchCamment:^(CMCamment *camment) {
-                                [__weakSelf downloadCamment:camment];
-                            }
-                               userJoined:^(CMUserJoinedMessage *userJoinedMessage) {
-                                   [__weakSelf.output didReceiveUserJoinedMessage:userJoinedMessage];
-                               }
-                           cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
-                               [__weakSelf.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
-                           }
-                        membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
-                        }
-                       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
-                       }];
+                        [__weakSelf downloadCamment:camment];
+                    }];
+
+                    [message matchCammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {
+                        [__weakSelf.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
+                    }];
+
+                    [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
+                        [__weakSelf.output didReceiveUserJoinedMessage:userJoinedMessage];
+                    }];
                 }];
     }
 

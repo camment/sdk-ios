@@ -17,6 +17,7 @@
 #import "CMUserBuilder.h"
 #import "CMUserSessionController.h"
 #import "CMOpenURLHelper.h"
+#import "CMCammentViewPresenterOutput.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
@@ -24,12 +25,13 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoFriendsHeaderSection,
 };
 
-@interface CMGroupInfoPresenter ()
+@interface CMGroupInfoPresenter () <CMGroupInfoUserCellDelegate>
 
 @property(nonatomic, weak) ASCollectionNode *collectionNode;
 @property(nonatomic) TLIndexPathDataModel *dataModel;
 @property(nonatomic) NSArray<CMUser *> *users;
 @property(nonatomic) BOOL showProfileInfo;
+@property(nonatomic) BOOL haveUserDeletionPermissions;
 
 @end
 
@@ -40,15 +42,24 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     if (self) {
         self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
 
+        RACSignal *groupOrAuthStateChanged = [RACSignal combineLatest:@[
+                [CMStore instance].authentificationStatusSubject,
+                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged]
+        ]];
         @weakify(self);
-        [[[[CMStore instance].authentificationStatusSubject
+        [[[groupOrAuthStateChanged
                 takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
-                subscribeNext:^(CMAuthStatusChangedEventContext *x) {
+                subscribeNext:^(RACTuple *tuple) {
                     @strongify(self);
-                    self.showProfileInfo = x.state == CMCammentUserAuthentificatedAsKnownUser;
+
+                    CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
+                    self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
+
+                    CMUsersGroup *group = tuple.second;
+                    self.haveUserDeletionPermissions = [group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
                     [self reloadData];
-        }];
-        
+                }];
+
         [[[RACObserve([CMStore instance], activeGroupUsers)
                 takeUntil:self.rac_willDeallocSignal]
                 deliverOnMainThread] subscribeNext:^(NSArray *currentGroupUsers) {
@@ -128,7 +139,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 };
                 break;
             }
-            case CMGroupInfoInviteFriendsSection:{
+            case CMGroupInfoInviteFriendsSection: {
                 cellNodeBlock = ^ASCellNode *() {
                     CMInviteFriendsGroupInfoNode *inviteFriendsGroupInfoNode = [CMInviteFriendsGroupInfoNode new];
                     inviteFriendsGroupInfoNode.delegate = weakSelf;
@@ -142,12 +153,18 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 };
                 break;
             }
-                
+
         }
     } else {
         CMUser *user = model;
+        BOOL showDeleteUserButton = self.haveUserDeletionPermissions;
+
+        __weak typeof(self) delegate = self;
         cellNodeBlock = ^ASCellNode *() {
-            return [[CMGroupInfoUserCell alloc] initWithUser:user];
+            CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithUser:user
+                                                             showDeleteUserButton:showDeleteUserButton];
+            cell.delegate = delegate;
+            return cell;
         };
     }
 
@@ -155,6 +172,25 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+}
+
+- (void)useCell:(CMGroupInfoUserCell *)cell didHandleDeleteUserAction:(CMUser *)user {
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"alert.confirm_remove_user.title"), user.username]
+                                                                             message:@""
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
+            return ![value.cognitoUserId isEqualToString:user.cognitoUserId];
+        }].array;
+        [self reloadData];
+        [self.interactor deleteUser:user fromGroup:[CMStore instance].activeGroup];
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+
+    [self.output presentViewController:alertController];
 }
 
 - (void)updateDataModel:(TLIndexPathDataModel *)dataModel {
@@ -223,16 +259,35 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
             }
         }
-    }                        completion:^(BOOL finished) {
+    }                             completion:^(BOOL finished) {
 
     }];
 }
 
-- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group {
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
+ didFailToFetchUsersInGroup:(NSError *)group
+{
+    DDLogError(@"failed to fetch users in group %@",group);
+}
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
+              didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group
+{
 
 }
 
-- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group {
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
+        didFailToDeleteUser:(CMUser *)user
+                  fromGroup:(CMUsersGroup *)group
+                      error:(NSError *)error
+{
+    DDLogError(@"failed to delete user %@ from group %@, erro %@",user, group, error);
+}
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
+              didDeleteUser:(CMUser *)user
+                  fromGroup:(CMUsersGroup *)group
+{
 
 }
 

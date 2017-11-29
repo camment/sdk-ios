@@ -38,4 +38,9 @@
     }];
 }
 
+- (void)presentViewController:(UIViewController *)viewController {
+    viewController.modalPresentationStyle = UIModalPresentationFormSheet;
+    [self presentViewController:viewController animated:YES completion:nil];
+}
+
 @end

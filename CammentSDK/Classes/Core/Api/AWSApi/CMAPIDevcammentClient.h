@@ -24,11 +24,10 @@
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
+#import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPICamment.h"
-#import "CMAPIUsergroup.h"
 #import "CMAPIShowUuid.h"
-#import "CMAPIAcceptInvitationRequest.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
@@ -186,6 +185,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param cammentUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)cammentsCammentUuidPost:( NSString *)cammentUuid;
+
+/**
+ 
+ 
  @param deeplinkHash 
  @param os 
  
@@ -256,16 +264,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param uuid 
- @param body 
- 
- return type: CMAPICamment *
- */
-- (AWSTask *)showsUuidCammentsPost:( NSString *)uuid body:( CMAPICammentInRequest *)body;
-
-/**
- 
- 
  
  return type: CMAPIUsergroup *
  */
@@ -318,16 +316,6 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIDeeplink *
  */
 - (AWSTask *)usergroupsGroupUuidDeeplinkPost:( NSString *)groupUuid body:( CMAPIShowUuid *)body;
-
-/**
- 
- 
- @param groupUuid 
- @param body 
- 
- return type: 
- */
-- (AWSTask *)usergroupsGroupUuidInvitationsPut:( NSString *)groupUuid body:( CMAPIAcceptInvitationRequest *)body;
 
 /**
  

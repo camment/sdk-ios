@@ -11,6 +11,8 @@
 #import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "NSArray+RacSequence.h"
 #import "CMUserBuilder.h"
+#import "CMUsersGroup.h"
+#import "CMUser.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import <AWSCore/AWSTask.h>
 
@@ -45,6 +47,29 @@
         return nil;
     }];
 
+}
+
+- (void)deleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group {
+    if (group.uuid.length == 0 || user.cognitoUserId.length == 0) { return; }
+
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdDelete:user.cognitoUserId
+                                                                                         groupUuid:group.uuid];
+    if (!task) {
+        [self.output groupInfoInteractor:self didFailToDeleteUser:user fromGroup:group error:nil];
+        return;
+    }
+
+    @weakify(self);
+    [task continueWithBlock:^id(AWSTask<id> *t) {
+        @strongify(self);
+        if (t.error) {
+            [self.output groupInfoInteractor:self didFailToDeleteUser:user fromGroup:group error:t.error];
+            return nil;
+        } else {
+            [self.output groupInfoInteractor:self didDeleteUser:user fromGroup:group];
+        }
+        return nil;
+    }];
 }
 
 

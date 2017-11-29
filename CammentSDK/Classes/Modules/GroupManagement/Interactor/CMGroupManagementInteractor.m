@@ -39,18 +39,18 @@
 }
 
 
-- (void)joinUserToGroup:(NSString *)groupId {
-    DDLogInfo(@"Join group id %@", groupId);
+- (void)joinUserToGroup:(CMUsersGroup *)group {
+    DDLogInfo(@"Join group id %@", group);
 
-    if (![groupId isEqualToString:self.store.activeGroup.uuid]) {
-        CMUsersGroup *usersGroup = [[[CMUsersGroupBuilder new] withUuid:groupId] build];
-        [self.store setActiveGroup:usersGroup];
+    if (![group.uuid isEqualToString:self.store.activeGroup.uuid]) {
+        [self.store setActiveGroup:group];
         [[self.store reloadActiveGroupSubject] sendNext:@YES];
         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventJoinGroup];
     } else {
         [[CMStore instance].userHasJoinedSignal sendNext:@YES];
     }
 }
+
 
 - (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
@@ -62,6 +62,14 @@
         [[client usergroupsGroupUuidUsersUserIdDelete:user.cognitoUserId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
             return nil;
         }];
+    }
+}
+
+- (void)removeUserFromGroup:(NSString *)uuid {
+    if ([uuid isEqualToString:self.store.activeGroup.uuid]) {
+        [self.store cleanUpCurrentChatGroup];
+        [[self.store reloadActiveGroupSubject] sendNext:@YES];
+        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventRemovedFromGroup];
     }
 }
 

@@ -14,7 +14,7 @@
 
 @protocol CMGroupManagementInteractorInput <NSObject>
 
-- (void)joinUserToGroup:(NSString *)groupId;
+- (void)joinUserToGroup:(CMUsersGroup *)groupId;
 - (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show;
 
 @end

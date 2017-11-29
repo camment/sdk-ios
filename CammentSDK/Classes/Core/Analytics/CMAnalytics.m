@@ -15,6 +15,7 @@ NSString *kAnalyticsEventShowScreen = @"Show Screen";
 NSString *kAnalyticsEventInvite = @"Invite to Group";
 NSString *kAnalyticsEventOpenDeeplink = @"Open Deeplink";
 NSString *kAnalyticsEventJoinGroup = @"Join Group";
+NSString *kAnalyticsEventRemovedFromGroup = @"Removed From Group";
 NSString *kAnalyticsEventAcceptJoinRequest = @"Accept Join Request";
 NSString *kAnalyticsEventDeclineJoinRequest = @"Decline Join Request";
 NSString *kAnalyticsEventFbSignin = @"FB SignIn";

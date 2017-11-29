@@ -3,6 +3,7 @@
 %type name="CMCammentDeletedMessage"
 %type name="CMMembershipRequestMessage"
 %type name="CMMembershipAcceptedMessage"
+%type name="CMUserRemovedMessage"
 
 CMServerMessage includes(RMBuilder) {
   camment {
@@ -19,5 +20,8 @@ CMServerMessage includes(RMBuilder) {
   }
   membershipAccepted {
     CMMembershipAcceptedMessage *membershipAcceptedMessage
+  }
+  userRemoved {
+    CMUserRemovedMessage *userRemovedMessage
   }
 }

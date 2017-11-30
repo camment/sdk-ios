@@ -25,6 +25,7 @@
         self.cammentNode = [[CMCammentNode alloc] initWithCamment:context.camment];
         self.deliveryIndicator = [CMCammentDeliveryIndicator new];
         self.deliveryIndicator.deliveryStatus = _displayingContext.camment.status.deliveryStatus;
+        self.deliveryIndicator.hidden = !context.shouldShowDeliveryStatus;
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -91,6 +92,7 @@
 - (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context {
     _displayingContext = context;
     self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
+    self.deliveryIndicator.hidden = !context.shouldShowDeliveryStatus;
     [self.deliveryIndicator transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }

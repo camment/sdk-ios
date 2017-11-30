@@ -16,20 +16,21 @@
 #import "CMGroupManagementInteractor.h"
 #import "CMAnalytics.h"
 #import "CMUsersGroupBuilder.h"
+#import "CMAPIDevcammentClient.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
 
 @implementation CMServerMessageController
 
 - (instancetype)initWithSdkDelegate:(id <CMCammentSDKDelegate>)sdkDelegate
               notificationPresenter:(CMSDKNotificationPresenterPresenter *)notificationPresenter
                               store:(CMStore *)store
-          groupManagementInteractor:(CMGroupManagementInteractor *)groupManagementInteractor
-{
+          groupManagementInteractor:(CMGroupManagementInteractor *)groupManagementInteractor {
     self = [super init];
     if (self) {
         self.sdkDelegate = sdkDelegate;
         self.notificationPresenter = notificationPresenter;
         self.groupManagementInteractor = groupManagementInteractor;
-        groupManagementInteractor.output = self;
+        self.groupManagementInteractor.output = self;
         self.store = store;
     }
 
@@ -54,17 +55,32 @@
     [message matchUserRemoved:^(CMUserRemovedMessage *userRemovedMessage) {
         shouldPassToObservers = NO;
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
-        if ([userRemovedMessage.removedUser.cognitoUserId isEqualToString:context.user.cognitoUserId]
-                && [userRemovedMessage.userGroupUuid isEqualToString:self.store.activeGroup.uuid])
-        {
-            [self.groupManagementInteractor removeUserFromGroup:userRemovedMessage.userGroupUuid];
+        [self.groupManagementInteractor removeUser:userRemovedMessage.removedUser.cognitoUserId
+                                         fromGroup:userRemovedMessage.userGroupUuid];
+        if ([userRemovedMessage.removedUser.cognitoUserId isEqualToString:context.user.cognitoUserId]) {
             [self handleRemovedFromGroupMessage:userRemovedMessage];
         }
+    }];
+
+    [message matchCamment:^(CMCamment *camment) {
+        [self confirmCammentMessageDelivery:camment.uuid];
     }];
 
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
+}
+
+- (void)confirmCammentMessageDelivery:(NSString *)uuid {
+    if (!uuid) {return;}
+
+    [[[CMAPIDevcammentClient defaultAPIClient] cammentsCammentUuidPost:uuid]
+            continueWithBlock:^id(AWSTask<id> *t) {
+                if (t.error) {
+                    DDLogError(@"Coudn't confirm camment delivery, error :%@", t.error);
+                }
+                return nil;
+            }];
 }
 
 - (void)handleRemovedFromGroupMessage:(CMUserRemovedMessage *)message {

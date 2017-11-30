@@ -15,6 +15,7 @@
 #import "CMStore.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMAnalytics.h"
+#import "CMAuthStatusChangedEventContext.h"
 
 @interface CMGroupManagementInteractor()
 
@@ -65,11 +66,18 @@
     }
 }
 
-- (void)removeUserFromGroup:(NSString *)uuid {
-    if ([uuid isEqualToString:self.store.activeGroup.uuid]) {
-        [self.store cleanUpCurrentChatGroup];
-        [[self.store reloadActiveGroupSubject] sendNext:@YES];
-        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventRemovedFromGroup];
+- (void)removeUser:(NSString *)userUuid fromGroup:(NSString *)groupUuid {
+    if ([groupUuid isEqualToString:self.store.activeGroup.uuid]) {
+        CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+        if ([context.user.cognitoUserId isEqualToString:userUuid]) {
+            [self.store cleanUpCurrentChatGroup];
+            [[self.store reloadActiveGroupSubject] sendNext:@YES];
+            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventRemovedFromGroup];
+        } else {
+            self.store.activeGroupUsers = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
+                return [value.cognitoUserId isEqualToString:userUuid];
+            }].array;
+        }
     }
 }
 

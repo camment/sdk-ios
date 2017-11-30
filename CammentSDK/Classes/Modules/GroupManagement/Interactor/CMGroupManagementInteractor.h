@@ -20,7 +20,7 @@
 
 + (instancetype)interactorWithOutput:(id <CMGroupManagementInteractorOutput>)output store:(CMStore *)store;
 
-- (void)removeUserFromGroup:(NSString *)uuid;
+- (void)removeUser:(NSString *)userUuid fromGroup:(NSString *)groupUuid;
 
 
 @end

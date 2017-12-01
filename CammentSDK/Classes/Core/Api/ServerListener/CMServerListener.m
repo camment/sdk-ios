@@ -94,7 +94,7 @@
 - (void)subscribe {
     dispatch_async(dispatch_get_main_queue(), ^{
         [_dataManager subscribeToTopic:@"camment/app"
-                                   QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
+                                   QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtLeastOnce
                        messageCallback:^(NSData *data) {
                            [self processMessage:data];
                        }];

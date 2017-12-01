@@ -26,7 +26,6 @@
 #import "CMAPICammentList.h"
 #import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
-#import "CMAPICamment.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUserinfo.h"
@@ -293,7 +292,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param groupUuid 
  @param body 
  
- return type: CMAPICamment *
+ return type: 
  */
 - (AWSTask *)usergroupsGroupUuidCammentsPost:( NSString *)groupUuid body:( CMAPICammentInRequest *)body;
 

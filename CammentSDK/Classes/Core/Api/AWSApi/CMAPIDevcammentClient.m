@@ -29,7 +29,6 @@
 #import "CMAPICammentList.h"
 #import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
-#import "CMAPICamment.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUserinfo.h"
@@ -448,7 +447,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:body
-                     responseClass:[CMAPICamment class]];
+                     responseClass:nil];
 }
 
 - (AWSTask *)usergroupsGroupUuidCammentsCammentUuidDelete:(NSString *)cammentUuid groupUuid:(NSString *)groupUuid {

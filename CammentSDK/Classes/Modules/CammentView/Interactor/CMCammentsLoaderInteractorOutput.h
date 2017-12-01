@@ -22,4 +22,6 @@
 - (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message;
 
 - (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message;
+
+- (void)didReceiveDeliveryConfirmation:(NSString *)cammentUuid;
 @end

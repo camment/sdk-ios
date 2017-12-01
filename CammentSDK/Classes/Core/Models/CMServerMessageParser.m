@@ -47,7 +47,7 @@
                                                        isDeleted:NO
                                                  shouldBeDeleted:NO
                                                           status:[[CMCammentStatus alloc]
-                                                                  initWithDeliveryStatus:CMCammentDeliveryStatusSeen
+                                                                  initWithDeliveryStatus:CMCammentDeliveryStatusSent
                                                                   isWatched:NO]];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
@@ -58,8 +58,21 @@
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
                 withUserPhoto:userJson[@"picture"]] build];
-        CMUserJoinedMessage *userJoinedMessage = [[[[CMUserJoinedMessageBuilder new]
-                withUserGroupUuid:body[@"groupUuid"]]
+
+        CMUsersGroup *group = [[[[CMUsersGroupBuilder new]
+                withUuid:body[@"groupUuid"]]
+                withOwnerCognitoUserId:body[@"groupOwnerCognitoIdentityId"]]
+                build];
+
+        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"]
+                                                url:nil
+                                          thumbnail:nil
+                                           showType:[CMShowType videoWithShow:nil]
+                                           startsAt:nil];
+
+        CMUserJoinedMessage *userJoinedMessage = [[[[[CMUserJoinedMessageBuilder new]
+                withUsersGroup:group]
+                withShow:show]
                 withJoinedUser:user] build];
 
         serverMessage = [CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage];
@@ -85,9 +98,11 @@
                                                        isDeleted:NO
                                                  shouldBeDeleted:NO
                                                           status:[[CMCammentStatus alloc]
-                                                                            initWithDeliveryStatus:CMCammentDeliveryStatusSeen
+                                                                            initWithDeliveryStatus:CMCammentDeliveryStatusSent
                                                                             isWatched:NO]];
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
+    } else if ([type isEqualToString:@"camment-delivered"]) {
+        serverMessage = [CMServerMessage cammentDeliveredWithCammentDelivered:[[CMCammentDeliveredMessage alloc] initWithCammentUuid:body[@"uuid"]]];
     } else if ([type isEqualToString:@"membership-request"]) {
         NSDictionary *userJson = body[@"joiningUser"];
         CMUser *user = [[[[[[CMUserBuilder new]

@@ -2,6 +2,8 @@
 
 @class CMUserJoinedMessage;
 @class CMUser;
+@class CMUsersGroup;
+@class CMShow;
 
 @interface CMUserJoinedMessageBuilder : NSObject
 
@@ -11,9 +13,11 @@
 
 - (CMUserJoinedMessage *)build;
 
-- (instancetype)withUserGroupUuid:(NSString *)userGroupUuid;
+- (instancetype)withUsersGroup:(CMUsersGroup *)usersGroup;
 
 - (instancetype)withJoinedUser:(CMUser *)joinedUser;
+
+- (instancetype)withShow:(CMShow *)show;
 
 @end
 

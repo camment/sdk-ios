@@ -1,22 +1,20 @@
 /**
  * This file is generated using the remodel generation script.
- * The name of the input file is CMMembershipAcceptedMessage.value
+ * The name of the input file is CMCammentDeliveredMessage.value
  */
 
 #if  ! __has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-#import "CMMembershipAcceptedMessage.h"
-#import "CMUserJoinedMessage.h"
+#import "CMCammentDeliveredMessage.h"
 
-@implementation CMMembershipAcceptedMessage
+@implementation CMCammentDeliveredMessage
 
-- (instancetype)initWithGroup:(CMUsersGroup *)group show:(CMShow *)show
+- (instancetype)initWithCammentUuid:(NSString *)cammentUuid
 {
   if ((self = [super init])) {
-    _group = [group copy];
-    _show = [show copy];
+    _cammentUuid = [cammentUuid copy];
   }
 
   return self;
@@ -29,14 +27,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t group: %@; \n\t show: %@; \n", [super description], _group, _show];
+  return [NSString stringWithFormat:@"%@ - \n\t cammentUuid: %@; \n", [super description], _cammentUuid];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_group hash], [_show hash]};
+  NSUInteger subhashes[] = {[_cammentUuid hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 2; ++ii) {
+  for (int ii = 1; ii < 1; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -49,7 +47,7 @@
   return result;
 }
 
-- (BOOL)isEqual:(CMMembershipAcceptedMessage *)object
+- (BOOL)isEqual:(CMCammentDeliveredMessage *)object
 {
   if (self == object) {
     return YES;
@@ -57,8 +55,7 @@
     return NO;
   }
   return
-    (_group == object->_group ? YES : [_group isEqual:object->_group]) &&
-    (_show == object->_show ? YES : [_show isEqual:object->_show]);
+    (_cammentUuid == object->_cammentUuid ? YES : [_cammentUuid isEqual:object->_cammentUuid]);
 }
 
 @end

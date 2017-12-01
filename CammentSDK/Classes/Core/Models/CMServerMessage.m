@@ -15,7 +15,8 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   _CMServerMessageSubtypescammentDeleted,
   _CMServerMessageSubtypesmembershipRequest,
   _CMServerMessageSubtypesmembershipAccepted,
-  _CMServerMessageSubtypesuserRemoved
+  _CMServerMessageSubtypesuserRemoved,
+  _CMServerMessageSubtypescammentDelivered
 };
 
 @implementation CMServerMessage
@@ -27,6 +28,7 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   CMMembershipRequestMessage *_membershipRequest_membershipRequestMessage;
   CMMembershipAcceptedMessage *_membershipAccepted_membershipAcceptedMessage;
   CMUserRemovedMessage *_userRemoved_userRemovedMessage;
+  CMCammentDeliveredMessage *_cammentDelivered_cammentDelivered;
 }
 
 + (instancetype)cammentDeletedWithCammentDeletedMessage:(CMCammentDeletedMessage *)cammentDeletedMessage
@@ -34,6 +36,14 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   CMServerMessage *object = [[CMServerMessage alloc] init];
   object->_subtype = _CMServerMessageSubtypescammentDeleted;
   object->_cammentDeleted_cammentDeletedMessage = cammentDeletedMessage;
+  return object;
+}
+
++ (instancetype)cammentDeliveredWithCammentDelivered:(CMCammentDeliveredMessage *)cammentDelivered
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypescammentDelivered;
+  object->_cammentDelivered_cammentDelivered = cammentDelivered;
   return object;
 }
 
@@ -109,14 +119,18 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
       return [NSString stringWithFormat:@"%@ - userRemoved \n\t userRemovedMessage: %@; \n", [super description], _userRemoved_userRemovedMessage];
       break;
     }
+    case _CMServerMessageSubtypescammentDelivered: {
+      return [NSString stringWithFormat:@"%@ - cammentDelivered \n\t cammentDelivered: %@; \n", [super description], _cammentDelivered_cammentDelivered];
+      break;
+    }
   }
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {_subtype, [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash], [_membershipRequest_membershipRequestMessage hash], [_membershipAccepted_membershipAcceptedMessage hash], [_userRemoved_userRemovedMessage hash]};
+  NSUInteger subhashes[] = {_subtype, [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash], [_membershipRequest_membershipRequestMessage hash], [_membershipAccepted_membershipAcceptedMessage hash], [_userRemoved_userRemovedMessage hash], [_cammentDelivered_cammentDelivered hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 7; ++ii) {
+  for (int ii = 1; ii < 8; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -143,10 +157,11 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
     (_cammentDeleted_cammentDeletedMessage == object->_cammentDeleted_cammentDeletedMessage ? YES : [_cammentDeleted_cammentDeletedMessage isEqual:object->_cammentDeleted_cammentDeletedMessage]) &&
     (_membershipRequest_membershipRequestMessage == object->_membershipRequest_membershipRequestMessage ? YES : [_membershipRequest_membershipRequestMessage isEqual:object->_membershipRequest_membershipRequestMessage]) &&
     (_membershipAccepted_membershipAcceptedMessage == object->_membershipAccepted_membershipAcceptedMessage ? YES : [_membershipAccepted_membershipAcceptedMessage isEqual:object->_membershipAccepted_membershipAcceptedMessage]) &&
-    (_userRemoved_userRemovedMessage == object->_userRemoved_userRemovedMessage ? YES : [_userRemoved_userRemovedMessage isEqual:object->_userRemoved_userRemovedMessage]);
+    (_userRemoved_userRemovedMessage == object->_userRemoved_userRemovedMessage ? YES : [_userRemoved_userRemovedMessage isEqual:object->_userRemoved_userRemovedMessage]) &&
+    (_cammentDelivered_cammentDelivered == object->_cammentDelivered_cammentDelivered ? YES : [_cammentDelivered_cammentDelivered isEqual:object->_cammentDelivered_cammentDelivered]);
 }
 
-- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler
+- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler cammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler
 {
   switch (_subtype) {
     case _CMServerMessageSubtypescamment: {
@@ -171,6 +186,10 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
     }
     case _CMServerMessageSubtypesuserRemoved: {
       userRemovedMatchHandler(_userRemoved_userRemovedMessage);
+      break;
+    }
+    case _CMServerMessageSubtypescammentDelivered: {
+      cammentDeliveredMatchHandler(_cammentDelivered_cammentDelivered);
       break;
     }
   }

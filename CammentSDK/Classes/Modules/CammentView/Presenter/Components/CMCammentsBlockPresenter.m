@@ -277,21 +277,29 @@
 
 - (void)updateCammentData:(CMCamment *)camment {
     @synchronized (self.items) {
+        __block CMCamment *mergedCamment = nil;
         self.items = [self.items map:^CMCammentsBlockItem *(CMCammentsBlockItem *item) {
             __block CMCammentsBlockItem *updatedItem = item;
             [item matchCamment:^(CMCamment *oldCamment) {
                 if ([oldCamment.uuid isEqualToString:camment.uuid]) {
+                    CMCammentStatus *status = [[CMCammentStatus alloc]
+                            initWithDeliveryStatus:MAX(oldCamment.status.deliveryStatus, camment.status.deliveryStatus)
+                                         isWatched:oldCamment.status.isWatched ?: camment.status.isWatched];
+                    mergedCamment = [[[CMCammentBuilder cammentFromExistingCamment:camment]
+                                      withStatus:status]
+                                     build];
                     updatedItem = [CMCammentsBlockItem
-                            cammentWithCamment:camment];
+                            cammentWithCamment:mergedCamment];
                 }
             }       botCamment:^(CMBotCamment *botCamment) {
             }];
 
             return updatedItem;
         }];
+        if (mergedCamment) {
+            [self updateVisibleCellWithCamment:mergedCamment];
+        }
     }
-
-    [self updateVisibleCellWithCamment:camment];
 }
 
 - (void)updateVisibleCellWithCamment:(CMCamment *)camment {

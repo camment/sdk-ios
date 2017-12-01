@@ -70,7 +70,7 @@
         self.onSignedInOperationsQueue = [[NSOperationQueue alloc] init];
         self.onSignedInOperationsQueue.maxConcurrentOperationCount = 1;
         [self.onSignedInOperationsQueue setSuspended:YES];
-        
+
         self.onSDKHasBeenConfiguredQueue = [[NSOperationQueue alloc] init];
         self.onSDKHasBeenConfiguredQueue.maxConcurrentOperationCount = 1;
         [self.onSDKHasBeenConfiguredQueue setSuspended:YES];
@@ -158,7 +158,7 @@
 }
 
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
-    if (newIdentity == nil) { return; }
+    if (newIdentity == nil) {return;}
 
     [[CMAnalytics instance] setMixpanelID:newIdentity];
 
@@ -284,7 +284,7 @@
                                                                   }];
 }
 
-- (void)presentChatInvitation:(CMInvitation *)invitation {
+- (void)presentChatInvitation:(CMInvitation *)invitation onJoin:(void (^)())onJoin {
 
     __weak typeof(self) __weakSelf = self;
     [self.notificationPresenter presentInvitationToChat:invitation
@@ -302,6 +302,8 @@
                                                          dispatch_async(dispatch_get_main_queue(), ^{
                                                              if (t.error) {
                                                                  [__strongSelf.notificationPresenter showToastMessage:CMLocalized(@"You are not allowed to join this group")];
+                                                             } else {
+                                                                 onJoin();
                                                              }
                                                          });
                                                          return nil;
@@ -444,42 +446,48 @@
 
     if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
 
+        __weak typeof(self) weakSelf = self;
+
         NSString *groupUuid = invitation.userGroupUuid;
         AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidGet:groupUuid];
-
-        __weak typeof(self) weakSelf = self;
-        dispatch_block_t presentChatInvitationBlock = ^{
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [weakSelf presentChatInvitation:invitation];
-            });
-        };
 
         if (task) {
             [task continueWithBlock:^id(AWSTask<id> *t) {
                 if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
                     CMAPIUsergroup *usergroup = t.result;
-                    if ([usergroup.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]) {
-                        CMUsersGroup *group = [[[[[CMUsersGroupBuilder new]
-                                withUuid:invitation.userGroupUuid]
-                                withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
-                                withTimestamp:usergroup.timestamp]
-                                build];
-                        CMShow *show = [[CMShow alloc] initWithUuid:invitation.showUuid
-                                                                url:nil
-                                                          thumbnail:nil
-                                                           showType:[CMShowType videoWithShow:nil]
-                                                           startsAt:nil];
 
-                        CMMembershipAcceptedMessage *message = [[CMMembershipAcceptedMessage alloc] initWithGroup:group show:show];
-                        [weakSelf.serverMessageController handleServerMessage:[CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:message]];
+                    CMUsersGroup *group = [[[[[CMUsersGroupBuilder new]
+                            withUuid:invitation.userGroupUuid]
+                            withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
+                            withTimestamp:usergroup.timestamp]
+                            build];
+                    CMShow *show = [[CMShow alloc] initWithUuid:invitation.showUuid
+                                                            url:nil
+                                                      thumbnail:nil
+                                                       showType:[CMShowType videoWithShow:nil]
+                                                       startsAt:nil];
+
+                    CMUserJoinedMessage *userJoinedMessage = [[CMUserJoinedMessage alloc]
+                            initWithUsersGroup:group
+                                    joinedUser:self.userSessionController.user
+                                          show:show];
+
+                    if ([usergroup.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]) {
+                        [weakSelf.serverMessageController handleServerMessage:[CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage]];
                     } else {
-                        presentChatInvitationBlock();
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            [weakSelf presentChatInvitation:invitation onJoin:^{
+                                [weakSelf.serverMessageController handleServerMessage:[CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage]];
+                            }];
+                        });
                     }
+                } else {
+#warning show error if could not get user group info
                 }
                 return nil;
             }];
         } else {
-            presentChatInvitationBlock();
+#warning show error if could not create a task
         }
     } else {
         [self.onSignedInOperationsQueue setSuspended:YES];

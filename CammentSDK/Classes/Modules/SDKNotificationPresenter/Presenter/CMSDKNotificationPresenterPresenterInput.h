@@ -11,13 +11,14 @@
 
 @protocol CMCammentSDKUIDelegate;
 @class CMMembershipAcceptedMessage, CMMembershipRequestMessage, CMInvitation, CMUserRemovedMessage;
+@class CMUserJoinedMessage;
 
 @protocol CMSDKNotificationPresenterPresenterInput <NSObject>
 
 @property (nonatomic, weak) id<CMCammentSDKUIDelegate> output;
 
 - (void)showToastMessage:(NSString *)message;
-- (void)presentMembershipAcceptedAlert:(CMMembershipAcceptedMessage *)message;
+- (void)presentUserJoinedToTheGroupAlert:(CMUserJoinedMessage *)message;
 
 - (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message onAccept:(void (^)(void))onAccept onDecline:(void (^)(void))onDecline;
 - (void)presentInvitationToChat:(CMInvitation *)invitation onJoin:(void (^)(void))onJoin;

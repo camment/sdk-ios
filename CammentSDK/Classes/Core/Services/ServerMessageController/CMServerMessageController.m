@@ -46,12 +46,14 @@
         [self presentMembershipRequestAlert:membershipRequestMessage];
     }];
 
-    [message matchMembershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {
-        shouldPassToObservers = NO;
-        [self.groupManagementInteractor joinUserToGroup:membershipAcceptedMessage.group];
-        [self handleMembershipAcceptedMessage:membershipAcceptedMessage];
+    [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
+        BOOL shouldTriggerDelegate = ![userJoinedMessage.usersGroup.uuid isEqualToString:self.store.activeGroup.uuid];
+        [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
+        if (shouldTriggerDelegate) {
+            [self handleUserJoinedMessage:userJoinedMessage];
+        }
     }];
-
+    
     [message matchUserRemoved:^(CMUserRemovedMessage *userRemovedMessage) {
         shouldPassToObservers = NO;
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
@@ -63,7 +65,11 @@
     }];
 
     [message matchCamment:^(CMCamment *camment) {
-        [self confirmCammentMessageDelivery:camment.uuid];
+        CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+        if (![context.user.cognitoUserId isEqualToString:camment.userCognitoIdentityId]) {
+            [self confirmCammentMessageDelivery:camment.uuid];
+        }
+
     }];
 
     if (shouldPassToObservers) {
@@ -125,7 +131,7 @@
                                                     }];
 }
 
-- (void)handleMembershipAcceptedMessage:(CMMembershipAcceptedMessage *)message {
+- (void)handleUserJoinedMessage:(CMUserJoinedMessage *)message {
 
     CMShowMetadata *metadata = [CMShowMetadata new];
     CMShow *show = message.show;
@@ -140,7 +146,7 @@
             [self.sdkDelegate didAcceptInvitationToShow:metadata];
         }
 
-        [self.notificationPresenter presentMembershipAcceptedAlert:message];
+        [self.notificationPresenter presentUserJoinedToTheGroupAlert:message];
     });
 }
 

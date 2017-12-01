@@ -1,6 +1,7 @@
 %type name="CMCamment"
 %type name="CMUserJoinedMessage"
 %type name="CMCammentDeletedMessage"
+%type name="CMCammentDeliveredMessage"
 %type name="CMMembershipRequestMessage"
 %type name="CMMembershipAcceptedMessage"
 %type name="CMUserRemovedMessage"
@@ -23,5 +24,8 @@ CMServerMessage includes(RMBuilder) {
   }
   userRemoved {
     CMUserRemovedMessage *userRemovedMessage
+  }
+  cammentDelivered {
+    CMCammentDeliveredMessage *cammentDelivered
   }
 }

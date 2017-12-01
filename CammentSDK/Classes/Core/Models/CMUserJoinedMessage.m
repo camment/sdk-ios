@@ -11,11 +11,12 @@
 
 @implementation CMUserJoinedMessage
 
-- (instancetype)initWithUserGroupUuid:(NSString *)userGroupUuid joinedUser:(CMUser *)joinedUser
+- (instancetype)initWithUsersGroup:(CMUsersGroup *)usersGroup joinedUser:(CMUser *)joinedUser show:(CMShow *)show
 {
   if ((self = [super init])) {
-    _userGroupUuid = [userGroupUuid copy];
+    _usersGroup = [usersGroup copy];
     _joinedUser = [joinedUser copy];
+    _show = [show copy];
   }
 
   return self;
@@ -28,14 +29,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t userGroupUuid: %@; \n\t joinedUser: %@; \n", [super description], _userGroupUuid, _joinedUser];
+  return [NSString stringWithFormat:@"%@ - \n\t usersGroup: %@; \n\t joinedUser: %@; \n\t show: %@; \n", [super description], _usersGroup, _joinedUser, _show];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_userGroupUuid hash], [_joinedUser hash]};
+  NSUInteger subhashes[] = {[_usersGroup hash], [_joinedUser hash], [_show hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 2; ++ii) {
+  for (int ii = 1; ii < 3; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -56,8 +57,9 @@
     return NO;
   }
   return
-    (_userGroupUuid == object->_userGroupUuid ? YES : [_userGroupUuid isEqual:object->_userGroupUuid]) &&
-    (_joinedUser == object->_joinedUser ? YES : [_joinedUser isEqual:object->_joinedUser]);
+    (_usersGroup == object->_usersGroup ? YES : [_usersGroup isEqual:object->_usersGroup]) &&
+    (_joinedUser == object->_joinedUser ? YES : [_joinedUser isEqual:object->_joinedUser]) &&
+    (_show == object->_show ? YES : [_show isEqual:object->_show]);
 }
 
 @end

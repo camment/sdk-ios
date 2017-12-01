@@ -409,6 +409,29 @@
                }];
 }
 
+- (void)didReceiveDeliveryConfirmation:(NSString *)cammentUuid {
+    __block CMCamment *cammentToUpdate = nil;
+    for (CMCammentsBlockItem *item in self.cammentsBlockNodePresenter.items) {
+        [item matchCamment:^(CMCamment *camment) {
+            if ([camment.uuid isEqualToString:cammentUuid]) {
+                cammentToUpdate = camment;
+            }
+        }
+                botCamment:^(CMBotCamment *botCamment) {}];
+        if (cammentToUpdate) { break; }
+    }
+
+    if (!cammentToUpdate) { return; }
+
+    CMCammentStatus *status = [[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusDelivered
+                                                                    isWatched:cammentToUpdate.status.isWatched];
+    cammentToUpdate = [[[CMCammentBuilder cammentFromExistingCamment:cammentToUpdate]
+            withStatus:status]
+            build];
+    [self.cammentsBlockNodePresenter updateCammentData:cammentToUpdate];
+}
+
+
 - (void)inviteFriendsAction {
     [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
     [CMStore instance].isOnboardingFinished = YES;
@@ -534,7 +557,7 @@
 }
 
 - (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {
-    if ([message.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
+    if ([message.usersGroup.uuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
             ![message.joinedUser.cognitoUserId isEqualToString:self.userSessionController.user.cognitoUserId]) {
         [self.output presentUserJoinedMessage:message];
     }

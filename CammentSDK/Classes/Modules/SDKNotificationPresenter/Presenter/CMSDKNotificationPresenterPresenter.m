@@ -29,7 +29,7 @@
     [self showHud:message hideAfter:2];
 }
 
-- (void)presentMembershipAcceptedAlert:(CMMembershipAcceptedMessage *)message {
+- (void)presentUserJoinedToTheGroupAlert:(CMUserJoinedMessage *)message {
     [self showToastMessage:CMLocalized(@"You have joined the private chat!")];
 }
 

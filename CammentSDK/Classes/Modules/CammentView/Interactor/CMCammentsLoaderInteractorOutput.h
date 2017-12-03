@@ -19,8 +19,6 @@
 - (void)didReceiveNewCamment:(CMCamment *)camment;
 - (void)didReceiveNewBotCamment:(CMBotCamment *)ads;
 
-- (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message;
-
 - (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message;
 
 - (void)didReceiveDeliveryConfirmation:(NSString *)cammentUuid;

@@ -556,13 +556,6 @@
     [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentDelete];
 }
 
-- (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {
-    if ([message.usersGroup.uuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
-            ![message.joinedUser.cognitoUserId isEqualToString:self.userSessionController.user.cognitoUserId]) {
-        [self.output presentUserJoinedMessage:message];
-    }
-}
-
 - (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message {
     CMCammentsBlockItem *cammentsBlockItem = [CMCammentsBlockItem cammentWithCamment:message.camment];
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];

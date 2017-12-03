@@ -366,21 +366,6 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)presentUserJoinedMessage:(CMUserJoinedMessage *)message {
-    CMUser *user = message.joinedUser;
-    if (!user || !user.username) {return;}
-
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"group_message.join_title"), user.username]
-                                                                             message:CMLocalized(@"group_message.join_desc")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok")
-                                                        style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {
-                                                      }]];
-    [self presentViewController:alertController animated:YES completion:nil];
-}
-
 - (void)presentViewController:(UIViewController *)controller {
     controller.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:controller animated:YES completion:nil];

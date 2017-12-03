@@ -13,6 +13,7 @@
 #import "CammentSDK.h"
 #import "CMMembershipRequestMessage.h"
 #import "CMUserRemovedMessage.h"
+#import "CMUserJoinedMessage.h"
 
 @implementation CMSDKNotificationPresenterPresenter
 
@@ -124,4 +125,17 @@
     [self presentViewController:alertController];
 }
 
+- (void)presentUsersAreJoiningMessage:(CMUserJoinedMessage *)message {
+    CMUser *user = message.joinedUser;
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"alert.user_joined.title"), user.username]
+                                                                             message:CMLocalized(@"alert.user_joined.description")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Ok")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
+
+    [self presentViewController:alertController];
+}
 @end

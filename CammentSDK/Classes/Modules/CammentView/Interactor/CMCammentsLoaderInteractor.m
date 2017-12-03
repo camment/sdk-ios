@@ -47,10 +47,6 @@
                         [__weakSelf.output didReceiveCammentDeletedMessage:cammentDeletedMessage];
                     }];
 
-                    [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
-                        [__weakSelf.output didReceiveUserJoinedMessage:userJoinedMessage];
-                    }];
-
                     [message matchCammentDelivered:^(CMCammentDeliveredMessage *cammentDelivered) {
                         [__weakSelf.output didReceiveDeliveryConfirmation:cammentDelivered.cammentUuid];
                     }];

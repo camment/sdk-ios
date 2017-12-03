@@ -48,9 +48,15 @@
 
     [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
         BOOL shouldTriggerDelegate = ![userJoinedMessage.usersGroup.uuid isEqualToString:self.store.activeGroup.uuid];
+        CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+        BOOL shouldShowToast = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
+            return ![value.cognitoUserId isEqualToString:context.user.cognitoUserId];
+        }].array.count > 0;
         [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
         if (shouldTriggerDelegate) {
             [self handleUserJoinedMessage:userJoinedMessage];
+        } else {
+            [self handleFriendJoinedMessage:userJoinedMessage shouldShowToast:shouldShowToast];
         }
     }];
     
@@ -74,6 +80,14 @@
 
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
+    }
+}
+
+- (void)handleFriendJoinedMessage:(CMUserJoinedMessage *)message shouldShowToast:(BOOL)showToast {
+    if (showToast) {
+        [self.notificationPresenter showToastMessage:[NSString stringWithFormat:CMLocalized(@"toast.user_joined"), message.joinedUser.username]];
+    } else {
+        [self.notificationPresenter presentUsersAreJoiningMessage:message];
     }
 }
 

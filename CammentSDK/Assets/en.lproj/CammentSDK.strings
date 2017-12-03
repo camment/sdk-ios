@@ -49,3 +49,7 @@
 "alert.left_group.description" = "Group owner has removed you from current conversation";
 
 "alert.confirm_remove_user.title" = "Do you want to remove %@ from the group?";
+"toast.user_joined" = "%@ has joined";
+
+"alert.user_joined.title" = "%@ has joined";
+"alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";

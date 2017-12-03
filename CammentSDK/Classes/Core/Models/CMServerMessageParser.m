@@ -52,7 +52,7 @@
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
     } else if ([type isEqualToString:@"new-user-in-group"]) {
-        NSDictionary *userJson = body[@"user"];
+        NSDictionary *userJson = body[@"joiningUser"];
         CMUser *user = [[[[[[CMUserBuilder new]
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]

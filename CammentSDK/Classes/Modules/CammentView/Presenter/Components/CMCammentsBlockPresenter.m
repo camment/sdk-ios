@@ -98,8 +98,8 @@
     return ^ASCellNode * {
         __block ASCellNode *node;
         [item matchCamment:^(CMCamment *camment) {
-            CMCammentCellDisplayingContext *context = [CMCammentCellDisplayingContext contextWithCamment:camment
-                                                                                shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:userCognitoUuid]];
+            CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment
+                                                                                     shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:userCognitoUuid] shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:userCognitoUuid]];
             node = [[CMCammentCell alloc] initWithDisplayContext:context];
             [(CMCammentCell *) node setDelegate:self];
         }       botCamment:^(CMBotCamment *botCamment) {
@@ -134,6 +134,13 @@
             [cammentCell transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
         }
         if (shouldPlay) {
+            if (!cammentCell.displayingContext.camment.status.isWatched) {
+                CMCamment *updatedCamment = [[[CMCammentBuilder cammentFromExistingCamment:cammentCell.displayingContext.camment]
+                        withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:cammentCell.displayingContext.camment.status.deliveryStatus
+                                                                         isWatched:YES]] build];
+                [self updateCammentData:updatedCamment];
+            }
+
             [cammentCell.cammentNode playCamment];
         } else {
             [cammentCell.cammentNode stopCamment];
@@ -308,8 +315,9 @@
             if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
             CMCammentCell *cammentCell = (CMCammentCell *) node;
             if ([cammentCell.displayingContext.camment.uuid isEqualToString:camment.uuid]) {
-                CMCammentCellDisplayingContext *context = [CMCammentCellDisplayingContext contextWithCamment:camment
-                                                                                    shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:self.userCognitoUuid]];
+                CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment
+                                                                                         shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:self.userCognitoUuid]
+                                                                                          shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:self.userCognitoUuid]];
                 [cammentCell updateWithDisplayingContext:context];
             }
         }

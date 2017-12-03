@@ -12,10 +12,8 @@
 
 @property CMCamment *camment;
 @property BOOL shouldShowDeliveryStatus;
+@property BOOL shouldShowWatchedStatus;
 
-- (instancetype)initWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus;
-
-+ (instancetype)contextWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus;
-
+- (instancetype)initWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus shouldShowWatchedStatus:(BOOL)shouldShowWatchedStatus;
 
 @end

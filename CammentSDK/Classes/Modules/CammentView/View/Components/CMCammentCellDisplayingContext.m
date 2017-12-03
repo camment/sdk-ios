@@ -9,18 +9,15 @@
 
 @implementation CMCammentCellDisplayingContext
 
-- (instancetype)initWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus {
+- (instancetype)initWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus shouldShowWatchedStatus:(BOOL)shouldShowWatchedStatus {
     self = [super init];
     if (self) {
         self.camment = camment;
         self.shouldShowDeliveryStatus = shouldShowDeliveryStatus;
+        self.shouldShowWatchedStatus = shouldShowWatchedStatus;
     }
 
     return self;
-}
-
-+ (instancetype)contextWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus {
-    return [[self alloc] initWithCamment:camment shouldShowDeliveryStatus:shouldShowDeliveryStatus];
 }
 
 @end

@@ -14,6 +14,7 @@
 
 @property(nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
 @property(nonatomic, strong) CMCammentDeliveryIndicator *deliveryIndicator;
+@property(nonatomic, strong) ASImageNode *notWatchedIndicator;
 @end
 
 @implementation CMCammentCell
@@ -26,6 +27,12 @@
         self.deliveryIndicator = [CMCammentDeliveryIndicator new];
         self.deliveryIndicator.deliveryStatus = _displayingContext.camment.status.deliveryStatus;
         self.deliveryIndicator.hidden = !context.shouldShowDeliveryStatus;
+
+        self.notWatchedIndicator = [[ASImageNode alloc] init];
+        self.notWatchedIndicator.contentMode = UIViewContentModeTopRight;
+        self.notWatchedIndicator.hidden = !context.shouldShowWatchedStatus;
+        self.notWatchedIndicator.alpha = !context.camment.status.isWatched;
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -34,6 +41,10 @@
 
 - (void)didLoad {
     [super didLoad];
+
+    self.notWatchedIndicator.image = [UIImage imageNamed:@"not_watched"
+                                                inBundle:[NSBundle cammentSDKBundle]
+                           compatibleWithTraitCollection:nil];
 
     UILongPressGestureRecognizer *longPressGestureRecognizer = [UILongPressGestureRecognizer new];
     [longPressGestureRecognizer addTarget:self action:@selector(handleLongPressAction:)];
@@ -64,11 +75,13 @@
     self.cammentNode.style.preferredSize = CGSizeMake(
             _expanded ? 90.0f : 45.0f,
             _expanded ? 90.0f : 45.0f);
+    self.notWatchedIndicator.style.preferredSize = self.cammentNode.style.preferredSize;
     ASStackLayoutSpec *finalLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                                  spacing:-1.0f
                                                                           justifyContent:ASStackLayoutJustifyContentStart
                                                                               alignItems:ASStackLayoutAlignItemsStart
-                                                                                children:@[_deliveryIndicator, _cammentNode]];
+                                                                                children:@[_deliveryIndicator, [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_cammentNode
+                                                                                                                                                       overlay:_notWatchedIndicator]]];
     finalLayoutSpec.style.flexGrow = .0f;
     finalLayoutSpec.style.flexShrink = .0f;
     
@@ -77,6 +90,7 @@
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     if (![context isAnimated]) {
+        _notWatchedIndicator.alpha = !self.displayingContext.camment.status.isWatched;
         [super animateLayoutTransition:context];
         return;
     }
@@ -84,6 +98,7 @@
     [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
         _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
         _deliveryIndicator.frame = [context finalFrameForNode:self.deliveryIndicator];
+        _notWatchedIndicator.alpha = !self.displayingContext.camment.status.isWatched;
     }                completion:^(BOOL finished) {
         [context completeTransition:finished];
     }];
@@ -93,6 +108,7 @@
     _displayingContext = context;
     self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
     self.deliveryIndicator.hidden = !context.shouldShowDeliveryStatus;
+    self.notWatchedIndicator.hidden = !context.shouldShowWatchedStatus;
     [self.deliveryIndicator transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }

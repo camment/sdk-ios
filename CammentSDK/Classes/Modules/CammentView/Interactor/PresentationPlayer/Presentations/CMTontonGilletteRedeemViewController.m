@@ -37,6 +37,8 @@
     [super viewDidLoad];
     
     self.webView = [[UIWebView alloc] init];
+    [self.webView setScalesPageToFit:YES];
+    [self.webView setContentMode:UIViewContentModeScaleAspectFit];
     self.webView.delegate = self;
     [self.view addSubview:_webView];
     [self loadPage:@"gl_redeem"];
@@ -55,6 +57,8 @@
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     self.webView.frame = self.view.bounds;
+    [self.webView setScalesPageToFit:YES];
+    [self.webView setContentMode:UIViewContentModeScaleAspectFit];
 }
 
 - (void)presentWithOutput:(id <CMPresentationInstructionOutput>)output

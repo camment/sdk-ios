@@ -15,6 +15,7 @@
 #import "CMAdsDemoBot.h"
 #import "CMBotAction.h"
 #import "CMVideoAdPresentationBuilder.h"
+#import "CMTontonPresentationBuilder.h"
 
 NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -23,12 +24,7 @@ NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 }
 + (NSArray<id <CMPresentationBuilder>> *)activePresentations {
     return @[
-            [CMWoltPresentationBuilder new],
-            [CMNetflixPresentationBuilder new],
-            [CMSBPresentationBuilder new],
-            [CMEmailSubscriptionPresentationBuilder new],
-            [CMBettingPresentationBuilder new],
-            [CMVideoAdPresentationBuilder new]
+            [CMTontonPresentationBuilder new]
     ];
 }
 

@@ -93,6 +93,11 @@
 
 - (void)tapOpenLinkButton {
     [self didTapCloseOnButton];
+
+    if (self.videoAd.onClickAction) {
+        self.videoAd.onClickAction();
+        return;;
+    }
     NSURL *url = self.videoAd.targetUrl;
     [[CMOpenURLHelper new] openURL:url];
 }

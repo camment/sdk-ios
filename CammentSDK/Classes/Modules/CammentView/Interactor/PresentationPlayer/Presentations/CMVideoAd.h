@@ -12,6 +12,8 @@
 
 @property(nonatomic, strong) NSURL *targetUrl;
 
+@property(nonatomic) dispatch_block_t onClickAction;
+
 - (instancetype)initWithVideoURL:(NSURL *)videoUrl linkUrl:(NSURL *)targetUrl;
 
 @end

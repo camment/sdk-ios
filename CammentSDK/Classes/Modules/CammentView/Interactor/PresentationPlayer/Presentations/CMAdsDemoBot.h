@@ -15,6 +15,7 @@ static NSString *const kCMAdsDemoBotPlayVideoAction = @"cmadsdemobot.action.play
 
 static NSString *const kCMAdsDemoBotURLParam = @"cmadsdemobot.params.url";
 static NSString *const kCMAdsDemoBotVideoURLParam = @"cmadsdemobot.params.videoUrl";
+static NSString *const kCMAdsDemoBotVideoOnClickPresentationInstructionParam = @"cmadsdemobot.params.videoOnClick";
 static NSString *const kCMAdsDemoBotRectParam = @"cmadsdemobot.params.rect";
 
 @interface CMAdsDemoBot : NSObject<CMBot>

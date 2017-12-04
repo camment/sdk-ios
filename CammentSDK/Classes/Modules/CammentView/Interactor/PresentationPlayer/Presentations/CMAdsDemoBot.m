@@ -8,6 +8,8 @@
 #import "CMVideoAd.h"
 #import "CammentSDK.h"
 #import "CMOpenURLHelper.h"
+#import "CMPresentationRunableInterface.h"
+#import "CMPresentationInstructionInterface.h"
 
 @implementation CMAdsDemoBot {
 
@@ -41,8 +43,19 @@
         NSURL *videoUrl = [[NSURL alloc] initWithString:videoUrlString];
         NSValue *rectValue = [(NSDictionary *) action.params valueForKey:kCMAdsDemoBotRectParam];
         CGRect startingFromRect =  [rectValue CGRectValue];
+
+        CMVideoAd *videoAd = [[CMVideoAd alloc] initWithVideoURL:videoUrl linkUrl:url];
+
+        id<CMPresentationInstructionInterface> instruction = [(NSDictionary *)action.params
+                valueForKey:kCMAdsDemoBotVideoOnClickPresentationInstructionParam];
+        if (instruction) {
+            videoAd.onClickAction = ^{
+                [instruction runWithOutput:self.output];
+            };
+        }
+
         [self.output presentationInstruction:nil
-                                playVideoAds:[[CMVideoAd alloc] initWithVideoURL:videoUrl linkUrl:url]
+                                playVideoAds:videoAd
                         playStartingFromRect:startingFromRect];
     }
 }

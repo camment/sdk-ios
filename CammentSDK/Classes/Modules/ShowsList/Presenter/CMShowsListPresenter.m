@@ -74,9 +74,10 @@
             takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
             subscribeNext:^(RACTuple *_Nullable tuple) {
                 @strongify(self);
+                BOOL isOffline = [tuple.first boolValue];
                 CMAuthStatusChangedEventContext *context = tuple.second;
                 NSNumber *awsServicesConfigured = tuple.third;
-                if (context.state != CMCammentUserNotAuthentificated && [awsServicesConfigured boolValue]) {
+                if (isOffline || (context.state != CMCammentUserNotAuthentificated && [awsServicesConfigured boolValue])) {
                     [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
                 }
             }];
@@ -102,32 +103,6 @@
                                    showType:[CMShowType videoWithShow:value]
                                    startsAt:value.startAt];
     }].array ?: @[];
-
-#ifdef USE_INTERNAL_FEATURES
-    NSString *demoWebShowUrl;
-
-    if ([CMStore instance].isOfflineMode) {
-        demoWebShowUrl = [NSURL fileURLWithPath:[[NSBundle cammentSDKBundle]
-                pathForResource:@"page"
-                         ofType:@"htm"
-                    inDirectory:@"www"]].absoluteString;
-    } else {
-        FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
-                tweakCollectionWithName:@"Web settings"];
-
-        NSString *tweakName = @"Web page url";
-        FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
-
-        demoWebShowUrl = webShowTweak.currentValue;
-    }
-
-//    shows = [shows arrayByAddingObjectsFromArray:@[
-//            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
-//                                     url:demoWebShowUrl
-//                               thumbnail:nil
-//                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
-//    ]];
-#endif
 
     self.showsListCollectionPresenter.showNoShowsNode = shows.count == 0;
     self.showsListCollectionPresenter.shows = shows;

@@ -12,6 +12,7 @@
 #import "CMPositionPresentationInstruction.h"
 #import "CMDisplayViewControllerPresentationAction.h"
 #import "CMTontonGilletteRedeemViewController.h"
+#import "CMTontonPizzaHutViewController.h"
 #import "CMAdsDemoBot.h"
 
 @implementation CMTontonPresentationBuilder
@@ -28,8 +29,13 @@
 
     ];
 
-    CMPositionPresentationInstruction *showSubscribeFormInstruction = [[CMPositionPresentationInstruction alloc] initWithPosition:0 action:
+    CMPositionPresentationInstruction *showGilletteRedeemVC = [[CMPositionPresentationInstruction alloc] initWithPosition:0 action:
             [[CMDisplayViewControllerPresentationAction alloc] initWithPresentationController:[CMTontonGilletteRedeemViewController new]
+                                                                                      actions:@{}]
+    ];
+
+    CMPositionPresentationInstruction *showPizzaHutOrderVC = [[CMPositionPresentationInstruction alloc] initWithPosition:3 action:
+            [[CMDisplayViewControllerPresentationAction alloc] initWithPresentationController:[CMTontonPizzaHutViewController new]
                                                                                       actions:@{}]
     ];
 
@@ -40,15 +46,26 @@
     action.params = @{
             kCMAdsDemoBotVideoURLParam : [[NSURL alloc] initFileURLWithPath:filepath].absoluteString,
             kCMAdsDemoBotURLParam : @"http://camment.tv",
-            kCMAdsDemoBotVideoOnClickPresentationInstructionParam: showSubscribeFormInstruction,
+            kCMAdsDemoBotVideoOnClickPresentationInstructionParam: showGilletteRedeemVC,
     };
 
-    CMCammentsBlockItem *betBlockItem = [utility blockItemBotAction:@"gl_ads" action:action];
-    return @[
-            [[CMPositionPresentationInstruction alloc] initWithPosition:1
-                                                                 action:[[CMDisplayCammentPresentationAction alloc]
-                                                                         initWithItem:betBlockItem] delay:1]
 
+    CMBotAction *showPizzaHutOrderAds = [CMBotAction new];
+    showPizzaHutOrderAds.botUuid = kCMPresentationPlayerBotUUID;
+    showPizzaHutOrderAds.action = kCMPresentationPlayerBotPlayAction;
+    showPizzaHutOrderAds.params = @{
+            kCMPresentationPlayerBotRunableParam : showPizzaHutOrderVC
+    };
+
+    CMCammentsBlockItem *gilletteAdsBlockItem = [utility blockItemBotAction:@"gl_ads" action:action];
+    CMCammentsBlockItem *phAdsBlockItem = [utility blockItemBotAction:@"ph" action:showPizzaHutOrderAds];
+    return @[
+            [[CMPositionPresentationInstruction alloc] initWithPosition:4
+                                                                 action:[[CMDisplayCammentPresentationAction alloc]
+                                                                         initWithItem:gilletteAdsBlockItem] delay:1],
+            [[CMPositionPresentationInstruction alloc] initWithPosition:6
+                                                                 action:[[CMDisplayCammentPresentationAction alloc]
+                                                                         initWithItem:phAdsBlockItem] delay:1],
     ];
 }
 

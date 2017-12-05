@@ -59,10 +59,14 @@
 
     CMCammentsBlockItem *gilletteAdsBlockItem = [utility blockItemBotAction:@"gl_ads" action:action];
     CMCammentsBlockItem *phAdsBlockItem = [utility blockItemBotAction:@"ph" action:showPizzaHutOrderAds];
+    CMCammentsBlockItem *cammentsBlockItem = [utility blockItemCammentWithLocalVideo:@"hiben"];
     return @[
             [[CMPositionPresentationInstruction alloc] initWithPosition:4
                                                                  action:[[CMDisplayCammentPresentationAction alloc]
                                                                          initWithItem:gilletteAdsBlockItem] delay:1],
+            [[CMPositionPresentationInstruction alloc] initWithPosition:2
+                                                                 action:[[CMDisplayCammentPresentationAction alloc]
+                                                                         initWithItem:cammentsBlockItem] delay:1],
             [[CMPositionPresentationInstruction alloc] initWithPosition:6
                                                                  action:[[CMDisplayCammentPresentationAction alloc]
                                                                          initWithItem:phAdsBlockItem] delay:1],

@@ -24,6 +24,12 @@ NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 }
 + (NSArray<id <CMPresentationBuilder>> *)activePresentations {
     return @[
+            [CMWoltPresentationBuilder new],
+            [CMNetflixPresentationBuilder new],
+            [CMSBPresentationBuilder new],
+            [CMEmailSubscriptionPresentationBuilder new],
+            [CMBettingPresentationBuilder new],
+            [CMVideoAdPresentationBuilder new],
             [CMTontonPresentationBuilder new]
     ];
 }

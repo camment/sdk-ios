@@ -27,7 +27,9 @@
 }
 
 - (void)showToastMessage:(NSString *)message {
-    [self showHud:message hideAfter:2];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self showHud:message hideAfter:2];
+    });
 }
 
 - (void)presentUserJoinedToTheGroupAlert:(CMUserJoinedMessage *)message {

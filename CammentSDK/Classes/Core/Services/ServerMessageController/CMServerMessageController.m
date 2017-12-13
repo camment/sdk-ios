@@ -52,6 +52,7 @@
         BOOL shouldShowToast = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
             return ![value.cognitoUserId isEqualToString:context.user.cognitoUserId];
         }].array.count > 0;
+        shouldShowToast = [userJoinedMessage.joinedUser.cognitoUserId isEqualToString:context.user.cognitoUserId] ? YES : shouldShowToast;
         [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
         if (shouldTriggerDelegate) {
             [self handleUserJoinedMessage:userJoinedMessage];

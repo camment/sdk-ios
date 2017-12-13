@@ -35,6 +35,9 @@
 @property (nonatomic, strong, nullable) NSString *showUuid;
 
 
+@property (nonatomic, strong, nullable) NSNumber *delivered;
+
+
 @property (nonatomic, strong, nullable) NSString *uuid;
 
 

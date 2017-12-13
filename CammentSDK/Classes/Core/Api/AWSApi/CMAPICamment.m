@@ -24,6 +24,7 @@
              @"userGroupUuid": @"userGroupUuid",
              @"userCognitoIdentityId": @"userCognitoIdentityId",
              @"showUuid": @"showUuid",
+             @"delivered": @"delivered",
              @"uuid": @"uuid",
              @"url": @"url"
              };

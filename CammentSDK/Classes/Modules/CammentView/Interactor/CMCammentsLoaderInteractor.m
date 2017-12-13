@@ -65,7 +65,7 @@
             NSArray *camments = [t.result items];
             NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
                 CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
-                                                  initWithDeliveryStatus:CMCammentDeliveryStatusSeen
+                                                  initWithDeliveryStatus:[value.delivered boolValue] ? CMCammentDeliveryStatusSeen : CMCammentDeliveryStatusSent
                                                   isWatched:YES];
                 return [[[[[[[[[[[CMCammentBuilder camment]
                                 withShowUuid:value.showUuid]

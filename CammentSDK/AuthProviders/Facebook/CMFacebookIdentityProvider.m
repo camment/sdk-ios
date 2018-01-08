@@ -6,7 +6,7 @@
 #import "FBSDKLoginManager.h"
 #import "FBSDKAccessToken.h"
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
-
+#import <CammentSDK/CammentSDK.h>
 @implementation CMFacebookIdentityProvider
 
 - (instancetype)init {
@@ -21,7 +21,7 @@
 
 - (UIViewController *)viewController {
     if (_viewController) { return _viewController; };
-    return [[UIApplication sharedApplication].keyWindow rootViewController];
+    return [CammentSDK instance].sdkUIDelegate ?: [[UIApplication sharedApplication].keyWindow rootViewController];
 }
 
 - (NSString *)cachedToken {

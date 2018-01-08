@@ -86,6 +86,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         return ![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
     }].array ?: @[];
 
+    self.users = [self.users.rac_sequence filter:^BOOL(CMUser *user) {
+        return user.username.length > 0;
+    }].array ?: @[];
     if (self.users.count == 0) {
         [items addObject:@(CMGroupInfoInviteFriendsSection)];
     } else {

@@ -160,22 +160,29 @@
 - (void)identityHasChangedOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
     if (newIdentity == nil) {return;}
 
+    [[[CMStore instance].authentificationStatusSubject filter:^BOOL(CMAuthStatusChangedEventContext * _Nullable status) {
+        return [status.user.cognitoUserId isEqualToString:newIdentity];
+    }] subscribeNext:^(CMAuthStatusChangedEventContext * _Nullable status) {
+        [[CMStore instance] updateUserDataOnIdentityChangeOldIdentity:oldIdentity newIdentity:newIdentity];
+    }];
+    
     [[CMAnalytics instance] setMixpanelID:newIdentity];
 
-    if (oldIdentity) {
-        [[CMStore instance] updateUserDataOnIdentityChangeOldIdentity:oldIdentity newIdentity:newIdentity];
-    }
-
     if (_awsServicesFactory.cognitoHasBeenConfigured) {
-        [self syncCognitoProfiles:oldIdentity newIdentity:newIdentity];
+        [[self syncCognitoProfiles:oldIdentity newIdentity:newIdentity] continueWithBlock:^id(AWSTask<id> *t) {
+            if (oldIdentity) {
+                [[CMStore instance] updateUserDataOnIdentityChangeOldIdentity:oldIdentity newIdentity:newIdentity];
+            }
+            return nil;
+        }];
         [self configureIoTListenerWithNewIdentity:newIdentity];
     }
 }
 
-- (void)syncCognitoProfiles:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
+- (AWSTask *)syncCognitoProfiles:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
 
     if (!oldIdentity || !newIdentity || [oldIdentity isEqualToString:newIdentity]) {
-        return;
+        return nil;
     }
 
     AWSCognito *cognito = [AWSCognito CognitoForKey:CMCognitoName];
@@ -185,7 +192,7 @@
         return [conflict resolveWithLocalRecord];
     }];
 
-    [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
+    return [[[[dataset synchronize] continueWithBlock:^id(AWSTask<id> *t) {
         [dataset setString:oldIdentity forKey:newIdentity];
 
         return [dataset synchronize];
@@ -369,7 +376,7 @@
 
 #ifdef DEBUG
     [AWSDDLog sharedInstance].logLevel = AWSLogLevelDebug;
-    [AWSDDLog addLogger:[AWSDDTTYLogger sharedInstance]];
+    [DDLog addLogger:[AWSDDTTYLogger sharedInstance]];
 #endif
 
     [[CMAnalytics instance] configureMixpanelAnalytics];

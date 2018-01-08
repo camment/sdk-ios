@@ -37,6 +37,9 @@
         [[[CMStore instance].authentificationStatusSubject takeUntil:self.rac_willDeallocSignal]
                 subscribeNext:^(CMAuthStatusChangedEventContext *x) {
             self.userCognitoUuid = x.user.cognitoUserId;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self reloadItems:self.items animated:NO];
+            });
         }];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
@@ -69,6 +72,8 @@
         return updatedItem;
     }];
 
+    self.userCognitoUuid = [[CMStore instance].authentificationStatusSubject.first user].cognitoUserId ?: self.userCognitoUuid;
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         [self reloadItems:updatedItems animated:YES];
     });

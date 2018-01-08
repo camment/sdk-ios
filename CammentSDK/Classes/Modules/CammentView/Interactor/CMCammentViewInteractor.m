@@ -162,12 +162,12 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                  } else {
                                      CMAPICamment *cmCamment = t.result;
                                      CMCamment *uploadedCamment = [[[[[[[CMCammentBuilder cammentFromExistingCamment:camment]
-                                             withUuid:cmCamment.uuid]
-                                             withShowUuid:cmCamment.showUuid]
-                                             withRemoteURL:cmCamment.url]
-                                             withUserGroupUuid:cmCamment.userGroupUuid]
-                                             withLocalURL:nil]
-                                             build];
+                                                                        withUuid:cmCamment.uuid ?: camment.uuid]
+                                                                       withShowUuid:cmCamment.showUuid ?: camment.showUuid]
+                                                                      withRemoteURL:cmCamment.url ?: camment.remoteURL]
+                                                                     withUserGroupUuid:cmCamment.userGroupUuid ?: camment.userGroupUuid]
+                                                                    withLocalURL:camment.localURL]
+                                                                   build];
                                      [__weakSelf completeCammentUploadingTask:uploadedCamment];
                                  }
                                  return nil;

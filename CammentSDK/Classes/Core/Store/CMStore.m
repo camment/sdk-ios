@@ -74,7 +74,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         }];
 
         [RACObserve(self, playingCammentId) subscribeNext:^(NSString *id) {
-            if ([id isEqualToString:kCMStoreCammentIdIfNotPlaying]) {return;}
+            if ([id isEqualToString:kCMStoreCammentIdIfNotPlaying]) { return; }
             [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentPlay];
         }];
 
@@ -261,6 +261,8 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         }
         return oldGroup;
     }];
+
+    DDLogInfo(@"User data have been updated of uuid sync");
 }
 
 - (void)cleanUpCurrentChatGroup {

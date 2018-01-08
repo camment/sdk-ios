@@ -8,6 +8,7 @@
 @implementation CMAdBannerBuilder
 {
   NSString *_thumbnailURL;
+  NSString *_videoURL;
   NSString *_title;
   NSString *_openURL;
 }
@@ -19,20 +20,27 @@
 
 + (instancetype)adBannerFromExistingAdBanner:(CMAdBanner *)existingAdBanner
 {
-  return [[[[CMAdBannerBuilder adBanner]
-            withThumbnailURL:existingAdBanner.thumbnailURL]
+  return [[[[[CMAdBannerBuilder adBanner]
+             withThumbnailURL:existingAdBanner.thumbnailURL]
+            withVideoURL:existingAdBanner.videoURL]
            withTitle:existingAdBanner.title]
           withOpenURL:existingAdBanner.openURL];
 }
 
 - (CMAdBanner *)build
 {
-  return [[CMAdBanner alloc] initWithThumbnailURL:_thumbnailURL title:_title openURL:_openURL];
+  return [[CMAdBanner alloc] initWithThumbnailURL:_thumbnailURL videoURL:_videoURL title:_title openURL:_openURL];
 }
 
 - (instancetype)withThumbnailURL:(NSString *)thumbnailURL
 {
   _thumbnailURL = [thumbnailURL copy];
+  return self;
+}
+
+- (instancetype)withVideoURL:(NSString *)videoURL
+{
+  _videoURL = [videoURL copy];
   return self;
 }
 

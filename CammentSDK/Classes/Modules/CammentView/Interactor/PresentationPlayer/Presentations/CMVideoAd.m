@@ -10,11 +10,12 @@
 
 }
 
-- (instancetype)initWithVideoURL:(NSURL *)videoUrl linkUrl:(NSURL *)targetUrl {
+- (instancetype)initWithVideoURL:(NSURL *)videoUrl linkUrl:(NSURL *)targetUrl placeholderURL:(NSURL *)placeholderURL {
     self = [super init];
     if (self) {
         self.videoURL = videoUrl;
         self.targetUrl = targetUrl;
+        self.placeholderURL = placeholderURL;
     }
     
     return self;

@@ -8,12 +8,13 @@
 
 @interface CMVideoAd : NSObject
 
+@property(nonatomic, strong) NSURL *placeholderURL;
+
 @property(nonatomic, strong) NSURL *videoURL;
 
 @property(nonatomic, strong) NSURL *targetUrl;
 
 @property(nonatomic) dispatch_block_t onClickAction;
 
-- (instancetype)initWithVideoURL:(NSURL *)videoUrl linkUrl:(NSURL *)targetUrl;
-
+- (instancetype)initWithVideoURL:(NSURL *)videoUrl linkUrl:(NSURL *)targetUrl placeholderURL:(NSURL *)placeholderURL;
 @end

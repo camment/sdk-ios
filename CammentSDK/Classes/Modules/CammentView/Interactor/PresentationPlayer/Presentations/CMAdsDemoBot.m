@@ -40,11 +40,24 @@
 
     if ([action.action isEqualToString:kCMAdsDemoBotPlayVideoAction]) {
         NSString *videoUrlString = [(NSDictionary *)action.params valueForKey:kCMAdsDemoBotVideoURLParam];
-        NSURL *videoUrl = [[NSURL alloc] initWithString:videoUrlString];
+        NSString *placeholderUrlString = [(NSDictionary *)action.params valueForKey:kCMAdsDemoBotPlaceholderURLParam];
         NSValue *rectValue = [(NSDictionary *) action.params valueForKey:kCMAdsDemoBotRectParam];
         CGRect startingFromRect =  [rectValue CGRectValue];
 
-        CMVideoAd *videoAd = [[CMVideoAd alloc] initWithVideoURL:videoUrl linkUrl:url];
+        NSURL *videoUrl = nil;
+
+        if (videoUrlString) {
+            videoUrl = [[NSURL alloc] initWithString:videoUrlString];
+        }
+
+        NSURL *placeholderURL = nil;
+        if (placeholderUrlString) {
+            placeholderURL = [[NSURL alloc] initWithString:placeholderUrlString];
+        }
+
+        CMVideoAd *videoAd = [[CMVideoAd alloc] initWithVideoURL:videoUrl
+                                                         linkUrl:url
+                                                  placeholderURL:placeholderURL];
 
         id<CMPresentationInstructionInterface> instruction = [(NSDictionary *)action.params
                 valueForKey:kCMAdsDemoBotVideoOnClickPresentationInstructionParam];

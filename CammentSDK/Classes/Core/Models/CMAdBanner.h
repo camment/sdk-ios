@@ -8,10 +8,11 @@
 @interface CMAdBanner : NSObject <NSCopying>
 
 @property (nonatomic, readonly, copy) NSString *thumbnailURL;
+@property (nonatomic, readonly, copy) NSString *videoURL;
 @property (nonatomic, readonly, copy) NSString *title;
 @property (nonatomic, readonly, copy) NSString *openURL;
 
-- (instancetype)initWithThumbnailURL:(NSString *)thumbnailURL title:(NSString *)title openURL:(NSString *)openURL;
+- (instancetype)initWithThumbnailURL:(NSString *)thumbnailURL videoURL:(NSString *)videoURL title:(NSString *)title openURL:(NSString *)openURL;
 
 @end
 

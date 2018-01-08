@@ -20,7 +20,7 @@
         self.style.height = ASDimensionMake(200.0f);
 
         self.videoPlayerNode = [ASVideoNode new];
-        self.videoPlayerNode.gravity = AVLayerVideoGravityResizeAspect;
+        self.videoPlayerNode.gravity = AVLayerVideoGravityResizeAspectFill;
         self.videoPlayerNode.shouldAutorepeat = NO;
         self.videoPlayerNode.shouldAutoplay = YES;
         self.videoPlayerNode.userInteractionEnabled = NO;
@@ -84,10 +84,18 @@
     [CMStore instance].playingCammentId = @"kVideoAds";
     self.videoAd = videoAd;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.videoPlayerNode pause];
-        [self.videoPlayerNode.player seekToTime:kCMTimeZero];
-        [self.videoPlayerNode setAssetURL:self.videoAd.videoURL];
-        [self.videoPlayerNode play];
+
+        if (self.videoAd.placeholderURL) {
+            [self.videoPlayerNode setURL:self.videoAd.placeholderURL];
+        }
+
+        if (self.videoAd.videoURL) {
+            [self.videoPlayerNode pause];
+            [self.videoPlayerNode.player seekToTime:kCMTimeZero];
+            [self.videoPlayerNode setAssetURL:self.videoAd.videoURL];
+            [self.videoPlayerNode play];
+        }
+
     });
 }
 

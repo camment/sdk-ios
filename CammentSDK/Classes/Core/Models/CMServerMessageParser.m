@@ -136,9 +136,10 @@
                 build];
         serverMessage = [CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:membershipAcceptedMessage];
     } else if ([type isEqualToString:@"ad"]) {
-        CMAdBanner *adBanner = [[[[[CMAdBannerBuilder adBanner]
+        CMAdBanner *adBanner = [[[[[[CMAdBannerBuilder adBanner]
                 withOpenURL:body[@"url"]]
                 withThumbnailURL:body[@"file"]]
+                withVideoURL:body[@"video"]]
                 withTitle:body[@"title"]]
                 build];
         serverMessage = [CMServerMessage adWithAdBanner:adBanner];

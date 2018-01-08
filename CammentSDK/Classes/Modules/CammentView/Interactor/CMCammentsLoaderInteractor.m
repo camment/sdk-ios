@@ -64,12 +64,26 @@
 }
 
 - (void)prepareAndDisplayAds:(CMAdBanner *)banner {
+
     CMBotAction *action = [[CMBotAction alloc] init];
     action.botUuid = kCMAdsDemoBotUUID;
-    action.action = kCMAdsDemoBotOpenURLAction;
-    action.params = @{
-            kCMAdsDemoBotURLParam: banner.openURL ?: @""
-    };
+    action.action = kCMAdsDemoBotPlayVideoAction;
+
+    NSMutableDictionary *params = [NSMutableDictionary new];
+
+    if (banner.thumbnailURL) {
+        params[kCMAdsDemoBotPlaceholderURLParam] = banner.thumbnailURL;
+    }
+
+    if (banner.videoURL) {
+        params[kCMAdsDemoBotVideoURLParam] = banner.videoURL;
+    }
+
+    if (banner.openURL) {
+        params[kCMAdsDemoBotURLParam] = banner.openURL;
+    }
+
+    action.params = params;
     CMBotCamment *botCamment = [[CMBotCamment alloc] initWithURL:banner.thumbnailURL
                                                        botAction:action];
     dispatch_async(dispatch_get_main_queue(), ^{

@@ -12,6 +12,8 @@
 
 - (instancetype)withThumbnailURL:(NSString *)thumbnailURL;
 
+- (instancetype)withVideoURL:(NSString *)videoURL;
+
 - (instancetype)withTitle:(NSString *)title;
 
 - (instancetype)withOpenURL:(NSString *)openURL;

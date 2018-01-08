@@ -32,6 +32,7 @@
 #import "CMCammentsBlockPresenterInput.h"
 #import "CMUserSessionController.h"
 #import "CMCammentCellDisplayingContext.h"
+#import "CMAdsDemoBot.h"
 
 @interface CMCammentViewPresenter () <CMPresentationInstructionOutput>
 
@@ -79,6 +80,7 @@
         self.currentOnboardingStep = CMOnboardingAlertNone;
 
         self.botRegistry = [CMBotRegistry new];
+        [self.botRegistry addBot:[CMAdsDemoBot new]];
         [self.botRegistry updateBotsOutputInterface:self];
 
         @weakify(self);

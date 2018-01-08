@@ -8,7 +8,6 @@
 #endif
 
 #import "CMMembershipAcceptedMessage.h"
-#import "CMUserJoinedMessage.h"
 
 @implementation CMMembershipAcceptedMessage
 

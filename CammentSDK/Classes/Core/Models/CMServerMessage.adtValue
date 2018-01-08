@@ -5,6 +5,7 @@
 %type name="CMMembershipRequestMessage"
 %type name="CMMembershipAcceptedMessage"
 %type name="CMUserRemovedMessage"
+%type name="CMAdBanner"
 
 CMServerMessage includes(RMBuilder) {
   camment {
@@ -27,5 +28,8 @@ CMServerMessage includes(RMBuilder) {
   }
   cammentDelivered {
     CMCammentDeliveredMessage *cammentDelivered
+  }
+  ad {
+    CMAdBanner *adBanner
   }
 }

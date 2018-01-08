@@ -16,4 +16,6 @@
 - (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler;
 
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler;
+
+- (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler;
 @end

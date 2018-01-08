@@ -1,0 +1,5 @@
+CMAdBanner includes(RMBuilder) {
+  NSString* thumbnailURL
+  NSString* title
+  NSString* openURL
+}

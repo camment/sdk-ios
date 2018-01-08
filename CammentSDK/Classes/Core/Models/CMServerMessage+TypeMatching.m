@@ -15,7 +15,8 @@
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}];
+         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                       ad:^(CMAdBanner *adBanner) {}];
 }
 
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler {
@@ -25,7 +26,8 @@
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}];
+         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                       ad:^(CMAdBanner *adBanner) {}];
 }
 
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler {
@@ -35,7 +37,8 @@
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}];
+         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                       ad:^(CMAdBanner *adBanner) {}];
 }
 
 - (void)matchMembershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler {
@@ -45,7 +48,8 @@
         membershipRequest:membershipRequestMatchHandler
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}];
+         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                       ad:^(CMAdBanner *adBanner) {}];
 }
 
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler {
@@ -54,8 +58,9 @@
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
         membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:membershipAcceptedMatchHandler
-            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-      cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}];
+              userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
+         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                       ad:^(CMAdBanner *adBanner) {}];
 }
 
 - (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler {
@@ -65,7 +70,8 @@
      membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
     membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
            userRemoved:userRemovedMatchHandler
-      cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}];
+      cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                    ad:^(CMAdBanner *adBanner) {}];
 }
 
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler {
@@ -75,7 +81,19 @@
      membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
     membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-      cammentDelivered:cammentDeliveredMatchHandler];
+      cammentDelivered:cammentDeliveredMatchHandler
+                    ad:^(CMAdBanner *adBanner) {}];
+}
+
+- (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler {
+    [self matchCamment:^(CMCamment *camment) {}
+            userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
+        cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
+     membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
+    membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+           userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
+      cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                    ad:adMatchHandler];
 }
 
 @end

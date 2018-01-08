@@ -21,6 +21,9 @@
 #import "CMCammentBuilder.h"
 #import "CMCammentStatus.h"
 #import "CMServerMessage+TypeMatching.h"
+#import "CMBotAction.h"
+#import "CMAdsDemoBot.h"
+#import "CMBotCamment.h"
 
 @interface CMCammentsLoaderInteractor ()
 
@@ -50,10 +53,28 @@
                     [message matchCammentDelivered:^(CMCammentDeliveredMessage *cammentDelivered) {
                         [__weakSelf.output didReceiveDeliveryConfirmation:cammentDelivered.cammentUuid];
                     }];
+
+                    [message matchAdBanner:^(CMAdBanner *adBanner) {
+                        [__weakSelf prepareAndDisplayAds:adBanner];
+                    }];
                 }];
     }
 
     return self;
+}
+
+- (void)prepareAndDisplayAds:(CMAdBanner *)banner {
+    CMBotAction *action = [[CMBotAction alloc] init];
+    action.botUuid = kCMAdsDemoBotUUID;
+    action.action = kCMAdsDemoBotOpenURLAction;
+    action.params = @{
+            kCMAdsDemoBotURLParam: banner.openURL ?: @""
+    };
+    CMBotCamment *botCamment = [[CMBotCamment alloc] initWithURL:banner.thumbnailURL
+                                                       botAction:action];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_output didReceiveNewBotCamment:botCamment];
+    });
 }
 
 - (void)fetchCachedCamments:(NSString *)groupUUID {

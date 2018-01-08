@@ -18,5 +18,4 @@
 
 - (instancetype)initWithNewMessageSubject:(RACSubject *)serverMessageSubject;
 
-
 @end

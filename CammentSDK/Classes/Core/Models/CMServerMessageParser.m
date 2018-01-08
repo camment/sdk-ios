@@ -13,6 +13,7 @@
 #import "CMMembershipAcceptedMessageBuilder.h"
 #import "CMCammentStatus.h"
 #import "CMUserRemovedMessageBuilder.h"
+#import "CMAdBannerBuilder.h"
 
 @implementation CMServerMessageParser {
 
@@ -134,6 +135,13 @@
                 withShow:show]
                 build];
         serverMessage = [CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:membershipAcceptedMessage];
+    } else if ([type isEqualToString:@"ad"]) {
+        CMAdBanner *adBanner = [[[[[CMAdBannerBuilder adBanner]
+                withOpenURL:body[@"url"]]
+                withThumbnailURL:body[@"file"]]
+                withTitle:body[@"title"]]
+                build];
+        serverMessage = [CMServerMessage adWithAdBanner:adBanner];
     }
 
     return serverMessage;

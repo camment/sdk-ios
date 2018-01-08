@@ -41,7 +41,7 @@
         NSDate *date = show.startsAt ? [NSDate dateWithTimeIntervalSince1970:show.startsAt.integerValue] : nil;
         if (date) {
             NSString *dateText = [NSString stringWithFormat:@" Watch on %@ ", [date formattedDateWithFormat:@"EEEE, d MMM, HH:mm"]];
-            self.startsDateText.attributedText = [[NSAttributedString alloc] initWithString:dateText
+            self.startsDateText.attributedText = [[NSAttributedString alloc] initWithString:dateText ?: @""
                                                                                  attributes:@{
                                                                                          NSFontAttributeName: [UIFont boldSystemFontOfSize:12],
                                                                                          NSForegroundColorAttributeName: [UIColor whiteColor]

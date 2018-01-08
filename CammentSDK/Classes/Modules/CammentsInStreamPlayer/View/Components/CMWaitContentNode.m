@@ -28,7 +28,7 @@
         self.textNode = [ASTextNode new];
 
         NSString *dateText = [NSString stringWithFormat:@"Stream starts at %@", [date formattedDateWithFormat:@"HH:mm"]];
-        self.textNode.attributedText = [[NSAttributedString alloc] initWithString:dateText
+        self.textNode.attributedText = [[NSAttributedString alloc] initWithString:dateText ?: @""
                                                                        attributes:@{
                                                                           NSForegroundColorAttributeName: [UIColor whiteColor]
                                                                        }];

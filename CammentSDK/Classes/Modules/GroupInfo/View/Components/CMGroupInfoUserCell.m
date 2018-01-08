@@ -37,7 +37,7 @@
         self.usernameNode = [ASTextNode new];
         self.usernameNode.maximumNumberOfLines = 1;
         self.usernameNode.truncationMode = NSLineBreakByTruncatingTail;
-        self.usernameNode.attributedText = [[NSAttributedString alloc] initWithString:user.username
+        self.usernameNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
                                                                              attributes:@{
                                                                                      NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
                                                                                      NSForegroundColorAttributeName: [UIColor blackColor]
@@ -71,12 +71,12 @@
 - (void)didLoad {
     [super didLoad];
 
-    if (self.user.userPhoto) {
-        NSURL *userpicURL = [[NSURL alloc] initWithString:self.user.userPhoto];
-        if (userpicURL) {
-            [self.userpicImageNode setURL:userpicURL resetToDefault:NO];
-        }
-    }
+    if (!self.user.userPhoto) return;
+
+    NSURL *userpicURL = [[NSURL alloc] initWithString:self.user.userPhoto];
+    if (!userpicURL) return;
+    
+    [self.userpicImageNode setURL:userpicURL resetToDefault:NO];
 }
 
 

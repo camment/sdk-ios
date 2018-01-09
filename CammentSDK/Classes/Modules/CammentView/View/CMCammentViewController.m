@@ -219,7 +219,7 @@
 }
 
 - (void)presenterDidRequestViewPreviewView {
-    [_presenter connectPreviewViewToRecorder:(SCImageView *) [self.node.cammentRecorderNode scImageView]];
+    [_presenter connectPreviewViewToRecorder:[self.node.cammentRecorderNode scImageView]];
 }
 
 - (void)handleShareAction {

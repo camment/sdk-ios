@@ -177,7 +177,7 @@
     }];
 }
 
-- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion {
+- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)(void))completion {
     [self.updatesQueue addOperationWithBlock:^{
         [_collectionNode performBatchAnimated:YES updates:^{
             @synchronized (self.items) {

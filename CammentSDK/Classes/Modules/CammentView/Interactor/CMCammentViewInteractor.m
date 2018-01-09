@@ -191,7 +191,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
         return;
     }
     
-    DDLogVerbose(@"Start uploading attempt %d", nextAttemptNumber);
+    DDLogVerbose(@"Start uploading attempt %ld", (long)nextAttemptNumber);
     [self uploadCamment:camment];
 }
 

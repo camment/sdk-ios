@@ -34,7 +34,7 @@
         self.videoPlayerNode.clipsToBounds = YES;
 
         if (!_camment.thumbnailURL) {
-            _videoPlayerNode.imageModificationBlock = ^UIImage * _Nullable(UIImage * _Nonnull image) {
+            _videoPlayerNode.imageModificationBlock = ^UIImage *(UIImage *image) {
 
                 CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
                 CIContext *context = [CIContext contextWithOptions:nil];

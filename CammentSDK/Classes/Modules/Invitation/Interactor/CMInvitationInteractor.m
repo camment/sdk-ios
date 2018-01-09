@@ -25,7 +25,7 @@
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     AWSTask * task = [client usergroupsPost];
     if (!task) {
-        return [AWSTask taskWithError:nil];
+        return [AWSTask taskWithError:[NSError errorWithDomain:@"tv.camment.invitationInteractor" code:0 userInfo:nil]];
     }
     
     return [task continueWithBlock:^id(AWSTask<id> *t) {

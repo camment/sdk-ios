@@ -6,8 +6,10 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
-@class SCFilterImageView;
+@class SCImageView;
 
 @interface CMCammentRecorderPreviewNode: ASDisplayNode
-- (SCFilterImageView *)scImageView;
+
+- (SCImageView *)scImageView;
+
 @end

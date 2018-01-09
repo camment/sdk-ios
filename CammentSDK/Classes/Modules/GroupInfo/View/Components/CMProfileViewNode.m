@@ -127,7 +127,7 @@
                 } else if (groups.count == 1) {
                     groupsCountString = [NSString stringWithFormat:@"1 group joined"];
                 } else {
-                    groupsCountString = [NSString stringWithFormat:@"%d groups joined", groups.count];
+                    groupsCountString = [NSString stringWithFormat:@"%lu groups joined", (unsigned long)groups.count];
                 }
 
                 self.userinfoTextNode.attributedText = [[NSAttributedString alloc] initWithString:groupsCountString

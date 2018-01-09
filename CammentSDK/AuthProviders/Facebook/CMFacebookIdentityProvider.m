@@ -15,13 +15,23 @@
         self.fbsdkLoginManager = [FBSDKLoginManager new];
         self.fbsdkLoginManager.loginBehavior = FBSDKLoginBehaviorNative;
     }
-
     return self;
 }
 
 - (UIViewController *)viewController {
     if (_viewController) { return _viewController; };
-    return [CammentSDK instance].sdkUIDelegate ?: [[UIApplication sharedApplication].keyWindow rootViewController];
+
+    if ([CammentSDK instance].sdkUIDelegate && [[CammentSDK instance].sdkUIDelegate isKindOfClass:[UIViewController class]]) {
+        return (UIViewController *)[CammentSDK instance].sdkUIDelegate;
+    }
+
+    // Try to find correct view controller if it has not been provided
+    UIViewController *topController = [[UIApplication sharedApplication].keyWindow rootViewController];
+    while (topController.presentedViewController) {
+        topController = topController.presentedViewController;
+    }
+
+    return topController;
 }
 
 - (NSString *)cachedToken {

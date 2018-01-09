@@ -85,7 +85,7 @@
     return layout;
 }
 
-- (SCFilterImageView *)scImageView {
+- (SCImageView *)scImageView {
     if ([NSThread currentThread] != [NSThread mainThread]) {
         NSLog(@"Coudn't operate with UIKit layer in background thread");
         return nil;

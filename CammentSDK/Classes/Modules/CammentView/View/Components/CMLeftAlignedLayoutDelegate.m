@@ -63,7 +63,7 @@
             ASCollectionElement *element = [elements elementForItemAtIndexPath:indexPath];
             UICollectionViewLayoutAttributes *attrs = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
 
-            ASSizeRange sizeRange = [self _sizeRangeForItem:element.node atIndexPath:indexPath withLayoutWidth:layoutWidth info:nil];
+            ASSizeRange sizeRange = ASSizeRangeMake(CGSizeZero, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX));
             CGSize size = [element.node layoutThatFits:sizeRange].size;
 
             UIEdgeInsets layoutGuidesOffsets = UIEdgeInsetsZero;
@@ -90,23 +90,6 @@
                              elementToLayoutAttributesTable:attrsMap];
 
     return nil;
-}
-
-+ (ASSizeRange)_sizeRangeForItem:(ASCellNode *)item
-                     atIndexPath:(NSIndexPath *)indexPath
-                 withLayoutWidth:(CGFloat)layoutWidth
-                            info:(id)info
-{
-//    if ([item isKindOfClass:[CMCammentCell class]]) {
-//        CMCammentCell *cell = (CMCammentCell *)item;
-//        CGFloat itemWidth = 45.0f;
-//        if ([cell.displayingContext.camment.uuid isEqualToString:[CMStore instance].playingCammentId]) {
-//            itemWidth = 90.0f;
-//        }
-//        return ASSizeRangeMake(CGSizeMake(itemWidth, itemWidth), CGSizeMake(layoutWidth, itemWidth));
-//    }
-
-    return ASSizeRangeMake(CGSizeZero, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX));
 }
 
 @end

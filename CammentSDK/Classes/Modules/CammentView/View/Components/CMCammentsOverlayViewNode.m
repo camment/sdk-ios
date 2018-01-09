@@ -164,7 +164,7 @@
         cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
                                                                        overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                                                                                        self.videoAdsPlayerNodeAppearsFrame.origin.y + 5,
-                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.x,
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.x + 80,
                                                                                        INFINITY, INFINITY)
                                                                                                                       child:_adsVideoPlayerNode]];
     }

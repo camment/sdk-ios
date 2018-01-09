@@ -16,6 +16,7 @@
 #import "CMBotAction.h"
 #import "CMVideoAdPresentationBuilder.h"
 #import "CMTontonPresentationBuilder.h"
+#import "CMImageAdPresentationBuilder.h"
 
 NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -30,7 +31,8 @@ NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
             [CMEmailSubscriptionPresentationBuilder new],
             [CMBettingPresentationBuilder new],
             [CMVideoAdPresentationBuilder new],
-            [CMTontonPresentationBuilder new]
+            [CMTontonPresentationBuilder new],
+            [CMImageAdPresentationBuilder new],
     ];
 }
 

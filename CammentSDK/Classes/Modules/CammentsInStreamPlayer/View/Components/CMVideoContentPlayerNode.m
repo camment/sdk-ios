@@ -27,7 +27,7 @@
         self.videoPlayerNode = [ASVideoPlayerNode new];
         self.videoPlayerNode.gravity = AVLayerVideoGravityResizeAspectFill;
         self.videoPlayerNode.shouldAutoRepeat = YES;
-        self.videoPlayerNode.shouldAutoPlay = YES;
+        self.videoPlayerNode.shouldAutoPlay = NO;
         self.videoPlayerNode.delegate = self;
 
         self.automaticallyManagesSubnodes = YES;
@@ -43,6 +43,7 @@
 
 - (void)openContentAtUrl:(NSURL *)url {
     self.videoPlayerNode.asset = [[AVURLAsset alloc] initWithURL:url options:nil];
+    [self.videoPlayerNode play];
 }
 
 - (void)dealloc {

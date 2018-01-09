@@ -222,8 +222,11 @@
             cammentBlockInitialFrame.origin.y,
             cammentBlockFinalFrame.size.width,
             MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
-
-    [UIView animateWithDuration:0.3 animations:^{
+    
+    [UIView animateWithDuration:0.3
+                          delay:.0f
+            options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction)
+                     animations:^{
         self.cammentsBlockNode.frame = CGRectMake(
                 cammentBlockFinalFrame.origin.x,
                 cammentBlockFinalFrame.origin.y,
@@ -244,7 +247,10 @@
 
     } completion:^(BOOL finished) {
         [snapshot removeFromSuperview];
-        self.cammentsBlockNode.frame = cammentBlockFinalFrame;
+        self.cammentsBlockNode.frame = CGRectMake(self.cammentsBlockNode.frame.origin.x,
+                                                  self.cammentsBlockNode.frame.origin.y,
+                                                  self.cammentsBlockNode.frame.size.width,
+                                                  cammentBlockFinalFrame.size.height);
         [context completeTransition:YES];
         if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
             [self.delegate didCompleteLayoutTransition];

@@ -32,12 +32,6 @@
     [self.presenter setupView];
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    [self.node transitionLayoutWithSizeRange:ASSizeRangeMake(size, size) animated:YES shouldMeasureAsync:NO measurementCompletion:^{
-    }];
-}
-
 - (void)presentViewController:(UIViewController *)viewController {
     viewController.modalPresentationStyle = UIModalPresentationFormSheet;
     [self presentViewController:viewController animated:YES completion:nil];

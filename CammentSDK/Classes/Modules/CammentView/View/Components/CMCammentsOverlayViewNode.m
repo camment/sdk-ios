@@ -130,7 +130,7 @@
         leftColumnStackOffset = -_leftSidebarNode.style.width.value;
     }
 
-    if (_showLestSidebarNode) {
+    if (_showLeftSidebarNode) {
         leftColumnStackOffset = .0f;
     }
 
@@ -182,7 +182,7 @@
                             self.cammentButtonScreenSideVerticalInset,
                             INFINITY,
                             INFINITY,
-                            _showLestSidebarNode ?
+                            _showLeftSidebarNode ?
                                     - self.layoutConfig.leftSidebarWidth + _cammentButton.style.width.value * 2
                                     : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
@@ -193,7 +193,7 @@
                             INFINITY,
                             INFINITY,
                             self.cammentButtonScreenSideVerticalInset,
-                            _showLestSidebarNode ?
+                            _showLeftSidebarNode ?
                                     - self.layoutConfig.leftSidebarWidth + _cammentButton.style.width.value * 2
                                     : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
                                         child:_cammentButton];
@@ -205,6 +205,7 @@
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     if (![context isAnimated]) {
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
+        self.leftSidebarNode.alpha = _showLeftSidebarNode ? 1.0f : 0.f;
         [super animateLayoutTransition:context];
         return;
     }
@@ -225,39 +226,47 @@
 
     [self.cammentsBlockNode.collectionNode waitUntilAllUpdatesAreProcessed];
 
+    if (_showLeftSidebarNode) {
+        self.leftSidebarNode.alpha = 1.0f;
+    }
+
     [UIView animateWithDuration:0.3
                           delay:.0f
-            options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction)
+                        options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction)
                      animations:^{
-        self.cammentsBlockNode.frame = CGRectMake(
-                cammentBlockFinalFrame.origin.x,
-                cammentBlockFinalFrame.origin.y,
-                cammentBlockFinalFrame.size.width,
-                MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
-        self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
-        self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
-        self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
-        self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
-        
-        if (self.contentNode) {
-            self.contentNode.frame = [context finalFrameForNode:self.contentNode];
-        }
-        
-        if (_showVideoAdsPlayerNode) {
-            self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
-        }
+                         self.cammentsBlockNode.frame = CGRectMake(
+                                 cammentBlockFinalFrame.origin.x,
+                                 cammentBlockFinalFrame.origin.y,
+                                 cammentBlockFinalFrame.size.width,
+                                 MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
+                         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
+                         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
+                         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
+                         self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
 
-    } completion:^(BOOL finished) {
-        [snapshot removeFromSuperview];
-        self.cammentsBlockNode.frame = CGRectMake(self.cammentsBlockNode.frame.origin.x,
-                                                  self.cammentsBlockNode.frame.origin.y,
-                                                  self.cammentsBlockNode.frame.size.width,
-                                                  cammentBlockFinalFrame.size.height);
-        [context completeTransition:YES];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
-            [self.delegate didCompleteLayoutTransition];
-        }
-    }];
+                         if (self.contentNode) {
+                             self.contentNode.frame = [context finalFrameForNode:self.contentNode];
+                         }
+
+                         if (_showVideoAdsPlayerNode) {
+                             self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
+                         }
+
+                     }
+                     completion:^(BOOL finished) {
+                         [snapshot removeFromSuperview];
+                         self.cammentsBlockNode.frame = CGRectMake(self.cammentsBlockNode.frame.origin.x,
+                                 self.cammentsBlockNode.frame.origin.y,
+                                 self.cammentsBlockNode.frame.size.width,
+                                 cammentBlockFinalFrame.size.height);
+                         if (!_showLeftSidebarNode) {
+                             self.leftSidebarNode.alpha = .0f;
+                         }
+                         [context completeTransition:YES];
+                         if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
+                             [self.delegate didCompleteLayoutTransition];
+                         }
+                     }];
 }
 
 - (void)handleCammentButtonPanGesture:(UIPanGestureRecognizer *)sender{

@@ -123,14 +123,16 @@
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id <UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    
+
     CMOnboardingAlertType alertType = _currentOnboardingAlert;
 
     [self hideOnboardingAlert:[self currentOnboardingAlert]];
-    [coordinator animateAlongsideTransition:nil completion:^(id <UIViewControllerTransitionCoordinatorContext> context) {
-        [self updateCameraOrientation];
-        [self showOnboardingAlert:alertType];
-    }];
+    [coordinator animateAlongsideTransition:nil
+                                 completion:^(id <UIViewControllerTransitionCoordinatorContext> context)
+                                 {
+                                     [self updateCameraOrientation];
+                                     [self showOnboardingAlert:alertType];
+                                 }];
 }
 
 - (void)updateCameraOrientation {
@@ -170,8 +172,8 @@
 }
 
 - (void)hideCamments {
-    if (self.node.showLestSidebarNode) {
-        self.node.showLestSidebarNode = NO;
+    if (self.node.showLeftSidebarNode) {
+        self.node.showLeftSidebarNode = NO;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
         }];
         [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
@@ -188,7 +190,7 @@
 
 - (void)showCamments {
     if (self.node.showCammentsBlock) {
-        self.node.showLestSidebarNode = YES;
+        self.node.showLeftSidebarNode = YES;
         [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
         }];
         [self hideOnboardingAlert:[self currentOnboardingAlert]];
@@ -233,7 +235,7 @@
 }
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
-    if (self.node.showLestSidebarNode) { return; }
+    if (self.node.showLeftSidebarNode) { return; }
     
     self.currentOnboardingAlert = type;
 

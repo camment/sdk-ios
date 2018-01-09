@@ -31,7 +31,7 @@
 @property(nonatomic, strong, readonly) CMCammentButton *cammentButton;
 @property(nonatomic, strong, readonly) CMAdsVideoPlayerNode *adsVideoPlayerNode;
 @property(nonatomic, assign) BOOL showCammentsBlock;
-@property(nonatomic, assign) BOOL showLestSidebarNode;
+@property(nonatomic, assign) BOOL showLeftSidebarNode;
 @property(nonatomic, assign) BOOL showCammentRecorderNode;
 @property(nonatomic, assign) BOOL showVideoAdsPlayerNode;
 @property(nonatomic, assign) CGRect videoAdsPlayerNodeAppearsFrame;

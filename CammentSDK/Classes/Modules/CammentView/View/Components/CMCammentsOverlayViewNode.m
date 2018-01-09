@@ -222,6 +222,8 @@
             cammentBlockInitialFrame.origin.y,
             cammentBlockFinalFrame.size.width,
             MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
+
+    [self.cammentsBlockNode.collectionNode waitUntilAllUpdatesAreProcessed];
     
     [UIView animateWithDuration:0.3
                           delay:.0f

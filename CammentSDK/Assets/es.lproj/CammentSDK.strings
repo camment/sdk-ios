@@ -20,6 +20,7 @@
 "setup.sounds_fun" = "Suena divertido";
 "setup.maybe_later" = "Quizás más tarde";
 "camment_actions.delete_camment" = "Eliminar tu Camment";
+"camment_actions.title" = "Selecciona una opción";
 
 "group_message.join_title" = "%@ ya ingresó a su chat Camment!";
 "group_message.join_desc" = "Te recomendamos saludar a través de un Camment?";

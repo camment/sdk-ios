@@ -336,8 +336,8 @@
 
     CMCamment *camment = cammentCell.displayingContext.camment;
 
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:@""
-                                                                             message:@""
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"camment_actions.title")
+                                                                             message:nil
                                                                       preferredStyle:UIAlertControllerStyleActionSheet];
 
     if (actions & CMCammentActionsMaskDelete) {

@@ -638,7 +638,7 @@ static CGContextRef SCCreateContextFromPixelBuffer(CVPixelBufferRef pixelBuffer)
     }
 }
 
-- (void)exportAsynchronouslyWithCompletionHandler:(void (^)())completionHandler {
+- (void)exportAsynchronouslyWithCompletionHandler:(void (^)(void))completionHandler {
     _cancelled = NO;
     _nextAllowedVideoFrame = kCMTimeZero;
     NSError *error = nil;

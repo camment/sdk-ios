@@ -9,7 +9,7 @@
 
 @implementation CMTestFacebookIdentityProvider
 
-- (void)refreshUserIdentity:(CMIdentityProvidedIdentityBlock _Nonnull)identityBlock forceSignin:(BOOL)forceSignin {
+- (void)refreshUserIdentity:(CMIdentityProviderIdentityBlock _Nonnull)identityBlock forceSignin:(BOOL)forceSignin {
     if (!_facebookAccessToken) {
         identityBlock(@{});
         return;

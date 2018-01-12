@@ -10,7 +10,7 @@
 #import "UIColorMacros.h"
 
 @interface CMCammentNode () <ASVideoNodeDelegate>
-@property(nonatomic, strong) ASVideoNode *videoPlayerNode;
+
 @end
 
 @implementation CMCammentNode
@@ -18,7 +18,7 @@
 - (instancetype)initWithCamment:(CMCamment *)camment {
     self = [super init];
     if (self) {
-
+    
         self.camment = camment;
         self.videoPlayerNode = [ASVideoNode new];
         self.videoPlayerNode.shouldAutorepeat = NO;
@@ -69,24 +69,32 @@
         return;
     }
     
+    [self setVideoAsset];
+    
+    if (_camment.thumbnailURL) {
+        [_videoPlayerNode setURL:[[NSURL alloc] initWithString:_camment.thumbnailURL]];
+    }
+}
+
+- (void)setVideoAsset {
+    if (_camment.localAsset) {
+        return;
+    }
+
     NSURL *assetURL;
     BOOL localFileExists = NO;
     if (_camment.localURL != nil) {
         assetURL = [[NSURL alloc] initFileURLWithPath:_camment.localURL];
         localFileExists = [[NSFileManager defaultManager] fileExistsAtPath:_camment.localURL];
     }
-    
+
     if (_camment.remoteURL != nil && !localFileExists) {
         assetURL = [[NSURL alloc] initWithString:_camment.remoteURL];
     }
-    
+
     if (assetURL == nil) { return; }
     _videoPlayerNode.asset = [AVAsset assetWithURL:assetURL];
-    if (_camment.thumbnailURL) {
-        [_videoPlayerNode setURL:[[NSURL alloc] initWithString:_camment.thumbnailURL]];
-    }
 }
-
 
 - (void)playCamment {
     if ([NSThread currentThread] != [NSThread mainThread]) {
@@ -108,13 +116,28 @@
     [_videoPlayerNode resetToPlaceholder];
 }
 
-
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     ASInsetLayoutSpec *layoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
                                                                            child:[ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0f
                                                                                                                        child:_videoPlayerNode]];
 
     return layoutSpec;
+}
+
+- (void)animateLayoutTransition:(id<ASContextTransitioning>)context {
+    if (![context isAnimated]) {
+        [super animateLayoutTransition:context];
+        return;
+    }
+    
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+                          delay: .0f
+                        options: UIViewAnimationOptionLayoutSubviews
+                     animations:^{
+                         self.videoPlayerNode.frame = [context finalFrameForNode:self.videoPlayerNode];
+                     }                completion:^(BOOL finished) {
+                         [context completeTransition:finished];
+                     }];
 }
 
 - (BOOL)isPlaying {

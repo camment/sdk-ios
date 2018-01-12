@@ -44,7 +44,7 @@
     return token.tokenString;
 }
 
-- (void)refreshUserIdentity:(CMIdentityProvidedIdentityBlock _Nonnull)tokensBlock forceSignin:(BOOL)forceSignin {
+- (void)refreshUserIdentity:(CMIdentityProviderIdentityBlock _Nonnull)tokensBlock forceSignin:(BOOL)forceSignin {
 
     // check if there is a valid facebook token
     NSString *token = [self cachedToken];

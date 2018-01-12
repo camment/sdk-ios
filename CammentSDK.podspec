@@ -34,7 +34,7 @@ s.test_spec 'Tests' do |test_spec|
 end
 
 s.resources = 'CammentSDK/Assets/**/*'
-s.public_header_files = 'CammentSDK/Classes/Public/*.{h}', 'CammentSDK/Classes/Internal/*.{h}'
+s.public_header_files = 'CammentSDK/Classes/Public/*.{h}'
 s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
 
 s.library = 'sqlite3', 'z'

@@ -72,10 +72,9 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    self.cammentNode.style.preferredSize = CGSizeMake(
-            _expanded ? 90.0f : 45.0f,
-            _expanded ? 90.0f : 45.0f);
-    self.notWatchedIndicator.style.preferredSize = self.cammentNode.style.preferredSize;
+    self.cammentNode.style.flexGrow = 1.0f;
+    self.notWatchedIndicator.style.flexGrow = 1.0f;
+
     ASStackLayoutSpec *finalLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                                  spacing:-1.0f
                                                                           justifyContent:ASStackLayoutJustifyContentStart
@@ -84,8 +83,13 @@
                                                                                                                                                        overlay:_notWatchedIndicator]]];
     finalLayoutSpec.style.flexGrow = .0f;
     finalLayoutSpec.style.flexShrink = .0f;
-    
-    return finalLayoutSpec;
+
+
+    ASAbsoluteLayoutSpec *spec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit children:@[finalLayoutSpec]];
+    spec.style.height = ASDimensionMake(_expanded ? 90.0f : 45.0f);
+    spec.style.width = ASDimensionMake((_expanded ? 90.0f : 45.0f) + [self layoutGuidesOffsets].left);
+
+    return spec;
 }
 
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
@@ -95,13 +99,23 @@
         return;
     }
 
-    [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
-        _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
-        _deliveryIndicator.frame = [context finalFrameForNode:self.deliveryIndicator];
-        _notWatchedIndicator.alpha = !self.displayingContext.camment.status.isWatched;
-    }                completion:^(BOOL finished) {
-        [context completeTransition:finished];
-    }];
+    ASSizeRange sizeRange = ASSizeRangeMake(CGSizeZero, CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX));
+    CGSize size = [self layoutThatFits:sizeRange].size;
+    CGRect frame = self.frame;
+    frame.size = size;
+
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+                          delay: self.defaultLayoutTransitionDelay
+                        options: self.defaultLayoutTransitionOptions
+                     animations:^{
+                         self.frame = frame;
+                         _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
+                         _cammentNode.videoPlayerNode.frame = _cammentNode.bounds;
+                         _deliveryIndicator.frame = [context finalFrameForNode:self.deliveryIndicator];
+                         _notWatchedIndicator.alpha = !self.displayingContext.camment.status.isWatched;
+                     }                completion:^(BOOL finished) {
+                         [context completeTransition:finished];
+                     }];
 }
 
 - (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context {

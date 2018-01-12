@@ -12,6 +12,7 @@
 @interface CMCammentNode: ASDisplayNode
 
 @property(nonatomic, copy) CMCamment *camment;
+@property(nonatomic, strong) ASVideoNode *videoPlayerNode;
 
 - (instancetype)initWithCamment:(CMCamment *)camment;
 - (void)playCamment;

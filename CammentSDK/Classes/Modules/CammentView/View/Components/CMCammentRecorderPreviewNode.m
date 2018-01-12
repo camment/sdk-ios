@@ -25,6 +25,7 @@
             SCImageView *view = [SCImageView new];
             view.contextType = SCContextTypeEAGL;
             view.contentMode = UIViewContentModeScaleAspectFill;
+            [view setClearsContextBeforeDrawing:YES];
             [view loadContextIfNeeded];
             return view;
         } didLoadBlock:^(__kindof ASDisplayNode *node) {
@@ -39,6 +40,7 @@
         self.cameraPreviewNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
         self.cameraPreviewNode.borderWidth = 2.0f;
         self.cameraPreviewNode.cornerRadius = 4.0f;
+
         self.automaticallyManagesSubnodes = YES;
     }
 

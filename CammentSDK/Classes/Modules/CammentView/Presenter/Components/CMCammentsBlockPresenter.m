@@ -126,36 +126,34 @@
 }
 
 - (void)playCamment:(NSString *)cammentId {
-    [self.collectionNode waitUntilAllUpdatesAreProcessed];
-    [self.collectionNode invalidateCalculatedLayout];
-    [self.collectionNode performBatchUpdates:^{
-        for (ASCellNode *node in _collectionNode.visibleNodes) {
-            if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
-            
-            CMCammentCell *cammentCell = (CMCammentCell *)node;
-            BOOL oldExpandedValue = cammentCell.expanded;
-            BOOL shouldPlay = [cammentCell.cammentNode.camment.uuid isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
-            
-            cammentCell.expanded = shouldPlay;
-            if (oldExpandedValue != cammentCell.expanded) {
-                [cammentCell setNeedsLayout];
-                [cammentCell transitionLayoutWithAnimation:NO shouldMeasureAsync:YES measurementCompletion:nil];
-                [cammentCell setNeedsDisplay];
+    for (ASCellNode *node in _collectionNode.visibleNodes) {
+        if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
+
+        CMCammentCell *cammentCell = (CMCammentCell *)node;
+        BOOL oldExpandedValue = cammentCell.expanded;
+        BOOL shouldPlay = [cammentCell.cammentNode.camment.uuid isEqualToString:cammentId] && !cammentCell.cammentNode.isPlaying;
+
+        if (shouldPlay) {
+            if (!cammentCell.displayingContext.camment.status.isWatched) {
+                CMCamment *updatedCamment = [[[CMCammentBuilder cammentFromExistingCamment:cammentCell.displayingContext.camment]
+                        withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:cammentCell.displayingContext.camment.status.deliveryStatus
+                                                                         isWatched:YES]] build];
+                [self updateCammentData:updatedCamment];
             }
-            if (shouldPlay) {
-                if (!cammentCell.displayingContext.camment.status.isWatched) {
-                    CMCamment *updatedCamment = [[[CMCammentBuilder cammentFromExistingCamment:cammentCell.displayingContext.camment]
-                                                  withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:cammentCell.displayingContext.camment.status.deliveryStatus
-                                                                                                   isWatched:YES]] build];
-                    [self updateCammentData:updatedCamment];
-                }
-                
-                [cammentCell.cammentNode playCamment];
-            } else {
-                [cammentCell.cammentNode stopCamment];
-            }
+
+            [cammentCell.cammentNode playCamment];
+        } else {
+            [cammentCell.cammentNode stopCamment];
         }
-    } completion:^(BOOL finished) {}];
+
+        if (oldExpandedValue == shouldPlay) { continue; }
+
+        cammentCell.expanded = shouldPlay;
+        [cammentCell invalidateCalculatedLayout];
+        [cammentCell transitionLayoutWithAnimation:YES
+                                shouldMeasureAsync:NO
+                             measurementCompletion:nil];
+    }
 }
 
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {

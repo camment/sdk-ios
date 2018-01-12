@@ -32,6 +32,7 @@
 
 - (void)dealloc {
     self.recorder.SCImageView = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)configureCamera {
@@ -129,5 +130,10 @@
         }
     }];
 }
+
+- (void)recorder:(SCRecorder *__nonnull)recorder didInitializeVideoInSession:(SCRecordSession *__nonnull)session error:(NSError *__nullable)error {
+
+}
+
 
 @end

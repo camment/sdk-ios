@@ -156,13 +156,11 @@
 }
 
 - (void)setupBindings {
-    __weak typeof(self) __weakSelf = self;
-    [RACObserve([CMStore instance], cammentRecordingState) subscribeNext:^(NSNumber *state) {
-        typeof(self) strongSelf = __weakSelf;
-        if (!strongSelf) {return;}
-        strongSelf.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
-        [strongSelf.node cancelLayoutTransition];
-        [strongSelf.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
+    [[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *state) {
+        self.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
+        [self.node transitionLayoutWithAnimation:YES
+                              shouldMeasureAsync:NO
+                           measurementCompletion:nil];
     }];
 }
 

@@ -6,10 +6,8 @@ To use the SDK, install the following on your development machine:
  - iOS 8.1 or later
  - Cocoapods
 
-> Important:
-> Use `com.camment.sdkdemo` bundle id if you are setting up demo app for CammentSDK.
-> In other way login with Facebook account will not work
-
+### Setup Facebook SDK
+Skip this step if your ios app has Facebook SDK installed already, but if you don't use it yet please follow the guide: https://developers.facebook.com/docs/ios/getting-started/
 
 ### Add CammentSDK framework to your Xcode project
 
@@ -26,7 +24,7 @@ end
 then run `pod install`
 
 ### Configure CammentSDK in project's Info.plist
-The SDK requires access to Camment server as well as access to Facebook API. Add following code to your Info.plist to prevent any restrictions from iOS:
+Add following code to your Info.plist to prevent any restrictions from iOS:
 ```xml
 <key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -65,21 +63,8 @@ The SDK requires access to Camment server as well as access to Facebook API. Add
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 	</dict>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>fbapi</string>
-		<string>fb-messenger-api</string>
-		<string>fbauth2</string>
-		<string>fbshareextension</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>fb1630695620500234</string>
-			</array>
-		</dict>
 		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
@@ -98,11 +83,21 @@ The SDK requires access to Camment server as well as access to Facebook API. Add
 Open `AppDelegate.m` and import CammentSDK header:
 ```obj-c
 #import <CammentSDK/CammentSDK.h>
+#import <CammentSDK/CMFacebookIdentityProvider.h>
 ```
 
-Add following lines to AppDelegate's methods
+Add following lines to AppDelegate
 ```objc
+
+@interface AppDelegate ()
+@property (nonatomic, strong) CMFacebookIdentityProvider *facebookIdentityProvider;
+@end
+
+...
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [[FBSDKApplicationDelegate sharedInstance] application:application
+                             didFinishLaunchingWithOptions:launchOptions];
     [[CammentSDK instance] application:application didFinishLaunchingWithOptions:launchOptions];
     ...
     return YES;
@@ -111,21 +106,31 @@ Add following lines to AppDelegate's methods
 - (BOOL)application:(UIApplication *)application
             openURL:(NSURL *)url
             options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-    ...
-    return [[CammentSDK instance] application:application openURL:url options:options];
+    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                  openURL:url
+                                                        sourceApplication:options[UIApplicationOpenURLOptionsSourceApplicationKey]
+                                                               annotation:options[UIApplicationOpenURLOptionsAnnotationKey]
+                    ];
+    [[CammentSDK instance] application:application openURL:url options:options];
+    return handled;
 }
 
-// Make sure you support iOS versions prior to 9.0
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url
   sourceApplication:(nullable NSString *)sourceApplication
          annotation:(id)annotation
 {
-    return [[CammentSDK instance] openURL:url sourceApplication:sourceApplication annotation:annotation];
+    BOOL handled = [[FBSDKApplicationDelegate sharedInstance] application:application
+                                                                  openURL:url
+                                                        sourceApplication:sourceApplication
+                                                               annotation:annotation
+                    ];
+    [[CammentSDK instance] openURL:url sourceApplication:sourceApplication annotation:annotation];
+    return handled;
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    [FBSDKAppEvents activateApp];
     [[CammentSDK instance] applicationDidBecomeActive:application];
-    ...
 }
 ```
 
@@ -134,7 +139,9 @@ Configure CammentSDK with an `API Key`
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     ...
     NSString *apiKey = @"YOUR_API_KEY";
-    [[CammentSDK instance] configureWithApiKey:apiKey];
+    self.facebookIdentityProvider = [CMFacebookIdentityProvider new];
+    [[CammentSDK instance] configureWithApiKey:apiKey
+                              identityProvider:self.facebookIdentityProvider];
     ...
 }
 ```

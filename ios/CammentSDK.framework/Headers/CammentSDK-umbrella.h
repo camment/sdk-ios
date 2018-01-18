@@ -13,9 +13,9 @@
 #import "CammentSDK.h"
 #import "CMCammentOverlayController.h"
 #import "CMCammentOverlayLayoutConfig.h"
+#import "CMIdentityProvider.h"
 #import "CMShowMetadata.h"
-#import "CMPublicModuleInterface.h"
-#import "CMShowsListModule.h"
+#import "CMFacebookIdentityProvider.h"
 
 FOUNDATION_EXPORT double CammentSDKVersionNumber;
 FOUNDATION_EXPORT const unsigned char CammentSDKVersionString[];

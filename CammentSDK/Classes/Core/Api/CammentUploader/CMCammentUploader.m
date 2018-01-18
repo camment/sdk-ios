@@ -64,6 +64,10 @@
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
 
+        if (!self.transferManager) {
+            _transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
+        }
+        
         [[self.transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {

@@ -53,6 +53,11 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
     return self;
 }
 
+- (CMAPIDevcammentClient *)client {
+    if (_client) { return _client; }
+    return [CMAPIDevcammentClient defaultAPIClient];
+}
+
 - (RACSignal<CMUsersGroup *> *)createEmptyGroup {
     return [RACSignal<CMUsersGroup *> createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
         [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {

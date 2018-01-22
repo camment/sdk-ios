@@ -10,12 +10,17 @@
 #import "CMCammentRecorderPreviewNode.h"
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMAdsVideoPlayerNode.h"
+#import "ASDimension.h"
 
-@interface CMCammentsOverlayViewNode ()
+@interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 
 @property (nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
+@property (nonatomic, assign) CGFloat leftSideBarMenuLeftInset;
+@property (nonatomic, assign) CGFloat cammentBlockWidth;
 @property (nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
+@property (nonatomic, strong) UIPanGestureRecognizer *sideBarPanGestureRecognizer;
 
+@property(nonatomic) CGFloat sideBarTransitionInitialValue;
 @end
 
 @implementation CMCammentsOverlayViewNode
@@ -25,7 +30,7 @@
     
     if (self) {
         self.layoutConfig = layoutConfig;
-        self.showCammentsBlock = YES;
+
         _cammentsBlockNode = [CMCammentsBlockNode new];
         _leftSidebarNode = [ASDisplayNode new];
         _cammentButton = [CMCammentButton new];
@@ -33,12 +38,20 @@
         _adsVideoPlayerNode = [CMAdsVideoPlayerNode new];
         _adsVideoPlayerNode.debugName = @"CMAdsVideoPlayerNode";
         
-        _contentView = [UIView new];
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
             return _contentView ?: [UIView new];
         }];
+        self.cammentBlockWidth = 150.0f;
         self.cammentButtonScreenSideVerticalInset = layoutConfig.cammentButtonLayoutVerticalInset;
         self.cammentPanDownGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleCammentButtonPanGesture:)];
+        self.sideBarPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSideBarPanGesture:)];
+        self.sideBarPanGestureRecognizer.maximumNumberOfTouches = 1;
+        self.sideBarPanGestureRecognizer.delegate = self;
+
+        self.showCammentsBlock = YES;
+        self.showLeftSidebarNode = NO;
+        [self updateLeftSideBarMenuLeftInset];
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -72,6 +85,7 @@
 - (void)didLoad {
     [super didLoad];
     [self.cammentButton.view addGestureRecognizer:_cammentPanDownGestureRecognizer];
+    [self.view addGestureRecognizer:_sideBarPanGestureRecognizer];
 }
 
 - (ASLayoutSpec *)cammentBlockLayoutSpecThatFits:(ASSizeRange)constrainedSize {
@@ -110,7 +124,7 @@
     ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
 
     _leftSidebarNode.style.width = ASDimensionMake(self.layoutConfig.leftSidebarWidth);
-    camentBlockLayoutSpec.style.width = ASDimensionMake(150.0f);
+    camentBlockLayoutSpec.style.width = ASDimensionMake(self.cammentBlockWidth);
 
     ASStackLayoutSpec *leftColumnStack = [ASStackLayoutSpec
             stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
@@ -133,6 +147,8 @@
     if (_showLeftSidebarNode) {
         leftColumnStackOffset = .0f;
     }
+
+    leftColumnStackOffset = -leftColumnStack.style.width.value + self.leftSideBarMenuLeftInset;
 
     ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
@@ -206,6 +222,13 @@
     if (![context isAnimated]) {
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.leftSidebarNode.alpha = _showLeftSidebarNode ? 1.0f : 0.f;
+        
+        if (!_showLeftSidebarNode) {
+            self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth / 2.0f;
+        } else {
+            self.cammentButton.alpha =  .0f;
+        }
+        
         [super animateLayoutTransition:context];
         return;
     }
@@ -242,6 +265,13 @@
                          self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
                          self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
                          self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
+                         
+                         if (!_showLeftSidebarNode) {
+                             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth / 2.0f;
+                         } else {
+                             self.cammentButton.alpha =  .0f;
+                         }
+                         
                          self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
 
                          if (self.contentNode) {
@@ -314,4 +344,69 @@
         }
     }
 }
+
+- (void)updateLeftSideBarMenuLeftInset {
+    _leftSideBarMenuLeftInset = .0f;
+    
+    if (_showCammentsBlock) {
+        _leftSideBarMenuLeftInset = self.cammentBlockWidth;
+    }
+    
+    if (_showLeftSidebarNode) {
+        _leftSideBarMenuLeftInset = self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth;
+    }
+}
+
+- (void)handleSideBarPanGesture:(UIPanGestureRecognizer *)sender {
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        [self updateLeftSideBarMenuLeftInset];
+        self.sideBarTransitionInitialValue = _leftSideBarMenuLeftInset;
+    } else if (sender.state == UIGestureRecognizerStateEnded
+            || sender.state == UIGestureRecognizerStateFailed
+            || sender.state == UIGestureRecognizerStateCancelled) {
+        
+        [self updateLeftSideBarMenuLeftInset];
+        [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+        
+    } else if (sender.state == UIGestureRecognizerStateChanged) {
+        CGPoint translation = [sender translationInView:self.leftSidebarNode.view.superview];
+        
+        _leftSideBarMenuLeftInset = self.sideBarTransitionInitialValue + translation.x;
+        
+        _showCammentsBlock = _leftSideBarMenuLeftInset > self.cammentBlockWidth / 2.0f;
+        
+        if (_leftSideBarMenuLeftInset <= self.cammentBlockWidth) {
+            self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth - 0.5;
+        } else {
+            self.cammentButton.alpha =  0.5 - (_leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth;
+        }
+        
+        BOOL showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth;
+        self.leftSidebarNode.alpha = showLeftSidebarNode ? 1.0f : 0.0f;
+        
+        _showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth / 2;
+        
+        if (_leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth) {
+            _leftSideBarMenuLeftInset = self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth;
+        }
+        
+        if (_leftSideBarMenuLeftInset < .0f) {
+            _leftSideBarMenuLeftInset = .0f;
+        }
+        
+        [self setNeedsLayout];
+    }
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([self.sideBarPanGestureRecognizer isEqual:gestureRecognizer]) {
+        CGRect frame = self.cammentButton.view.frame;
+        CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:self.cammentButton.view.superview];
+        BOOL containsPoint = CGRectContainsPoint(frame, locationOfTouch);
+        return !containsPoint;
+    }
+    return YES;
+}
+
+
 @end

@@ -47,16 +47,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    UISwipeGestureRecognizer *hideCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                                      action:@selector(hideCamments)];
-    hideCammentsBlockRecognizer.direction = UISwipeGestureRecognizerDirectionLeft;
-    [self.node.view addGestureRecognizer:hideCammentsBlockRecognizer];
-
-    UISwipeGestureRecognizer *showCammentsBlockRecognizer = [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                                                                      action:@selector(showCamments)];
-    showCammentsBlockRecognizer.direction = UISwipeGestureRecognizerDirectionRight;
-    [self.node.view addGestureRecognizer:showCammentsBlockRecognizer];
-
     self.node.cammentButton.delegate = self;
     self.node.delegate = self;
     self.node.adsVideoPlayerNode.delegate = self;
@@ -167,40 +157,6 @@
 - (void)setCammentsBlockNodeDelegate:(id <CMCammentsBlockDelegate>)delegate {
     [self.node.cammentsBlockNode setDelegate:delegate];
     [delegate setItemCollectionDisplayNode:self.node.cammentsBlockNode.collectionNode];
-}
-
-- (void)hideCamments {
-    if (self.node.showLeftSidebarNode) {
-        self.node.showLeftSidebarNode = NO;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
-        }];
-        [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
-        return;
-    }
-
-    if (self.node.showCammentsBlock) {
-        self.node.showCammentsBlock = NO;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
-        }];
-        [self hideOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
-    }
-}
-
-- (void)showCamments {
-    if (self.node.showCammentsBlock) {
-        self.node.showLeftSidebarNode = YES;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
-        }];
-        [self hideOnboardingAlert:[self currentOnboardingAlert]];
-        return;
-    }
-
-    if (!self.node.showCammentsBlock) {
-        self.node.showCammentsBlock = YES;
-        [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:^{
-        }];
-        [self hideOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
-    }
 }
 
 - (void)didPressCammentButton {

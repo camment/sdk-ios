@@ -9,20 +9,26 @@
 #import "CMUserSessionController.h"
 #import "CMSettingsNode.h"
 #import "CammentSDK.h"
+#import "CMProfileViewNodeContext.h"
 #import "CMStore.h"
 #import "CMOpenURLHelper.h"
+#import "CMInviteFriendsButton.h"
+#import "CMProfileViewNodeContext.h"
+#import "CMInviteFriendsGroupInfoNode.h"
 
 @interface CMProfileViewNode () <CMSettingsNodeDelegate>
 
 @property(nonatomic, strong) ASTextNode *usernameTextNode;
-@property(nonatomic, strong) ASTextNode *userinfoTextNode;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
 @property(nonatomic, strong) ASImageNode *fbImageNode;
 @property(nonatomic, strong) ASButtonNode *settingsButtonNode;
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
 @property(nonatomic, strong) CMSettingsNode *settingsNode;
+@property(nonatomic, strong) CMInviteFriendsButton *inviteFriendsButtonNode;
+
 @property BOOL showSettingsNode;
 
+@property(nonatomic, strong) CMProfileViewNodeContext *context;
 @end
 
 @implementation CMProfileViewNode {
@@ -30,13 +36,18 @@
 }
 
 - (instancetype)init {
-    self = [super init];
-    if (self) {
+    CMProfileViewNodeContext *context = [CMProfileViewNodeContext new];
+    return [self initWithContext:context];
+}
 
+- (instancetype)initWithContext:(CMProfileViewNodeContext *)context {
+    self = [super init];
+
+    if (self) {
+        self.context = context;
         self.backgroundColor = UIColorFromRGB(0xE6E6E6);
 
         self.usernameTextNode = [ASTextNode new];
-        self.userinfoTextNode = [ASTextNode new];
 
         self.userpicImageNode = [ASNetworkImageNode new];
         self.userpicImageNode.clipsToBounds = YES;
@@ -62,6 +73,10 @@
         self.settingsNode = [CMSettingsNode new];
         self.settingsNode.delegate = self;
 
+        self.inviteFriendsButtonNode = [CMInviteFriendsButton new];
+        [self.inviteFriendsButtonNode addTarget:self
+                                         action:@selector(inviteFriendsAction)
+                               forControlEvents:ASControlNodeEventTouchUpInside];
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -70,6 +85,10 @@
 
 - (void)tapSettingButton {
     [self switchSettingsView];
+}
+
+- (void)inviteFriendsAction {
+    [self.context.delegate handleDidTapInviteFriendsButton];
 }
 
 - (void)didLoad {
@@ -115,30 +134,6 @@
 
                 [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
             }];
-
-    [[[RACObserve([CMStore instance], userGroups) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
-            subscribeNext:^(NSArray *groups) {
-                @strongify(self);
-
-                NSString *groupsCountString;
-
-                if (groups.count == 0) {
-                    groupsCountString = [NSString stringWithFormat:@"No groups found"];
-                } else if (groups.count == 1) {
-                    groupsCountString = [NSString stringWithFormat:@"1 group joined"];
-                } else {
-                    groupsCountString = [NSString stringWithFormat:@"%lu groups joined", (unsigned long)groups.count];
-                }
-
-                self.userinfoTextNode.attributedText = [[NSAttributedString alloc] initWithString:groupsCountString
-                                                                                       attributes:@{
-                                                                                               NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
-                                                                                               NSForegroundColorAttributeName: UIColorFromRGB(0x9B9B9B),
-                                                                                               NSParagraphStyleAttributeName: mutableParagraphStyle
-                                                                                       }];
-
-                [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
-            }];
 }
 
 - (void)openUserProfile {
@@ -160,22 +155,33 @@
                                                                                                                                                                                  sizingOptions:ASCenterLayoutSpecSizingOptionMinimumX
                                                                                                                                                                                          child:_fbImageNode]]];
 
+    NSMutableArray *centerStackChildren = [NSMutableArray new];
+    [centerStackChildren addObjectsFromArray:@[
+            [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringX
+                                                       sizingOptions:ASCenterLayoutSpecSizingOptionDefault
+                                                               child:fbLogoOverlay],
+            _usernameTextNode]
+    ];
+
+    if (self.context.shouldDisplayInviteFriendsButton) {
+        ASInsetLayoutSpec *inviteFriendsButtonLayoutSpec = [ASInsetLayoutSpec
+                insetLayoutSpecWithInsets:UIEdgeInsetsMake(10.0f, .0f, .0f, .0f)
+                                    child:self.inviteFriendsButtonNode];
+        [centerStackChildren addObject:inviteFriendsButtonLayoutSpec];
+    }
+
     ASStackLayoutSpec *centerStack = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                              spacing:8.0f
                                                                       justifyContent:ASStackLayoutJustifyContentCenter
                                                                           alignItems:ASStackLayoutAlignItemsStretch
-                                                                            children:@[[ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringX
-                                                                                                                                  sizingOptions:ASCenterLayoutSpecSizingOptionDefault
-                                                                                                                                          child:fbLogoOverlay],
-                                                                                    _usernameTextNode,
-                                                                                    _userinfoTextNode]];
-    ASInsetLayoutSpec *componentsStack = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(28.0f, 32.0f, 32.0f, 28.0f)
+                                                                            children:centerStackChildren];
+    ASInsetLayoutSpec *componentsStack = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(28.0f, 32.0f, 28.0f, 32.0f)
                                                                                 child:centerStack];
 
     ASOverlayLayoutSpec *overlayLayout = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:componentsStack
                                                                                  overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f) child:_settingsButtonNode]];
     NSArray *childen = @[ _showSettingsNode ? _settingsNode : overlayLayout, _bottomSeparatorNode];
-    
+
     return [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                    spacing:.0f
                                             justifyContent:ASStackLayoutJustifyContentStart
@@ -201,17 +207,17 @@
         [super animateLayoutTransition:context];
         return;
     }
-    
+
     [UIView animateWithDuration:self.defaultLayoutTransitionDuration animations:^{
-        
+
         for (ASDisplayNode *node in context.removedSubnodes) {
             node.alpha = .0f;
         }
-        
+
         for (ASDisplayNode *node in context.insertedSubnodes) {
             node.alpha = 1.0f;
         }
-        
+
     } completion:^(BOOL finished) {
         [context completeTransition:YES];
     }];

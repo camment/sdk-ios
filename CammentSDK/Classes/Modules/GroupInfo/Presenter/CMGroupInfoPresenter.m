@@ -18,9 +18,11 @@
 #import "CMUserSessionController.h"
 #import "CMOpenURLHelper.h"
 #import "CMCammentViewPresenterOutput.h"
+#import "CMProfileViewNodeContext.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
+    CMGroupInfoSectionUserProfileWithInviteButton,
     CMGroupInfoInviteFriendsSection,
     CMGroupInfoFriendsHeaderSection,
 };
@@ -77,10 +79,6 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 - (void)reloadData {
     NSMutableArray *items = [NSMutableArray new];
 
-    if (self.showProfileInfo) {
-        [items addObject:@(CMGroupInfoSectionUserProfile)];
-    }
-
     CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
     self.users = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *user) {
         return ![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
@@ -89,6 +87,11 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     self.users = [self.users.rac_sequence filter:^BOOL(CMUser *user) {
         return user.username.length > 0;
     }].array ?: @[];
+    
+    if (self.showProfileInfo) {
+        [items addObject:@(self.users.count == 0 ? CMGroupInfoSectionUserProfile : CMGroupInfoSectionUserProfileWithInviteButton)];
+    }
+    
     if (self.users.count == 0) {
         [items addObject:@(CMGroupInfoInviteFriendsSection)];
     } else {
@@ -114,7 +117,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     [[CMOpenURLHelper new] openURL:infoURL];
 }
 
-- (void)inviteFriendsGroupInfoDidTapInviteFriendsButton:(CMInviteFriendsGroupInfoNode *)node {
+- (void)handleDidTapInviteFriendsButton {
     [[[CMStore instance] inviteFriendsActionSubject] sendNext:@YES];
 }
 
@@ -136,9 +139,14 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     if ([model isKindOfClass:[NSNumber class]]) {
         CMGroupInfoSection section = (CMGroupInfoSection) [model integerValue];
         switch (section) {
-            case CMGroupInfoSectionUserProfile: {
+            case CMGroupInfoSectionUserProfile:
+            case CMGroupInfoSectionUserProfileWithInviteButton: {
+                CMProfileViewNodeContext *context = [CMProfileViewNodeContext new];
+                context.shouldDisplayInviteFriendsButton = self.users.count > 0;
+                context.delegate = self;
+
                 cellNodeBlock = ^ASCellNode *() {
-                    return [CMProfileViewNode new];
+                    return [[CMProfileViewNode alloc] initWithContext:context];
                 };
                 break;
             }

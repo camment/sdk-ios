@@ -6,5 +6,10 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
+@class CMProfileViewNodeContext;
+
 @interface CMProfileViewNode : ASCellNode
+
+- (instancetype)initWithContext:(CMProfileViewNodeContext *)context NS_DESIGNATED_INITIALIZER;
+
 @end

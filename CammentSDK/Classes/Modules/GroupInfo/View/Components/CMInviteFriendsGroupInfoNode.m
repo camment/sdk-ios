@@ -4,13 +4,14 @@
 
 #import "CMInviteFriendsGroupInfoNode.h"
 #import "UIColorMacros.h"
+#import "CMInviteFriendsButton.h"
 
 
 @interface CMInviteFriendsGroupInfoNode ()
 
 @property(nonatomic, strong) ASTextNode *infoTextNode;
 @property(nonatomic, strong) ASButtonNode *learnMoreButtonNode;
-@property(nonatomic, strong) ASButtonNode *inviteFriendsButtonNode;
+@property(nonatomic, strong) CMInviteFriendsButton *inviteFriendsButtonNode;
 
 @end
 
@@ -45,17 +46,8 @@
                                      action:@selector(tapLearnMoreButton)
                            forControlEvents:ASControlNodeEventTouchUpInside];
 
-        self.inviteFriendsButtonNode = [ASButtonNode new];
-        self.inviteFriendsButtonNode.backgroundColor = UIColorFromRGB(0xD0021B);
+        self.inviteFriendsButtonNode = [CMInviteFriendsButton new];
         self.inviteFriendsButtonNode.style.minWidth = ASDimensionMake(120.0f);
-        self.inviteFriendsButtonNode.style.minHeight = ASDimensionMake(30.0f);
-        self.inviteFriendsButtonNode.contentEdgeInsets = UIEdgeInsetsMake(.0f, 10.0f, .0f, 10.0f);
-        [self.inviteFriendsButtonNode setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"Invite friends")
-                                                                                     attributes:@{
-                                                                                             NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
-                                                                                             NSForegroundColorAttributeName: [UIColor whiteColor],
-                                                                                     }]
-                                            forState:UIControlStateNormal];
         [self.inviteFriendsButtonNode addTarget:self
                                      action:@selector(tapInviteFriendsButton)
                            forControlEvents:ASControlNodeEventTouchUpInside];
@@ -67,8 +59,8 @@
 }
 
 - (void)tapInviteFriendsButton {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFriendsGroupInfoDidTapInviteFriendsButton:)]) {
-        [self.delegate inviteFriendsGroupInfoDidTapInviteFriendsButton:self];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(handleDidTapInviteFriendsButton)]) {
+        [self.delegate handleDidTapInviteFriendsButton];
     }
 }
 

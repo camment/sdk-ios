@@ -10,7 +10,8 @@
 @protocol CMInviteFriendsGroupInfoNodeDelegate<NSObject>
 
 - (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node;
-- (void)inviteFriendsGroupInfoDidTapInviteFriendsButton:(CMInviteFriendsGroupInfoNode *)node;
+
+- (void)handleDidTapInviteFriendsButton;
 
 @end
 

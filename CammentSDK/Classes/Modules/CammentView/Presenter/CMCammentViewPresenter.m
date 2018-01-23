@@ -542,6 +542,10 @@
 
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
+    if ([CMStore instance].cammentRecordingState == CMCammentRecordingStateRecording) {
+        return;
+    }
+
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
     if ([cammentCell.displayingContext.camment.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]
             || self.userSessionController.user.cognitoUserId == nil && cammentCell.displayingContext.camment.userCognitoIdentityId == nil) {

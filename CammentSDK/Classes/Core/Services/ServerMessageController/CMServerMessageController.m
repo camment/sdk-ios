@@ -49,13 +49,14 @@
     [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
         BOOL shouldTriggerDelegate = ![userJoinedMessage.usersGroup.uuid isEqualToString:self.store.activeGroup.uuid];
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+        BOOL imJoining = [userJoinedMessage.joinedUser.cognitoUserId isEqualToString:context.user.cognitoUserId];
         BOOL shouldShowToast = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
             return ![value.cognitoUserId isEqualToString:context.user.cognitoUserId];
         }].array.count > 0;
-        shouldShowToast = [userJoinedMessage.joinedUser.cognitoUserId isEqualToString:context.user.cognitoUserId] ? YES : shouldShowToast;
         [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
-        if (shouldTriggerDelegate) {
-            [self handleUserJoinedMessage:userJoinedMessage];
+        
+        if (imJoining) {
+            [self handleUserJoinedMessage:userJoinedMessage shouldTriggerDelegate:shouldTriggerDelegate];
         } else {
             [self handleFriendJoinedMessage:userJoinedMessage shouldShowToast:shouldShowToast];
         }
@@ -146,7 +147,7 @@
                                                     }];
 }
 
-- (void)handleUserJoinedMessage:(CMUserJoinedMessage *)message {
+- (void)handleUserJoinedMessage:(CMUserJoinedMessage *)message shouldTriggerDelegate:(BOOL)shouldTriggerDelegate {
 
     CMShowMetadata *metadata = [CMShowMetadata new];
     CMShow *show = message.show;
@@ -155,10 +156,12 @@
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
-            [self.sdkDelegate didJoinToShow:metadata];
-        } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
-            [self.sdkDelegate didAcceptInvitationToShow:metadata];
+        if (shouldTriggerDelegate) {
+            if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
+                [self.sdkDelegate didJoinToShow:metadata];
+            } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
+                [self.sdkDelegate didAcceptInvitationToShow:metadata];
+            }
         }
 
         [self.notificationPresenter presentUserJoinedToTheGroupAlert:message];

@@ -97,10 +97,19 @@
     self.popTip.edgeMargin = 14.0f;
     self.popTip.popoverColor = UIColorFromRGB(0x9B9B9B);
     self.popTip.radius = 8.0f;
+    self.popTip.swipeRemoveGestureDirection = UISwipeGestureRecognizerDirectionDown
+            | UISwipeGestureRecognizerDirectionUp
+            | UISwipeGestureRecognizerDirectionLeft
+            | UISwipeGestureRecognizerDirectionRight;
     self.popTip.shouldDismissOnSwipeOutside = YES;
     self.popTip.shouldDismissOnTap = YES;
     self.popTip.shouldDismissOnTapOutside = YES;
     self.popTip.actionFloatOffset = 3.0f;
+
+    if (self.currentOnboardingAlert == CMOnboardingAlertTapToPlayCamment) {
+        // We dismiss it manually to prevent touch capturing by the tooltip view
+        self.popTip.shouldDismissOnTapOutside = NO;
+    }
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.popTip showText:text
@@ -177,9 +186,18 @@
 }
 
 - (void)handleShareAction {
-    [_presenter completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
+    [_presenter completeActionForOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
     [_presenter inviteFriendsAction];
 }
+
+- (void)handlePanToShowSidebarGesture {
+    if (self.presenter.currentOnboardingStep != CMOnboardingAlertPullRightToInviteFriendsTooltip) {
+        return;
+    }
+
+    [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+}
+
 
 - (void)didCompleteLayoutTransition {
     if (self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeRightToShowCammentsTooltip
@@ -221,40 +239,25 @@
             
             break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip: {
-            ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-            if (!node) {return;}
-            frame = node.frame;
-            frame = [self.view convertRect:frame fromView:node.view];
+            frame = self.node.leftSidebarNode.frame;
             text = CMLocalized(@"help.swipe_left_to_hide_camments");
             direction = AMPopTipDirectionRight;
         }
             break;
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip: {
-            ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
-            if (!node) {return;}
-            frame = node.frame;
-            frame = [self.view convertRect:frame fromView:node.view];
+            frame = self.node.cammentsBlockNode.frame;
             frame.origin.x = 10.0f;
             frame.size.width = 0.0f;
             text = CMLocalized(@"help.swipe_right_to_show_camments");
             direction = AMPopTipDirectionRight;
-            delay = 1;
+            delay = 0.5;
         }
             break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
-            frame = self.node.cammentButton.frame;
-            switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
-
-                case CMCammentOverlayLayoutPositionTopRight:
-                    text = CMLocalized(@"help.swipe_down_to_invite");
-                    break;
-                case CMCammentOverlayLayoutPositionBottomRight:
-                    text = CMLocalized(@"help.swipe_up_to_invite");
-                    break;
-            }
-
-            direction = AMPopTipDirectionLeft;
-            delay = 1;
+        case CMOnboardingAlertPullRightToInviteFriendsTooltip:
+            frame = self.node.leftSidebarNode.frame;
+            text = CMLocalized(@"help.pull_right_to_invite_friends");
+            direction = AMPopTipDirectionRight;
+            delay = 0.5;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];

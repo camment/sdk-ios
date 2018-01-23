@@ -12,8 +12,7 @@
 "help.swipe_left_to_hide_camments" = "Desliza los camments hacia la izquierda para ocultarlos";
 "help.swipe_right_to_show_camments" = "Desliza los camments hacia la derecha para que vuelvan a aparecer";
 "help.tap_to_play" = "Bien hecho! Ahora presiona sobre el Camment para poder escucharlo";
-"help.swipe_down_to_invite" = "Deslice el botón de Camment hacia abajo para invitar amigos a este chat";
-"help.swipe_up_to_invite" = "Deslice el botón Camment hacia arriba para invitar amigos a este chat";
+"help.pull_right_to_invite_friends" = "Pull the sidebar to the → right to invite friends to this chat";
 "help.tap_and_hold_to_delete" = "Toca y mantén presionado tu Camment para eliminarlo";
 "setup.use_camment_chat" = "¿Te gustaría chatear a través de videos con amigos mientras miras este programa?";
 "setup.what_is_camment" = "es como si enviaras un SMS pero enviando videos de 5 segundos (Camments) que aparecerán en una ventana en la parte superior de la pantalla, a la vez que ves este programa";

@@ -34,7 +34,7 @@
         self.updatesQueue.maxConcurrentOperationCount = 1;
         [self.updatesQueue setSuspended:NO];
 
-        [[[CMStore instance].authentificationStatusSubject takeUntil:self.rac_willDeallocSignal]
+        [[[[CMStore instance].authentificationStatusSubject distinctUntilChanged] takeUntil:self.rac_willDeallocSignal]
                 subscribeNext:^(CMAuthStatusChangedEventContext *x) {
             self.userCognitoUuid = x.user.cognitoUserId;
             dispatch_async(dispatch_get_main_queue(), ^{

@@ -15,7 +15,7 @@ typedef NS_ENUM(NSInteger, CMOnboardingAlertType) {
     CMOnboardingAlertTapAndHoldToRecordTooltip,
     CMOnboardingAlertSwipeLeftToHideCammentsTooltip,
     CMOnboardingAlertSwipeRightToShowCammentsTooltip,
-    CMOnboardingAlertSwipeDownToInviteFriendsTooltip,
+    CMOnboardingAlertPullRightToInviteFriendsTooltip,
     CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip,
     CMOnboardingAlertTapToPlayCamment,
 };
@@ -27,7 +27,7 @@ typedef NS_OPTIONS(NSUInteger, CMOnboardingAlertMaskType) {
     CMOnboardingAlertTapAndHoldToRecordMaskTooltip = (1 << CMOnboardingAlertTapAndHoldToRecordTooltip),
     CMOnboardingAlertSwipeLeftToHideCammentsMaskTooltip = (1 << CMOnboardingAlertSwipeLeftToHideCammentsTooltip),
     CMOnboardingAlertSwipeRightToShowCammentsMaskTooltip = (1 << CMOnboardingAlertSwipeRightToShowCammentsTooltip),
-    CMOnboardingAlertSwipeDownToInviteFriendsMaskTooltip = (1 << CMOnboardingAlertSwipeDownToInviteFriendsTooltip),
+    CMOnboardingAlertPullRightToInviteFriendsMaskTooltip = (1 << CMOnboardingAlertPullRightToInviteFriendsTooltip),
     CMOnboardingAlertTapAndHoldToDeleteCammentsMaskTooltip = (1 << CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip),
     CMOnboardingAlertTapToPlayMaskCamment = (1 << CMOnboardingAlertTapToPlayCamment),
 };

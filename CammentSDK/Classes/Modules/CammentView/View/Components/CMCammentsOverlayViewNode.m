@@ -299,50 +299,8 @@
                      }];
 }
 
-- (void)handleCammentButtonPanGesture:(UIPanGestureRecognizer *)sender{
-    if (sender.state == UIGestureRecognizerStateEnded
-            || sender.state == UIGestureRecognizerStateFailed
-            || sender.state == UIGestureRecognizerStateCancelled) {
+- (void)handleCammentButtonPanGesture:(UIPanGestureRecognizer *)sender {
 
-        _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset;
-        [self transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
-    } else if (sender.state == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [sender translationInView:self.cammentButton.view.superview];
-
-        switch (self.layoutConfig.cammentButtonLayoutPosition) {
-            case CMCammentOverlayLayoutPositionTopRight:
-                if (translation.y > 0) {
-                    _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset + translation.y;
-                    [self setNeedsLayout];
-                }
-
-                if (translation.y > self.layoutConfig.cammentButtonLayoutVerticalInset) {
-                    [_cammentButton cancelLongPressGestureRecognizer];
-                }
-
-                // if pull down more then 1/3 of screen height
-                if (translation.y > self.bounds.size.height / 3) {
-                    [sender setEnabled:NO];
-                    [_cammentButton cancelLongPressGestureRecognizer];
-                    [_delegate handleShareAction];
-                    [sender setEnabled:YES];
-                }
-                break;
-            case CMCammentOverlayLayoutPositionBottomRight:
-                if (translation.y < 0) {
-                    _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset - translation.y;
-                    [self setNeedsLayout];
-                }
-
-                if (-translation.y > self.bounds.size.height / 3) {
-                    [sender setEnabled:NO];
-                    [_cammentButton cancelLongPressGestureRecognizer];
-                    [_delegate handleShareAction];
-                    [sender setEnabled:YES];
-                }
-                break;
-        }
-    }
 }
 
 - (void)updateLeftSideBarMenuLeftInset {
@@ -376,14 +334,18 @@
         _showCammentsBlock = _leftSideBarMenuLeftInset > self.cammentBlockWidth / 2.0f;
         
         if (_leftSideBarMenuLeftInset <= self.cammentBlockWidth) {
-            self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth - 0.5;
+            self.cammentButton.alpha = (CGFloat) (_leftSideBarMenuLeftInset / self.cammentBlockWidth - 0.5);
         } else {
-            self.cammentButton.alpha =  0.5 - (_leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth;
+            self.cammentButton.alpha = (CGFloat) (0.5 - (_leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth);
         }
         
         BOOL showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth;
         self.leftSidebarNode.alpha = showLeftSidebarNode ? 1.0f : 0.0f;
-        
+
+        if (showLeftSidebarNode) {
+            [self.delegate handlePanToShowSidebarGesture];
+        }
+
         _showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth / 2;
         
         if (_leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth) {

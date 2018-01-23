@@ -17,6 +17,7 @@
 @protocol CMCammentsOverlayViewNodeDelegate<NSObject>
 
 - (void)handleShareAction;
+- (void)handlePanToShowSidebarGesture;
 - (void)didCompleteLayoutTransition;
 
 @end

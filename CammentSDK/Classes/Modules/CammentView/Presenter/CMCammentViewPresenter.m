@@ -435,7 +435,7 @@
 
 
 - (void)inviteFriendsAction {
-    [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
+    [self completeActionForOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
     [CMStore instance].isOnboardingFinished = YES;
 
     if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
@@ -482,7 +482,7 @@
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
             shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertSwipeLeftToHideCammentsMaskTooltip);
             break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
+        case CMOnboardingAlertPullRightToInviteFriendsTooltip:
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
             break;
@@ -521,12 +521,12 @@
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
             [self showOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
             break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
+        case CMOnboardingAlertPullRightToInviteFriendsTooltip:
             [CMStore instance].isOnboardingFinished = YES;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
             [CMStore instance].isOnboardingFinished = YES;
-            [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
+            [self showOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
             break;
         case CMOnboardingAlertTapToPlayCamment:
             [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];

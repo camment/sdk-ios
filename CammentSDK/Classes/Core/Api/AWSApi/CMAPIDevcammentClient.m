@@ -295,28 +295,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIShowList class]];
 }
 
-- (AWSTask *)showsOptions {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     
-                                     };
-    
-    return [self invokeHTTPRequest:@"OPTIONS"
-                         URLString:@"/shows"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:nil];
-}
-
 - (AWSTask *)showsUuidGet:(NSString *)uuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -541,30 +519,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
-- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:(NSString *)userId groupUuid:(NSString *)groupUuid showUuid:(NSString *)showUuid {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      @"showUuid": showUuid
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"userId": userId,
-                                     @"groupUuid": groupUuid,
-                                     
-                                     };
-    
-    return [self invokeHTTPRequest:@"PUT"
-                         URLString:@"/usergroups/{groupUuid}/users/{userId}"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:nil];
-}
-
 - (AWSTask *)usergroupsGroupUuidUsersUserIdDelete:(NSString *)userId groupUuid:(NSString *)groupUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -581,6 +535,29 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     
     return [self invokeHTTPRequest:@"DELETE"
                          URLString:@"/usergroups/{groupUuid}/users/{userId}"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
+- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:(NSString *)userId groupUuid:(NSString *)groupUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"userId": userId,
+                                     @"groupUuid": groupUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"PUT"
+                         URLString:@"/usergroups/{groupUuid}/users/{userId}/state"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters

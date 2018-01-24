@@ -237,14 +237,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- 
- return type: 
- */
-- (AWSTask *)showsOptions;
-
-/**
- 
- 
  @param uuid 
  
  return type: CMAPIShow *
@@ -340,11 +332,10 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param userId 
  @param groupUuid 
- @param showUuid 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:( NSString *)userId groupUuid:( NSString *)groupUuid showUuid:(nullable NSString *)showUuid;
+- (AWSTask *)usergroupsGroupUuidUsersUserIdDelete:( NSString *)userId groupUuid:( NSString *)groupUuid;
 
 /**
  
@@ -354,7 +345,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersUserIdDelete:( NSString *)userId groupUuid:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:( NSString *)userId groupUuid:( NSString *)groupUuid;
 
 /**
  

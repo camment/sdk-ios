@@ -29,8 +29,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @interface CMStore: NSObject <FBTweakObserver>
 
-@property (nonatomic, copy) NSString *facebookAccessToken;
-
 @property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;
 @property (nonatomic, copy) NSString *playingCammentId;
 

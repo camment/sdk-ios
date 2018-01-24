@@ -520,6 +520,30 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
+- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:(NSString *)userId groupUuid:(NSString *)groupUuid body:(CMAPIUpdateUserStateInGroupRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"userId": userId,
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"PUT"
+                         URLString:@"/usergroups/{groupUuid}/users/{userId}"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:nil];
+}
+
 - (AWSTask *)usergroupsGroupUuidUsersUserIdDelete:(NSString *)userId groupUuid:(NSString *)groupUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",

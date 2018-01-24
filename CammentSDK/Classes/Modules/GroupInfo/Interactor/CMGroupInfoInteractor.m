@@ -40,7 +40,8 @@
             return [[[[[[CMUserBuilder user]
                     withCognitoUserId:userinfo.userCognitoIdentityId]
                     withUsername:userinfo.name]
-                    withUserPhoto:userinfo.picture] withState:@"active"] build];
+                    withUserPhoto:userinfo.picture] 
+                    withState:userinfo.state] build];
         }];
 
         [self.output groupInfoInteractor:self didFetchUsers:users inGroup:groupId];

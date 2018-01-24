@@ -14,16 +14,13 @@
  */
  
 
-#import "CMAPIUserinfo.h"
+#import "CMAPIUpdateUserStateInGroupRequest.h"
 
-@implementation CMAPIUserinfo
+@implementation CMAPIUpdateUserStateInGroupRequest
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"userCognitoIdentityId": @"userCognitoIdentityId",
-             @"name": @"name",
-             @"state": @"state",
-             @"picture": @"picture"
+             @"state": @"state"
              };
 }
 

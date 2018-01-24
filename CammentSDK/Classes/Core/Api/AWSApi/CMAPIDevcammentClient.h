@@ -28,6 +28,7 @@
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIUserinfoList.h"
+#import "CMAPIUpdateUserStateInGroupRequest.h"
 #import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
 #import "CMAPIOpenIdToken.h"
@@ -342,10 +343,11 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param userId 
  @param groupUuid 
+ @param body 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:( NSString *)userId groupUuid:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:( NSString *)userId groupUuid:( NSString *)groupUuid body:( CMAPIUpdateUserStateInGroupRequest *)body;
 
 /**
  

@@ -31,6 +31,7 @@
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIUserinfoList.h"
+#import "CMAPIUpdateUserStateInGroupRequest.h"
 #import "CMAPIUserinfo.h"
 #import "CMAPIUserinfoInRequest.h"
 #import "CMAPIOpenIdToken.h"
@@ -542,7 +543,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
-- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:(NSString *)userId groupUuid:(NSString *)groupUuid {
+- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:(NSString *)userId groupUuid:(NSString *)groupUuid body:(CMAPIUpdateUserStateInGroupRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -553,7 +554,8 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       };
     NSDictionary *pathParameters = @{
                                      @"userId": userId,
-                                     @"groupUuid": groupUuid
+                                     @"groupUuid": groupUuid,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"PUT"
@@ -561,7 +563,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
-                              body:nil
+                              body:body
                      responseClass:nil];
 }
 

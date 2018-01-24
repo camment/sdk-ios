@@ -14,17 +14,16 @@
  */
  
 
-#import "CMAPIUserinfo.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMAPIUserinfo
+ 
+/**
+ Request body for updating a users state in a group.
+ */
+@interface CMAPIUpdateUserStateInGroupRequest : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"userCognitoIdentityId": @"userCognitoIdentityId",
-             @"name": @"name",
-             @"state": @"state",
-             @"picture": @"picture"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *state;
+
 
 @end

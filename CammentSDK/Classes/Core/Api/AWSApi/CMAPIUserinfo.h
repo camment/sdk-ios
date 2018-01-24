@@ -29,6 +29,9 @@
 @property (nonatomic, strong, nullable) NSString *name;
 
 
+@property (nonatomic, strong, nullable) NSString *state;
+
+
 @property (nonatomic, strong, nullable) NSString *picture;
 
 

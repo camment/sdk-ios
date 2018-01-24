@@ -352,17 +352,6 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param userId 
- @param groupUuid 
- @param body 
- 
- return type: 
- */
-- (AWSTask *)usergroupsGroupUuidUsersUserIdStatePut:( NSString *)userId groupUuid:( NSString *)groupUuid body:( CMAPIUpdateUserStateInGroupRequest *)body;
-
-/**
- 
- 
  
  return type: CMAPIUserinfo *
  */

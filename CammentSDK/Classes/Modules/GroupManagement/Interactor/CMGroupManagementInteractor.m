@@ -70,18 +70,18 @@
 - (AWSTask *)blockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid {
     CMAPIUpdateUserStateInGroupRequest *body = [CMAPIUpdateUserStateInGroupRequest new];
     body.state = @"blocked";
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdStatePut:userUuid
-                                                                                           groupUuid:groupUuid
-                                                                                                body:body];
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:userUuid
+                                                                                      groupUuid:groupUuid
+                                                                                           body:body];
     return task;
 }
 
 - (AWSTask *)unblockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid {
     CMAPIUpdateUserStateInGroupRequest *body = [CMAPIUpdateUserStateInGroupRequest new];
     body.state = @"active";
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdStatePut:userUuid
-                                                                                           groupUuid:groupUuid
-                                                                                                body:body];
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:userUuid
+                                                                                      groupUuid:groupUuid
+                                                                                           body:body];
     return task;
 }
 

@@ -41,11 +41,6 @@
 
     __block BOOL shouldPassToObservers = YES;
 
-    [message matchMembershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {
-        shouldPassToObservers = NO;
-        [self presentMembershipRequestAlert:membershipRequestMessage];
-    }];
-
     [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
         BOOL shouldTriggerDelegate = ![userJoinedMessage.usersGroup.uuid isEqualToString:self.store.activeGroup.uuid];
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
@@ -107,44 +102,6 @@
 
 - (void)handleRemovedFromGroupMessage:(CMUserRemovedMessage *)message {
     [self.notificationPresenter presentRemovedFromGroupAlert:message];
-}
-
-- (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message {
-    __weak typeof(self) __weakSelf = self;
-    [self.notificationPresenter presentMembershipRequestAlert:message
-                                                     onAccept:^{
-                                                         typeof(__weakSelf) __strongSelf = __weakSelf;
-                                                         if (!__strongSelf) {return;}
-
-                                                         if (__strongSelf.sdkDelegate && [__strongSelf.sdkDelegate respondsToSelector:@selector(didAcceptJoiningRequest:)]) {
-                                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                                 CMShowMetadata *metadata = [CMShowMetadata new];
-                                                                 metadata.uuid = message.show.uuid;
-                                                                 [__strongSelf.sdkDelegate didAcceptJoiningRequest:metadata];
-                                                             });
-                                                         }
-
-                                                         CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
-
-                                                         CMUsersGroup *updatedGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:message.group]
-                                                                 withOwnerCognitoUserId:context.user.cognitoUserId] build];
-                                                         [__strongSelf.groupManagementInteractor joinUserToGroup:updatedGroup];
-                                                         [__strongSelf.groupManagementInteractor replyWithJoiningPermissionForUser:message.joiningUser
-                                                                                                                             group:updatedGroup
-                                                                                                                   isAllowedToJoin:YES
-                                                                                                                              show:message.show];
-                                                         [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventAcceptJoinRequest];
-                                                     }
-                                                    onDecline:^{
-                                                        typeof(__weakSelf) __strongSelf = __weakSelf;
-                                                        if (!__strongSelf) {return;}
-
-                                                        [__strongSelf.groupManagementInteractor replyWithJoiningPermissionForUser:message.joiningUser
-                                                                                                                            group:message.group
-                                                                                                                  isAllowedToJoin:NO
-                                                                                                                             show:message.show];
-                                                        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventDeclineJoinRequest];
-                                                    }];
 }
 
 - (void)handleUserJoinedMessage:(CMUserJoinedMessage *)message shouldTriggerDelegate:(BOOL)shouldTriggerDelegate {

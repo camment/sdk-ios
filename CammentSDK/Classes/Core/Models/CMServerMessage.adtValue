@@ -2,7 +2,6 @@
 %type name="CMUserJoinedMessage"
 %type name="CMCammentDeletedMessage"
 %type name="CMCammentDeliveredMessage"
-%type name="CMMembershipRequestMessage"
 %type name="CMMembershipAcceptedMessage"
 %type name="CMUserRemovedMessage"
 %type name="CMAdBanner"
@@ -16,9 +15,6 @@ CMServerMessage includes(RMBuilder) {
   }
   cammentDeleted {
     CMCammentDeletedMessage *cammentDeletedMessage
-  }
-  membershipRequest {
-    CMMembershipRequestMessage *membershipRequestMessage
   }
   membershipAccepted {
     CMMembershipAcceptedMessage *membershipAcceptedMessage

@@ -210,7 +210,13 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group {
     if ([group isEqualToString:self.activeGroup.uuid]) {
-        self.activeGroupUsers = users;
+        self.activeGroupUsers = [users.rac_sequence filter:^BOOL(CMUser *value) {
+            return [value.state isEqualToString:@"active"];
+        }].array ?: @[];
+
+        self.blockedGroupUsers = [users.rac_sequence filter:^BOOL(CMUser *value) {
+            return [value.state isEqualToString:@"blocked"];
+        }].array ?: @[];
     }
 }
 
@@ -231,6 +237,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
     self.activeGroup = nil;
     self.activeGroupUsers = @[];
+    self.blockedGroupUsers = @[];
     self.userGroups = @[];
 
     self.isOnboardingFinished = YES;
@@ -254,6 +261,16 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         return oldUser;
     }];
 
+    self.blockedGroupUsers = [self.blockedGroupUsers map:^CMUser *(CMUser *oldUser) {
+        if ([[oldUser cognitoUserId] isEqualToString:oldIdentity]) {
+            return [[[CMUserBuilder userFromExistingUser:oldUser]
+                    withCognitoUserId:newIdentity]
+                    build];
+        }
+
+        return oldUser;
+    }];
+
     self.userGroups = [[CMStore instance].userGroups map:^CMUsersGroup *(CMUsersGroup *oldGroup) {
         if ([oldGroup.ownerCognitoUserId isEqualToString:oldIdentity]) {
             return [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:oldGroup]
@@ -268,6 +285,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 - (void)cleanUpCurrentChatGroup {
     self.activeGroup = nil;
     self.activeGroupUsers = @[];
+    self.blockedGroupUsers = @[];
 }
 
 @end

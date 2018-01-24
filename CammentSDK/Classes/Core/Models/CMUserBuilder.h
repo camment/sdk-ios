@@ -20,5 +20,7 @@
 
 - (instancetype)withUserPhoto:(NSString *)userPhoto;
 
+- (instancetype)withState:(NSString *)state;
+
 @end
 

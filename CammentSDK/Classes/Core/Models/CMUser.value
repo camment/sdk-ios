@@ -4,4 +4,5 @@ CMUser includes(RMBuilder)  {
   NSString *username
   NSString *email
   NSString *userPhoto
+  NSString *state
 }

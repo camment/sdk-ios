@@ -11,7 +11,7 @@
 
 @implementation CMUser
 
-- (instancetype)initWithCognitoUserId:(NSString *)cognitoUserId fbUserId:(NSString *)fbUserId username:(NSString *)username email:(NSString *)email userPhoto:(NSString *)userPhoto
+- (instancetype)initWithCognitoUserId:(NSString *)cognitoUserId fbUserId:(NSString *)fbUserId username:(NSString *)username email:(NSString *)email userPhoto:(NSString *)userPhoto state:(NSString *)state
 {
   if ((self = [super init])) {
     _cognitoUserId = [cognitoUserId copy];
@@ -19,6 +19,7 @@
     _username = [username copy];
     _email = [email copy];
     _userPhoto = [userPhoto copy];
+    _state = [state copy];
   }
 
   return self;
@@ -31,14 +32,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t cognitoUserId: %@; \n\t fbUserId: %@; \n\t username: %@; \n\t email: %@; \n\t userPhoto: %@; \n", [super description], _cognitoUserId, _fbUserId, _username, _email, _userPhoto];
+  return [NSString stringWithFormat:@"%@ - \n\t cognitoUserId: %@; \n\t fbUserId: %@; \n\t username: %@; \n\t email: %@; \n\t userPhoto: %@; \n\t state: %@; \n", [super description], _cognitoUserId, _fbUserId, _username, _email, _userPhoto, _state];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_cognitoUserId hash], [_fbUserId hash], [_username hash], [_email hash], [_userPhoto hash]};
+  NSUInteger subhashes[] = {[_cognitoUserId hash], [_fbUserId hash], [_username hash], [_email hash], [_userPhoto hash], [_state hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 5; ++ii) {
+  for (int ii = 1; ii < 6; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -63,7 +64,8 @@
     (_fbUserId == object->_fbUserId ? YES : [_fbUserId isEqual:object->_fbUserId]) &&
     (_username == object->_username ? YES : [_username isEqual:object->_username]) &&
     (_email == object->_email ? YES : [_email isEqual:object->_email]) &&
-    (_userPhoto == object->_userPhoto ? YES : [_userPhoto isEqual:object->_userPhoto]);
+    (_userPhoto == object->_userPhoto ? YES : [_userPhoto isEqual:object->_userPhoto]) &&
+    (_state == object->_state ? YES : [_state isEqual:object->_state]);
 }
 
 @end

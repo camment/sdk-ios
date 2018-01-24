@@ -8,7 +8,6 @@
 #import "CMUserBuilder.h"
 #import "CMUserJoinedMessageBuilder.h"
 #import "CMCammentBuilder.h"
-#import "CMMembershipRequestMessageBuilder.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMMembershipAcceptedMessageBuilder.h"
 #import "CMCammentStatus.h"
@@ -104,25 +103,6 @@
         serverMessage = [CMServerMessage cammentDeletedWithCammentDeletedMessage:[[CMCammentDeletedMessage alloc] initWithCamment:camment]];
     } else if ([type isEqualToString:@"camment-delivered"]) {
         serverMessage = [CMServerMessage cammentDeliveredWithCammentDelivered:[[CMCammentDeliveredMessage alloc] initWithCammentUuid:body[@"uuid"]]];
-    } else if ([type isEqualToString:@"membership-request"]) {
-        NSDictionary *userJson = body[@"joiningUser"];
-        CMUser *user = [[[[[[CMUserBuilder new]
-                withCognitoUserId:userJson[@"userCognitoIdentityId"]]
-                withFbUserId:userJson[@"facebookId"]]
-                withUsername:userJson[@"name"]]
-                withUserPhoto:userJson[@"picture"]] build];
-        CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"]
-                                                url:nil
-                                          thumbnail:nil
-                                           showType:[CMShowType videoWithShow:nil]
-                                           startsAt:nil];
-        CMUsersGroup *group = [[[CMUsersGroupBuilder new] withUuid:body[@"groupUuid"]] build];
-        CMMembershipRequestMessage *membershipRequestMessage = [[[[[CMMembershipRequestMessageBuilder new]
-                withGroup:group]
-                withShow:show]
-                withJoiningUser:user]
-                build];
-        serverMessage = [CMServerMessage membershipRequestWithMembershipRequestMessage:membershipRequestMessage];
     } else if ([type isEqualToString:@"membership-accepted"]) {
         CMShow *show = [[CMShow alloc] initWithUuid:body[@"showUuid"]
                                                 url:nil

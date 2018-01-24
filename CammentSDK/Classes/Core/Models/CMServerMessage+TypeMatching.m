@@ -12,7 +12,6 @@
     [self matchCamment:cammentMatchHandler
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-        membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
          cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
@@ -23,7 +22,6 @@
     [self matchCamment:^(CMCamment *camment) {}
                userJoined:userJoinedMatchHandler
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-        membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
          cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
@@ -34,18 +32,6 @@
     [self matchCamment:^(CMCamment *camment) {}
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:cammentDeletedMatchHandler
-        membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
-       membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
-              userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
-         cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
-                       ad:^(CMAdBanner *adBanner) {}];
-}
-
-- (void)matchMembershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler {
-    [self matchCamment:^(CMCamment *camment) {}
-               userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
-           cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-        membershipRequest:membershipRequestMatchHandler
        membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
          cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
@@ -56,7 +42,6 @@
     [self matchCamment:^(CMCamment *camment) {}
                userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
            cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-        membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
        membershipAccepted:membershipAcceptedMatchHandler
               userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
          cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
@@ -67,7 +52,6 @@
     [self matchCamment:^(CMCamment *camment) {}
             userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
         cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-     membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
     membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
            userRemoved:userRemovedMatchHandler
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
@@ -78,7 +62,6 @@
     [self matchCamment:^(CMCamment *camment) {}
             userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
         cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-     membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
     membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:cammentDeliveredMatchHandler
@@ -89,7 +72,6 @@
     [self matchCamment:^(CMCamment *camment) {}
             userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
         cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
-     membershipRequest:^(CMMembershipRequestMessage *membershipRequestMessage) {}
     membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}

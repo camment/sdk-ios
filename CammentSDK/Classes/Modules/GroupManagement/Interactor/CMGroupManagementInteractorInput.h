@@ -8,13 +8,14 @@
 
 #import <Foundation/Foundation.h>
 
-@class CMUser;
 @class CMUsersGroup;
-@class CMShow;
+@class AWSTask;
 
 @protocol CMGroupManagementInteractorInput <NSObject>
 
 - (void)joinUserToGroup:(CMUsersGroup *)groupId;
-- (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show;
+- (void)removeUser:(NSString *)userUuid fromGroup:(NSString *)groupUuid;
+- (AWSTask *)blockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid;
+- (AWSTask *)unblockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid;
 
 @end

@@ -52,20 +52,6 @@
     }
 }
 
-
-- (void)replyWithJoiningPermissionForUser:(CMUser *)user group:(CMUsersGroup *)group isAllowedToJoin:(BOOL)isAllowedToJoin show:(CMShow *)show {
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-    if (isAllowedToJoin) {
-        [[client usergroupsGroupUuidUsersUserIdPut:user.cognitoUserId groupUuid:group.uuid showUuid:show.uuid] continueWithBlock:^id(AWSTask<id> *t) {
-            return nil;
-        }];
-    } else {
-        [[client usergroupsGroupUuidUsersUserIdDelete:user.cognitoUserId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
-            return nil;
-        }];
-    }
-}
-
 - (void)removeUser:(NSString *)userUuid fromGroup:(NSString *)groupUuid {
     if ([groupUuid isEqualToString:self.store.activeGroup.uuid]) {
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
@@ -80,5 +66,16 @@
         }
     }
 }
+
+- (AWSTask *)blockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid {
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdStatePut:@"blocked" groupUuid:groupUuid];
+    return task;
+}
+
+- (AWSTask *)unblockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid {
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdStatePut:@"active" groupUuid:groupUuid];
+    return task;
+}
+
 
 @end

@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
 @property (nonatomic, strong) NSArray<CMUser *> *activeGroupUsers;
+@property (nonatomic, strong) NSArray<CMUser *> *blockedGroupUsers;
 @property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
 
 @property(nonatomic) BOOL isOnboardingFinished;

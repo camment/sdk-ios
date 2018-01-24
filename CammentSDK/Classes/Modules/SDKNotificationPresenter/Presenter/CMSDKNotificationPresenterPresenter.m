@@ -11,7 +11,6 @@
 #import "MBProgressHUD.h"
 #import "CMInvitation.h"
 #import "CammentSDK.h"
-#import "CMMembershipRequestMessage.h"
 #import "CMUserRemovedMessage.h"
 #import "CMUserJoinedMessage.h"
 
@@ -91,27 +90,6 @@
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
         onCancel();
-    }]];
-
-    [self presentViewController:alertController];
-}
-
-- (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message
-                             onAccept:(void (^)(void))onAccept
-                            onDecline:(void (^)(void))onDecline
-{
-    CMUser *user = message.joiningUser;
-
-    NSString *username = user.username ?: @"Your friend";
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"User wants to join the group"), username]
-                                                                             message:CMLocalized(@"Do you accept the join request?")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        onAccept();
-    }]];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-        onDecline();
     }]];
 
     [self presentViewController:alertController];

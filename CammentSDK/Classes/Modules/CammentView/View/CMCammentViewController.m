@@ -78,7 +78,9 @@
 
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
                                                         style:UIAlertActionStyleCancel
-                                                      handler:^(UIAlertAction *action) {}]];
+                                                      handler:^(UIAlertAction *action) {
+                                                          [self showOnboardingAlert:CMOnboardingAlertPostponedOnboardingReminder];
+                                                      }]];
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
@@ -106,9 +108,15 @@
     self.popTip.shouldDismissOnTapOutside = YES;
     self.popTip.actionFloatOffset = 3.0f;
 
+    CGFloat duration = 0.f;
     if (self.currentOnboardingAlert == CMOnboardingAlertTapToPlayCamment) {
         // We dismiss it manually to prevent touch capturing by the tooltip view
         self.popTip.shouldDismissOnTapOutside = NO;
+    }
+
+    if (self.currentOnboardingAlert == CMOnboardingAlertPostponedOnboardingReminder) {
+        // We dismiss it manually to prevent touch capturing by the tooltip view
+        duration = 5.0f;
     }
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -116,7 +124,8 @@
                     direction:direction
                      maxWidth:self.view.frame.size.width - 60.0f
                        inView:self.view
-                    fromFrame:frame];
+                    fromFrame:frame
+                     duration:duration];
     });
 }
 
@@ -276,6 +285,20 @@
             text = CMLocalized(@"help.tap_to_play");
         }
             break;
+        case CMOnboardingAlertPostponedOnboardingReminder:
+            frame = self.node.cammentButton.frame;
+            text = CMLocalized(@"help.postponed_onboarding_reminder");
+
+            switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
+
+                case CMCammentOverlayLayoutPositionTopRight:
+                    direction = AMPopTipDirectionDown;
+                    break;
+                case CMCammentOverlayLayoutPositionBottomRight:
+                    direction = AMPopTipDirectionUp;
+                    break;
+            }
+            break;
     }
 
     if (CGRectIsNull(frame)) {return;}
@@ -339,6 +362,7 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
+                                                          
                                                       }]];
     
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"error.open_settings")

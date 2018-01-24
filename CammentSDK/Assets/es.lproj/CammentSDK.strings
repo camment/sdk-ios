@@ -11,6 +11,7 @@
 "help.tap_and_hold_to_record" = "Toca y mantén la presión para grabar un Video (Camment)";
 "help.swipe_left_to_hide_camments" = "Desliza los camments hacia la izquierda para ocultarlos";
 "help.swipe_right_to_show_camments" = "Desliza los camments hacia la derecha para que vuelvan a aparecer";
+"help.postponed_onboarding_reminder" = "Start making video camments by tapping here later";
 "help.tap_to_play" = "Bien hecho! Ahora presiona sobre el Camment para poder escucharlo";
 "help.pull_right_to_invite_friends" = "Pull the sidebar to the → right to invite friends to this chat";
 "help.tap_and_hold_to_delete" = "Toca y mantén presionado tu Camment para eliminarlo";

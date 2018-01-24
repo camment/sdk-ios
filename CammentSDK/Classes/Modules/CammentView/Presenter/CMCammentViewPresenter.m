@@ -167,10 +167,14 @@
             }];
         }];
 
-        [[[RACSignal combineLatest:@[
+        [[[[RACSignal combineLatest:@[
                 RACObserve(self.cammentsBlockNodePresenter, items),
                 RACObserve([CMStore instance], currentShowTimeInterval)
-        ]] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(RACTuple *tuple) {
+        ]]
+                takeUntil:self.rac_willDeallocSignal]
+                deliverOn:[RACScheduler schedulerWithPriority:RACSchedulerPriorityLow
+                                                         name:@"track video player time changes"]]
+        subscribeNext:^(RACTuple *tuple) {
             @strongify(self);
             if (!self) {return;}
             CMPresentationState *state = [CMPresentationState new];

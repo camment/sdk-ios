@@ -18,6 +18,7 @@ typedef NS_ENUM(NSInteger, CMOnboardingAlertType) {
     CMOnboardingAlertPullRightToInviteFriendsTooltip,
     CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip,
     CMOnboardingAlertTapToPlayCamment,
+    CMOnboardingAlertPostponedOnboardingReminder,
 };
 
 typedef NS_OPTIONS(NSUInteger, CMOnboardingAlertMaskType) {

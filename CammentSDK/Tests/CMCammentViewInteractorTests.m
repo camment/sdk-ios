@@ -46,7 +46,8 @@ SpecBegin(CMCammentViewInteractorTests)
                                                              botUuid:nil
                                                            botAction:nil
                                                            isDeleted:NO
-                                                     shouldBeDeleted:NO];
+                                                     shouldBeDeleted:NO
+                                                              status:[CMCammentStatus new]];
 
     describe(@"CammentViewInteractor", ^{
 

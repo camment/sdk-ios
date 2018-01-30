@@ -90,6 +90,7 @@ SpecBegin(CMUserSessionContollerTests)
         });
 
         it(@"should not have an identity", ^{
+            [userSessionController endSession];
             expect(credentialsProvider.identityId).to.beNil();
             expect(userSessionController.userAuthentificationState).to.equal(CMCammentUserNotAuthentificated);
             expect(userSessionController.user).to.beNil();

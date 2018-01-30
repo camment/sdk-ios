@@ -75,5 +75,6 @@ s.dependency  'GVUserDefaults', '~> 1.0'
 s.dependency  'TLIndexPathTools', '~> 0.4'
 s.dependency  'Mixpanel', '~> 3.2'
 s.dependency  'TCBlobDownload', '~> 2.1'
-
+s.dependency  'TBStateMachine', '~> 6.7'
+s.dependency  'TBStateMachine/DebugSupport'
 end

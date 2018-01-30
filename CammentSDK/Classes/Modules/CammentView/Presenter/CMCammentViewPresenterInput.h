@@ -24,9 +24,6 @@
 
 - (void)updateCameraOrientation:(AVCaptureVideoOrientation)orientation;
 
-- (void)completeActionForOnboardingAlert:(CMOnboardingAlertType)type;
-- (void)cancelActionForOnboardingAlert:(CMOnboardingAlertType)type;
-
 - (void)readyToShowOnboarding;
 
 - (CMOnboardingAlertType)currentOnboardingStep;
@@ -36,4 +33,10 @@
 - (void)setupCameraSession;
 
 - (void)deleteCammentAction:(CMCamment *)camment;
+@end
+
+@protocol CMOnboardingInteractorInput <NSObject>
+
+- (void)sendOnboardingEvent:(NSString *)event;
+
 @end

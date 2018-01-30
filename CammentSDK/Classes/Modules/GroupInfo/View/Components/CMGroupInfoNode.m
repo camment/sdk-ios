@@ -6,6 +6,7 @@
 //  Copyright 2017 Camment. All rights reserved.
 //
 
+#import "AsyncDisplayKit.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMGroupInfoNode.h"
 #import "CMGroupInfoCollectionViewDelegate.h"
@@ -24,7 +25,7 @@
 
         self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
                                                              layoutFacilitator:nil];
-        self.backgroundColor = [UIColor whiteColor];
+        self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
 
     }
@@ -42,6 +43,14 @@
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
   return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
                                                 child:_collectionNode];
+}
+
+- (void)setAlpha:(CGFloat)alpha {
+    self.collectionNode.alpha = alpha;
+}
+
+- (CGFloat)alpha {
+    return self.collectionNode.alpha;
 }
 
 @end

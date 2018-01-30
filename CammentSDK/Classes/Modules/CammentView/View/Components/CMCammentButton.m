@@ -54,25 +54,27 @@
     self.cammentIcon.layer.shadowRadius = 2.0f;
     self.cammentIcon.layer.shadowOpacity = 1.0f;
     self.cammentIcon.layer.shadowOffset = CGSizeMake(.0f, .0f);
-    self.view.alpha = 0.5;
+    self.cammentIcon.alpha = 0.5;
 }
 
 - (void)handleLongPress:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded
             || sender.state == UIGestureRecognizerStateFailed
             || sender.state == UIGestureRecognizerStateCancelled) {
+        [self.cammentIcon pop_removeAllAnimations];
         [self pop_removeAllAnimations];
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleDownAnimation] forKey:@"scale"];
-        [self pop_addAnimation:[CMHalfOpacityAnimation opacityDownAnimation] forKey:@"opacity"];
+        [self.cammentIcon pop_addAnimation:[CMHalfOpacityAnimation opacityDownAnimation] forKey:@"opacity"];
         if (sender.state == UIGestureRecognizerStateEnded) {
             [self.delegate didReleaseCammentButton];
         } else {
             [self.delegate didCancelCammentButton];
         }
     } else if (sender.state == UIGestureRecognizerStateBegan) {
+        [self.cammentIcon pop_removeAllAnimations];
         [self pop_removeAllAnimations];
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleUpAnimation] forKey:@"scale"];
-        [self pop_addAnimation:[CMHalfOpacityAnimation opacityUpAnimation] forKey:@"opacity"];
+        [self.cammentIcon pop_addAnimation:[CMHalfOpacityAnimation opacityUpAnimation] forKey:@"opacity"];
         [self.delegate didPressCammentButton];
     }
 }
@@ -89,5 +91,6 @@
     [self.gestureRecognizer setEnabled:NO];
     [self.gestureRecognizer setEnabled:YES];
 }
+
 
 @end

@@ -21,14 +21,28 @@ typedef NS_ENUM(NSInteger, CMOnboardingAlertType) {
     CMOnboardingAlertPostponedOnboardingReminder,
 };
 
-typedef NS_OPTIONS(NSUInteger, CMOnboardingAlertMaskType) {
-    CMOnboardingAlertMaskNone = (1 << CMOnboardingAlertNone),
-    CMOnboardingAlertWouldYouLikeToChatMaskAlert = (1 << CMOnboardingAlertWouldYouLikeToChatAlert),
-    CMOnboardingAlertWhatIsCammentMaskTooltip = (1 << CMOnboardingAlertWhatIsCammentTooltip),
-    CMOnboardingAlertTapAndHoldToRecordMaskTooltip = (1 << CMOnboardingAlertTapAndHoldToRecordTooltip),
-    CMOnboardingAlertSwipeLeftToHideCammentsMaskTooltip = (1 << CMOnboardingAlertSwipeLeftToHideCammentsTooltip),
-    CMOnboardingAlertSwipeRightToShowCammentsMaskTooltip = (1 << CMOnboardingAlertSwipeRightToShowCammentsTooltip),
-    CMOnboardingAlertPullRightToInviteFriendsMaskTooltip = (1 << CMOnboardingAlertPullRightToInviteFriendsTooltip),
-    CMOnboardingAlertTapAndHoldToDeleteCammentsMaskTooltip = (1 << CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip),
-    CMOnboardingAlertTapToPlayMaskCamment = (1 << CMOnboardingAlertTapToPlayCamment),
-};
+FOUNDATION_EXPORT const struct CMOnboardingState {
+    __unsafe_unretained NSString *NotStarted;
+    __unsafe_unretained NSString *Finished;
+    __unsafe_unretained NSString *WouldYouLikeToChatAlert;
+    __unsafe_unretained NSString *TapAndHoldToRecordCamment;
+    __unsafe_unretained NSString *SwipeLeftToHideCamments;
+    __unsafe_unretained NSString *SwipeRightToShowCamments;
+    __unsafe_unretained NSString *PullRightToInviteFriends;
+    __unsafe_unretained NSString *TapAndHoldToDeleteCamment;
+    __unsafe_unretained NSString *TapToPlayCamment;
+    __unsafe_unretained NSString *PostponedReminder;
+    __unsafe_unretained NSString *SkippedReminder;
+} CMOnboardingState;
+
+FOUNDATION_EXPORT const struct CMOnboardingEvent {
+    __unsafe_unretained NSString *Started;
+    __unsafe_unretained NSString *CammentRecorded;
+    __unsafe_unretained NSString *CammentBlockSwipedLeft;
+    __unsafe_unretained NSString *CammentBlockSwipedRight;
+    __unsafe_unretained NSString *GroupInfoSidebarOpened;
+    __unsafe_unretained NSString *CammentDeleted;
+    __unsafe_unretained NSString *CammentPlayed;
+    __unsafe_unretained NSString *OnboardingPostponed;
+    __unsafe_unretained NSString *OnboardingSkipped;
+} CMOnboardingEvent;

@@ -19,9 +19,9 @@
 @class CMGroupsListWireframe;
 @class CMGroupInfoWireframe;
 
-@interface CMCammentViewController : ASViewController<CMCammentsOverlayViewNode *><CMCammentViewPresenterOutput, CMCammentsOverlayViewNodeDelegate>
+@interface CMCammentViewController : ASViewController<CMCammentsOverlayViewNode *><CMCammentViewPresenterOutput, CMCammentsOverlayViewNodeDelegate, CMOnboardingInteractorOutput>
 
-@property (nonatomic, strong) id<CMCammentViewPresenterInput> presenter;
+@property (nonatomic, strong) id<CMCammentViewPresenterInput, CMOnboardingInteractorInput> presenter;
 @property (nonatomic, strong) CMGroupInfoWireframe *sidebarWireframe;
 
 - (instancetype)initWithOverlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig NS_DESIGNATED_INITIALIZER;

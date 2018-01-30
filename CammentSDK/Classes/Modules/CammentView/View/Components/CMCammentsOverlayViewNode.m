@@ -11,6 +11,7 @@
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMAdsVideoPlayerNode.h"
 #import "ASDimension.h"
+#import "CMGroupInfoNode.h"
 
 @interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 
@@ -224,11 +225,11 @@
         self.leftSidebarNode.alpha = _showLeftSidebarNode ? 1.0f : 0.f;
         
         if (!_showLeftSidebarNode) {
-            self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth / 2.0f;
+            self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth;
         } else {
             self.cammentButton.alpha =  .0f;
         }
-        
+
         [super animateLayoutTransition:context];
         return;
     }
@@ -267,7 +268,7 @@
                          self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
                          
                          if (!_showLeftSidebarNode) {
-                             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth / 2.0f;
+                             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth ;
                          } else {
                              self.cammentButton.alpha =  .0f;
                          }
@@ -305,7 +306,11 @@
 
 - (void)updateLeftSideBarMenuLeftInset {
     _leftSideBarMenuLeftInset = .0f;
-    
+
+    if (self.disableClosingCammentBlock) {
+        _showCammentsBlock = YES;
+    }
+
     if (_showCammentsBlock) {
         _leftSideBarMenuLeftInset = self.cammentBlockWidth;
     }
@@ -316,6 +321,7 @@
 }
 
 - (void)handleSideBarPanGesture:(UIPanGestureRecognizer *)sender {
+
     if (sender.state == UIGestureRecognizerStateBegan) {
         [self updateLeftSideBarMenuLeftInset];
         self.sideBarTransitionInitialValue = _leftSideBarMenuLeftInset;
@@ -328,7 +334,12 @@
         
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.leftSidebarNode.view.superview];
-        
+
+        if (self.disableClosingCammentBlock &&
+                self.sideBarTransitionInitialValue + translation.x < self.cammentBlockWidth / 2.0f) {
+            return;
+        }
+
         _leftSideBarMenuLeftInset = self.sideBarTransitionInitialValue + translation.x;
         
         _showCammentsBlock = _leftSideBarMenuLeftInset > self.cammentBlockWidth / 2.0f;
@@ -338,7 +349,8 @@
         } else {
             self.cammentButton.alpha = (CGFloat) (0.5 - (_leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth);
         }
-        
+
+
         BOOL showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth;
         self.leftSidebarNode.alpha = showLeftSidebarNode ? 1.0f : 0.0f;
 
@@ -355,7 +367,7 @@
         if (_leftSideBarMenuLeftInset < .0f) {
             _leftSideBarMenuLeftInset = .0f;
         }
-        
+
         [self setNeedsLayout];
     }
 }

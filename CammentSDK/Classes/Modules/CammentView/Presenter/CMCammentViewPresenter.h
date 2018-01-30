@@ -25,16 +25,18 @@
 @protocol CMInvitationInteractorInput;
 @protocol CMCammentsBlockPresenterInput;
 @class CMUserSessionController;
+@class TBSMStateMachine;
 
 @interface CMCammentViewPresenter : NSObject<
         CMCammentViewPresenterInput,
+        CMOnboardingInteractorInput,
         CMCammentViewInteractorOutput,
         CMCammentsLoaderInteractorOutput,
         CMCammentRecorderInteractorOutput,
         CMCammentsBlockPresenterOutput,
         CMInvitationInteractorOutput>
 
-@property (nonatomic, weak) id<CMCammentViewPresenterOutput, CMLoadingHUD> output;
+@property (nonatomic, weak) id<CMCammentViewPresenterOutput, CMLoadingHUD, CMOnboardingInteractorOutput> output;
 @property (nonatomic) id<CMCammentViewInteractorInput> interactor;
 @property (nonatomic) CMCammentViewWireframe *wireframe;
 

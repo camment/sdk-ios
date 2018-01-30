@@ -79,15 +79,12 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
-                                                          [self showOnboardingAlert:CMOnboardingAlertPostponedOnboardingReminder];
+                                                          [self.presenter sendOnboardingEvent:CMOnboardingEvent.OnboardingPostponed];
                                                       }]];
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)showToolTip:(NSString *)text
-        anchorFrame:(CGRect)frame
-          direction:(AMPopTipDirection)direction
-              delay:(NSTimeInterval)delay {
+- (void)showToolTip:(NSString *)text anchorFrame:(CGRect)frame direction:(AMPopTipDirection)direction delay:(NSTimeInterval)delay inView:(UIView *)view maxWidth:(CGFloat)maxWidth {
     if (self.popTip) {
         [self.popTip hideForced:YES];
     }
@@ -99,31 +96,24 @@
     self.popTip.edgeMargin = 14.0f;
     self.popTip.popoverColor = UIColorFromRGB(0x9B9B9B);
     self.popTip.radius = 8.0f;
-    self.popTip.swipeRemoveGestureDirection = UISwipeGestureRecognizerDirectionDown
-            | UISwipeGestureRecognizerDirectionUp
-            | UISwipeGestureRecognizerDirectionLeft
-            | UISwipeGestureRecognizerDirectionRight;
-    self.popTip.shouldDismissOnSwipeOutside = YES;
-    self.popTip.shouldDismissOnTap = YES;
-    self.popTip.shouldDismissOnTapOutside = YES;
     self.popTip.actionFloatOffset = 3.0f;
 
     CGFloat duration = 0.f;
-    if (self.currentOnboardingAlert == CMOnboardingAlertTapToPlayCamment) {
-        // We dismiss it manually to prevent touch capturing by the tooltip view
-        self.popTip.shouldDismissOnTapOutside = NO;
-    }
 
     if (self.currentOnboardingAlert == CMOnboardingAlertPostponedOnboardingReminder) {
         // We dismiss it manually to prevent touch capturing by the tooltip view
         duration = 5.0f;
+        
+        [self.popTip setDismissHandler:^{
+            self.currentOnboardingAlert = CMOnboardingAlertNone;
+        }];
     }
 
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
         [self.popTip showText:text
                     direction:direction
-                     maxWidth:self.view.frame.size.width - 60.0f
-                       inView:self.view
+                     maxWidth:maxWidth == 0 ? maxWidth : self.view.frame.size.width - 60.0f
+                       inView:view ?: self.view
                     fromFrame:frame
                      duration:duration];
     });
@@ -195,23 +185,20 @@
 }
 
 - (void)handleShareAction {
-    [_presenter completeActionForOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+    [_presenter sendOnboardingEvent:CMOnboardingEvent.GroupInfoSidebarOpened];
     [_presenter inviteFriendsAction];
 }
 
 - (void)handlePanToShowSidebarGesture {
-    if (self.presenter.currentOnboardingStep != CMOnboardingAlertPullRightToInviteFriendsTooltip) {
-        return;
-    }
-
-    [self.presenter completeActionForOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+    [_presenter sendOnboardingEvent:CMOnboardingEvent.GroupInfoSidebarOpened];
 }
 
 
 - (void)didCompleteLayoutTransition {
-    if (self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeRightToShowCammentsTooltip
-            || self.presenter.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip) {
-        [self.presenter completeActionForOnboardingAlert:self.presenter.currentOnboardingStep];
+    if (self.node.showCammentsBlock) {
+        [self.presenter sendOnboardingEvent:CMOnboardingEvent.CammentBlockSwipedRight];
+    } else {
+        [self.presenter sendOnboardingEvent:CMOnboardingEvent.CammentBlockSwipedLeft];
     }
 }
 
@@ -220,11 +207,12 @@
     
     self.currentOnboardingAlert = type;
 
+    UIView *view = nil;
     CGRect frame = CGRectNull;
     NSString *text = @"";
     AMPopTipDirection direction = AMPopTipDirectionDown;
     NSTimeInterval delay = 0.5;
-
+    CGFloat maxWidth = .0f;
     switch (type) {
         case CMOnboardingAlertNone:
             break;
@@ -233,9 +221,10 @@
         case CMOnboardingAlertWhatIsCammentTooltip:
             break;
         case CMOnboardingAlertTapAndHoldToRecordTooltip:
-            frame = self.node.cammentButton.frame;
+            frame = self.node.cammentButton.bounds;
+            view = self.node.cammentButton.view;
             text = CMLocalized(@"help.tap_and_hold_to_record");
-            
+            maxWidth = self.view.frame.size.width - 60.0f;
             switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
                     
                 case CMCammentOverlayLayoutPositionTopRight:
@@ -248,31 +237,45 @@
             
             break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip: {
-            frame = self.node.leftSidebarNode.frame;
+            frame = self.node.cammentsBlockNode.bounds;
+            view = self.node.cammentsBlockNode.view;
+            frame.origin.x = 10.0f;
+            frame.size.width = 0.0f;
             text = CMLocalized(@"help.swipe_left_to_hide_camments");
             direction = AMPopTipDirectionRight;
+            maxWidth = self.view.frame.size.width - 70.0f;
         }
             break;
         case CMOnboardingAlertSwipeRightToShowCammentsTooltip: {
-            frame = self.node.cammentsBlockNode.frame;
-            frame.origin.x = 10.0f;
+            frame = self.node.cammentsBlockNode.bounds;
+            view = self.node.cammentsBlockNode.view;
+            frame.origin.x = frame.size.width;
             frame.size.width = 0.0f;
             text = CMLocalized(@"help.swipe_right_to_show_camments");
             direction = AMPopTipDirectionRight;
             delay = 0.5;
+            maxWidth = self.view.frame.size.width - frame.size.width - 10.0f;
         }
             break;
         case CMOnboardingAlertPullRightToInviteFriendsTooltip:
-            frame = self.node.leftSidebarNode.frame;
+            frame = self.node.cammentsBlockNode.bounds;
+            view = self.node.cammentsBlockNode.view;
+            frame.origin.x = 10.0f;
+            frame.size.width = 0;
             text = CMLocalized(@"help.pull_right_to_invite_friends");
             direction = AMPopTipDirectionRight;
             delay = 0.5;
+            maxWidth = self.view.frame.size.width - self.node.leftSidebarNode.frame.size.width - 10.0f;
             break;
         case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
             if (!node) {return;}
-            frame = node.frame;
-            frame = [self.view convertRect:frame fromView:node.view];
+            CGRect nodeFrame = [self.node.leftSidebarNode.view convertRect:node.frame fromView:node.view];
+            view = self.node.leftSidebarNode.view;
+            frame = nodeFrame;
+            direction = AMPopTipDirectionRight;
+            maxWidth = self.view.frame.size.width - frame.size.width - 20.0f - frame.origin.x;
+            self.node.leftSidebarNode.clipsToBounds = NO;
             text = CMLocalized(@"help.tap_and_hold_to_delete");
         }
 
@@ -280,13 +283,18 @@
         case CMOnboardingAlertTapToPlayCamment: {
             ASCellNode *node = [self.node.cammentsBlockNode.collectionNode nodeForItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0]];
             if (!node) {return;}
-            frame = node.frame;
-            frame = [self.view convertRect:frame fromView:node.view];
+            CGRect nodeFrame = [self.node.leftSidebarNode.view convertRect:node.frame fromView:node.view];
+            view = self.node.leftSidebarNode.view;
+            frame = nodeFrame;
+            direction = AMPopTipDirectionRight;
+            maxWidth = self.view.frame.size.width - frame.size.width - 20.0f - frame.origin.x;
+            self.node.leftSidebarNode.clipsToBounds = NO;
             text = CMLocalized(@"help.tap_to_play");
         }
             break;
         case CMOnboardingAlertPostponedOnboardingReminder:
-            frame = self.node.cammentButton.frame;
+            frame = self.node.cammentButton.bounds;
+            view = self.node.cammentButton.view;
             text = CMLocalized(@"help.postponed_onboarding_reminder");
 
             switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
@@ -302,7 +310,7 @@
     }
 
     if (CGRectIsNull(frame)) {return;}
-    [self showToolTip:text anchorFrame:frame direction:direction delay:delay];
+    [self showToolTip:text anchorFrame:frame direction:direction delay:delay inView:view maxWidth:maxWidth];
 }
 
 - (void)hideOnboardingAlert:(CMOnboardingAlertType)type {
@@ -383,6 +391,11 @@
     self.node.videoAdsPlayerNodeAppearsFrame = startsRect;
     [self.node.adsVideoPlayerNode play:videoAd];
     self.node.showVideoAdsPlayerNode = YES;
+    [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
+- (void)setDisableHiddingCammentBlock:(BOOL)disableHiddingCammentBlock {
+    self.node.disableClosingCammentBlock = disableHiddingCammentBlock;
     [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 

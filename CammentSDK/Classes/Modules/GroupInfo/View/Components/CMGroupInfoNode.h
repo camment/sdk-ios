@@ -18,5 +18,4 @@
 
 @property(nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
 
-- (void)setOwnAlpha:(CGFloat)alpha;
 @end

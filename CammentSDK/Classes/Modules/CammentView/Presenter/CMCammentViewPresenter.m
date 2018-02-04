@@ -33,6 +33,7 @@
 #import "CMUserSessionController.h"
 #import "CMCammentCellDisplayingContext.h"
 #import "CMAdsDemoBot.h"
+#import "NSArray+RacSequence.h"
 #import <TBStateMachine/TBSMStateMachine.h>
 #import <TBStateMachine/TBSMDebugger.h>
 
@@ -92,6 +93,11 @@
         [[[[[CMStore instance] inviteFriendsActionSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
             @strongify(self);
             [self inviteFriendsAction];
+        }];
+
+        [[[[[CMStore instance] startTutorial] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+            @strongify(self);
+            [self sendOnboardingEvent:CMOnboardingEvent.Started];
         }];
 
         [[[RACObserve([CMStore instance], playingCammentId)
@@ -197,6 +203,28 @@
     TBSMState *skippedReminder = [TBSMState stateWithName:CMOnboardingState.SkippedReminder];
     TBSMState *onboardingFinished = [TBSMState stateWithName:CMOnboardingState.Finished];
 
+    [@[
+            tapAndHoldToRecordCamment,
+            swipeLeftToHideCamments,
+            swipeRightToShowCamments,
+            pullRightToInviteFriends,
+            tapAndHoldToDeleteCamment,
+            tapToPlayCamment,
+    ] map:^TBSMState *(TBSMState *state) {
+
+        [state addHandlerForEvent:CMOnboardingEvent.OnboardingSkipped
+                           target:skippedReminder];
+
+        return state;
+    }];
+
+    [skippedReminder setEnterBlock:^(id data) {
+        [[CMStore instance] setIsOnboardingSkipped:YES];
+        [self.output updateContinueTutorialButtonState];
+        [self.output hideSkipTutorialButton];
+        [self.output showOnboardingAlert:CMOnboardingAlertSkippedOnboardingReminder];
+    }];
+
     [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.OnboardingPostponed
                                          target:postponedReminder
                                            kind:TBSMTransitionExternal
@@ -204,19 +232,18 @@
                                              [self.output showOnboardingAlert:CMOnboardingAlertPostponedOnboardingReminder];
                                          }];
 
-    [postponedReminder addHandlerForEvent:CMOnboardingEvent.Started
-                                         target:tapAndHoldToRecordCamment
-                                           kind:TBSMTransitionExternal
-                                         action:^(id data) {
-                                             [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
-                                         }];
+    [postponedReminder addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
+    [skippedReminder addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
+    [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
 
-    [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.Started
-                                         target:tapAndHoldToRecordCamment
-                                           kind:TBSMTransitionExternal
-                                         action:^(id data) {
-                                             [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
-                                         }];
+    [tapAndHoldToRecordCamment setEnterBlock:^(id data) {
+        [[CMStore instance] setIsOnboardingSkipped:NO];
+        [self.output updateContinueTutorialButtonState];
+        [self.output closeSidebarIfOpened:^{
+            [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+            [self.output showSkipTutorialButton];
+        }];
+    }];
 
     [tapAndHoldToRecordCamment addHandlerForEvent:CMOnboardingEvent.CammentRecorded
                                          target:tapToPlayCamment
@@ -302,7 +329,7 @@
 }
 
 - (void)checkIfNeedForOnboarding {
-    if (![CMStore instance].isOnboardingFinished && !self.onboardingWasStarted) {
+    if (![CMStore instance].isOnboardingFinished && !self.onboardingWasStarted && ![CMStore instance].isOnboardingSkipped) {
         [self.output askForSetupPermissions];
     } else if (!self.isCameraSessionConfigured) {
         [self setupCameraSession];

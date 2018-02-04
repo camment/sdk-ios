@@ -36,6 +36,8 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 - (void)showAllowCameraPermissionsView;
 
 - (void)setDisableHiddingCammentBlock:(BOOL)disableHiddingCammentBlock;
+
+- (void)closeSidebarIfOpened:(void (^)())completion;
 @end
 
 
@@ -43,5 +45,9 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type;
 - (void)hideOnboardingAlert:(CMOnboardingAlertType)type;
+
+- (void)updateContinueTutorialButtonState;
+- (void)showSkipTutorialButton;
+- (void)hideSkipTutorialButton;
 
 @end

@@ -15,6 +15,7 @@
 "help.tap_to_play" = "Bien hecho! Ahora presiona sobre el Camment para poder escucharlo";
 "help.pull_right_to_invite_friends" = "Pull the sidebar to the → right to invite friends to this chat";
 "help.tap_and_hold_to_delete" = "Toca y mantén presionado tu Camment para eliminarlo";
+"help.continue_onboarding_later" = "Continue onboarding later";
 "setup.use_camment_chat" = "¿Te gustaría chatear a través de videos con amigos mientras miras este programa?";
 "setup.what_is_camment" = "es como si enviaras un SMS pero enviando videos de 5 segundos (Camments) que aparecerán en una ventana en la parte superior de la pantalla, a la vez que ves este programa";
 "setup.sounds_fun" = "Suena divertido";
@@ -64,3 +65,7 @@
 
 "alert.user_joined.title" = "%@ has joined";
 "alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";
+
+"button.invite_friends" = "Invite friends";
+"button.continue_tutorial" = "Continue tutorial";
+"onboarding.skip_tutorial" = "Skip tutorial";

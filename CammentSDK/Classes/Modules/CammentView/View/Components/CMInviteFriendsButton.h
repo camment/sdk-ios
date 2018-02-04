@@ -8,3 +8,6 @@
 
 @interface CMInviteFriendsButton : ASButtonNode
 @end
+
+@interface CMContinueTutorialButton : ASButtonNode
+@end

@@ -9,6 +9,7 @@
 @interface GVUserDefaults (CammentSDKConfig)
 
 @property (nonatomic) BOOL isOnboardingFinished;
+@property (nonatomic) BOOL isOnboardingSkipped;
 @property (nonatomic) BOOL isFirstSDKLaunch;
 @property (nonatomic) BOOL isInstallationDeeplinkChecked;
 @property (nonatomic) NSString *broadcasterPasscode;

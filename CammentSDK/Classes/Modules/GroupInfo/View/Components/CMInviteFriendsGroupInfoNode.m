@@ -12,6 +12,7 @@
 @property(nonatomic, strong) ASTextNode *infoTextNode;
 @property(nonatomic, strong) ASButtonNode *learnMoreButtonNode;
 @property(nonatomic, strong) CMInviteFriendsButton *inviteFriendsButtonNode;
+@property(nonatomic, strong) CMContinueTutorialButton *continueTutorialButton;
 
 @end
 
@@ -47,15 +48,25 @@
                            forControlEvents:ASControlNodeEventTouchUpInside];
 
         self.inviteFriendsButtonNode = [CMInviteFriendsButton new];
-        self.inviteFriendsButtonNode.style.minWidth = ASDimensionMake(120.0f);
         [self.inviteFriendsButtonNode addTarget:self
                                      action:@selector(tapInviteFriendsButton)
                            forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.continueTutorialButton = [CMContinueTutorialButton new];
+        [self.continueTutorialButton addTarget:self
+                                         action:@selector(tapContinueTutorialButton)
+                               forControlEvents:ASControlNodeEventTouchUpInside];
 
         self.automaticallyManagesSubnodes = YES;
     }
 
     return self;
+}
+
+- (void)tapContinueTutorialButton {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(handleDidTapContinueTutorialButton)]) {
+        [self.delegate handleDidTapContinueTutorialButton];
+    }
 }
 
 - (void)tapInviteFriendsButton {
@@ -77,14 +88,29 @@
                                 child:_infoTextNode];
 
     ASInsetLayoutSpec *inviteFriendsButtonLayoutSpec = [ASInsetLayoutSpec
-            insetLayoutSpecWithInsets:UIEdgeInsetsMake(10.0f, .0f, .0f, .0f)
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(10.0f, 32.0f, .0f, 32.0f)
                                 child:_inviteFriendsButtonNode];
 
+    ASInsetLayoutSpec *continueTutorialLayoutSpec = [ASInsetLayoutSpec
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(10.0f, 32.0f, .0f, 32.0f)
+                                child:_continueTutorialButton];
+    
+    NSMutableArray *children = [NSMutableArray new];
+    [children addObjectsFromArray:@[
+            infoTextLayoutSpec,
+            _learnMoreButtonNode, 
+            inviteFriendsButtonLayoutSpec
+    ]];
+    
+    if (self.showContinueTutorialButton) {
+        [children addObject:continueTutorialLayoutSpec];
+    }
+    
     ASStackLayoutSpec *centerStack = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                              spacing:.0f
                                                                       justifyContent:ASStackLayoutJustifyContentCenter
-                                                                          alignItems:ASStackLayoutAlignItemsCenter
-                                                                            children:@[infoTextLayoutSpec, _learnMoreButtonNode, inviteFriendsButtonLayoutSpec]];
+                                                                          alignItems:ASStackLayoutAlignItemsStretch
+                                                                            children:children];
     return centerStack;
 }
 

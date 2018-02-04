@@ -49,8 +49,10 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
         self.cammentRecordingState = CMCammentRecordingStateNotRecording;
         self.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
+        self.isOnboardingSkipped = [GVUserDefaults standardUserDefaults].isOnboardingSkipped;
         self.reloadActiveGroupSubject = [RACSubject new];
         self.inviteFriendsActionSubject = [RACSubject new];
+        self.startTutorial = [RACSubject new];
         self.userHasJoinedSignal = [RACSubject new];
         self.cleanUpSignal = [RACSubject new];
         self.authentificationStatusSubject = [RACReplaySubject replaySubjectWithCapacity:1];
@@ -71,6 +73,11 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
                 [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingEnd];
             }
             [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
+            [GVUserDefaults standardUserDefaults].isOnboardingSkipped = NO;
+        }];
+
+        [RACObserve(self, isOnboardingSkipped) subscribeNext:^(NSNumber *value) {
+            [GVUserDefaults standardUserDefaults].isOnboardingSkipped = value.boolValue;
         }];
 
         [RACObserve(self, playingCammentId) subscribeNext:^(NSString *id) {

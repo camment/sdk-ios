@@ -19,20 +19,20 @@
 
 @interface CMSDKService : NSObject
 
-@property(nonatomic, strong) CMAWSServicesFactory *awsServicesFactory;
+@property(nonatomic, strong) CMAWSServicesFactory  * _Nullable awsServicesFactory;
 @property(nonatomic) BOOL connectionAvailable;
 
-@property(nonatomic) NSOperationQueue *onSignedInOperationsQueue;
-@property(nonatomic) NSOperationQueue *onSDKHasBeenConfiguredQueue;
+@property(nonatomic) NSOperationQueue * _Nullable onSignedInOperationsQueue;
+@property(nonatomic) NSOperationQueue * _Nullable onSDKHasBeenConfiguredQueue;
 
-@property(nonatomic, strong) CMConnectionReachability *connectionReachibility;
+@property(nonatomic, strong) CMConnectionReachability * _Nullable connectionReachibility;
 
-@property(nonatomic, strong) DDFileLogger *fileLogger;
+@property(nonatomic, strong) DDFileLogger * _Nullable fileLogger;
 
-@property(nonatomic, strong) CMUserSessionController *userSessionController;
-@property(nonatomic, strong) id <CMSDKNotificationPresenterPresenterInput> notificationPresenter;
-@property(nonatomic, strong) CMServerListener *serverListener;
-@property(nonatomic, strong) CMServerMessageController *serverMessageController;
+@property(nonatomic, strong) CMUserSessionController * _Nullable userSessionController;
+@property(nonatomic, strong) id <CMSDKNotificationPresenterPresenterInput> _Nullable notificationPresenter;
+@property(nonatomic, strong) CMServerListener * _Nullable serverListener;
+@property(nonatomic, strong) CMServerMessageController * _Nullable serverMessageController;
 
 @property (nonatomic, weak) id<CMCammentSDKDelegate> _Nullable sdkDelegate;
 @property (nonatomic, weak) id<CMCammentSDKUIDelegate> _Nullable sdkUIDelegate;

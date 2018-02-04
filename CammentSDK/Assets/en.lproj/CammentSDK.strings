@@ -16,6 +16,7 @@
 "help.postponed_onboarding_reminder" = "Start making video camments by tapping here later";
 "help.pull_right_to_invite_friends" = "Pull the sidebar to the → right to invite friends to this chat";
 "help.tap_and_hold_to_delete" = "Tap & hold your camment to delete it";
+"help.continue_onboarding_later" = "Continue onboarding later";
 "setup.use_camment_chat" = "Would you like to video chat with friends while watching this show?";
 "setup.what_is_camment" = "It’s like SMS group messaging but with mini videos (camments) on top of the show you are now watching";
 "setup.sounds_fun" = "Sounds fun";
@@ -54,3 +55,7 @@
 
 "alert.user_joined.title" = "%@ has joined";
 "alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";
+
+"button.invite_friends" = "Invite friends";
+"button.continue_tutorial" = "Continue tutorial";
+"onboarding.skip_tutorial" = "Skip tutorial";

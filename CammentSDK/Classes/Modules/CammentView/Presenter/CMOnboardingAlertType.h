@@ -19,6 +19,7 @@ typedef NS_ENUM(NSInteger, CMOnboardingAlertType) {
     CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip,
     CMOnboardingAlertTapToPlayCamment,
     CMOnboardingAlertPostponedOnboardingReminder,
+    CMOnboardingAlertSkippedOnboardingReminder,
 };
 
 FOUNDATION_EXPORT const struct CMOnboardingState {

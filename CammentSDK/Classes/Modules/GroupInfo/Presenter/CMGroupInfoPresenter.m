@@ -24,6 +24,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
     CMGroupInfoSectionUserProfileWithInviteButton,
     CMGroupInfoInviteFriendsSection,
+    CMGroupInfoInviteFriendsSectionWithContinueTutorialButton,
     CMGroupInfoFriendsHeaderSection,
 };
 
@@ -93,7 +94,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     }
     
     if (self.users.count == 0) {
-        [items addObject:@(CMGroupInfoInviteFriendsSection)];
+        [items addObject:@([CMStore instance].isOnboardingSkipped ? CMGroupInfoInviteFriendsSectionWithContinueTutorialButton : CMGroupInfoInviteFriendsSection)];
     } else {
         [items addObject:@(CMGroupInfoFriendsHeaderSection)];
         [items addObjectsFromArray:self.users];
@@ -119,6 +120,10 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 - (void)handleDidTapInviteFriendsButton {
     [[[CMStore instance] inviteFriendsActionSubject] sendNext:@YES];
+}
+
+- (void)handleDidTapContinueTutorialButton {
+    [[[CMStore instance] startTutorial] sendNext:@YES];
 }
 
 - (NSInteger)collectionNode:(ASCollectionNode *)collectionNode numberOfItemsInSection:(NSInteger)section {
@@ -150,10 +155,13 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 };
                 break;
             }
+            case CMGroupInfoInviteFriendsSectionWithContinueTutorialButton:
             case CMGroupInfoInviteFriendsSection: {
+                BOOL showContinueTutorialButton = [CMStore instance].isOnboardingSkipped;
                 cellNodeBlock = ^ASCellNode *() {
                     CMInviteFriendsGroupInfoNode *inviteFriendsGroupInfoNode = [CMInviteFriendsGroupInfoNode new];
                     inviteFriendsGroupInfoNode.delegate = weakSelf;
+                    inviteFriendsGroupInfoNode.showContinueTutorialButton = showContinueTutorialButton;
                     return inviteFriendsGroupInfoNode;
                 };
                 break;

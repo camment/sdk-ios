@@ -10,8 +10,8 @@
 @protocol CMInviteFriendsGroupInfoNodeDelegate<NSObject>
 
 - (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node;
-
 - (void)handleDidTapInviteFriendsButton;
+- (void)handleDidTapContinueTutorialButton;
 
 @end
 
@@ -19,4 +19,5 @@
 
 @property (nonatomic, weak) id<CMInviteFriendsGroupInfoNodeDelegate> delegate;
 
+@property(nonatomic) BOOL showContinueTutorialButton;
 @end

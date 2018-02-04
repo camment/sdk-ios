@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
 
 @property(nonatomic) BOOL isOnboardingFinished;
+@property(nonatomic) BOOL isOnboardingSkipped;
 
 @property(nonatomic) CMShowMetadata *currentShowMetadata;
 
@@ -48,6 +49,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property RACSubject<NSNumber *> *reloadActiveGroupSubject;
 @property RACSubject<NSNumber *> *inviteFriendsActionSubject;
+@property RACSubject<NSNumber *> *startTutorial;
 @property RACSubject<NSNumber *> *userHasJoinedSignal;
 @property RACSubject<NSNumber *> *cleanUpSignal;
 

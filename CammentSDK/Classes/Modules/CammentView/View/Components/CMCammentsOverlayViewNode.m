@@ -12,14 +12,18 @@
 #import "CMAdsVideoPlayerNode.h"
 #import "ASDimension.h"
 #import "CMGroupInfoNode.h"
+#import "UIColorMacros.h"
+#import "RACSubscriptingAssignmentTrampoline.h"
+#import "NSObject+RACPropertySubscribing.h"
+#import "POPSpringAnimation.h"
 
 @interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
-@property (nonatomic, assign) CGFloat leftSideBarMenuLeftInset;
-@property (nonatomic, assign) CGFloat cammentBlockWidth;
-@property (nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
-@property (nonatomic, strong) UIPanGestureRecognizer *sideBarPanGestureRecognizer;
+@property(nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
+@property(nonatomic, assign) CGFloat leftSideBarMenuLeftInset;
+@property(nonatomic, assign) CGFloat cammentBlockWidth;
+@property(nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
+@property(nonatomic, strong) UIPanGestureRecognizer *sideBarPanGestureRecognizer;
 
 @property(nonatomic) CGFloat sideBarTransitionInitialValue;
 @end
@@ -28,7 +32,7 @@
 
 - (instancetype)initWithLayoutConfig:(CMCammentOverlayLayoutConfig *)layoutConfig {
     self = [super init];
-    
+
     if (self) {
         self.layoutConfig = layoutConfig;
 
@@ -37,8 +41,19 @@
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
         _adsVideoPlayerNode = [CMAdsVideoPlayerNode new];
-        _adsVideoPlayerNode.debugName = @"CMAdsVideoPlayerNode";
-        
+        _skipTutorialButton = [ASButtonNode new];
+        [_skipTutorialButton setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"onboarding.skip_tutorial")
+                                                                                attributes:@{
+                                                                                        NSFontAttributeName: [UIFont systemFontOfSize:[UIFont systemFontSize]],
+                                                                                        NSForegroundColorAttributeName: [UIColor whiteColor]
+                                                                                }] forState:UIControlStateNormal];
+        _skipTutorialButton.backgroundColor = UIColorFromRGB(0x9B9B9B);
+        _skipTutorialButton.contentEdgeInsets = UIEdgeInsetsMake(9.0f, 9.0f, 9.0f, 9.0f);
+        _skipTutorialButton.cornerRadius = 8.0f;
+        [_skipTutorialButton addTarget:self.delegate
+                                action:@selector(handleSkipTutorialAction)
+                      forControlEvents:ASControlNodeEventTouchUpInside];
+
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
             return _contentView ?: [UIView new];
         }];
@@ -51,7 +66,10 @@
 
         self.showCammentsBlock = YES;
         self.showLeftSidebarNode = NO;
+        self.showSkipTutorialButton = NO;
         [self updateLeftSideBarMenuLeftInset];
+
+        RAC(_skipTutorialButton, alpha) = RACObserve(_cammentButton, alpha);
 
         self.automaticallyManagesSubnodes = YES;
     }
@@ -69,7 +87,7 @@
             return _contentView;
         }];
     }
-    
+
     [self setNeedsLayout];
     [self setNeedsDisplay];
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
@@ -77,7 +95,7 @@
 
 - (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {
     _leftSidebarNode = leftSidebarNode;
-    
+
     [self setNeedsLayout];
     [self setNeedsDisplay];
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
@@ -175,6 +193,10 @@
     ASOverlayLayoutSpec *cammentButtonOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:self.contentNode
                                                                                         overlay:cammentButtonLayout];
 
+    ASLayoutSpec *skipTutorialLayout = [self skipTutorialButtonLayoutSpec:self.layoutConfig];
+    cammentButtonOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentButtonOverlay
+                                                                   overlay:skipTutorialLayout];
+
     ASOverlayLayoutSpec *cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentButtonOverlay
                                                                                         overlay:stackLayoutInsetSpec];
     if (self.showVideoAdsPlayerNode) {
@@ -190,7 +212,7 @@
 
 - (ASInsetLayoutSpec *)cammentButtonLayoutSpec:(CMCammentOverlayLayoutConfig *)layoutConfig {
     ASInsetLayoutSpec *layoutSpec = nil;
-    
+
     switch (layoutConfig.cammentButtonLayoutPosition) {
 
         case CMCammentOverlayLayoutPositionTopRight:
@@ -199,9 +221,7 @@
                             self.cammentButtonScreenSideVerticalInset,
                             INFINITY,
                             INFINITY,
-                            _showLeftSidebarNode ?
-                                    - self.layoutConfig.leftSidebarWidth + _cammentButton.style.width.value * 2
-                                    : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
+                            20.0f)
                                         child:_cammentButton];
             break;
         case CMCammentOverlayLayoutPositionBottomRight:
@@ -210,31 +230,55 @@
                             INFINITY,
                             INFINITY,
                             self.cammentButtonScreenSideVerticalInset,
-                            _showLeftSidebarNode ?
-                                    - self.layoutConfig.leftSidebarWidth + _cammentButton.style.width.value * 2
-                                    : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
+                            20.0f)
                                         child:_cammentButton];
             break;
     }
     return layoutSpec;
 }
 
+- (ASLayoutSpec *)skipTutorialButtonLayoutSpec:(CMCammentOverlayLayoutConfig *)layoutConfig {
+    ASInsetLayoutSpec *layoutSpec = nil;
+    switch (layoutConfig.cammentButtonLayoutPosition) {
+
+        case CMCammentOverlayLayoutPositionBottomRight:
+            layoutSpec = [ASInsetLayoutSpec
+                    insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                            20.0f,
+                            INFINITY,
+                            INFINITY,
+                            _showSkipTutorialButton ? 20.0f : -400.0f)
+                                        child:_skipTutorialButton];
+            break;
+        case CMCammentOverlayLayoutPositionTopRight:
+            layoutSpec = [ASInsetLayoutSpec
+                    insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                            INFINITY,
+                            INFINITY,
+                            20.0f,
+                            _showSkipTutorialButton ? 20.0f : -400.0f)
+                                        child:_skipTutorialButton];
+            break;
+    }
+    return [ASWrapperLayoutSpec wrapperWithLayoutElement:layoutSpec];
+}
+
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
     if (![context isAnimated]) {
         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
         self.leftSidebarNode.alpha = _showLeftSidebarNode ? 1.0f : 0.f;
-        
+
         if (!_showLeftSidebarNode) {
             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth;
         } else {
-            self.cammentButton.alpha =  .0f;
+            self.cammentButton.alpha = .0f;
         }
 
         [super animateLayoutTransition:context];
         return;
     }
 
-    UIView * snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
+    UIView *snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
     snapshot.frame = self.cammentRecorderNode.bounds;
     snapshot.alpha = 1.0f;
     [self.cammentRecorderNode.view addSubview:snapshot];
@@ -248,15 +292,15 @@
             cammentBlockFinalFrame.size.width,
             MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
 
-    [self.cammentsBlockNode.collectionNode waitUntilAllUpdatesAreProcessed];
-
     if (_showLeftSidebarNode) {
         self.leftSidebarNode.alpha = 1.0f;
     }
 
-    [UIView animateWithDuration:0.3
-                          delay:.0f
-                        options:(UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction)
+    [self.cammentsBlockNode.collectionNode waitUntilAllUpdatesAreProcessed];
+
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+                          delay:self.defaultLayoutTransitionDelay
+                        options:self.defaultLayoutTransitionOptions | UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionAllowUserInteraction
                      animations:^{
                          self.cammentsBlockNode.frame = CGRectMake(
                                  cammentBlockFinalFrame.origin.x,
@@ -266,13 +310,13 @@
                          self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
                          self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
                          self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
-                         
+
                          if (!_showLeftSidebarNode) {
-                             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth ;
+                             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth;
                          } else {
-                             self.cammentButton.alpha =  .0f;
+                             self.cammentButton.alpha = .0f;
                          }
-                         
+
                          self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
 
                          if (self.contentNode) {
@@ -283,9 +327,11 @@
                              self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
                          }
 
+                         _skipTutorialButton.frame = [context finalFrameForNode:_skipTutorialButton];
                      }
                      completion:^(BOOL finished) {
                          [snapshot removeFromSuperview];
+
                          self.cammentsBlockNode.frame = CGRectMake(self.cammentsBlockNode.frame.origin.x,
                                  self.cammentsBlockNode.frame.origin.y,
                                  self.cammentsBlockNode.frame.size.width,
@@ -293,6 +339,7 @@
                          if (!_showLeftSidebarNode) {
                              self.leftSidebarNode.alpha = .0f;
                          }
+
                          [context completeTransition:YES];
                          if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
                              [self.delegate didCompleteLayoutTransition];
@@ -314,7 +361,7 @@
     if (_showCammentsBlock) {
         _leftSideBarMenuLeftInset = self.cammentBlockWidth;
     }
-    
+
     if (_showLeftSidebarNode) {
         _leftSideBarMenuLeftInset = self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth;
     }
@@ -328,10 +375,10 @@
     } else if (sender.state == UIGestureRecognizerStateEnded
             || sender.state == UIGestureRecognizerStateFailed
             || sender.state == UIGestureRecognizerStateCancelled) {
-        
+
         [self updateLeftSideBarMenuLeftInset];
         [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
-        
+
     } else if (sender.state == UIGestureRecognizerStateChanged) {
         CGPoint translation = [sender translationInView:self.leftSidebarNode.view.superview];
 
@@ -341,9 +388,9 @@
         }
 
         _leftSideBarMenuLeftInset = self.sideBarTransitionInitialValue + translation.x;
-        
+
         _showCammentsBlock = _leftSideBarMenuLeftInset > self.cammentBlockWidth / 2.0f;
-        
+
         if (_leftSideBarMenuLeftInset <= self.cammentBlockWidth) {
             self.cammentButton.alpha = (CGFloat) (_leftSideBarMenuLeftInset / self.cammentBlockWidth - 0.5);
         } else {
@@ -359,11 +406,11 @@
         }
 
         _showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth / 2;
-        
+
         if (_leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth) {
             _leftSideBarMenuLeftInset = self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth;
         }
-        
+
         if (_leftSideBarMenuLeftInset < .0f) {
             _leftSideBarMenuLeftInset = .0f;
         }
@@ -382,5 +429,50 @@
     return YES;
 }
 
+
+- (void)playSidebarJumpingAnimation {
+    self.showCammentsBlock = YES;
+    self.showLeftSidebarNode = NO;
+    [self updateLeftSideBarMenuLeftInset];
+    [self transitionLayoutWithAnimation:YES
+                     shouldMeasureAsync:NO
+                  measurementCompletion:^{
+                  }];
+
+    POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"sidebar jumps" initializer:^(POPMutableAnimatableProperty *prop) {
+        // read value
+        prop.readBlock = ^(typeof(self) obj, CGFloat values[]) {
+            values[0] = obj.leftSideBarMenuLeftInset;
+        };
+        // write value
+        prop.writeBlock = ^(typeof(self) obj, const CGFloat values[]) {
+            obj.leftSideBarMenuLeftInset = values[0];
+            obj.leftSidebarNode.alpha = obj.leftSideBarMenuLeftInset > obj.cammentBlockWidth;
+            [obj setNeedsLayout];
+        };
+
+        prop.threshold = 0.01;
+    }];
+
+    POPSpringAnimation *springAnimation = [POPSpringAnimation new];
+    springAnimation.toValue = @(_leftSideBarMenuLeftInset + 65.0f);
+    springAnimation.autoreverses = YES;
+    springAnimation.repeatCount = 1;
+    springAnimation.springSpeed = 4;
+    springAnimation.springBounciness = 18;
+    springAnimation.dynamicsFriction = 10;
+    springAnimation.property = prop;
+    springAnimation.beginTime = (CACurrentMediaTime() + self.defaultLayoutTransitionDelay + self.defaultLayoutTransitionDuration);
+    [springAnimation setAnimationDidStartBlock:^(POPAnimation *anim) {
+        [self.sideBarPanGestureRecognizer setEnabled:NO];
+    }];
+
+    [springAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
+        [self.sideBarPanGestureRecognizer setEnabled:YES];
+    }];
+
+    [self pop_addAnimation:springAnimation forKey:@"jumps"];
+
+}
 
 @end

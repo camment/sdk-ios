@@ -97,15 +97,19 @@
     self.popTip.popoverColor = UIColorFromRGB(0x9B9B9B);
     self.popTip.radius = 8.0f;
     self.popTip.actionFloatOffset = 3.0f;
+    self.popTip.shouldDismissOnSwipeOutside = NO;
+    self.popTip.shouldDismissOnTap = NO;
+    self.popTip.shouldDismissOnTapOutside = NO;
 
     CGFloat duration = 0.f;
 
-    if (self.currentOnboardingAlert == CMOnboardingAlertPostponedOnboardingReminder) {
+    if (self.currentOnboardingAlert == CMOnboardingAlertPostponedOnboardingReminder ||
+            self.currentOnboardingAlert == CMOnboardingAlertSkippedOnboardingReminder) {
         // We dismiss it manually to prevent touch capturing by the tooltip view
         duration = 5.0f;
-        
+        __weak typeof(self) __weakSelf = self;
         [self.popTip setDismissHandler:^{
-            self.currentOnboardingAlert = CMOnboardingAlertNone;
+            __weakSelf.currentOnboardingAlert = CMOnboardingAlertNone;
         }];
     }
 
@@ -274,7 +278,7 @@
             view = self.node.leftSidebarNode.view;
             frame = nodeFrame;
             direction = AMPopTipDirectionRight;
-            maxWidth = self.view.frame.size.width - frame.size.width - 20.0f - frame.origin.x;
+            maxWidth = self.view.frame.size.width - frame.size.width - 40.0f - frame.origin.x - self.node.skipTutorialButton.frame.size.width;
             self.node.leftSidebarNode.clipsToBounds = NO;
             text = CMLocalized(@"help.tap_and_hold_to_delete");
         }
@@ -287,7 +291,7 @@
             view = self.node.leftSidebarNode.view;
             frame = nodeFrame;
             direction = AMPopTipDirectionRight;
-            maxWidth = self.view.frame.size.width - frame.size.width - 20.0f - frame.origin.x;
+            maxWidth = self.view.frame.size.width - frame.size.width - 40.0f - frame.origin.x - self.node.skipTutorialButton.frame.size.width;
             self.node.leftSidebarNode.clipsToBounds = NO;
             text = CMLocalized(@"help.tap_to_play");
         }
@@ -306,6 +310,16 @@
                     direction = AMPopTipDirectionUp;
                     break;
             }
+            break;
+        case CMOnboardingAlertSkippedOnboardingReminder:
+            frame = self.node.cammentsBlockNode.bounds;
+            view = self.node.cammentsBlockNode.view;
+            frame.origin.x = 10.0f;
+            frame.size.width = 0;
+            text = CMLocalized(@"help.continue_onboarding_later");
+            direction = AMPopTipDirectionRight;
+            delay = 0.5;
+            maxWidth = self.view.frame.size.width - self.node.leftSidebarNode.frame.size.width - 10.0f;
             break;
     }
 
@@ -384,6 +398,7 @@
 
 - (void)cmAdsVideoPlayerNodeDidClose {
     self.node.showVideoAdsPlayerNode = NO;
+    [self.node setNeedsLayout];
     [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
@@ -391,12 +406,54 @@
     self.node.videoAdsPlayerNodeAppearsFrame = startsRect;
     [self.node.adsVideoPlayerNode play:videoAd];
     self.node.showVideoAdsPlayerNode = YES;
+    [self.node setNeedsLayout];
     [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 - (void)setDisableHiddingCammentBlock:(BOOL)disableHiddingCammentBlock {
     self.node.disableClosingCammentBlock = disableHiddingCammentBlock;
     [self.node transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+}
+
+- (void)handleSkipTutorialAction {
+    [self.presenter sendOnboardingEvent:CMOnboardingEvent.OnboardingSkipped];
+}
+
+- (void)showSkipTutorialButton {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.node.showSkipTutorialButton = YES;
+        [self.node transitionLayoutWithAnimation:YES
+                              shouldMeasureAsync:NO
+                           measurementCompletion:nil];
+    });
+}
+
+- (void)updateContinueTutorialButtonState {
+    [self.sidebarWireframe.presenter reloadData];
+}
+
+- (void)hideSkipTutorialButton {
+    self.node.showSkipTutorialButton = NO;
+    [self.node.skipTutorialButton setNeedsLayout];
+    [self.node playSidebarJumpingAnimation];
+}
+
+- (void)closeSidebarIfOpened:(void (^)())completion {
+    if (!self.node.showLeftSidebarNode) {
+        completion();
+        return;
+    }
+
+    self.node.showLeftSidebarNode = NO;
+    self.node.showCammentsBlock = YES;
+    [self.node setNeedsLayout];
+    [self.node updateLeftSideBarMenuLeftInset];
+    [self.node transitionLayoutWithAnimation:YES
+                          shouldMeasureAsync:NO
+                       measurementCompletion:nil];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        completion();
+    });
 }
 
 @end

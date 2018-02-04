@@ -21,4 +21,12 @@
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToDeleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group error:(NSError *)error;
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didDeleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group;
+
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didFailToBlockUser:(CMUser *)user group:(CMUsersGroup *)group error:(NSError *)error;
+
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didBlockUser:(CMUser *)user group:(CMUsersGroup *)group;
+
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didFailToUnblockUser:(CMUser *)user group:(CMUsersGroup *)group error:(NSError *)error;
+
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didUnblockUser:(CMUser *)user group:(CMUsersGroup *)group;
 @end

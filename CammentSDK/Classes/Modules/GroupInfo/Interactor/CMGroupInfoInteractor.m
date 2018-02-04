@@ -13,6 +13,7 @@
 #import "CMUserBuilder.h"
 #import "CMUsersGroup.h"
 #import "CMUser.h"
+#import "CMUserContants.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import <AWSCore/AWSTask.h>
 
@@ -20,7 +21,7 @@
 
 - (void)fetchUsersInGroup:(NSString *)groupId {
     if (groupId.length == 0) { return; }
-    
+
     AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersGet:groupId];
     if (!task) {
         [self.output groupInfoInteractor:self didFailToFetchUsersInGroup:[NSError new]];
@@ -28,7 +29,7 @@
     }
 
     @weakify(self);
-    [task continueWithBlock:^id(AWSTask<id> *t) {
+    [task continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask<id> *t) {
         @strongify(self);
         if (t.error || ![t.result isKindOfClass:[CMAPIUserinfoList class]]) {
             [self.output groupInfoInteractor:self didFailToFetchUsersInGroup:t.error];
@@ -61,7 +62,7 @@
     }
 
     @weakify(self);
-    [task continueWithBlock:^id(AWSTask<id> *t) {
+    [task continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask<id> *t) {
         @strongify(self);
         if (t.error) {
             [self.output groupInfoInteractor:self didFailToDeleteUser:user fromGroup:group error:t.error];
@@ -73,5 +74,56 @@
     }];
 }
 
+- (void)blockUser:(CMUser *)user group:(CMUsersGroup *)group {
+    if (group.uuid.length == 0 || user.cognitoUserId.length == 0) { return; }
+
+    CMAPIUpdateUserStateInGroupRequest *stateInGroupRequest = [[CMAPIUpdateUserStateInGroupRequest alloc] init];
+    stateInGroupRequest.state = CMUserState.Blocked;
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:user.cognitoUserId
+                                                                                      groupUuid:group.uuid
+                                                                                           body:stateInGroupRequest];
+    if (!task) {
+        [self.output groupInfoInteractor:self didFailToBlockUser:user group:group error:nil];
+        return;
+    }
+
+    @weakify(self);
+    [task continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask<id> *t) {
+        @strongify(self);
+        if (t.error) {
+            [self.output groupInfoInteractor:self didFailToBlockUser:user group:group error:t.error];
+            return nil;
+        } else {
+            [self.output groupInfoInteractor:self didBlockUser:user group:group];
+        }
+        return nil;
+    }];
+}
+
+- (void)unblockUser:(CMUser *)user group:(CMUsersGroup *)group {
+    if (group.uuid.length == 0 || user.cognitoUserId.length == 0) { return; }
+
+    CMAPIUpdateUserStateInGroupRequest *stateInGroupRequest = [[CMAPIUpdateUserStateInGroupRequest alloc] init];
+    stateInGroupRequest.state = CMUserState.Active;
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:user.cognitoUserId
+                                                                                      groupUuid:group.uuid
+                                                                                           body:stateInGroupRequest];
+    if (!task) {
+        [self.output groupInfoInteractor:self didFailToUnblockUser:user group:group error:nil];
+        return;
+    }
+
+    @weakify(self);
+    [task continueWithExecutor:[AWSExecutor mainThreadExecutor] withBlock:^id(AWSTask<id> *t) {
+        @strongify(self);
+        if (t.error) {
+            [self.output groupInfoInteractor:self didFailToUnblockUser:user group:group error:t.error];
+            return nil;
+        } else {
+            [self.output groupInfoInteractor:self didUnblockUser:user group:group];
+        }
+        return nil;
+    }];
+}
 
 @end

@@ -60,7 +60,8 @@
 "alert.left_group.description" = "Group owner has removed you from current conversation";
 
 "alert.confirm_remove_user.title" = "Do you want to remove %@ from the group?";
-"toast.user_joined" = "%@ has joined";
+"alert.confirm_block_user.title" = "Do you want to block %@ in the group?";
+"alert.confirm_unblock_user.title" = "Do you want to unblock %@ in the group?";
 "toast.user_joined" = "%@ has joined";
 
 "alert.user_joined.title" = "%@ has joined";

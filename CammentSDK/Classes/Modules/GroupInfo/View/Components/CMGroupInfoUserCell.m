@@ -5,6 +5,7 @@
 #import "CMGroupInfoUserCell.h"
 #import "CMUser.h"
 #import "UIColorMacros.h"
+#import "CMUserContants.h"
 
 
 @interface CMGroupInfoUserCell ()
@@ -13,8 +14,11 @@
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
 @property(nonatomic, strong) CMUser *user;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
-@property(nonatomic, readonly) BOOL showDeleteUserButton;
-@property(nonatomic, strong) ASButtonNode *deleteUserButtonNode;
+@property(nonatomic, readonly) BOOL showBlockUnblockUserButton;
+
+@property(nonatomic, strong) ASButtonNode *blockUserButtonNode;
+@property(nonatomic, strong) ASButtonNode *unblockUserButtonNode;
+
 @end
 
 @implementation CMGroupInfoUserCell {
@@ -22,11 +26,11 @@
 }
 
 
-- (instancetype)initWithUser:(CMUser *)user showDeleteUserButton:(BOOL)showDeleteUserButton {
+- (instancetype)initWithUser:(CMUser *)user showBlockUnblockUserButton:(BOOL)showDeleteUserButton {
     self = [super init];
     if (self) {
         self.user = user;
-        _showDeleteUserButton = showDeleteUserButton;
+        _showBlockUnblockUserButton = showDeleteUserButton;
         
         self.backgroundColor = [UIColor whiteColor];
 
@@ -47,16 +51,23 @@
         self.bottomSeparatorNode.backgroundColor = [UIColorFromRGB(0x4A4A4A) colorWithAlphaComponent:0.3];
         self.bottomSeparatorNode.style.height = ASDimensionMake(1.0f);
 
-        if (self.showDeleteUserButton) {
-            self.deleteUserButtonNode = [ASButtonNode new];
-            [self.deleteUserButtonNode setImage:[UIImage imageNamed:@"delete_icon"
-                                                           inBundle:[NSBundle cammentSDKBundle]
-                                      compatibleWithTraitCollection:nil]
-                                       forState:UIControlStateNormal];
-            [self.deleteUserButtonNode addTarget:self
-                                          action:@selector(didTapDeleteButton)
-                                forControlEvents:ASControlNodeEventTouchUpInside];
-        }
+        self.blockUserButtonNode = [ASButtonNode new];
+        [self.blockUserButtonNode setImage:[UIImage imageNamed:@"block_icon"
+                                                       inBundle:[NSBundle cammentSDKBundle]
+                                  compatibleWithTraitCollection:nil]
+                                   forState:UIControlStateNormal];
+        [self.blockUserButtonNode addTarget:self
+                                      action:@selector(didHandleBlockUserAction)
+                            forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.unblockUserButtonNode = [ASButtonNode new];
+        [self.unblockUserButtonNode setImage:[UIImage imageNamed:@"unblock_icon"
+                                                      inBundle:[NSBundle cammentSDKBundle]
+                                 compatibleWithTraitCollection:nil]
+                                  forState:UIControlStateNormal];
+        [self.unblockUserButtonNode addTarget:self
+                                     action:@selector(didHandleUnblockUserAction)
+                           forControlEvents:ASControlNodeEventTouchUpInside];
         
         self.automaticallyManagesSubnodes = YES;
     }
@@ -64,8 +75,12 @@
     return self;
 }
 
-- (void)didTapDeleteButton {
-    [self.delegate useCell:self didHandleDeleteUserAction:self.user];
+- (void)didHandleUnblockUserAction {
+    [self.delegate useCell:self didHandleUnblockUserAction:self.user];
+}
+
+- (void)didHandleBlockUserAction {
+    [self.delegate useCell:self didHandleBlockUserAction:self.user];
 }
 
 - (void)didLoad {
@@ -92,19 +107,20 @@
 
     NSMutableArray *stackLayoutChildren = [NSMutableArray arrayWithArray:@[_userpicImageNode, _usernameNode]];
 
-    if (self.showDeleteUserButton) {
-        _deleteUserButtonNode.style.preferredSize = CGSizeMake(44.0f, 44.0f);
+    if (self.showBlockUnblockUserButton) {
+        ASDisplayNode *button = [self.user.state isEqualToString:CMUserState.Active] ? _blockUserButtonNode : _unblockUserButtonNode;
+        button.style.preferredSize = CGSizeMake(44.0f, 44.0f);
         ASRatioLayoutSpec *spec = [ASRatioLayoutSpec ratioLayoutSpecWithRatio:1
-                                                                        child:_deleteUserButtonNode];
+                                                                        child:button];
         [stackLayoutChildren addObject:spec];
     }
     
     ASInsetLayoutSpec * insetSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:
                                      UIEdgeInsetsMake(
-                                                      self.showDeleteUserButton ? .0f : 5.0f,
+                                                      self.showBlockUnblockUserButton ? .0f : 5.0f,
                                                       10.0f,
-                                                      self.showDeleteUserButton ? .0f : 5.0f,
-                                                      self.showDeleteUserButton ? 2.0f : 10.0f)
+                                                      self.showBlockUnblockUserButton ? .0f : 5.0f,
+                                                      self.showBlockUnblockUserButton ? 2.0f : 10.0f)
                                                                            child:[ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                                                                          spacing:5.0f
                                                                                                                   justifyContent:ASStackLayoutJustifyContentStart

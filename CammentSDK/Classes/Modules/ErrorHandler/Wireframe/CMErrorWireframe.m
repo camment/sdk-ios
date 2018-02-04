@@ -12,31 +12,28 @@
 
 @implementation CMErrorWireframe
 
-- (void)presentErrorViewWithError:(NSError *)error inViewController:(UIViewController *)viewController{
-    self.presentingViewController = viewController;
-    
+- (UIViewController *)viewControllerDisplayingError:(NSError *)error {
+    UIViewController *viewController = nil;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
+#else
     NSString *title = CMLocalized(@"Error");
     NSString *message = error.localizedDescription;
 
-    
-#if __IPHONE_OS_VERSION_MAX_ALLOWED < 90000
-    [[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:CMLocalized(@"Error") otherButtonTitles:nil] show];
-#else
     CMErrorViewController *controller = [CMErrorViewController
             alertControllerWithTitle:title
                              message:message
                       preferredStyle:UIAlertControllerStyleAlert];
-    
+
     CMErrorPresenter *presenter = [CMErrorPresenter new];
     presenter.error = error;
     controller.presenter = presenter;
     presenter.viewInterface = controller;
     presenter.wireframe = self;
-    
+
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:CMLocalized(@"Close") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
         [controller dismissViewControllerAnimated:YES completion:nil];
     }];
-    
+
     [controller addAction:cancelAction];
 
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -49,8 +46,24 @@
         popPresenter.sourceRect = viewController.view.bounds;
     }
 
-    [viewController presentViewController:controller animated:YES completion:nil];
+    viewController = controller;
 #endif
+    return viewController;
+}
+
+- (void)presentErrorViewWithError:(NSError *)error inViewController:(UIViewController *)viewController {
+    self.presentingViewController = viewController;
+
+    UIViewController *controller = [self viewControllerDisplayingError:error];
+
+    if (!controller) {
+        NSString *title = CMLocalized(@"Error");
+        NSString *message = error.localizedDescription;
+        [[[UIAlertView alloc] initWithTitle:title message:message delegate:nil cancelButtonTitle:CMLocalized(@"Error") otherButtonTitles:nil] show];
+        return;
+    }
+
+    [viewController presentViewController:controller animated:YES completion:nil];
 }
 
 @end

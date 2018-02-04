@@ -13,6 +13,8 @@
 
 @property (nonatomic, weak) UIViewController *presentingViewController;
 
+- (UIViewController *)viewControllerDisplayingError:(NSError *)error;
+
 - (void)presentErrorViewWithError:(NSError *)error inViewController:(UIViewController *)viewController;
 
 @end

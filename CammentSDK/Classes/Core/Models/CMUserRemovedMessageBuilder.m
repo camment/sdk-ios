@@ -8,7 +8,7 @@
 @implementation CMUserRemovedMessageBuilder
 {
   NSString *_userGroupUuid;
-  CMUser *_removedUser;
+  CMUser *_user;
 }
 
 + (instancetype)userRemovedMessage
@@ -20,12 +20,12 @@
 {
   return [[[CMUserRemovedMessageBuilder userRemovedMessage]
            withUserGroupUuid:existingUserRemovedMessage.userGroupUuid]
-          withRemovedUser:existingUserRemovedMessage.removedUser];
+          withUser:existingUserRemovedMessage.user];
 }
 
 - (CMUserRemovedMessage *)build
 {
-  return [[CMUserRemovedMessage alloc] initWithUserGroupUuid:_userGroupUuid removedUser:_removedUser];
+  return [[CMUserRemovedMessage alloc] initWithUserGroupUuid:_userGroupUuid user:_user];
 }
 
 - (instancetype)withUserGroupUuid:(NSString *)userGroupUuid
@@ -34,9 +34,9 @@
   return self;
 }
 
-- (instancetype)withRemovedUser:(CMUser *)removedUser
+- (instancetype)withUser:(CMUser *)user
 {
-  _removedUser = [removedUser copy];
+  _user = [user copy];
   return self;
 }
 

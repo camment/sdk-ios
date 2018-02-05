@@ -1,0 +1,7 @@
+%type name="CMUser"
+
+CMUserGroupStatusChangedMessage includes(RMBuilder) {
+  NSString* userGroupUuid
+  CMUser* user
+  NSString *state
+}

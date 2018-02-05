@@ -13,6 +13,7 @@
 #import "CMCammentStatus.h"
 #import "CMUserRemovedMessageBuilder.h"
 #import "CMAdBannerBuilder.h"
+#import "CMUserContants.h"
 
 @implementation CMServerMessageParser {
 
@@ -57,7 +58,8 @@
                 withCognitoUserId:userJson[@"userCognitoIdentityId"]]
                 withFbUserId:userJson[@"facebookId"]]
                 withUsername:userJson[@"name"]]
-                withUserPhoto:userJson[@"picture"]] build];
+                withUserPhoto:userJson[@"picture"]]
+                build];
 
         CMUsersGroup *group = [[[[CMUsersGroupBuilder new]
                 withUuid:body[@"groupUuid"]]
@@ -80,7 +82,7 @@
         CMUser *user = [[[CMUserBuilder new] withCognitoUserId:body[@"userCognitoIdentityId"]] build];
         CMUserRemovedMessage *userRemovedMessage = [[[[CMUserRemovedMessageBuilder new]
                 withUserGroupUuid:body[@"groupUuid"]]
-                withRemovedUser:user] build];
+                withUser:user] build];
 
         serverMessage = [CMServerMessage userRemovedWithUserRemovedMessage:userRemovedMessage];
     } else if ([type isEqualToString:@"camment-deleted"]) {
@@ -123,6 +125,32 @@
                 withTitle:body[@"title"]]
                 build];
         serverMessage = [CMServerMessage adWithAdBanner:adBanner];
+    } else if ([type isEqualToString:@"user-blocked"]) {
+        NSDictionary *userData = body[@"blockedUser"];
+        CMUser *user = [[[[[CMUserBuilder new]
+                withCognitoUserId:userData[@"userCognitoIdentityId"]]
+                withUsername:userData[@"name"]]
+                withUserPhoto:userData[@"picture"]]
+                build];
+
+        CMUserGroupStatusChangedMessage *message = [[CMUserGroupStatusChangedMessage alloc]
+                initWithUserGroupUuid:body[@"groupUuid"]
+                                user:user
+                                state:CMUserState.Blocked];
+        serverMessage = [CMServerMessage userGroupStatusChangedWithUserGroupStatusChangedMessage:message];
+    } else if ([type isEqualToString:@"user-unblocked"]) {
+        NSDictionary *userData = body[@"unblockedUser"];
+        CMUser *user = [[[[[CMUserBuilder new]
+                withCognitoUserId:userData[@"userCognitoIdentityId"]]
+                withUsername:userData[@"name"]]
+                withUserPhoto:userData[@"picture"]]
+                build];
+
+        CMUserGroupStatusChangedMessage *message = [[CMUserGroupStatusChangedMessage alloc]
+                initWithUserGroupUuid:body[@"groupUuid"]
+                                 user:user
+                                state:CMUserState.Active];
+        serverMessage = [CMServerMessage userGroupStatusChangedWithUserGroupStatusChangedMessage:message];
     }
 
     return serverMessage;

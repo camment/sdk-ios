@@ -13,7 +13,7 @@
 
 - (instancetype)withUserGroupUuid:(NSString *)userGroupUuid;
 
-- (instancetype)withRemovedUser:(CMUser *)removedUser;
+- (instancetype)withUser:(CMUser *)user;
 
 @end
 

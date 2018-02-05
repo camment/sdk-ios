@@ -118,4 +118,15 @@
 
     [self presentViewController:alertController];
 }
+
+- (void)presentMeBlockedInGroupDialog {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.you_are_blocked.title")
+                                                                             message:CMLocalized(@"alert.you_are_blocked.text")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Ok") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+
+    [self presentViewController:alertController];
+}
+
 @end

@@ -15,4 +15,5 @@
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler;
 - (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler;
 
+- (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler;
 @end

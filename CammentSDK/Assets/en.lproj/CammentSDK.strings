@@ -16,7 +16,7 @@
 "help.postponed_onboarding_reminder" = "Start making video camments by tapping here later";
 "help.pull_right_to_invite_friends" = "Pull the sidebar to the → right to invite friends to this chat";
 "help.tap_and_hold_to_delete" = "Tap & hold your camment to delete it";
-"help.continue_onboarding_later" = "Continue onboarding later";
+"help.continue_onboarding_later" = "Continue tutorial later from sidebar";
 "setup.use_camment_chat" = "Would you like to video chat with friends while watching this show?";
 "setup.what_is_camment" = "It’s like SMS group messaging but with mini videos (camments) on top of the show you are now watching";
 "setup.sounds_fun" = "Sounds fun";
@@ -51,10 +51,18 @@
 "alert.left_group.description" = "Group owner has removed you from current conversation";
 
 "alert.confirm_remove_user.title" = "Do you want to remove %@ from the group?";
-"alert.confirm_block_user.title" = "Do you want to block %@ in the group?";
-"alert.confirm_unblock_user.title" = "Do you want to unblock %@ in the group?";
+
+"alert.confirm_block_user.title" = "Block user";
+"alert.confirm_block_user.text" = "Do you want to block %@ in the group?";
+"alert.confirm_unblock_user.title" = "Unblock user";
+"alert.confirm_unblock_user.text" = "Do you want to unblock %@ in the group?";
+
+"alert.you_are_blocked.title" = "You are blocked";
+"alert.you_are_blocked.text" = "Group owner has blocked you from the current conversation";
 
 "toast.user_joined" = "%@ has joined";
+"toast.user_unblocked" = "%@ has been unblocked";
+"toast.user_blocked" = "%@ has been blocked";
 
 "alert.user_joined.title" = "%@ has joined";
 "alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";

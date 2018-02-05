@@ -18,6 +18,9 @@
 #import "CMUsersGroupBuilder.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMUserContants.h"
+#import "NSArray+RacSequence.h"
+#import "CMUserBuilder.h"
 
 @implementation CMServerMessageController
 
@@ -60,9 +63,9 @@
     [message matchUserRemoved:^(CMUserRemovedMessage *userRemovedMessage) {
         shouldPassToObservers = NO;
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
-        [self.groupManagementInteractor removeUser:userRemovedMessage.removedUser.cognitoUserId
+        [self.groupManagementInteractor removeUser:userRemovedMessage.user.cognitoUserId
                                          fromGroup:userRemovedMessage.userGroupUuid];
-        if ([userRemovedMessage.removedUser.cognitoUserId isEqualToString:context.user.cognitoUserId]) {
+        if ([userRemovedMessage.user.cognitoUserId isEqualToString:context.user.cognitoUserId]) {
             [self handleRemovedFromGroupMessage:userRemovedMessage];
         }
     }];
@@ -72,12 +75,47 @@
         if (![context.user.cognitoUserId isEqualToString:camment.userCognitoIdentityId]) {
             [self confirmCammentMessageDelivery:camment.uuid];
         }
+    }];
 
+    [message matchUserGroupStateChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {
+        NSString *userGroupUuid = userGroupStatusChangedMessage.userGroupUuid;
+        if ([userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) {
+            return;
+        }
+
+        CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+
+        if (![context.user.cognitoUserId isEqualToString:userGroupStatusChangedMessage.user.cognitoUserId])
+        {
+            [self handleUserGroupStateChanged:userGroupStatusChangedMessage];
+        } else if ([userGroupStatusChangedMessage.state isEqualToString:CMUserState.Blocked]){
+            [self handleMeBlockedInActiveGroup];
+        }
     }];
 
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
+}
+
+- (void)handleMeBlockedInActiveGroup {
+    [[CammentSDK instance] leaveCurrentChatGroup];
+    [self.notificationPresenter presentMeBlockedInGroupDialog];
+}
+
+- (void)handleUserGroupStateChanged:(CMUserGroupStatusChangedMessage *)message {
+    CMUser *changedUser = message.user;
+    [CMStore instance].activeGroupUsers = [[[CMStore instance] activeGroupUsers] map:^CMUser *(CMUser *user) {
+        if ([changedUser.cognitoUserId isEqualToString:user.cognitoUserId]) {
+            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withState:message.state] build];
+            return updatedUser;
+        }
+        return user;
+    }];
+    [[CMStore instance] refetchUsersInActiveGroup];
+    NSString *username = message.user.username;
+    NSString *notificationTemplate = [message.state isEqualToString:CMUserState.Active] ? CMLocalized(@"toast.user_unblocked") : CMLocalized(@"toast.user_blocked");
+    [self.notificationPresenter showToastMessage:[NSString stringWithFormat:notificationTemplate, username]];
 }
 
 - (void)handleFriendJoinedMessage:(CMUserJoinedMessage *)message shouldShowToast:(BOOL)showToast {

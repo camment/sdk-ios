@@ -5,6 +5,7 @@
 %type name="CMMembershipAcceptedMessage"
 %type name="CMUserRemovedMessage"
 %type name="CMAdBanner"
+%type name="CMUserGroupStatusChangedMessage"
 
 CMServerMessage includes(RMBuilder) {
   camment {
@@ -27,5 +28,8 @@ CMServerMessage includes(RMBuilder) {
   }
   ad {
     CMAdBanner *adBanner
+  }
+  userGroupStatusChanged {
+    CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage
   }
 }

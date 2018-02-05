@@ -205,8 +205,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)useCell:(CMGroupInfoUserCell *)cell didHandleBlockUserAction:(CMUser *)userToBlock {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"alert.confirm_block_user.title"), userToBlock.username]
-                                                                             message:@""
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.confirm_block_user.title")
+                                                                             message:[NSString stringWithFormat:CMLocalized(@"alert.confirm_block_user.text"), userToBlock.username]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
@@ -228,8 +228,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)useCell:(CMGroupInfoUserCell *)cell didHandleUnblockUserAction:(CMUser *)userToUnblock {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"alert.confirm_unblock_user.title"), userToUnblock.username]
-                                                                             message:@""
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.confirm_unblock_user.title")
+                                                                             message:[NSString stringWithFormat:CMLocalized(@"alert.confirm_unblock_user.text"), userToUnblock.username]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {

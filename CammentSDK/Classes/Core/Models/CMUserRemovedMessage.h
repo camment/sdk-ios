@@ -9,9 +9,9 @@
 @interface CMUserRemovedMessage : NSObject <NSCopying>
 
 @property (nonatomic, readonly, copy) NSString *userGroupUuid;
-@property (nonatomic, readonly, copy) CMUser *removedUser;
+@property (nonatomic, readonly, copy) CMUser *user;
 
-- (instancetype)initWithUserGroupUuid:(NSString *)userGroupUuid removedUser:(CMUser *)removedUser;
+- (instancetype)initWithUserGroupUuid:(NSString *)userGroupUuid user:(CMUser *)user;
 
 @end
 

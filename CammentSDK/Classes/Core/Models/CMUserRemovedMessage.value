@@ -2,5 +2,5 @@
 
 CMUserRemovedMessage includes(RMBuilder) {
   NSString* userGroupUuid
-  CMUser* removedUser
+  CMUser* user
 }

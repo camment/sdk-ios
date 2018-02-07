@@ -79,7 +79,7 @@
 
     [message matchUserGroupStateChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {
         NSString *userGroupUuid = userGroupStatusChangedMessage.userGroupUuid;
-        if ([userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) {
+        if (![userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) {
             return;
         }
 
@@ -100,6 +100,7 @@
 
 - (void)handleMeBlockedInActiveGroup {
     [[CammentSDK instance] leaveCurrentChatGroup];
+    
     [self.notificationPresenter presentMeBlockedInGroupDialog];
 }
 

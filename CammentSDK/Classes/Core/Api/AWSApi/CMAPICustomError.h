@@ -23,4 +23,7 @@
 @property (nonatomic, strong, nullable) NSString *message;
 
 
+@property (nonatomic, strong, nullable) NSNumber *statusCode;
+
+
 @end

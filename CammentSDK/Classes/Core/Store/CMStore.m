@@ -273,6 +273,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 - (void)cleanUpCurrentChatGroup {
     self.activeGroup = nil;
     self.activeGroupUsers = @[];
+    [[self reloadActiveGroupSubject] sendNext:@YES];
 }
 
 - (void)refetchUsersInActiveGroup {

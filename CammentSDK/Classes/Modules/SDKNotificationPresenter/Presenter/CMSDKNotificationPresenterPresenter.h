@@ -20,7 +20,4 @@
 @property (nonatomic, weak) id<CMCammentSDKUIDelegate> output;
 @property (nonatomic) id<CMSDKNotificationPresenterInteractorInput> interactor;
 
-- (void)presentUsersAreJoiningMessage:(CMUserJoinedMessage *)message;
-
-- (void)presentMeBlockedInGroupDialog;
 @end

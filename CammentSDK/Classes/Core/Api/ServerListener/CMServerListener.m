@@ -104,16 +104,16 @@
 
 - (void)subscribeToNewIdentity:(NSString *)newIdentity {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (self.cognitoUuid) {
+        if (![self.cognitoUuid isEqualToString:newIdentity]) {
             NSString *oldChannel = [NSString stringWithFormat:@"camment/user/%@", self.cognitoUuid];
             [_dataManager unsubscribeTopic:oldChannel];
             DDLogInfo(@"Unsubscribed from %@", oldChannel);
         }
-        
+
         if (newIdentity) {
             NSString *newChannel = [NSString stringWithFormat:@"camment/user/%@", newIdentity];
             [_dataManager subscribeToTopic:newChannel
-                                       QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtMostOnce
+                                       QoS:AWSIoTMQTTQoSMessageDeliveryAttemptedAtLeastOnce
                            messageCallback:^(NSData *data) {
                                [self processMessage:data];
                            }];

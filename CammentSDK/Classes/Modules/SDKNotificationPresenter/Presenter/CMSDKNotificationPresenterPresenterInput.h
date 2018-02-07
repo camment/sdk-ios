@@ -25,4 +25,6 @@
 - (void)presentInvitationToChatByLinkInClipboard:(NSURL *)url onJoin:(void (^)(void))onJoin;
 - (void)presentLoginAlert:(NSString *)reason onLogin:(void (^)(void))onLogin onCancel:(void (^)(void))onCancel;
 - (void)presentRemovedFromGroupAlert:(CMUserRemovedMessage *)message;
+- (void)presentUsersAreJoiningMessage:(CMUserJoinedMessage *)message;
+- (void)presentMeBlockedInGroupDialog;
 @end

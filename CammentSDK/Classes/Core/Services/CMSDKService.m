@@ -40,6 +40,7 @@
 #import "CMOpenURLHelper.h"
 #import "CMServerMessageController.h"
 #import "CMInvitation.h"
+#import "CMErrorWireframe.h"
 
 @interface CMSDKService () <CMGroupManagementInteractorOutput>
 
@@ -494,12 +495,37 @@
                         });
                     }
                 } else {
-#warning show error if could not get user group info
+                    NSDictionary* userInfo = t.error.userInfo[@"HTTPBody"];
+                    NSNumber *statusCode = userInfo[@"statusCode"];
+                    if (statusCode && statusCode.integerValue == 403) {
+                        [weakSelf.notificationPresenter presentMeBlockedInGroupDialog];
+                    } else {
+                        CMErrorWireframe* errorWireframe = [CMErrorWireframe new];
+                        UIViewController *viewController = [errorWireframe viewControllerDisplayingError:t.error];
+                        if (!viewController) {
+                            [errorWireframe presentErrorViewWithError:t.error
+                                                     inViewController:nil];
+                        } else {
+                            [self.sdkUIDelegate cammentSDKWantsPresentViewController:viewController];
+                        }
+                    }
                 }
                 return nil;
             }];
         } else {
-#warning show error if could not create a task
+            NSError *error = [NSError errorWithDomain:@"tv.camment.ios"
+                                                 code:0
+                                             userInfo:@{
+                                                NSLocalizedFailureReasonErrorKey: @"Could not join to the group. Check your internet connection and try again later."
+                                             }];
+            CMErrorWireframe* errorWireframe = [CMErrorWireframe new];
+            UIViewController *viewController = [errorWireframe viewControllerDisplayingError:error];
+            if (!viewController) {
+                [errorWireframe presentErrorViewWithError:error
+                                         inViewController:nil];
+            } else {
+                [self.sdkUIDelegate cammentSDKWantsPresentViewController:viewController];
+            }
         }
     } else {
         [self.onSignedInOperationsQueue setSuspended:YES];
@@ -521,12 +547,12 @@
     tmpDirectory = [tmpDirectory.rac_sequence filter:^BOOL(NSString *_Nullable value) {
         return [value hasSuffix:@".mp4"];
     }].array ?: @[];
-    DDLogInfo(@"Cleaned up %d cache files", tmpDirectory.count);
+    DDLogInfo(@"Cleaned up %lu cache files", (unsigned long)tmpDirectory.count);
     for (NSString *file in tmpDirectory) {
         NSError *error;
         [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@%@", NSTemporaryDirectory(), file] error:&error];
         if (error) {
-            DDLogError(@"error on cleaning up cache", error);
+            DDLogError(@"error on cleaning up cache %@", error);
         }
     }
 }

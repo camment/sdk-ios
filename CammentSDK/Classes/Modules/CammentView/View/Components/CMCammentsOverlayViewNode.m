@@ -4,20 +4,17 @@
 //
 
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentsOverlayViewNode.h"
 #import "CMCammentsBlockNode.h"
 #import "CMCammentButton.h"
 #import "CMCammentRecorderPreviewNode.h"
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMAdsVideoPlayerNode.h"
-#import "ASDimension.h"
 #import "CMGroupInfoNode.h"
 #import "UIColorMacros.h"
-#import "RACSubscriptingAssignmentTrampoline.h"
-#import "NSObject+RACPropertySubscribing.h"
 #import "POPSpringAnimation.h"
 #import "CMTouchTransparentView.h"
-#import "../../../../../../../../../../Library/Developer/Xcode/DerivedData/camment-euicrgcrbvpqhtfvpfgljctkzjpl/Build/Products/Debug-iphoneos/ReactiveObjC/ReactiveObjC.framework/Headers/RACSignal.h"
 
 @interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 

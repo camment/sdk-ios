@@ -159,6 +159,7 @@
 
 - (void)setupBindings {
     [[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *state) {
+        if (![self.presenter isCameraSessionConfigured]) { return; }
         self.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
         [self.node transitionLayoutWithAnimation:YES
                               shouldMeasureAsync:NO

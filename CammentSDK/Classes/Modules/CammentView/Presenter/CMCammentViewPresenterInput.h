@@ -31,6 +31,9 @@
 - (void)setupCameraSession;
 
 - (void)deleteCammentAction:(CMCamment *)camment;
+
+- (BOOL)isCameraSessionConfigured;
+
 @end
 
 @protocol CMOnboardingInteractorInput <NSObject>

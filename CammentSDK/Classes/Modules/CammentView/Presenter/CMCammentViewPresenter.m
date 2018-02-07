@@ -221,7 +221,7 @@
     [skippedReminder setEnterBlock:^(id data) {
         [[CMStore instance] setIsOnboardingSkipped:YES];
         [self.output updateContinueTutorialButtonState];
-        [self.output hideSkipTutorialButton];
+        [self.output hideSkipTutorialButton:NO];
         [self.output showOnboardingAlert:CMOnboardingAlertSkippedOnboardingReminder];
     }];
 
@@ -300,7 +300,7 @@
                                              kind:TBSMTransitionExternal
                                            action:^(id data) {
                                                [self.output hideOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
-                                               [self.output hideSkipTutorialButton];
+                                               [self.output hideSkipTutorialButton: YES];
                                                [CMStore instance].isOnboardingFinished = YES;
                                            }];
 

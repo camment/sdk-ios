@@ -432,10 +432,16 @@
     [self.sidebarWireframe.presenter reloadData];
 }
 
-- (void)hideSkipTutorialButton {
+- (void)hideSkipTutorialButton:(BOOL)onboardingFinished {
     self.node.showSkipTutorialButton = NO;
     [self.node.skipTutorialButton setNeedsLayout];
-    [self.node playSidebarJumpingAnimation];
+    if (onboardingFinished) {
+        [self.node transitionLayoutWithAnimation:YES
+                              shouldMeasureAsync:NO
+                           measurementCompletion:nil];
+    } else {
+        [self.node playSidebarJumpingAnimation];
+    }
 }
 
 - (void)closeSidebarIfOpened:(void (^)())completion {

@@ -48,6 +48,7 @@ typedef NS_OPTIONS(NSInteger, CMCammentActionsMask) {
 
 - (void)updateContinueTutorialButtonState;
 - (void)showSkipTutorialButton;
-- (void)hideSkipTutorialButton;
+
+- (void)hideSkipTutorialButton:(BOOL)onboardingFinished;
 
 @end

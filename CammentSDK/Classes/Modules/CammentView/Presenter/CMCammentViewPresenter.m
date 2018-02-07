@@ -300,6 +300,7 @@
                                              kind:TBSMTransitionExternal
                                            action:^(id data) {
                                                [self.output hideOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+                                               [self.output hideSkipTutorialButton];
                                                [CMStore instance].isOnboardingFinished = YES;
                                            }];
 

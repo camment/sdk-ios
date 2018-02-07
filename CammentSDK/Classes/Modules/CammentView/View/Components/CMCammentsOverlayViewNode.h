@@ -26,6 +26,7 @@
 
 @property(nonatomic, weak) UIView* contentView;
 @property(nonatomic, strong, readonly) ASDisplayNode* contentNode;
+@property(nonatomic, strong, readonly) ASDisplayNode* backgroundNode;
 @property(nonatomic, strong, readonly) CMCammentsBlockNode *cammentsBlockNode;
 @property(nonatomic, strong) CMGroupInfoNode *leftSidebarNode;
 @property(nonatomic, strong, readonly) CMCammentRecorderPreviewNode *cammentRecorderNode;

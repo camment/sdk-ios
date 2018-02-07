@@ -16,6 +16,8 @@
 #import "RACSubscriptingAssignmentTrampoline.h"
 #import "NSObject+RACPropertySubscribing.h"
 #import "POPSpringAnimation.h"
+#import "CMTouchTransparentView.h"
+#import "../../../../../../../../../../Library/Developer/Xcode/DerivedData/camment-euicrgcrbvpqhtfvpfgljctkzjpl/Build/Products/Debug-iphoneos/ReactiveObjC/ReactiveObjC.framework/Headers/RACSignal.h"
 
 @interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 
@@ -37,6 +39,13 @@
         self.layoutConfig = layoutConfig;
 
         _cammentsBlockNode = [CMCammentsBlockNode new];
+        _backgroundNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
+            return [CMTouchTransparentView new];
+        } didLoadBlock:^(__kindof ASDisplayNode * _Nonnull node) {
+            UIView *view = node.view;
+            view.alpha = 0.8;
+            view.backgroundColor = [UIColor clearColor];
+        }];
         _leftSidebarNode = [ASDisplayNode new];
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
@@ -69,7 +78,9 @@
         self.showSkipTutorialButton = NO;
         [self updateLeftSideBarMenuLeftInset];
 
-        RAC(_skipTutorialButton, alpha) = RACObserve(_cammentButton, alpha);
+        RAC(_skipTutorialButton, alpha) = [RACObserve(_cammentButton, alpha) map:^NSNumber *(NSNumber *value) {
+            return @(value.floatValue - 0.2f);
+        }];
 
         self.automaticallyManagesSubnodes = YES;
     }
@@ -139,6 +150,9 @@
     self.contentNode.style.width = ASDimensionMake(constrainedSize.max.width);
     self.contentNode.style.height = ASDimensionMake(constrainedSize.max.height);
 
+    self.backgroundNode.style.width = ASDimensionMake(constrainedSize.max.width + self.layoutConfig.leftSidebarWidth);
+    self.backgroundNode.style.height = ASDimensionMake(constrainedSize.max.height);
+
     ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
     ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
 
@@ -158,20 +172,15 @@
 
     leftColumnStack.style.width = ASDimensionMake(_leftSidebarNode.style.width.value + camentBlockLayoutSpec.style.width.value);
     CGFloat leftLayoutInset = 0.0f;
-    CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value;
-    if (_showCammentsBlock) {
-        leftColumnStackOffset = -_leftSidebarNode.style.width.value;
-    }
-
-    if (_showLeftSidebarNode) {
-        leftColumnStackOffset = .0f;
-    }
-
-    leftColumnStackOffset = -leftColumnStack.style.width.value + self.leftSideBarMenuLeftInset;
+    CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value + self.leftSideBarMenuLeftInset;
 
     ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
                                 child:leftColumnStack];
+
+    ASInsetLayoutSpec *backgroundNodeLayout = [ASInsetLayoutSpec
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
+                                child:_backgroundNode];
 
     _cammentsBlockNode.style.height = ASDimensionMake(
             [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
@@ -186,7 +195,7 @@
                                 children:@[cammentsBlockLayout]];
 
     stackLayoutSpec.style.height = self.contentNode.style.height;
-    ASInsetLayoutSpec *stackLayoutInsetSpec = [ASInsetLayoutSpec
+    ASLayoutSpec *stackLayoutInsetSpec = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftLayoutInset, .0f, INFINITY)
                                 child:stackLayoutSpec];
 
@@ -207,6 +216,10 @@
                                                                                        INFINITY, INFINITY)
                                                                                                                       child:_adsVideoPlayerNode]];
     }
+
+    cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
+                                                                   overlay:backgroundNodeLayout];
+
     return cammentsBlockOverlay;
 }
 
@@ -318,6 +331,7 @@
                          }
 
                          self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
+                         self.backgroundNode.frame = [context finalFrameForNode:self.backgroundNode];
 
                          if (self.contentNode) {
                              self.contentNode.frame = [context finalFrameForNode:self.contentNode];

@@ -51,11 +51,16 @@
         BOOL shouldShowToast = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
             return ![value.cognitoUserId isEqualToString:context.user.cognitoUserId];
         }].array.count > 0;
+
         [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
         
         if (imJoining) {
             [self handleUserJoinedMessage:userJoinedMessage shouldTriggerDelegate:shouldTriggerDelegate];
         } else {
+            
+            if (![userJoinedMessage.usersGroup.ownerCognitoUserId isEqualToString:context.user.cognitoUserId]) {
+                shouldShowToast = YES;
+            }
             [self handleFriendJoinedMessage:userJoinedMessage shouldShowToast:shouldShowToast];
         }
     }];

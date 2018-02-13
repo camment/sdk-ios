@@ -330,7 +330,10 @@
 }
 
 - (void)checkIfNeedForOnboarding {
-    if (![CMStore instance].isOnboardingFinished && !self.onboardingWasStarted && ![CMStore instance].isOnboardingSkipped) {
+    if (![CMStore instance].isOnboardingFinished
+            && !self.onboardingWasStarted
+            && ![CMStore instance].isOnboardingSkipped
+            && [CMStore instance].activeGroup == nil) {
         [self.output askForSetupPermissions];
     } else if (!self.isCameraSessionConfigured) {
         [self setupCameraSession];

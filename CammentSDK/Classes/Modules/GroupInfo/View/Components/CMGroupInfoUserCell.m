@@ -68,7 +68,30 @@
         [self.unblockUserButtonNode addTarget:self
                                      action:@selector(didHandleUnblockUserAction)
                            forControlEvents:ASControlNodeEventTouchUpInside];
-        
+
+        if (self.user.state == CMUserState.Blocked) {
+            self.usernameNode.alpha = .3f;
+            self.userpicImageNode.alpha = .5;
+            self.userpicImageNode.imageModificationBlock = ^UIImage *(UIImage *image) {
+
+                CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
+                CIContext *context = [CIContext contextWithOptions:nil];
+
+                CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
+                [filter setValue:inputImage forKey:kCIInputImageKey];
+                [filter setValue:@(0.0) forKey:kCIInputSaturationKey];
+
+                CIImage *outputImage = filter.outputImage;
+
+                CGImageRef cgImageRef = [context createCGImage:outputImage fromRect:outputImage.extent];
+
+                UIImage *result = [UIImage imageWithCGImage:cgImageRef];
+                CGImageRelease(cgImageRef);
+
+                return result;
+            };
+        }
+
         self.automaticallyManagesSubnodes = YES;
     }
 

@@ -137,8 +137,8 @@
 }
 
 - (void)openUserProfile {
-    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMUserSessionController instance].user.fbUserId]];
-    [[CMOpenURLHelper new] openURL:url];
+//    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMUserSessionController instance].user.fbUserId]];
+//    [[CMOpenURLHelper new] openURL:url];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {

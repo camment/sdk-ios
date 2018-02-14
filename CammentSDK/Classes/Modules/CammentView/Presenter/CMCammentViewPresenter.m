@@ -606,6 +606,12 @@
         return;
     }
 
+    if (!([CMStore instance].isOnboardingFinished || [CMStore instance].isOnboardingSkipped)
+        && self.onboardingWasStarted
+        && ![self.onboardingStateMachine.currentState.name isEqualToString:CMOnboardingState.TapAndHoldToDeleteCamment]) {
+        return;
+    }
+    
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
     if (([cammentCell.displayingContext.camment.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId])
             || (self.userSessionController.user.cognitoUserId == nil && cammentCell.displayingContext.camment.userCognitoIdentityId == nil))
@@ -667,7 +673,8 @@
         NSString *textToShare = [CMStore instance].currentShowMetadata.invitationText;
         NSURL *url = [NSURL URLWithString:link];
 
-        NSArray *objectsToShare = @[textToShare, url];
+        NSString *shareString = [NSString stringWithFormat:@"%@ %@", textToShare, url.absoluteString];
+        NSArray *objectsToShare = @[shareString];
 
         UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare
                                                                                  applicationActivities:nil];

@@ -238,6 +238,7 @@
 
     [tapAndHoldToRecordCamment setEnterBlock:^(id data) {
         [[CMStore instance] setIsOnboardingSkipped:NO];
+        [self.output setDisableHiddingCammentBlock:YES];
         [self.output updateContinueTutorialButtonState];
         [self.output closeSidebarIfOpened:^{
             [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
@@ -245,6 +246,10 @@
         }];
     }];
 
+    [tapAndHoldToRecordCamment setExitBlock:^(id data) {
+        [self.output setDisableHiddingCammentBlock:NO];
+    }];
+    
     [tapAndHoldToRecordCamment addHandlerForEvent:CMOnboardingEvent.CammentRecorded
                                          target:tapToPlayCamment
                                            kind:TBSMTransitionExternal
@@ -303,6 +308,14 @@
                                                [self.output hideSkipTutorialButton: YES];
                                                [CMStore instance].isOnboardingFinished = YES;
                                            }];
+
+    [pullRightToInviteFriends setEnterBlock:^(id data) {
+        [self.output setDisableHiddingCammentBlock:YES];
+    }];
+
+    [pullRightToInviteFriends setExitBlock:^(id data) {
+        [self.output setDisableHiddingCammentBlock:NO];
+    }];
 
     self.onboardingStateMachine = [TBSMStateMachine stateMachineWithName:@"Onboarding"];
     self.onboardingStateMachine.states = @[

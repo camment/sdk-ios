@@ -104,7 +104,7 @@
     CGRect frame = self.frame;
     frame.size = size;
 
-    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+    [UIView animateWithDuration: self.defaultLayoutTransitionDuration
                           delay: self.defaultLayoutTransitionDelay
                         options: self.defaultLayoutTransitionOptions
                      animations:^{

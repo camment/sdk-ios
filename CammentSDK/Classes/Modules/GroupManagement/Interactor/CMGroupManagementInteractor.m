@@ -61,7 +61,7 @@
             [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventRemovedFromGroup];
         } else {
             self.store.activeGroupUsers = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
-                return [value.cognitoUserId isEqualToString:userUuid];
+                return ![value.cognitoUserId isEqualToString:userUuid];
             }].array;
         }
     }

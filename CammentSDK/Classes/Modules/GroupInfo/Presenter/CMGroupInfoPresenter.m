@@ -25,7 +25,9 @@
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
+    CMGroupInfoSectionUserProfileWithLeaveGroupButton,
     CMGroupInfoSectionUserProfileWithInviteButton,
+    CMGroupInfoSectionUserProfileWithInviteButtonLeaveGroupButton,
     CMGroupInfoInviteFriendsSection,
     CMGroupInfoInviteFriendsSectionWithContinueTutorialButton,
     CMGroupInfoFriendsHeaderSection,
@@ -38,6 +40,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 @property(nonatomic) NSArray<CMUser *> *users;
 @property(nonatomic) BOOL showProfileInfo;
 @property(nonatomic) BOOL haveUserDeletionPermissions;
+@property(nonatomic) BOOL canLeaveTheGroup;
 
 @end
 
@@ -62,7 +65,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                     self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
 
                     CMUsersGroup *group = tuple.second;
-                    self.haveUserDeletionPermissions = [group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
+                    self.haveUserDeletionPermissions = group && [group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
+                    self.canLeaveTheGroup = group && ![group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
                     [self reloadData];
                 }];
 
@@ -101,9 +105,13 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     }];
 
     if (self.showProfileInfo) {
-        [items addObject:@(self.users.count == 0 ? CMGroupInfoSectionUserProfile : CMGroupInfoSectionUserProfileWithInviteButton)];
+        if (self.users.count == 0) {
+            [items addObject:@(_canLeaveTheGroup ? CMGroupInfoSectionUserProfileWithLeaveGroupButton : CMGroupInfoSectionUserProfile)];
+        } else {
+            [items addObject:@(_canLeaveTheGroup ? CMGroupInfoSectionUserProfileWithInviteButtonLeaveGroupButton : CMGroupInfoSectionUserProfileWithInviteButton)];
+        }
     }
-    
+
     if (self.users.count == 0) {
         [items addObject:@([CMStore instance].isOnboardingSkipped ? CMGroupInfoInviteFriendsSectionWithContinueTutorialButton : CMGroupInfoInviteFriendsSection)];
     } else {
@@ -155,10 +163,17 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     if ([model isKindOfClass:[NSNumber class]]) {
         CMGroupInfoSection section = (CMGroupInfoSection) [model integerValue];
         switch (section) {
+            case CMGroupInfoSectionUserProfileWithLeaveGroupButton:
+            case CMGroupInfoSectionUserProfileWithInviteButtonLeaveGroupButton:
             case CMGroupInfoSectionUserProfile:
             case CMGroupInfoSectionUserProfileWithInviteButton: {
                 CMProfileViewNodeContext *context = [CMProfileViewNodeContext new];
                 context.shouldDisplayInviteFriendsButton = self.users.count > 0;
+                context.shouldDisplayLeaveGroupButton = self.canLeaveTheGroup;
+                __weak typeof(self) weakSelf = self;
+                context.onLeaveGroupBlock = ^{
+                    [weakSelf leaveTheGroup];
+                };
                 context.delegate = self;
 
                 cellNodeBlock = ^ASCellNode *() {
@@ -183,7 +198,6 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 };
                 break;
             }
-
         }
     } else {
         CMUser *user = model;
@@ -428,4 +442,12 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
              didUnblockUser:(CMUser *)user
                       group:(CMUsersGroup *)group {}
 
+- (void)leaveTheGroup {
+    __weak typeof(self) weakSelf = self;
+    [self.output presentConfirmationDialogToLeaveTheGroup:^{
+        CMAuthStatusChangedEventContext *authStatusChangedEventContext = [CMStore instance].authentificationStatusSubject.first;
+        [weakSelf.interactor deleteUser:authStatusChangedEventContext.user
+                             fromGroup:[CMStore instance].activeGroup];
+    }];
+}
 @end

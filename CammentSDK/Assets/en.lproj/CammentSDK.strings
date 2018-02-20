@@ -57,16 +57,21 @@
 "alert.confirm_unblock_user.title" = "Unblock user";
 "alert.confirm_unblock_user.text" = "Do you want to unblock %@ in the group?";
 
+"alert.confirm_leave_group.title" = "Leave group";
+"alert.confirm_leave_group.text" = "Do you want to leave the group?";
+
 "alert.you_are_blocked.title" = "You are blocked";
-"alert.you_are_blocked.text" = "Group owner has blocked you from the current conversation";
+"alert.you_are_blocked.text" = "Group owner has blocked you from the current group";
 
 "toast.user_joined" = "%@ has joined";
 "toast.user_unblocked" = "%@ has been unblocked";
 "toast.user_blocked" = "%@ has been blocked";
+"toast.user_left" = "%@ left the group";
 
 "alert.user_joined.title" = "%@ has joined";
 "alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";
 
 "button.invite_friends" = "Invite friends";
 "button.continue_tutorial" = "Continue tutorial";
+"button.leave_group" = "Leave group";
 "onboarding.skip_tutorial" = "Skip tutorial";

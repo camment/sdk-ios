@@ -76,6 +76,11 @@
     }
 }
 
+- (void)didExitHierarchy {
+    [super didExitHierarchy];
+    [_videoPlayerNode pause];
+}
+
 - (void)setVideoAsset {
     if (_camment.localAsset) {
         return;

@@ -9,12 +9,12 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-#import "CMSDKNotificationPresenterPresenter.h"
+#import "CMSDKNotificationPresenter.h"
 #import "CMSDKNotificationPresenterInteractor.h"
 
 @interface CMSDKNotificationPresenterWireframe : NSObject
 
 
-+ (CMSDKNotificationPresenterPresenter *)defaultPresenter;
++ (CMSDKNotificationPresenter *)defaultPresenter;
 
 @end

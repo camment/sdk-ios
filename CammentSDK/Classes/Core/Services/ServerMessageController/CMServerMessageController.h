@@ -10,7 +10,7 @@
 
 @class CMServerMessage;
 @class RACSubject;
-@class CMSDKNotificationPresenterPresenter;
+@class CMSDKNotificationPresenter;
 @protocol CMCammentSDKDelegate;
 @class CMStore;
 @class CMGroupManagementInteractor;
@@ -18,11 +18,11 @@
 @interface CMServerMessageController : NSObject <CMGroupManagementInteractorOutput>
 
 @property(nonatomic, weak) id <CMCammentSDKDelegate> sdkDelegate;
-@property(nonatomic, strong) CMSDKNotificationPresenterPresenter *notificationPresenter;
+@property(nonatomic, strong) CMSDKNotificationPresenter *notificationPresenter;
 @property(nonatomic, strong) CMStore *store;
 @property(nonatomic, strong) CMGroupManagementInteractor *groupManagementInteractor;
 
-- (instancetype)initWithSdkDelegate:(id <CMCammentSDKDelegate>)sdkDelegate notificationPresenter:(CMSDKNotificationPresenterPresenter *)notificationPresenter store:(CMStore *)store groupManagementInteractor:(CMGroupManagementInteractor *)groupManagementInteractor;
+- (instancetype)initWithSdkDelegate:(id <CMCammentSDKDelegate>)sdkDelegate notificationPresenter:(CMSDKNotificationPresenter *)notificationPresenter store:(CMStore *)store groupManagementInteractor:(CMGroupManagementInteractor *)groupManagementInteractor;
 
 - (void)handleServerMessage:(CMServerMessage *)message;
 

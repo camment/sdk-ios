@@ -249,7 +249,7 @@
     [tapAndHoldToRecordCamment setExitBlock:^(id data) {
         [self.output setDisableHiddingCammentBlock:NO];
     }];
-    
+
     [tapAndHoldToRecordCamment addHandlerForEvent:CMOnboardingEvent.CammentRecorded
                                          target:tapToPlayCamment
                                            kind:TBSMTransitionExternal
@@ -636,6 +636,10 @@
 
 - (void)deleteCammentAction:(CMCamment *)camment {
     CMCammentsBlockItem *cammentsBlockItem = [CMCammentsBlockItem cammentWithCamment:camment];
+    if ([[CMStore instance].playingCammentId isEqualToString:camment.uuid]) {
+        [CMStore instance].playingCammentId = kCMStoreCammentIdIfNotPlaying;
+    }
+
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
     [self.interactor deleteCament:camment];
     [self sendOnboardingEvent:CMOnboardingEvent.CammentDeleted];

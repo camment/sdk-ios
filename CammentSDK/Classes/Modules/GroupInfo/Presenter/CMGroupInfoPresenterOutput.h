@@ -12,4 +12,5 @@
 
 - (void)presentViewController:(UIViewController *)viewController;
 
+- (void)presentConfirmationDialogToLeaveTheGroup:(void (^)())onConfirmed;
 @end

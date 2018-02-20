@@ -4,12 +4,16 @@
 
 #import "CMSettingsNode.h"
 #import "UIColorMacros.h"
+#import "CMInviteFriendsButton.h"
 
 
 @interface CMSettingsNode ()
+
 @property(nonatomic, strong) ASTextNode *infoTextNode;
 @property(nonatomic, strong) ASButtonNode *logoutButton;
+@property(nonatomic, strong) CMLeaveGroupButton *leaveGroupButton;
 @property(nonatomic, strong) ASButtonNode *closeButton;
+
 @end
 
 @implementation CMSettingsNode {
@@ -45,9 +49,20 @@
                                                                                    NSForegroundColorAttributeName: [UIColor blackColor],
                                                                                    NSParagraphStyleAttributeName: mutableParagraphStyle
                                                                            }];
+        self.leaveGroupButton = [CMLeaveGroupButton new];
+        [self.leaveGroupButton addTarget:self
+                                  action:@selector(leaveGroupAction)
+                        forControlEvents:ASControlNodeEventTouchUpInside];
         self.automaticallyManagesSubnodes = YES;
     }
     return self;
+}
+
+- (void)leaveGroupAction {
+    id <CMSettingsNodeDelegate> o = self.delegate;
+    if ([o respondsToSelector:@selector(settingsNodeDidLeaveTheGroup:)]) {
+        [o settingsNodeDidLeaveTheGroup:self];
+    }
 }
 
 - (void)didLoad {
@@ -74,11 +89,21 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
 
+    NSMutableArray *children = [NSMutableArray arrayWithArray:@[
+            _infoTextNode,
+            _logoutButton
+    ]];
+
+    if (_shouldDisplayLeaveGroup) {
+        [children addObject:_leaveGroupButton];
+    }
+
     ASStackLayoutSpec *centerStack = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                              spacing:8.0f
                                                                       justifyContent:ASStackLayoutJustifyContentCenter
-                                                                          alignItems:ASStackLayoutAlignItemsCenter
-                                                                            children:@[_infoTextNode, _logoutButton]];
+                                                                          alignItems:ASStackLayoutAlignItemsStretch
+                                                                            children:children];
+
     ASInsetLayoutSpec *componentsStack = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(28.0f, 32.0f, 32.0f, 28.0f)
                                                                                 child:centerStack];
 

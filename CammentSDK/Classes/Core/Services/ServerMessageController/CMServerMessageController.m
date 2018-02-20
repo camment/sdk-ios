@@ -9,7 +9,7 @@
 #import "CMServerMessage.h"
 #import "RACSubject.h"
 #import "CammentSDK.h"
-#import "CMSDKNotificationPresenterPresenter.h"
+#import "CMSDKNotificationPresenter.h"
 #import "CMStore.h"
 #import "CMAuthStatusChangedEventContext.h"
 #import "CMServerMessage+TypeMatching.h"
@@ -25,7 +25,7 @@
 @implementation CMServerMessageController
 
 - (instancetype)initWithSdkDelegate:(id <CMCammentSDKDelegate>)sdkDelegate
-              notificationPresenter:(CMSDKNotificationPresenterPresenter *)notificationPresenter
+              notificationPresenter:(CMSDKNotificationPresenter *)notificationPresenter
                               store:(CMStore *)store
           groupManagementInteractor:(CMGroupManagementInteractor *)groupManagementInteractor {
     self = [super init];
@@ -57,7 +57,6 @@
         if (imJoining) {
             [self handleUserJoinedMessage:userJoinedMessage shouldTriggerDelegate:shouldTriggerDelegate];
         } else {
-            
             if (![userJoinedMessage.usersGroup.ownerCognitoUserId isEqualToString:context.user.cognitoUserId]) {
                 shouldShowToast = YES;
             }
@@ -70,7 +69,7 @@
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
         [self.groupManagementInteractor removeUser:userRemovedMessage.user.cognitoUserId
                                          fromGroup:userRemovedMessage.userGroupUuid];
-        if ([userRemovedMessage.user.cognitoUserId isEqualToString:context.user.cognitoUserId]) {
+        if (![userRemovedMessage.user.cognitoUserId isEqualToString:context.user.cognitoUserId]) {
             [self handleRemovedFromGroupMessage:userRemovedMessage];
         }
     }];
@@ -138,7 +137,7 @@
     [[[CMAPIDevcammentClient defaultAPIClient] cammentsCammentUuidPost:uuid]
             continueWithBlock:^id(AWSTask<id> *t) {
                 if (t.error) {
-                    DDLogError(@"Coudn't confirm camment delivery, error :%@", t.error);
+                    DDLogError(@"Couldn't confirm camment delivery, error :%@", t.error);
                 }
                 return nil;
             }];

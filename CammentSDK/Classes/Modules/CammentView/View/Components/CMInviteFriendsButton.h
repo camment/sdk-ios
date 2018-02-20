@@ -11,3 +11,6 @@
 
 @interface CMContinueTutorialButton : ASButtonNode
 @end
+
+@interface CMLeaveGroupButton : ASButtonNode
+@end

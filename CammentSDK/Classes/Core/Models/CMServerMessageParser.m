@@ -79,7 +79,10 @@
 
         serverMessage = [CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage];
     } else if ([type isEqualToString:@"user-removed"]) {
-        CMUser *user = [[[CMUserBuilder new] withCognitoUserId:body[@"userCognitoIdentityId"]] build];
+        NSDictionary *removedUser = body[@"removedUser"];
+        CMUser *user = [[[[CMUserBuilder new]
+                         withCognitoUserId:removedUser[@"userCognitoIdentityId"]]
+                         withUsername:removedUser[@"name"]] build];
         CMUserRemovedMessage *userRemovedMessage = [[[[CMUserRemovedMessageBuilder new]
                 withUserGroupUuid:body[@"groupUuid"]]
                 withUser:user] build];

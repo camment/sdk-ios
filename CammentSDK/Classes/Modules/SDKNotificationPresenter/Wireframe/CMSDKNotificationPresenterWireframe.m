@@ -11,9 +11,9 @@
 
 @implementation CMSDKNotificationPresenterWireframe
 
-+ (CMSDKNotificationPresenterPresenter *)defaultPresenter {
++ (CMSDKNotificationPresenter *)defaultPresenter {
 
-    CMSDKNotificationPresenterPresenter *presenter = [CMSDKNotificationPresenterPresenter new];
+    CMSDKNotificationPresenter *presenter = [CMSDKNotificationPresenter new];
     CMSDKNotificationPresenterInteractor *interactor = [CMSDKNotificationPresenterInteractor new];
 
     presenter.interactor = interactor;

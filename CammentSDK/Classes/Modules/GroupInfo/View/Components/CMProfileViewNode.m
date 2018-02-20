@@ -71,6 +71,7 @@
         self.fbImageNode.style.width = ASDimensionMake(18.0f);
 
         self.settingsNode = [CMSettingsNode new];
+        self.settingsNode.shouldDisplayLeaveGroup = context.shouldDisplayLeaveGroupButton;
         self.settingsNode.delegate = self;
 
         self.inviteFriendsButtonNode = [CMInviteFriendsButton new];
@@ -221,6 +222,12 @@
     } completion:^(BOOL finished) {
         [context completeTransition:YES];
     }];
+}
+
+- (void)settingsNodeDidLeaveTheGroup:(CMSettingsNode *)node {
+    if (self.context.onLeaveGroupBlock) {
+        self.context.onLeaveGroupBlock();
+    }
 }
 
 @end

@@ -396,7 +396,7 @@
 
 - (void)checkIfDeferredDeepLinkExists {
     GVUserDefaults *userDefaults = [GVUserDefaults standardUserDefaults];
-    if (userDefaults.isInstallationDeeplinkChecked) {return;}
+    if (userDefaults.isInstallationDeeplinkChecked) { return; }
     userDefaults.isInstallationDeeplinkChecked = YES;
 
     NSString *systemVersion = [[[UIDevice currentDevice] systemVersion] stringByReplacingOccurrencesOfString:@"." withString:@"_"];
@@ -406,6 +406,7 @@
             continueWithBlock:^id(AWSTask<id> *task) {
                 if ([task.result isKindOfClass:[CMAPIDeeplink class]]) {
                     CMAPIDeeplink *deeplink = task.result;
+                    DDLogInfo(@"def link %@", task.result);
                     NSURL *deeplinkURL = deeplink.url ? [[NSURL alloc] initWithString:deeplink.url] : nil;
                     if (deeplinkURL) {
                         [self verifyURL:deeplinkURL];

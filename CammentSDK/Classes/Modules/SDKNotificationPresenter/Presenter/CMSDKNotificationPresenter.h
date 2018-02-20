@@ -15,7 +15,7 @@
 @class CMSDKNotificationPresenterWireframe;
 @protocol CMCammentSDKUIDelegate;
 
-@interface CMSDKNotificationPresenterPresenter : NSObject<CMSDKNotificationPresenterPresenterInput, CMSDKNotificationPresenterInteractorOutput>
+@interface CMSDKNotificationPresenter : NSObject<CMSDKNotificationPresenterPresenterInput, CMSDKNotificationPresenterInteractorOutput>
 
 @property (nonatomic, weak) id<CMCammentSDKUIDelegate> output;
 @property (nonatomic) id<CMSDKNotificationPresenterInteractorInput> interactor;

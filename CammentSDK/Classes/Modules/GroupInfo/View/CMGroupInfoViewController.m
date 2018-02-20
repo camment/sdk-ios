@@ -37,4 +37,17 @@
     [self presentViewController:viewController animated:YES completion:nil];
 }
 
+- (void)presentConfirmationDialogToLeaveTheGroup:(void (^)())onConfirmed {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.confirm_leave_group.title")
+                                                                             message:CMLocalized(@"alert.confirm_leave_group.text")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        onConfirmed();
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"No") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {}]];
+
+    [self presentViewController:alertController];
+}
+
 @end

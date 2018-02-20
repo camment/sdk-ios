@@ -6,7 +6,7 @@
 //  Copyright 2017 Camment. All rights reserved.
 //
 
-#import "CMSDKNotificationPresenterPresenter.h"
+#import "CMSDKNotificationPresenter.h"
 #import "CMMembershipAcceptedMessage.h"
 #import "MBProgressHUD.h"
 #import "CMInvitation.h"
@@ -14,7 +14,7 @@
 #import "CMUserRemovedMessage.h"
 #import "CMUserJoinedMessage.h"
 
-@implementation CMSDKNotificationPresenterPresenter
+@implementation CMSDKNotificationPresenter
 
 - (void)showHud:(NSString *)status hideAfter:(NSUInteger)delay {
     UIWindow *window = [[UIApplication sharedApplication] delegate].window;
@@ -96,13 +96,7 @@
 }
 
 - (void)presentRemovedFromGroupAlert:(CMUserRemovedMessage *)message {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.left_group.title")
-                                                                             message:CMLocalized(@"alert.left_group.description")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Ok") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-    }]];
-
-    [self presentViewController:alertController];
+    [self showToastMessage:[NSString stringWithFormat:CMLocalized(@"toast.user_left"), message.user.username]];
 }
 
 - (void)presentUsersAreJoiningMessage:(CMUserJoinedMessage *)message {
@@ -128,5 +122,10 @@
 
     [self presentViewController:alertController];
 }
+
+- (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message
+                             onAccept:(void (^)(void))onAccept
+                            onDecline:(void (^)(void))onDecline {}
+
 
 @end

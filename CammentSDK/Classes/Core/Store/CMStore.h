@@ -68,4 +68,5 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 - (void)cleanUpCurrentChatGroup;
 
 - (void)refetchUsersInActiveGroup;
+
 @end

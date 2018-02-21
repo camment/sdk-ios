@@ -210,33 +210,6 @@
 }
 
 - (void)loadAssets {
-    NSArray *customFonts = @[
-            @"Nunito-Medium.ttf"
-    ];
-    [customFonts map:^id(NSString *fileName) {
-        NSString *filePath = [[NSBundle cammentSDKBundle] pathForResource:fileName ofType:nil];
-        if (!filePath) {return nil;}
-
-        NSData *inData = [NSData dataWithContentsOfFile:filePath];
-        if (!inData) {return nil;}
-
-        CFErrorRef error;
-        CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef) inData);
-        [UIFont familyNames];
-        CGFontRef font = CGFontCreateWithDataProvider(provider);
-        if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
-            CFStringRef errorDescription = CFErrorCopyDescription(error);
-            DDLogError(@"Failed to load font: %@", errorDescription);
-            CFRelease(errorDescription);
-        }
-        CFRelease(font);
-        CFRelease(provider);
-
-        return nil;
-    }];
-
-    DDLogInfo(@"Fonts loaded");
-    DDLogInfo(@"%@", [UIFont familyNames]);
 }
 
 

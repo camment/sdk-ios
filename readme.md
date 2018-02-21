@@ -78,6 +78,22 @@ Add following code to your Info.plist to prevent any restrictions from iOS:
 	<string>Microphone is used to create camment chat and have discussions with short videos on your device</string>
 ```
 
+### Copy custom font to your Xcode project
+
+Camment SDK uses custom font `Nunito-Medium.ttf`.
+Make sure you downloaded this font from our github and added the file to your project.
+You can download the font by the link
+https://github.com/camment/sdk-ios/blob/master/Nunito-Medium.ttf
+
+Declare custom font in Info.plist file
+
+```xml
+<key>UIAppFonts</key>
+<array>
+  <string>Nunito-Medium.ttf</string>
+</array>
+```
+
 ### Set up the SDK in AppDelegate.m
 
 Open `AppDelegate.m` and import CammentSDK header:

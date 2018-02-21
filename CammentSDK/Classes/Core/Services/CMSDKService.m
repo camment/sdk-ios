@@ -222,6 +222,7 @@
 
         CFErrorRef error;
         CGDataProviderRef provider = CGDataProviderCreateWithCFData((__bridge CFDataRef) inData);
+        [UIFont familyNames];
         CGFontRef font = CGFontCreateWithDataProvider(provider);
         if (!CTFontManagerRegisterGraphicsFont(font, &error)) {
             CFStringRef errorDescription = CFErrorCopyDescription(error);

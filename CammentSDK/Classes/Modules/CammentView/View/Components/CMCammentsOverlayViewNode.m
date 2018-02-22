@@ -15,6 +15,7 @@
 #import "UIColorMacros.h"
 #import "POPSpringAnimation.h"
 #import "CMTouchTransparentView.h"
+#import "CMStore.h"
 
 @interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 
@@ -435,7 +436,19 @@
         CGRect frame = self.cammentButton.view.frame;
         CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:self.cammentButton.view.superview];
         BOOL containsPoint = CGRectContainsPoint(frame, locationOfTouch);
-        return !containsPoint;
+        if (containsPoint) {
+            return NO;
+        }
+    }
+    
+    for (UIView *view in [CMStore instance].avoidTouchesInViews) {
+        CGRect frame = view.frame;
+        CGRect translatedFrame = [view convertRect:frame toView:self.view];
+        CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:self.view];
+        BOOL containsPoint = CGRectContainsPoint(translatedFrame, locationOfTouch);
+        if (containsPoint) {
+            return NO;
+        }
     }
     return YES;
 }

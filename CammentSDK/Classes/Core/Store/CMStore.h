@@ -57,6 +57,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic, strong) CMGroupsListInteractor *groupListInteractor;
 
+@property(nonatomic) NSArray *avoidTouchesInViews;
+
 + (CMStore *)instance;
 
 - (void)setupTweaks;

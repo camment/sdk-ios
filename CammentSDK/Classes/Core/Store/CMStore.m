@@ -67,6 +67,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.isOfflineMode = NO;
         self.awsServicesConfigured = NO;
 
+        self.avoidTouchesInViews = @[];
         @weakify(self)
         [RACObserve(self, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
             if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {

@@ -6,6 +6,7 @@
 #import "CMCammentsBlockNode.h"
 #import "CMLeftAlignedLayout.h"
 #import "CMLeftAlignedLayoutDelegate.h"
+#import "CMCollectionNode.h"
 
 
 @interface CMCammentsBlockNode ()
@@ -18,7 +19,7 @@
 
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMLeftAlignedLayoutDelegate new] layoutFacilitator:nil];
+        self.collectionNode = [[CMCollectionNode alloc] initWithLayoutDelegate:[CMLeftAlignedLayoutDelegate new] layoutFacilitator:nil];
         self.collectionNode.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
     }
@@ -41,6 +42,12 @@
 - (void)setDelegate:(id <CMCammentsBlockDelegate>)delegate {
     self.collectionNode.dataSource = delegate;
     self.collectionNode.delegate = delegate;
+}
+
+- (BOOL)pointInside:(CGPoint)point withEvent:(nullable UIEvent *)event {
+    return [self.collectionNode pointInside:[self convertPoint:point
+                                                        toNode:self.collectionNode]
+                                  withEvent:event];
 }
 
 @end

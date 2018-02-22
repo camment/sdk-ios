@@ -106,5 +106,12 @@
     [CMStore instance].currentShowMetadata = metadata;
 }
 
+- (void)setAvoidTouchesInViews:(NSArray<UIView *> *)avoidTouchesInViews {
+    [CMStore instance].avoidTouchesInViews = avoidTouchesInViews;
+}
+
+- (NSArray<UIView *> *)avoidTouchesInViews {
+    return [CMStore instance].avoidTouchesInViews;
+}
 
 @end

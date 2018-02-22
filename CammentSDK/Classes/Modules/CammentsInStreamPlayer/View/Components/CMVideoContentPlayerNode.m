@@ -36,9 +36,18 @@
     return self;
 }
 
+- (void)didLoad {
+    [super didLoad];
+}
+
 - (void)layout {
     [super layout];
     self.videoPlayerNode.gravity = self.bounds.size.height > self.bounds.size.width ? AVLayerVideoGravityResizeAspect : AVLayerVideoGravityResizeAspectFill;
+    [CMStore instance].avoidTouchesInViews = [[self.videoPlayerNode.subnodes.rac_sequence filter:^BOOL(ASDisplayNode * value) {
+        return ![value isKindOfClass:[ASVideoNode class]];
+    }] map:^id _Nullable(ASDisplayNode * _Nullable value) {
+        return value.view;
+    }].array;
 }
 
 - (void)openContentAtUrl:(NSURL *)url {
@@ -104,9 +113,9 @@
     return YES;
 }
 
-- (NSArray *)videoPlayerNodeNeededDefaultControls:(ASVideoPlayerNode *)videoPlayer {
-    return @[];
-}
+//- (NSArray *)videoPlayerNodeNeededDefaultControls:(ASVideoPlayerNode *)videoPlayer {
+//    return @[];
+//}
 
 - (void)videoPlayerNodeDidStartInitialLoading:(ASVideoPlayerNode *)videoPlayer {
 

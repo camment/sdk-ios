@@ -283,5 +283,8 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     }
 }
 
-
+- (void)setAvoidTouchesInViews:(NSArray *)avoidTouchesInViews {
+    _avoidTouchesInViews = avoidTouchesInViews;
+    
+}
 @end

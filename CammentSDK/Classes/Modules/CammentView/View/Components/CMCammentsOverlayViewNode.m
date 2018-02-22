@@ -442,10 +442,9 @@
     }
     
     for (UIView *view in [CMStore instance].avoidTouchesInViews) {
-        CGRect frame = view.frame;
-        CGRect translatedFrame = [view convertRect:frame toView:self.view];
-        CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:self.view];
-        BOOL containsPoint = CGRectContainsPoint(translatedFrame, locationOfTouch);
+        CGRect frame = view.bounds;
+        CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:view];
+        BOOL containsPoint = CGRectContainsPoint(frame, locationOfTouch);
         if (containsPoint) {
             return NO;
         }

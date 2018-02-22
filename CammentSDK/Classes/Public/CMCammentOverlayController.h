@@ -24,7 +24,7 @@
 @interface CMCammentOverlayController : NSObject
 
 @property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> _Nullable overlayDelegate;
-@property (nonatomic, strong) NSArray<UIView *> _Nullable *avoidTouchesInViews;
+@property (nonatomic, strong) NSArray<UIView *>  * _Nullable avoidTouchesInViews;
 
 - (instancetype _Nonnull)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata;
 

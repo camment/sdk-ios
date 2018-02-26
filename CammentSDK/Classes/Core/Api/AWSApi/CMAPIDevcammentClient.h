@@ -21,6 +21,7 @@
 #import "CMAPIDeeplink.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIUsergroupList.h"
+#import "CMAPIPublicGroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
@@ -30,7 +31,6 @@
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUpdateUserStateInGroupRequest.h"
 #import "CMAPIUserinfo.h"
-#import "CMAPIUserinfoInRequest.h"
 #import "CMAPIOpenIdToken.h"
 
 
@@ -185,11 +185,37 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ 
+ return type: 
+ */
+- (AWSTask *)adsGet;
+
+/**
+ 
+ 
  @param cammentUuid 
  
  return type: 
  */
 - (AWSTask *)cammentsCammentUuidPost:( NSString *)cammentUuid;
+
+/**
+ 
+ 
+ @param cammentUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)cammentsCammentUuidPinPut:( NSString *)cammentUuid;
+
+/**
+ 
+ 
+ @param cammentUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)cammentsCammentUuidPinDelete:( NSString *)cammentUuid;
 
 /**
  
@@ -225,6 +251,14 @@ NS_ASSUME_NONNULL_BEGIN
  return type: 
  */
 - (AWSTask *)meUuidPut;
+
+/**
+ 
+ 
+ 
+ return type: CMAPIPublicGroupList *
+ */
+- (AWSTask *)publicgroupsGet;
 
 /**
  
@@ -274,10 +308,12 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
+ @param lastKey 
+ @param limit 
  
  return type: CMAPICammentList *
  */
-- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid lastKey:(nullable NSString *)lastKey limit:(nullable NSString *)limit;
 
 /**
  
@@ -308,6 +344,15 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIDeeplink *
  */
 - (AWSTask *)usergroupsGroupUuidDeeplinkPost:( NSString *)groupUuid body:( CMAPIShowUuid *)body;
+
+/**
+ 
+ 
+ @param groupUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)usergroupsGroupUuidIotPost:( NSString *)groupUuid;
 
 /**
  
@@ -356,15 +401,6 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIUserinfo *
  */
 - (AWSTask *)userinfoGet;
-
-/**
- 
- 
- @param body 
- 
- return type: 
- */
-- (AWSTask *)userinfoPost:( CMAPIUserinfoInRequest *)body;
 
 /**
  

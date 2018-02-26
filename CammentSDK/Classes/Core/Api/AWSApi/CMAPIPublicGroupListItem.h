@@ -16,38 +16,18 @@
 
 #import <Foundation/Foundation.h>
 #import <AWSCore/AWSCore.h>
+#import "CMAPIUserinfo.h"
 
  
 /**
- Camment object model.
+ Single item in PublicGroupList.
  */
-@interface CMAPICamment : AWSModel
+@interface CMAPIPublicGroupListItem : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *thumbnail;
-
-
-@property (nonatomic, strong, nullable) NSNumber *pinned;
+@property (nonatomic, strong, nullable) CMAPIUserinfo *owner;
 
 
-@property (nonatomic, strong, nullable) NSString *userGroupUuid;
-
-
-@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
-
-
-@property (nonatomic, strong, nullable) NSString *showUuid;
-
-
-@property (nonatomic, strong, nullable) NSNumber *delivered;
-
-
-@property (nonatomic, strong, nullable) NSNumber *showAt;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *url;
+@property (nonatomic, strong, nullable) NSString *groupUuid;
 
 
 @end

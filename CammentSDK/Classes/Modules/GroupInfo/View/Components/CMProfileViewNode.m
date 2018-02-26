@@ -133,7 +133,7 @@
                     }
                 }
 
-                [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+                [self setNeedsLayout];
             }];
 }
 
@@ -220,7 +220,7 @@
         }
 
     } completion:^(BOOL finished) {
-        [context completeTransition:YES];
+        [context completeTransition:finished];
     }];
 }
 

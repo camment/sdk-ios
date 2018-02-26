@@ -14,22 +14,19 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIPublicGroupListItem.h"
 
- 
-/**
- Camment object model in POST/PUT requests.
- */
-@interface CMAPICammentInRequest : AWSModel
+@implementation CMAPIPublicGroupListItem
 
-@property (nonatomic, strong, nullable) NSNumber *pinned;
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"owner": @"owner",
+             @"groupUuid": @"groupUuid"
+             };
+}
 
-
-@property (nonatomic, strong, nullable) NSNumber *showAt;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
++ (NSValueTransformer *)ownerJSONTransformer {
+    return [NSValueTransformer awsmtl_JSONDictionaryTransformerWithModelClass:[CMAPIUserinfo class]];
+}
 
 @end

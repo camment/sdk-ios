@@ -332,4 +332,13 @@
     }];
 }
 
+- (BOOL)shouldBatchFetchForCollectionNode:(ASCollectionNode *)collectionNode {
+    return [self.output loaderCanLoadMoreCamments];
+}
+
+- (void)collectionNode:(ASCollectionNode *)collectionNode willBeginBatchFetchWithContext:(ASBatchContext *)context {
+    [self.output fetchNextPageOfCamments:context];
+
+}
+
 @end

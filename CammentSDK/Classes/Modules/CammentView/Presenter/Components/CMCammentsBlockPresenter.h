@@ -16,6 +16,10 @@
 
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell;
 - (void)runBotCammentAction:(CMBotAction *)action;
+
+- (BOOL)loaderCanLoadMoreCamments;
+
+- (void)fetchNextPageOfCamments:(ASBatchContext *)context;
 @end
 
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate, CMCammentsBlockPresenterInput>

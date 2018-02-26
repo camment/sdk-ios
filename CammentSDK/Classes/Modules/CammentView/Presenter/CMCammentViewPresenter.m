@@ -49,6 +49,8 @@
 
 @property(nonatomic) CMBotRegistry *botRegistry;
 @property(nonatomic, strong) TBSMStateMachine *onboardingStateMachine;
+@property(nonatomic) BOOL canLoadMoreCamments;
+@property(nonatomic, strong) ASBatchContext *cammentBatchContext;
 @end
 
 @implementation CMCammentViewPresenter
@@ -332,9 +334,6 @@
     ];
     self.onboardingStateMachine.initialState = wouldYouLikeToChatAlert;
     [self.onboardingStateMachine setUp:nil];
-#if DEBUG
-    [[TBSMDebugger sharedInstance] debugStateMachine:self.onboardingStateMachine];
-#endif
 }
 
 - (void)setupView {
@@ -372,7 +371,8 @@
 
 - (void)updateChatWithActiveGroup {
     [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
-    [self.loaderInteractor fetchCachedCamments:[CMStore instance].activeGroup.uuid];
+    [self.loaderInteractor resetPaginationKey];
+    [self.loaderInteractor loadNextPageOfCamments:[CMStore instance].activeGroup.uuid];
     [self setupPresentationInstruction];
 }
 
@@ -411,11 +411,15 @@
 }
 
 
-- (void)didFetchCamments:(NSArray<CMCamment *> *)camments {
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore {
+    self.canLoadMoreCamments = canLoadMore;
     NSArray<CMCamment *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
         return [CMCammentsBlockItem cammentWithCamment:value];
     }].array;
     [self.cammentsBlockNodePresenter reloadItems:items animated:YES];
+    if (self.cammentBatchContext) {
+        [self.cammentBatchContext completeBatchFetching:YES];
+    }
 }
 
 - (void)playCamment:(NSString *)cammentId {
@@ -716,6 +720,23 @@
                    playVideoAds:(CMVideoAd *)videoAd
            playStartingFromRect:(CGRect)rect {
     [self.output playAdVideo:videoAd startingFromRect:rect];
+}
+
+- (void)didFailToLoadCamments:(NSError *)error {
+    if (self.cammentBatchContext) {
+        [self.cammentBatchContext completeBatchFetching:YES];
+    }
+
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
+}
+
+- (BOOL)loaderCanLoadMoreCamments {
+    return NO;//self.canLoadMoreCamments;
+}
+
+- (void)fetchNextPageOfCamments:(ASBatchContext *)context {
+    self.cammentBatchContext = context;
 }
 
 @end

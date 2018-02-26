@@ -10,6 +10,7 @@
 
 @protocol CMCammentsLoaderInteractorInput <NSObject>
 
-- (void)fetchCachedCamments:(NSString *)groupUUID;
+- (void)loadNextPageOfCamments:(NSString *)groupUUID;
 
+- (void)resetPaginationKey;
 @end

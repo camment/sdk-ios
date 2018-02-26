@@ -11,11 +11,11 @@
 "help.tap_and_hold_to_record" = "Toca y mantén la presión para grabar un Video (Camment)";
 "help.swipe_left_to_hide_camments" = "Desliza los camments hacia la izquierda para ocultarlos";
 "help.swipe_right_to_show_camments" = "Desliza los camments hacia la derecha para que vuelvan a aparecer";
-"help.postponed_onboarding_reminder" = "Start making video camments by tapping here later";
+"help.postponed_onboarding_reminder" = "Empieza a grabar tus Camments haciendo click aqui";
 "help.tap_to_play" = "Bien hecho! Ahora presiona sobre el Camment para poder escucharlo";
-"help.pull_right_to_invite_friends" = "Pull the sidebar to the → right to invite friends to this chat";
+"help.pull_right_to_invite_friends" = "Desplaza la barra lateral hacia la → derecha para invitar a tus amigos a unirse a este grupo";
 "help.tap_and_hold_to_delete" = "Toca y mantén presionado tu Camment para eliminarlo";
-"help.continue_onboarding_later" = "Continue tutorial later from sidebar";
+"help.continue_onboarding_later" = "Continúa con tu tutorial más tarde desde la barra lateral";
 "setup.use_camment_chat" = "¿Te gustaría chatear a través de videos con amigos mientras miras este programa?";
 "setup.what_is_camment" = "es como si enviaras un SMS pero enviando videos de 5 segundos (Camments) que aparecerán en una ventana en la parte superior de la pantalla, a la vez que ves este programa";
 "setup.sounds_fun" = "Suena divertido";
@@ -51,36 +51,36 @@
 "Logout" = "Cerrar sesión";
 "Logout from Facebook account will remove your from current discussion." = "Si sale de su cuenta de Facebook, eliminará de la discusión actual.";
 
-"error.no_camera_permissions_title" = "Allow camera and microphone access";
-"error.no_camera_permissions_alert" = "Open application settings and allow us to use you camera and microphone.";
-"error.open_settings" = "Open settings";
+"error.no_camera_permissions_title" = "Permitir el acceso a tu cámara y a tu micrófono";
+"error.no_camera_permissions_alert" = "Abre la configuración de la aplicación y permítenos usar tu cámara y micrófono";
+"error.open_settings" = "Configuración abierta";
 
-"invitations.text" = "Hey, join our private chat!";
-"alert.left_group.title" = "You left the group";
-"alert.left_group.description" = "Group owner has removed you from current conversation";
+"invitations.text" = "¡Hola, únete a nuestra conversación privada!";
+"alert.left_group.title" = "Dejaste el grupo";
+"alert.left_group.description" = "El administrador del grupo te ha eliminado de la conversación actual";
 
-"alert.confirm_remove_user.title" = "Do you want to remove %@ from the group?";
+"alert.confirm_remove_user.title" = "¿Desea eliminar %@ del grupo?";
 
-"alert.confirm_block_user.title" = "Block user";
-"alert.confirm_block_user.text" = "Do you want to block %@ in the group?";
-"alert.confirm_unblock_user.title" = "Unblock user";
-"alert.confirm_unblock_user.text" = "Do you want to unblock %@ in the group?";
+"alert.confirm_block_user.title" = "Bloquear al usuario";
+"alert.confirm_block_user.text" = "¿Realmente quieres bloquear %@ del grupo?";
+"alert.confirm_unblock_user.title" = "Desbloquear usuario";
+"alert.confirm_unblock_user.text" = "¿Realmente quieres desbloquear % @ del grupo?";
 
-"alert.you_are_blocked.title" = "You are blocked";
-"alert.you_are_blocked.text" = "Group owner has blocked you from the current group";
+"alert.you_are_blocked.title" = "Has sido bloqueado";
+"alert.you_are_blocked.text" = "El administrador del grupo te ha bloqueado de este grupo";
 
-"alert.confirm_leave_group.title" = "Leave group";
-"alert.confirm_leave_group.text" = "Do you want to leave the group?";
+"alert.confirm_leave_group.title" = "Dejar el grupo";
+"alert.confirm_leave_group.text" = "¿De verdad quieres dejar el grupo actual?";
 
-"toast.user_joined" = "%@ has joined";
-"toast.user_unblocked" = "%@ has been unblocked";
-"toast.user_blocked" = "%@ has been blocked";
-"toast.user_left" = "%@ left the group";
+"toast.user_joined" = "%@ se ha unido";
+"toast.user_unblocked" = "%@ ha sido desbloqueado";
+"toast.user_blocked" = "%@ ha sido bloqueado";
+"toast.user_left" = "%@ ha abandonado el grupo";
 
-"alert.user_joined.title" = "%@ has joined";
-"alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";
+"alert.user_joined.title" = "%@ se ha unido";
+"alert.user_joined.description" = "Tus amigos se están uniendo a la conversación. Siempre puedes deslizar hacia la → derecha para ver quién más está activo en el grupo y bloquear a las personas no deseadas";
 
-"button.invite_friends" = "Invite friends";
-"button.continue_tutorial" = "Continue tutorial";
-"button.leave_group" = "Leave group";
-"onboarding.skip_tutorial" = "Skip tutorial";
+"button.invite_friends" = "Invita a tus amigos";
+"button.continue_tutorial" = "Continúa con tu tutorial";
+"button.leave_group" = "Abandona el grupo";
+"onboarding.skip_tutorial" = "Saltarse el tutorial";

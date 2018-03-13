@@ -1,26 +1,26 @@
 /****************************************************************************/
 /* Localization file */
 
-"User invited you to a private chat" = "El usuario te invitó a un chat privado";
-"Would you like to join the conversation?" = "¿Te gustaría unirte a la conversación?";
+"User invited you to a private chat" = "Tu amigo te invitó a un grupo privado";
+"Would you like to join the conversation?" = "¿Te gustaría unirte al grupo?";
 "Join" = "Unirse";
 "No" = "No";
 "Yes" = "Si";
-"Login" = "Ingresar";
+"Login" = "Iniciar Sesión";
 
-"help.tap_and_hold_to_record" = "Toca y mantén la presión para grabar un Video (Camment)";
-"help.swipe_left_to_hide_camments" = "Desliza los camments hacia la izquierda para ocultarlos";
-"help.swipe_right_to_show_camments" = "Desliza los camments hacia la derecha para que vuelvan a aparecer";
+"help.tap_and_hold_to_record" = "Toca y mantén pulsado para grabar un mini vídeo (Camment)";
+"help.swipe_left_to_hide_camments" = "Desliza ← a la izquierda para ocultar los Camments";
+"help.swipe_right_to_show_camments" = "Desliza → a la derecha para que aparezcan los Camments";
 "help.postponed_onboarding_reminder" = "Empieza a grabar tus Camments haciendo click aqui";
-"help.tap_to_play" = "Bien hecho! Ahora presiona sobre el Camment para poder escucharlo";
+"help.tap_to_play" = "¡Bien Hecho! Ahora toca el Camment para poder verlo";
 "help.pull_right_to_invite_friends" = "Desplaza la barra lateral hacia la → derecha para invitar a tus amigos a unirse a este grupo";
-"help.tap_and_hold_to_delete" = "Toca y mantén presionado tu Camment para eliminarlo";
-"help.continue_onboarding_later" = "Continúa con tu tutorial más tarde desde la barra lateral";
-"setup.use_camment_chat" = "¿Te gustaría chatear a través de videos con amigos mientras miras este programa?";
-"setup.what_is_camment" = "es como si enviaras un SMS pero enviando videos de 5 segundos (Camments) que aparecerán en una ventana en la parte superior de la pantalla, a la vez que ves este programa";
+"help.tap_and_hold_to_delete" = "Toca y mantén pulsado tu Camment para eliminarlo";
+"help.continue_onboarding_later" = "Continua el tutorial más tarde desde la barra lateral";
+"setup.use_camment_chat" = "¿Te gustaría chatear a través de videos con tus amigos mientras ves este programa?";
+"setup.what_is_camment" = "Es como si enviaras un SMS a tu grupo de amigos pero enviando vídeos de 5 segundos (Camments) que aparecerán en la parte superior de la pantalla, mientras ves este programa";
 "setup.sounds_fun" = "Suena divertido";
 "setup.maybe_later" = "Quizás más tarde";
-"camment_actions.delete_camment" = "Eliminar tu Camment";
+"camment_actions.delete_camment" = "Eliminar Camment";
 "camment_actions.title" = "Selecciona una opción";
 
 "group_message.join_title" = "%@ ya ingresó a su chat Camment!";
@@ -33,29 +33,29 @@
 "user_status.offline" = "Desconectado";
 "user_status.busy" = "Ocupado";
 
-"Login with your Facebook account?" = "Quieres iniciar la sesión con tu cuenta de Facebook?";
+"Login with your Facebook account?" = "¿Quieres iniciar la sesión con tu cuenta de Facebook?";
 "You are not allowed to join this group" = "No puedes unirte a este grupo ";
 "User wants to join the group" = "%@ quieres unirte a tu grupo";
 
-"Send the invitation link" = "Enviar el enlace de invitación";
-"Invite users by sharing the invitation link via channel of your choice" = "Invita a tus amigos compartiendo este enlace de invitación a través del canal que prefieras";
-"You have joined the private chat!" = "¡Te has unido al chat privado!";
+"Send the invitation link" = "Enviar invitación";
+"Invite users by sharing the invitation link via channel of your choice" = "Invita a tus amigos compartiendo este enlace de invitación a través de la app que prefieras";
+"You have joined the private chat!" = "¡Te has unido al Grupo Privado!";
 "Do you accept the join request?" = "¿Aceptas la solicitud / invitación?";
 "You are not allowed to join this group" = "No puedes unirte a este grupo";
 "We found a link in your clipboard" = "Encontramos un enlace en tu portapapeles";
 "Would you like to open it and join the group? It will redirect you to your web browser first." = "¿Te gustaría abrirlo y unirte al grupo? Se abrirá tu navegador web.";
 "Invite friends to chat with short videos in top of your stream." = "Invita a tus amigos a chatear contigo vía video comentarios que aparecera´n en la parte superior de tu transmisión.";
-"Learn more" = "Para aprender más";
-"Invite friends" = "Para invitar a tus amigos";
-"People joined to your Camment chat" = "Otras personas se unieron a su chat Camment";
+"Learn more" = "Aprende más";
+"Invite friends" = "Invitar amigos";
+"People joined to your Camment chat" = "Otras personas se unieron a tu Grupo de Camment";
 "Logout" = "Cerrar sesión";
-"Logout from Facebook account will remove your from current discussion." = "Si sale de su cuenta de Facebook, eliminará de la discusión actual.";
+"Logout from Facebook account will remove your from current discussion." = "Si sale de su cuenta de Facebook se te eliminará de este grupo";
 
-"error.no_camera_permissions_title" = "Permitir el acceso a tu cámara y a tu micrófono";
-"error.no_camera_permissions_alert" = "Abre la configuración de la aplicación y permítenos usar tu cámara y micrófono";
+"error.no_camera_permissions_title" = "Permitir el acceso a tu cámara y micrófono";
+"error.no_camera_permissions_alert" = "Abre los ajustes de la aplicación y permítenos usar tu cámara y micrófono";
 "error.open_settings" = "Configuración abierta";
 
-"invitations.text" = "¡Hola, únete a nuestra conversación privada!";
+"invitations.text" = "¡Hola, únete a nuestro chat privado!";
 "alert.left_group.title" = "Dejaste el grupo";
 "alert.left_group.description" = "El administrador del grupo te ha eliminado de la conversación actual";
 
@@ -64,13 +64,13 @@
 "alert.confirm_block_user.title" = "Bloquear al usuario";
 "alert.confirm_block_user.text" = "¿Realmente quieres bloquear %@ del grupo?";
 "alert.confirm_unblock_user.title" = "Desbloquear usuario";
-"alert.confirm_unblock_user.text" = "¿Realmente quieres desbloquear % @ del grupo?";
+"alert.confirm_unblock_user.text" = "¿Realmente quieres desbloquear a %@ del grupo?";
 
 "alert.you_are_blocked.title" = "Has sido bloqueado";
-"alert.you_are_blocked.text" = "El administrador del grupo te ha bloqueado de este grupo";
+"alert.you_are_blocked.text" = "El administrador te ha bloqueado de este grupo";
 
 "alert.confirm_leave_group.title" = "Dejar el grupo";
-"alert.confirm_leave_group.text" = "¿De verdad quieres dejar el grupo actual?";
+"alert.confirm_leave_group.text" = "¿De verdad quieres abandonar este grupo?";
 
 "toast.user_joined" = "%@ se ha unido";
 "toast.user_unblocked" = "%@ ha sido desbloqueado";
@@ -78,9 +78,9 @@
 "toast.user_left" = "%@ ha abandonado el grupo";
 
 "alert.user_joined.title" = "%@ se ha unido";
-"alert.user_joined.description" = "Tus amigos se están uniendo a la conversación. Siempre puedes deslizar hacia la → derecha para ver quién más está activo en el grupo y bloquear a las personas no deseadas";
+"alert.user_joined.description" = "Tus amigos se están uniendo al grupo. Siempre puedes deslizar hacia la → derecha para ver quién más está activo en el grupo y bloquear a las personas no deseadas.";
 
 "button.invite_friends" = "Invita a tus amigos";
-"button.continue_tutorial" = "Continúa con tu tutorial";
-"button.leave_group" = "Abandona el grupo";
-"onboarding.skip_tutorial" = "Saltarse el tutorial";
+"button.continue_tutorial" = "Continúa con el tutorial";
+"button.leave_group" = "Dejar el grupo";
+"onboarding.skip_tutorial" = "Salta el tutorial";

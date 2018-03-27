@@ -185,6 +185,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
+- (AWSTask *)adsAdUuidConfirmPost {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"POST"
+                         URLString:@"/ads/{adUuid}/confirm"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
 - (AWSTask *)cammentsCammentUuidPost:(NSString *)cammentUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",

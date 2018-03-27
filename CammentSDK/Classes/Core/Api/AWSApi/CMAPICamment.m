@@ -28,8 +28,14 @@
              @"delivered": @"delivered",
              @"showAt": @"showAt",
              @"uuid": @"uuid",
-             @"url": @"url"
+             @"url": @"url",
+             @"botData": @"botData",
+             @"timestamp": @"timestamp"
              };
+}
+
++ (NSValueTransformer *)botDataJSONTransformer {
+    return [NSValueTransformer awsmtl_JSONDictionaryTransformerWithModelClass:[CMAPICamment_botData class]];
 }
 
 @end

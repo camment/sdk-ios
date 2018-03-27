@@ -193,6 +193,14 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ 
+ return type: 
+ */
+- (AWSTask *)adsAdUuidConfirmPost;
+
+/**
+ 
+ 
  @param cammentUuid 
  
  return type: 

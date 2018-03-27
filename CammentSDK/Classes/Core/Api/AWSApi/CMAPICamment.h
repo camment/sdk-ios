@@ -16,6 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AWSCore/AWSCore.h>
+#import "CMAPICamment_botData.h"
 
  
 /**
@@ -48,6 +49,12 @@
 
 
 @property (nonatomic, strong, nullable) NSString *url;
+
+
+@property (nonatomic, strong, nullable) CMAPICamment_botData *botData;
+
+
+@property (nonatomic, strong, nullable) NSString *timestamp;
 
 
 @end

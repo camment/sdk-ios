@@ -154,7 +154,7 @@
 }
 
 - (void)openShowIfNeeded:(CMShow *)show {
-    if ([self.cammentsInStreamPlayerWireframe.show.uuid isEqualToString:show.uuid] && self.cammentsInStreamPlayerWireframe.view) {return;}
+    if ([self.cammentsInStreamPlayerWireframe.show.uuid isEqualToString:show.uuid] && self.cammentsInStreamPlayerWireframe.view) { return; }
 
     if (self.cammentsInStreamPlayerWireframe.view) {
         [self.cammentsInStreamPlayerWireframe.view dismissViewControllerAnimated:YES completion:^{
@@ -188,10 +188,6 @@
 }
 
 - (void)didOpenInvitationToShow:(CMShowMetadata *_Nonnull)metadata {
-    [self openShowIfNeededWithMetadata:metadata];
-}
-
-- (void)didAcceptJoiningRequest:(CMShowMetadata *)metadata {
     [self openShowIfNeededWithMetadata:metadata];
 }
 

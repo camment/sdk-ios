@@ -277,7 +277,9 @@
                                                      if (!__strongSelf) {return;}
 
                                                      if (__strongSelf.sdkDelegate && [__strongSelf.sdkDelegate respondsToSelector:@selector(didOpenInvitationToShow:)]) {
-                                                         [__strongSelf.sdkDelegate didOpenInvitationToShow:metadata];
+                                                         dispatch_async(dispatch_get_main_queue(), ^{
+                                                             [__strongSelf.sdkDelegate didOpenInvitationToShow:metadata];
+                                                         });
                                                      }
 
                                                      [[__strongSelf acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
@@ -465,7 +467,10 @@
                         metadata.uuid = invitation.showUuid;
 
                         if (weakSelf.sdkDelegate && [weakSelf.sdkDelegate respondsToSelector:@selector(didOpenInvitationToShow:)]) {
-                            [weakSelf.sdkDelegate didOpenInvitationToShow:metadata];
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                [weakSelf.sdkDelegate didOpenInvitationToShow:metadata];
+                                
+                            });
                         }
 
                         [weakSelf.serverMessageController handleServerMessage:[CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage]];

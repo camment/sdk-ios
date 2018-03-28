@@ -319,15 +319,16 @@
                                  cammentBlockFinalFrame.size.width,
                                  MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
                          self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
-                         self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
+                         self.cammentRecorderNode.alpha = self.showCammentRecorderNode ? 1.0f : 0.f;
                          self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
 
-                         if (!_showLeftSidebarNode) {
-                             self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth;
+                         if (!self.showLeftSidebarNode) {
+                             self.cammentButton.alpha = self.leftSideBarMenuLeftInset / self.cammentBlockWidth;
                          } else {
                              self.cammentButton.alpha = .0f;
                          }
 
+                         self.leftSidebarNode.alpha = self.showLeftSidebarNode;
                          self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
                          self.backgroundNode.frame = [context finalFrameForNode:self.backgroundNode];
 
@@ -335,11 +336,11 @@
                              self.contentNode.frame = [context finalFrameForNode:self.contentNode];
                          }
 
-                         if (_showVideoAdsPlayerNode) {
+                         if (self.showVideoAdsPlayerNode) {
                              self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
                          }
 
-                         _skipTutorialButton.frame = [context finalFrameForNode:_skipTutorialButton];
+                         self.skipTutorialButton.frame = [context finalFrameForNode:_skipTutorialButton];
                      }
                      completion:^(BOOL finished) {
                          [snapshot removeFromSuperview];
@@ -348,7 +349,7 @@
                                  self.cammentsBlockNode.frame.origin.y,
                                  self.cammentsBlockNode.frame.size.width,
                                  cammentBlockFinalFrame.size.height);
-                         if (!_showLeftSidebarNode) {
+                         if (!self.showLeftSidebarNode) {
                              self.leftSidebarNode.alpha = .0f;
                          }
 

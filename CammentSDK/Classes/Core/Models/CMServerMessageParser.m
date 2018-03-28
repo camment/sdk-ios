@@ -120,14 +120,6 @@
                 withShow:show]
                 build];
         serverMessage = [CMServerMessage membershipAcceptedWithMembershipAcceptedMessage:membershipAcceptedMessage];
-    } else if ([type isEqualToString:@"ad"]) {
-        CMAdBanner *adBanner = [[[[[[CMAdBannerBuilder adBanner]
-                withOpenURL:body[@"url"]]
-                withThumbnailURL:body[@"file"]]
-                withVideoURL:body[@"video"]]
-                withTitle:body[@"title"]]
-                build];
-        serverMessage = [CMServerMessage adWithAdBanner:adBanner];
     } else if ([type isEqualToString:@"user-blocked"]) {
         NSDictionary *userData = body[@"blockedUser"];
         CMUser *user = [[[[[CMUserBuilder new]

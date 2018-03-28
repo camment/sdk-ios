@@ -16,6 +16,7 @@
 @protocol CMSDKNotificationPresenterPresenterInput;
 @class CMServerListener;
 @class CMServerMessageController;
+@class CMInvitation;
 
 @interface CMSDKService : NSObject
 
@@ -55,6 +56,7 @@
 - (BOOL)openURL:(NSURL * _Nonnull)url sourceApplication:(NSString * _Nullable)application
      annotation:(id _Nullable)annotation NS_DEPRECATED_IOS(4_2, 9_0, "Please use application:openURL:options:") __TVOS_PROHIBITED;
 
+- (void)verifyInvitation:(CMInvitation *)invitation;
 
 - (void)leaveCurrentChatGroup;
 @end

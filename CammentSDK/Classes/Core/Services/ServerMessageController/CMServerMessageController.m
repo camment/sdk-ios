@@ -45,7 +45,6 @@
     __block BOOL shouldPassToObservers = YES;
 
     [message matchUserJoined:^(CMUserJoinedMessage *userJoinedMessage) {
-        BOOL shouldTriggerDelegate = ![userJoinedMessage.usersGroup.uuid isEqualToString:self.store.activeGroup.uuid];
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
         BOOL imJoining = [userJoinedMessage.joinedUser.cognitoUserId isEqualToString:context.user.cognitoUserId];
         BOOL shouldShowToast = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
@@ -53,9 +52,9 @@
         }].array.count > 0;
 
         [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
-        
+
         if (imJoining) {
-            [self handleUserJoinedMessage:userJoinedMessage shouldTriggerDelegate:shouldTriggerDelegate];
+            [self handleMeJoinedMessage:userJoinedMessage];
         } else {
             if (![userJoinedMessage.usersGroup.ownerCognitoUserId isEqualToString:context.user.cognitoUserId]) {
                 shouldShowToast = YES;
@@ -63,7 +62,7 @@
             [self handleFriendJoinedMessage:userJoinedMessage shouldShowToast:shouldShowToast];
         }
     }];
-    
+
     [message matchUserRemoved:^(CMUserRemovedMessage *userRemovedMessage) {
         shouldPassToObservers = NO;
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
@@ -89,10 +88,9 @@
 
         CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
 
-        if (![context.user.cognitoUserId isEqualToString:userGroupStatusChangedMessage.user.cognitoUserId])
-        {
+        if (![context.user.cognitoUserId isEqualToString:userGroupStatusChangedMessage.user.cognitoUserId]) {
             [self handleUserGroupStateChanged:userGroupStatusChangedMessage];
-        } else if ([userGroupStatusChangedMessage.state isEqualToString:CMUserState.Blocked]){
+        } else if ([userGroupStatusChangedMessage.state isEqualToString:CMUserState.Blocked]) {
             [self handleMeBlockedInActiveGroup];
         }
     }];
@@ -104,7 +102,7 @@
 
 - (void)handleMeBlockedInActiveGroup {
     [[CammentSDK instance] leaveCurrentChatGroup];
-    
+
     [self.notificationPresenter presentMeBlockedInGroupDialog];
 }
 
@@ -147,7 +145,7 @@
     [self.notificationPresenter presentRemovedFromGroupAlert:message];
 }
 
-- (void)handleUserJoinedMessage:(CMUserJoinedMessage *)message shouldTriggerDelegate:(BOOL)shouldTriggerDelegate {
+- (void)handleMeJoinedMessage:(CMUserJoinedMessage *)message {
 
     CMShowMetadata *metadata = [CMShowMetadata new];
     CMShow *show = message.show;
@@ -156,12 +154,10 @@
     }
 
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (shouldTriggerDelegate) {
-            if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
-                [self.sdkDelegate didJoinToShow:metadata];
-            } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
-                [self.sdkDelegate didAcceptInvitationToShow:metadata];
-            }
+        if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
+            [self.sdkDelegate didJoinToShow:metadata];
+        } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
+            [self.sdkDelegate didAcceptInvitationToShow:metadata];
         }
 
         [self.notificationPresenter presentUserJoinedToTheGroupAlert:message];

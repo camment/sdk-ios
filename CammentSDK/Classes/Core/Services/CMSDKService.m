@@ -283,7 +283,7 @@
                                                      [[__strongSelf acceptInvitation:invitation] continueWithBlock:^id(AWSTask<id> *t) {
                                                          dispatch_async(dispatch_get_main_queue(), ^{
                                                              if (t.error) {
-                                                                 [__strongSelf.notificationPresenter showToastMessage:CMLocalized(@"You are not allowed to join this group")];
+                                                                 [__weakSelf.notificationPresenter showToastMessage:CMLocalized(@"You are not allowed to join this group")];
                                                              } else {
                                                                  onJoin();
                                                              }
@@ -419,7 +419,7 @@
 
 
 - (void)verifyInvitation:(CMInvitation *)invitation {
-    if (!invitation || !invitation.userGroupUuid) {return;}
+    if (!invitation || !invitation.userGroupUuid) { return; }
 
     if ([self.onSDKHasBeenConfiguredQueue isSuspended]) {
         @weakify(self);
@@ -461,6 +461,13 @@
                                           show:show];
 
                     if ([usergroup.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId]) {
+                        CMShowMetadata *metadata = [CMShowMetadata new];;
+                        metadata.uuid = invitation.showUuid;
+
+                        if (weakSelf.sdkDelegate && [weakSelf.sdkDelegate respondsToSelector:@selector(didOpenInvitationToShow:)]) {
+                            [weakSelf.sdkDelegate didOpenInvitationToShow:metadata];
+                        }
+
                         [weakSelf.serverMessageController handleServerMessage:[CMServerMessage userJoinedWithUserJoinedMessage:userJoinedMessage]];
                     } else {
                         dispatch_async(dispatch_get_main_queue(), ^{

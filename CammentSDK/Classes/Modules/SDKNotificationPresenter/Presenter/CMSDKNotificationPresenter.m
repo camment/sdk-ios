@@ -123,9 +123,5 @@
     [self presentViewController:alertController];
 }
 
-- (void)presentMembershipRequestAlert:(CMMembershipRequestMessage *)message
-                             onAccept:(void (^)(void))onAccept
-                            onDecline:(void (^)(void))onDecline {}
-
 
 @end

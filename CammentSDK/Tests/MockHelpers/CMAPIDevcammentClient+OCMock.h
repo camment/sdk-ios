@@ -10,5 +10,10 @@
 
 @interface CMAPIDevcammentClient (OCMock)
 
++ (void)updateTestableInstance:(CMAPIDevcammentClient *)instance;
+
 + (CMAPIDevcammentClient *)mock_workingApiClient;
+
++ (CMAPIDevcammentClient *)testableInstance;
+
 @end

@@ -13,6 +13,13 @@
 
 
 + (instancetype)defaultAPIClient {
+#ifdef DEBUG
+    SEL selector = NSSelectorFromString(@"testableInstance");
+    if ([CMAPIDevcammentClient respondsToSelector:selector]) {
+        return [CMAPIDevcammentClient performSelector:selector];
+    }
+#endif
+    
     return [CMAPIDevcammentClient clientForKey:CMAPIClientName];
 }
 

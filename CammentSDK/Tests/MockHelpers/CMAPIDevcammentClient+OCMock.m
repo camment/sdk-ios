@@ -7,7 +7,29 @@
 
 #import "CMAPIDevcammentClient+OCMock.h"
 
+static CMAPIDevcammentClient *_instance = nil;
+
 @implementation CMAPIDevcammentClient (OCMock)
+
++ (CMAPIDevcammentClient *)testableInstance {
+
+    @synchronized (self) {
+        if (_instance == nil) {
+            _instance = [CMAPIDevcammentClient mock_workingApiClient];
+        }
+    }
+
+    return _instance;
+}
+
++ (void)updateTestableInstance:(CMAPIDevcammentClient *)instance {
+
+    @synchronized (self) {
+        if (_instance == nil) {
+            _instance = instance;
+        }
+    }
+}
 
 + (CMAPIDevcammentClient *)mock_workingApiClient {
     CMAPIDevcammentClient *cmapiDevcammentClient = OCMClassMock([CMAPIDevcammentClient class]);
@@ -31,6 +53,11 @@
     OCMStub([cmapiDevcammentClient usergroupsGroupUuidCammentsPost:OCMOCK_ANY body:OCMOCK_ANY])
             .andReturn(cammentPostedToGroup);
 
+    CMAPIOpenIdToken *token = [CMAPIOpenIdToken new];
+    token.identityId = @"TestUser";
+    OCMStub([cmapiDevcammentClient usersGetOpenIdTokenGet:OCMOCK_ANY])
+            .andReturn([AWSTask taskWithResult:token]);
+    
     return cmapiDevcammentClient;
 }
 

@@ -20,7 +20,7 @@
 #import "CMUserSessionController.h"
 #import "CMServerListener.h"
 #import "CMServerMessageController.h"
-#import "CMSDKNotificationPresenterPresenter.h"
+#import "CMSDKNotificationPresenter.h"
 
 SpecBegin(CMSDKServiceTests)
 

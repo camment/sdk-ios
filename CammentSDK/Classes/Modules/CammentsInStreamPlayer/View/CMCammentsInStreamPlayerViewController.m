@@ -94,7 +94,6 @@
 }
 
 - (void)startShow:(CMShow *)show {
-    NSString *passcode = [[GVUserDefaults standardUserDefaults] broadcasterPasscode];
     NSDate *startsAt = show.startsAt ? [NSDate dateWithTimeIntervalSince1970:show.startsAt.integerValue] : nil;
     if (startsAt && [[NSDate date] isEarlierThan:startsAt]) {
         self.contentViewerNode = [[CMWaitContentNode alloc] initWithStartDate:startsAt];
@@ -107,9 +106,9 @@
         }
 
         @weakify(self);
-        self.countDownSignalDisposable = [[countDownSignal takeWhileBlock:^BOOL(id x) {
+        self.countDownSignalDisposable = [[[countDownSignal takeWhileBlock:^BOOL(id x) {
             return [[NSDate date] isEarlierThan:startsAt];
-        }] subscribeCompleted:^{
+        }] takeUntil:self.rac_willDeallocSignal] subscribeCompleted:^{
             @strongify(self);
             [self startShow:show];
         }];

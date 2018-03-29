@@ -84,6 +84,8 @@
         [self.botRegistry updateBotsOutputInterface:self];
 
         [self setupOnboardingStateMachine];
+        
+        __weak typeof(self) weakSelf = self;
         @weakify(self);
         [[[[[CMStore instance] reloadActiveGroupSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
             @strongify(self);
@@ -114,8 +116,7 @@
 
                 }];
 
-        __weak typeof(self) weakSelf = self;
-        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:weakSelf.rac_willDeallocSignal]
+        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:self.rac_willDeallocSignal]
                 filter:^BOOL(NSNumber *state) {
                     switch ((CMCammentRecordingState) state.integerValue) {
                         case CMCammentRecordingStateNotRecording:
@@ -220,18 +221,20 @@
         return state;
     }];
 
+    __weak typeof(self) __weakSelf = self;
     [skippedReminder setEnterBlock:^(id data) {
+        typeof(__weakSelf) _self = __weakSelf;
         [[CMStore instance] setIsOnboardingSkipped:YES];
-        [self.output updateContinueTutorialButtonState];
-        [self.output hideSkipTutorialButton:NO];
-        [self.output showOnboardingAlert:CMOnboardingAlertSkippedOnboardingReminder];
+        [_self.output updateContinueTutorialButtonState];
+        [_self.output hideSkipTutorialButton:NO];
+        [_self.output showOnboardingAlert:CMOnboardingAlertSkippedOnboardingReminder];
     }];
 
     [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.OnboardingPostponed
                                          target:postponedReminder
                                            kind:TBSMTransitionExternal
                                          action:^(id data) {
-                                             [self.output showOnboardingAlert:CMOnboardingAlertPostponedOnboardingReminder];
+                                             [__weakSelf.output showOnboardingAlert:CMOnboardingAlertPostponedOnboardingReminder];
                                          }];
 
     [postponedReminder addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
@@ -239,84 +242,86 @@
     [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
 
     [tapAndHoldToRecordCamment setEnterBlock:^(id data) {
+        typeof(__weakSelf) _self = __weakSelf;
         [[CMStore instance] setIsOnboardingSkipped:NO];
-        [self.output setDisableHiddingCammentBlock:YES];
-        [self.output updateContinueTutorialButtonState];
-        [self.output closeSidebarIfOpened:^{
-            [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
-            [self.output showSkipTutorialButton];
+        [_self.output setDisableHiddingCammentBlock:YES];
+        [_self.output updateContinueTutorialButtonState];
+        [_self.output closeSidebarIfOpened:^{
+            typeof(__weakSelf) _self = __weakSelf;
+            [_self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+            [_self.output showSkipTutorialButton];
         }];
     }];
 
     [tapAndHoldToRecordCamment setExitBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:NO];
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
     }];
 
     [tapAndHoldToRecordCamment addHandlerForEvent:CMOnboardingEvent.CammentRecorded
                                          target:tapToPlayCamment
                                            kind:TBSMTransitionExternal
                                          action:^(id data) {
-                                             [self.output showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                                             [__weakSelf.output showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
                                          }];
 
     [tapToPlayCamment addHandlerForEvent:CMOnboardingEvent.CammentPlayed
                                            target:swipeLeftToHideCamments
                                              kind:TBSMTransitionExternal
                                            action:^(id data) {
-                                               [self.output showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+                                               [__weakSelf.output showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
                                            }];
     [tapToPlayCamment setEnterBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:YES];
+        [__weakSelf.output setDisableHiddingCammentBlock:YES];
     }];
 
     [tapToPlayCamment setExitBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:NO];
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
     }];
 
     [swipeLeftToHideCamments addHandlerForEvent:CMOnboardingEvent.CammentBlockSwipedLeft
                                   target:swipeRightToShowCamments
                                     kind:TBSMTransitionExternal
                                   action:^(id data) {
-                                      [self.output showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+                                      [__weakSelf.output showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
                                   }];
 
     [swipeRightToShowCamments addHandlerForEvent:CMOnboardingEvent.CammentBlockSwipedRight
                                          target:tapAndHoldToDeleteCamment
                                            kind:TBSMTransitionExternal
                                          action:^(id data) {
-                                             [self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
+                                             [__weakSelf.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
                                          }];
 
     [tapAndHoldToDeleteCamment addHandlerForEvent:CMOnboardingEvent.CammentDeleted
                                   target:pullRightToInviteFriends
                                     kind:TBSMTransitionExternal
                                   action:^(id data) {
-                                      [self.output showOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+                                      [__weakSelf.output showOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
                                   }];
 
     [tapAndHoldToDeleteCamment setEnterBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:YES];
+        [__weakSelf.output setDisableHiddingCammentBlock:YES];
     }];
 
     [tapAndHoldToDeleteCamment setExitBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:NO];
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
     }];
 
     [pullRightToInviteFriends addHandlerForEvent:CMOnboardingEvent.GroupInfoSidebarOpened
                                            target:onboardingFinished
                                              kind:TBSMTransitionExternal
                                            action:^(id data) {
-                                               [self.output hideOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
-                                               [self.output hideSkipTutorialButton: YES];
+                                               [__weakSelf.output hideOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+                                               [__weakSelf.output hideSkipTutorialButton: YES];
                                                [CMStore instance].isOnboardingFinished = YES;
                                            }];
 
     [pullRightToInviteFriends setEnterBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:YES];
+        [__weakSelf.output setDisableHiddingCammentBlock:YES];
     }];
 
     [pullRightToInviteFriends setExitBlock:^(id data) {
-        [self.output setDisableHiddingCammentBlock:NO];
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
     }];
 
     self.onboardingStateMachine = [TBSMStateMachine stateMachineWithName:@"Onboarding"];

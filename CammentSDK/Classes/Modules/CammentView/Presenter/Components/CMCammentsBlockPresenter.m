@@ -34,8 +34,10 @@
         self.updatesQueue.maxConcurrentOperationCount = 1;
         [self.updatesQueue setSuspended:NO];
 
+        @weakify(self);
         [[[[CMStore instance].authentificationStatusSubject distinctUntilChanged] takeUntil:self.rac_willDeallocSignal]
                 subscribeNext:^(CMAuthStatusChangedEventContext *x) {
+            @strongify(self);
             self.userCognitoUuid = x.user.cognitoUserId;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self reloadItems:self.items animated:NO];
@@ -176,12 +178,13 @@
 }
 
 - (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)(void))completion {
+    __weak typeof(self) __weakSelf = self;
     [self.updatesQueue addOperationWithBlock:^{
-        [_collectionNode performBatchAnimated:YES updates:^{
+        [__weakSelf.collectionNode performBatchAnimated:YES updates:^{
             @synchronized (self.items) {
-                self.items = [@[item] arrayByAddingObjectsFromArray:[_items copy]];
+                __weakSelf.items = [@[item] arrayByAddingObjectsFromArray:[__weakSelf.items copy]];
             }
-            [_collectionNode insertItemsAtIndexPaths:@[
+            [__weakSelf.collectionNode insertItemsAtIndexPaths:@[
                     [NSIndexPath indexPathForItem:0 inSection:0]
             ]];
         }                          completion:^(BOOL completed) {
@@ -217,8 +220,9 @@
         NSMutableArray *mutableItems = [[NSMutableArray alloc] initWithArray:_items copyItems:YES];
         [mutableItems removeObjectAtIndex:(NSUInteger) indexPath.row];
         self.items = mutableItems;
+        __weak typeof(self) __weakSelf = self;
         [_collectionNode performBatchAnimated:YES updates:^{
-            [_collectionNode deleteItemsAtIndexPaths:@[
+            [__weakSelf.collectionNode deleteItemsAtIndexPaths:@[
                     indexPath
             ]];
         }                          completion:nil];
@@ -318,14 +322,15 @@
 }
 
 - (void)updateVisibleCellWithCamment:(CMCamment *)camment {
+    __weak typeof(self) __weakSelf = self;
     [self.updatesQueue addOperationWithBlock:^{
-        for (ASCellNode *node in _collectionNode.visibleNodes) {
+        for (ASCellNode *node in __weakSelf.collectionNode.visibleNodes) {
             if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
             CMCammentCell *cammentCell = (CMCammentCell *) node;
             if ([cammentCell.displayingContext.camment.uuid isEqualToString:camment.uuid]) {
                 CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment
-                                                                                         shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:self.userCognitoUuid]
-                                                                                          shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:self.userCognitoUuid]];
+                                                                                         shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:__weakSelf.userCognitoUuid]
+                                                                                          shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:__weakSelf.userCognitoUuid]];
                 [cammentCell updateWithDisplayingContext:context];
             }
         }

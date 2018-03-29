@@ -158,10 +158,12 @@
 }
 
 - (void)setupBindings {
+    __weak typeof(self) __weakSelf = self;
     [[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *state) {
-        if (![self.presenter isCameraSessionConfigured]) { return; }
-        self.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
-        [self.node transitionLayoutWithAnimation:YES
+        typeof(__weakSelf) _self = __weakSelf;
+        if (![_self.presenter isCameraSessionConfigured]) { return; }
+        _self.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
+        [_self.node transitionLayoutWithAnimation:YES
                               shouldMeasureAsync:NO
                            measurementCompletion:nil];
     }];

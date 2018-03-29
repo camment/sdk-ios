@@ -52,6 +52,24 @@
                                                                   isWatched:NO]];
         serverMessage = [CMServerMessage cammentWithCamment:camment];
 
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSDictionary *botData = [body valueForKey:@"botData"];
+            if (!botData) { return; }
+            
+            NSDictionary *karaoke = [botData valueForKey:@"karaoke"];
+            if (!karaoke) { return; }
+            
+            NSNumber *score = [karaoke valueForKey:@"score"];
+            if (!score) { return; }
+            
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Your score"
+                                                                message:score.stringValue
+                                                               delegate:nil
+                                                      cancelButtonTitle:@"Close"
+                                                      otherButtonTitles:nil];
+            [alertView show];
+        });
+        
     } else if ([type isEqualToString:@"new-user-in-group"]) {
         NSDictionary *userJson = body[@"joiningUser"];
         CMUser *user = [[[[[[CMUserBuilder new]

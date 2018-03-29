@@ -76,10 +76,6 @@
     return self;
 }
 
-- (void)dealloc {
-    
-}
-
 - (void)addToParentViewController:(UIViewController *)viewController {
     [viewController addChildViewController:self.cammentViewController];
     self.wireframe.parentViewController = viewController;

@@ -248,8 +248,7 @@ Place where to handle it properly depends on your app architecture, but at very 
 ```
 
 ### Setup CammentSDK Delegate
-When user accepts an invitation to any show SDK will notify you by `CMCammentSDKDelegate` delegate.
-This step is optional, but usefull if you want to open a proper show when someone invites user to a group chat.
+When user joins any gorup SDK will notify you via `CMCammentSDKDelegate` delegate.
 Implement `CMCammentSDKDelegate` wherever it works better for your app. General idea is implement the delegate in an object which can manage internal navigation between screens.
 ```obj-c
 @interface YourRouterObject()<CMCammentSDKDelegate>

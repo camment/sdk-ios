@@ -10,7 +10,20 @@
 
 @protocol CMCammentSDKDelegate <NSObject>
 
+/**
+ * Calls when user joined to show
+ * @param metadata Class provides additional information related to your show
+ */
+- (void)didJoinToShow:(CMShowMetadata * _Nonnull)metadata;
+
 @optional
+
+/**
+ * Calls when user opens invitation to show
+ * Use this delegate's method to open the show in your player
+ * @param metadata Class provides additional information related to your show
+ */
+- (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
 /**
  * Calls when user joined to show.
@@ -20,22 +33,11 @@
 - (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
 
 /**
- * Calls when user joined to show
- * @param metadata Class provides additional information related to your show
- */
-- (void)didJoinToShow:(CMShowMetadata * _Nonnull)metadata;
-
-/**
- * Calls when user opened invitation to show
- * @param metadata Class provides additional information related to your show
- */
-- (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
-
-/**
  * Calls when user accept someone's joining request
+ * @deprecated: use didJoinToShow: instead
  * @param metadata Class provides additional information related to your show
  */
-- (void)didAcceptJoiningRequest:(CMShowMetadata * _Nonnull)metadata;
+- (void)didAcceptJoiningRequest:(CMShowMetadata * _Nonnull)metadata __deprecated;
 @end
 
 @protocol CMCammentSDKUIDelegate <NSObject>

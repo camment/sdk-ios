@@ -4,6 +4,7 @@
 
 #import "CMPeopleJoinedHeaderCell.h"
 #import "UIColorMacros.h"
+#import "UIFont+CammentFonts.h"
 
 
 @interface CMPeopleJoinedHeaderCell ()
@@ -24,7 +25,7 @@
         self.textHeaderNode = [ASTextNode new];
         self.textHeaderNode.attributedText = [[NSAttributedString alloc] initWithString:CMLocalized(@"People joined to your Camment chat")
                                                                              attributes:@{
-                                                                                     NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:12],
+                                                                                     NSFontAttributeName: [UIFont nunitoMediumWithSize:12],
                                                                                      NSForegroundColorAttributeName: UIColorFromRGB(0x9B9B9B)
                                                                              }];
 

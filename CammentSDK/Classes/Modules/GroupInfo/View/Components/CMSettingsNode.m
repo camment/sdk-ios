@@ -5,6 +5,7 @@
 #import "CMSettingsNode.h"
 #import "UIColorMacros.h"
 #import "CMInviteFriendsButton.h"
+#import "UIFont+CammentFonts.h"
 
 
 @interface CMSettingsNode ()
@@ -27,7 +28,7 @@
         self.logoutButton.style.height = ASDimensionMake(30.0f);
         [self.logoutButton setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"Logout")
                                                                               attributes:@{
-                                                                                      NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:10],
+                                                                                      NSFontAttributeName: [UIFont nunitoMediumWithSize:10],
                                                                                       NSForegroundColorAttributeName: UIColorFromRGB(0x4A90E2),
                                                                               }]
                                      forState:UIControlStateNormal];
@@ -45,7 +46,7 @@
 
         self.infoTextNode.attributedText = [[NSAttributedString alloc] initWithString:CMLocalized(@"Logout from Facebook account will remove your from current discussion.")
                                                                            attributes:@{
-                                                                                   NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:12],
+                                                                                   NSFontAttributeName: [UIFont nunitoMediumWithSize:12],
                                                                                    NSForegroundColorAttributeName: [UIColor blackColor],
                                                                                    NSParagraphStyleAttributeName: mutableParagraphStyle
                                                                            }];

@@ -7,6 +7,7 @@
 #import "CMVideoAd.h"
 #import "CMStore.h"
 #import "CMOpenURLHelper.h"
+#import "UIFont+CammentFonts.h"
 
 @implementation CMAdsVideoPlayerNode {
 
@@ -32,7 +33,7 @@
         self.openLinkButton.cornerRadius = 3.0f;
         [self.openLinkButton setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"CLICK TO LEARN MORE")
                                                                                 attributes:@{
-                                                                                        NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:10],
+                                                                                        NSFontAttributeName: [UIFont nunitoMediumWithSize:10],
                                                                                         NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                                 }]
                                        forState:UIControlStateNormal];

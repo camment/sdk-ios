@@ -4,6 +4,7 @@
 
 #import "CMInviteFriendsButton.h"
 #import "UIColorMacros.h"
+#import "UIFont+CammentFonts.h"
 
 
 @implementation CMInviteFriendsButton
@@ -16,7 +17,7 @@
         self.backgroundColor = UIColorFromRGB(0xD0021B);
         [self setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"button.invite_friends")
                                                                  attributes:@{
-                                                                         NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
+                                                                         NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
                                                                          NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                  }]
                         forState:UIControlStateNormal];
@@ -37,7 +38,7 @@
         self.backgroundColor = UIColorFromRGB(0x9B9B9B);
         [self setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"button.continue_tutorial")
                                                                  attributes:@{
-                                                                         NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
+                                                                         NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
                                                                          NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                  }]
                         forState:UIControlStateNormal];
@@ -58,7 +59,7 @@
         self.backgroundColor = UIColorFromRGB(0xD0021B);
         [self setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"button.leave_group")
                                                                  attributes:@{
-                                                                         NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
+                                                                         NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
                                                                          NSForegroundColorAttributeName: [UIColor whiteColor],
                                                                  }]
                         forState:UIControlStateNormal];

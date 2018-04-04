@@ -15,6 +15,7 @@
 #import "CMInviteFriendsButton.h"
 #import "CMProfileViewNodeContext.h"
 #import "CMInviteFriendsGroupInfoNode.h"
+#import "UIFont+CammentFonts.h"
 
 @interface CMProfileViewNode () <CMSettingsNodeDelegate>
 
@@ -121,7 +122,7 @@
                 }
                 self.usernameTextNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
                                                                                        attributes:@{
-                                                                                               NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
+                                                                                               NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
                                                                                                NSForegroundColorAttributeName: [UIColor blackColor],
                                                                                                NSParagraphStyleAttributeName: mutableParagraphStyle
                                                                                        }];

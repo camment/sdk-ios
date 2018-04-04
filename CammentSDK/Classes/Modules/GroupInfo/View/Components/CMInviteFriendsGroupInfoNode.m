@@ -5,6 +5,7 @@
 #import "CMInviteFriendsGroupInfoNode.h"
 #import "UIColorMacros.h"
 #import "CMInviteFriendsButton.h"
+#import "UIFont+CammentFonts.h"
 
 
 @interface CMInviteFriendsGroupInfoNode ()
@@ -30,7 +31,7 @@
 
         self.infoTextNode.attributedText = [[NSAttributedString alloc] initWithString:CMLocalized(@"Invite friends to chat with short videos in top of your stream.")
                                                                            attributes:@{
-                                                                                   NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:12],
+                                                                                   NSFontAttributeName: [UIFont nunitoMediumWithSize:12],
                                                                                    NSForegroundColorAttributeName: [UIColor blackColor],
                                                                                    NSParagraphStyleAttributeName: mutableParagraphStyle
                                                                            }];
@@ -39,7 +40,7 @@
         self.learnMoreButtonNode.style.height = ASDimensionMake(30.0f);
         [self.learnMoreButtonNode setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"Learn more")
                                                                                      attributes:@{
-                                                                                             NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:10],
+                                                                                             NSFontAttributeName: [UIFont nunitoMediumWithSize:10],
                                                                                              NSForegroundColorAttributeName: UIColorFromRGB(0x4A90E2),
                                                                                      }]
                                             forState:UIControlStateNormal];

@@ -6,6 +6,7 @@
 #import "CMUser.h"
 #import "UIColorMacros.h"
 #import "CMUserContants.h"
+#import "UIFont+CammentFonts.h"
 
 
 @interface CMGroupInfoUserCell ()
@@ -43,7 +44,7 @@
         self.usernameNode.truncationMode = NSLineBreakByTruncatingTail;
         self.usernameNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
                                                                              attributes:@{
-                                                                                     NSFontAttributeName: [UIFont fontWithName:@"Nunito-Medium" size:14],
+                                                                                     NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
                                                                                      NSForegroundColorAttributeName: [UIColor blackColor]
                                                                              }];
 

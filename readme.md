@@ -6,9 +6,6 @@ To use the SDK, install the following on your development machine:
  - iOS 8.1 or later
  - Cocoapods
 
-### Setup Facebook SDK
-Skip this step if your ios app has Facebook SDK installed already, but if you don't use it yet please follow the guide: https://developers.facebook.com/docs/ios/getting-started/
-
 ### Add CammentSDK framework to your Xcode project
 
 Open yout Podfile and add `pod 'CammentSDK'` there
@@ -18,29 +15,48 @@ platform :ios, '8.1'
 
 target 'Your target' do
     use_frameworks!
-    pod 'CammentSDK'
+    pod 'CammentSDK', :branch => 'rtve'
 end
 ```
 then run `pod install`
 
 ### Configure CammentSDK in project's Info.plist
-Add following code to your Info.plist to prevent any restrictions from iOS:
+Add following code to your Info.plist to prevent any restrictions from iOS, configure CammentSDK and Facebook app:
 ```xml
-<key>LSRequiresIPhoneOS</key>
-	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb272405646569362</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>camment</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>272405646569362</string>
+	<key>FacebookDisplayName</key>
+	<string>Camment</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<false/>
 		<key>NSExceptionDomains</key>
 		<dict>
-			<key>cloudfront.net</key>
-			<dict>
-				<key>NSIncludesSubdomains</key>
-				<true/>
-				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
-				<string>TLSv1.0</string>
-				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
-				<false/>
-			</dict>
 			<key>amazonaws.com</key>
 			<dict>
 				<key>NSIncludesSubdomains</key>
@@ -59,47 +75,47 @@ Add following code to your Info.plist to prevent any restrictions from iOS:
 				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
 				<false/>
 			</dict>
+			<key>cloudfront.net</key>
+			<dict>
+				<key>NSIncludesSubdomains</key>
+				<true/>
+				<key>NSThirdPartyExceptionMinimumTLSVersion</key>
+				<string>TLSv1.0</string>
+				<key>NSThirdPartyExceptionRequiresForwardSecrecy</key>
+				<false/>
+			</dict>
 		</dict>
-		<key>NSAllowsArbitraryLoads</key>
-		<false/>
 	</dict>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>camment</string>
-			</array>
-		</dict>
-	</array>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera is used to create camment chat and have discussions with short videos on your device</string>
+	<string>To be able to analyse your singing our karaoke robot needs an access to your camera</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Microphone is used to create camment chat and have discussions with short videos on your device</string>
+	<string>To be able to analyse your singing our karaoke robot needs an access to your microphone</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Photo library is used to provide better user experience</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Nunito-Medium.ttf</string>
+		<string>Nunito-Light.ttf</string>
+		<string>Nunito-Bold.ttf</string>
+	</array>
 ```
 
-### Copy custom font to your Xcode project
+### Copy custom fonts to your Xcode project
 
-Camment SDK uses custom font `Nunito-Medium.ttf`.
-Make sure you downloaded this font from our github and added the file to your project.
-You can download the font by the link
-https://github.com/camment/sdk-ios/blob/master/Nunito-Medium.ttf
+Camment SDK uses custom fonts `Nunito-Medium.ttf`, `Nunito-Light.ttf` and `Nunito-Bold.ttf`.
+Make sure you downloaded fonts from our github and added the files to your project.
+You can download the fonts by the links
+- https://github.com/camment/sdk-ios/blob/rtve/Nunito-Medium.ttf
+- https://github.com/camment/sdk-ios/blob/rtve/Nunito-Light.ttf
+- https://github.com/camment/sdk-ios/blob/rtve/Nunito-Bold.ttf
 
-Declare custom font in Info.plist file
-
-```xml
-<key>UIAppFonts</key>
-<array>
-  <string>Nunito-Medium.ttf</string>
-</array>
-```
-
-### Set up the SDK in AppDelegate.m
+### Set up the Camment SDK and Facebook SDK in AppDelegate.m
 
 Open `AppDelegate.m` and import CammentSDK header:
 ```obj-c
 #import <CammentSDK/CammentSDK.h>
 #import <CammentSDK/CMFacebookIdentityProvider.h>
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
 ```
 
 Add following lines to AppDelegate
@@ -115,7 +131,10 @@ Add following lines to AppDelegate
     [[FBSDKApplicationDelegate sharedInstance] application:application
                              didFinishLaunchingWithOptions:launchOptions];
     [[CammentSDK instance] application:application didFinishLaunchingWithOptions:launchOptions];
-    ...
+
+    self.facebookIdentityProvider = [CMFacebookIdentityProvider new];
+    [[CammentSDK instance] configureWithApiKey:YOUR_API_KEY identityProvider:self.facebookIdentityProvider];
+
     return YES;
 }
 
@@ -148,87 +167,18 @@ Add following lines to AppDelegate
     [FBSDKAppEvents activateApp];
     [[CammentSDK instance] applicationDidBecomeActive:application];
 }
+
 ```
 
-Configure CammentSDK with an `API Key`
-```objc
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    ...
-    NSString *apiKey = @"YOUR_API_KEY";
-    self.facebookIdentityProvider = [CMFacebookIdentityProvider new];
-    [[CammentSDK instance] configureWithApiKey:apiKey
-                              identityProvider:self.facebookIdentityProvider];
-    ...
+### Open Karaoke view
+In order to present a karaoke view with a list of all available songs you should instantiate `CMKaraokeShowListModule` and use one of `pushInNavigationController:`, `presentInViewController:` or even `presentInWindow:` methods. Take a look at the example below
+``` obj-c
+- (void)openKaraokeView {
+    CMKaraokeShowListModule *showsList = [CMKaraokeShowListModule new];
+    [showsList pushInNavigationController:self.navigationController];
 }
 ```
-Now you are ready to use CammentSDK.
 
-### Add CammentSDK overlay on top of your video player
-Open a View Controller where you would like to use CammentSDK and import header
-```obj-c
-#import <CammentSDK/CammentSDK.h>
-```
-Create a new property with `CMCammentOverlayController` class. This class is a container for all camment overlay internal logic
-```obj-c
-@property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
-```
-Before creating Camment overlay we need to provide few configuration options. First of all, create show metadata object which holds identifier of your show:
-```obj-c
-CMShowMetadata *metadata = [CMShowMetadata new];
-metadata.uuid = @"Any string unique identifier of your show";
-```
-Show identifier is any string which defines your show. Choose any uuid which is meaningfull for you.
-After that we need to create an object describing visual configuration for overlay layout.
-```obj-c
-CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
-// Let's display camment button at bottom right corner
-overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
-```
-
-Now instantiate controller and add it's subview on your view controller's view:
-```obj-c
-self.cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata overlayLayoutConfig:overlayLayoutConfig];
-[self.cammentOverlayController addToParentViewController:self];
-[self.view addSubview:[_cammentOverlayController cammentView]];
-```
-
-Layout overlay subview properly:
-```obj-c
--(void)viewDidLayoutSubviews {
-    [super viewDidLayoutSubviews];
-    [[self.cammentOverlayController cammentView] setFrame:self.view.bounds];
-}
-```
-Now add your player's view to camment overlay. Lets say that name of your player's variable is myPlayerView and it is subclass of UIView.
-```obj-c
-[self.cammentOverlayController setContentView:myPlayerView];
-```
-Check two important things:
- - myPlayerView doesn't have a superview, means you never add it like `[view addSubview: myPlayerView]`
- - you don't add myPlayerView on top of overlay view using default cocoa touch method `addSubview`. You should you `setContentView` instead.
-
-Now we are almost done. There is one important thing left. For better user expierence we recommend to mute a video player when user starts recording camment and decrease volume at least by half when user plays camment. In order to do it - implement `CMCammentOverlayControllerDelegate` protocol:
-```obj-c
-self.cammentOverlayController.overlayDelegate = self;
-```
-The protocol provides four methods to notify your if camment is being recording or playing:
-```obj-c
-- (void)cammentOverlayDidStartRecording {
-    // Mute your player here
-}
-
-- (void)cammentOverlayDidFinishRecording {
-    // Restore normal volume
-}
-
-- (void)cammentOverlayDidStartPlaying {
-    // Decrease volume level
-}
-
-- (void)cammentOverlayDidFinishPlaying {
-    // Restore normal volume
-}
-```
 ### Setup CammentSDK UI Delegate
 Camment SDK uses UIAlertController to present important messages, like invitations from other users. In order to make UIAlertController will be presented at correct place in view controllers hierarchy we need to handle UI delegate events. UI delegate has a method which will be called when SDK wants to present a notification:
 ```obj-c
@@ -240,6 +190,7 @@ Place where to handle it properly depends on your app architecture, but at very 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [CammentSDK instance].sdkUIDelegate = self;
+    ...
 }
 
 - (void)cammentSDKWantsPresentViewController:(UIViewController *_Nonnull)viewController {
@@ -248,15 +199,25 @@ Place where to handle it properly depends on your app architecture, but at very 
 ```
 
 ### Setup CammentSDK Delegate
-When user joins any gorup SDK will notify you via `CMCammentSDKDelegate` delegate.
-Implement `CMCammentSDKDelegate` wherever it works better for your app. General idea is implement the delegate in an object which can manage internal navigation between screens.
+When user joins any group SDK will notify you via `CMCammentSDKDelegate` delegate.
+Implement `CMCammentSDKDelegate` wherever it works better for your app. General idea is implement the delegate in an object which can manage internal navigation between screens. We would recommend to implement those methods in the currently visible view controller.
 ```obj-c
-@interface YourRouterObject()<CMCammentSDKDelegate>
+@interface YourVisibleViewController()<CMCammentSDKDelegate>
 @end
 ```
 ```obj-c
+
+- (void)viewWillAppear:(BOOL)animated {
+    ...
+    [CammentSDK instance].sdkDelegate = self;
+    ...
+}
+
+- (void)didOpenInvitationToShow:(CMShowMetadata *)metadata {
+    [self openKaraokeView];
+}
+
 - (void)didJoinToShow:(CMShowMetadata *)metadata {
-  NSString *showUuid = metadata.uuid;
-  // open video player for show with uuid
+    // CammentSDK will open view with a show automatically
 }
 ```

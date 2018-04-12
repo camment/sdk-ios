@@ -7,6 +7,7 @@
 #import <CammentSDK/CMCammentOverlayLayoutConfig.h>
 #import <CammentSDK/CMCammentOverlayController.h>
 #import <CammentSDK/CMIdentityProvider.h>
+#import <CammentSDK/CMKaraokeShowListModule.h>
 
 @protocol CMCammentSDKDelegate <NSObject>
 

@@ -10,6 +10,7 @@
 
 // Show uuid is a unique identifier for your show
 @property (nonatomic, copy) NSString *uuid;
+@property (nonatomic, copy) NSString *countryCode;
 
 // Set a custom text to be shared along with invitation link
 // If nil, default text will be used

@@ -19,6 +19,9 @@
 - (void)cammentOverlayDidStartPlaying;
 - (void)cammentOverlayDidFinishPlaying;
 
+- (void)cammentOverlayWantsToPauseVideo;
+- (void)cammentOverlayWantsToPlayVideo;
+
 @end
 
 @interface CMCammentOverlayController : NSObject

@@ -14,6 +14,8 @@
 #import "CMCammentOverlayController.h"
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMIdentityProvider.h"
+#import "CMKaraokeShowListModule.h"
+#import "CMPublicModuleInterface.h"
 #import "CMShowMetadata.h"
 #import "CMFacebookIdentityProvider.h"
 

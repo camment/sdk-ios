@@ -24,7 +24,7 @@
                              didFinishLaunchingWithOptions:launchOptions];
     
     self.facebookIdentityProvider = [CMFacebookIdentityProvider new];
-    [[CammentSDK instance] configureWithApiKey:@"zWAn39NI7xarBbkH4zWwN1owpLBaEn6R38i0lNbz"
+    [[CammentSDK instance] configureWithApiKey:@""
                               identityProvider:self.facebookIdentityProvider];
     
     [[CammentSDK instance] application:application didFinishLaunchingWithOptions:launchOptions];

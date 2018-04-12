@@ -4,5 +4,5 @@ install! 'cocoapods'
 
 target 'rtve karaoke demo' do
     use_frameworks!
-    pod 'CammentSDK', :path => '../'
+    pod 'CammentSDK', :git => 'https://github.com/camment/sdk-ios.git', :branch => 'rtve'
 end

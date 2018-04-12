@@ -15,7 +15,7 @@ platform :ios, '8.1'
 
 target 'Your target' do
     use_frameworks!
-    pod 'CammentSDK', :branch => 'rtve'
+    pod 'CammentSDK', :git => 'https://github.com/camment/sdk-ios.git', :branch => 'rtve'
 end
 ```
 then run `pod install`

@@ -16,8 +16,6 @@
 #import "CMAPIDevcammentClient.h"
 #import "CMServerMessage.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
-#import "TCBlobDownloader.h"
-#import "TCBlobDownloadManager.h"
 #import "CMCammentBuilder.h"
 #import "CMCammentStatus.h"
 #import "CMServerMessage+TypeMatching.h"
@@ -90,7 +88,7 @@
     CMBotCamment *botCamment = [[CMBotCamment alloc] initWithURL:banner.thumbnailURL
                                                        botAction:action];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_output didReceiveNewBotCamment:botCamment];
+        [self.output didReceiveNewBotCamment:botCamment];
     });
 }
 
@@ -102,8 +100,7 @@
 
 - (void)loadNextPageOfCamments:(NSString *)groupUUID {
     if (!groupUUID) {return;}
-    @weakify(self);
-    NSLog(@"Load page %@", self.paginationKey);
+    __weak typeof(self) _weakSelf = self;
     BOOL isFirstPage = [self.paginationKey length] == 0;
     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID
                                                                       lastKey:self.paginationKey ?: @""
@@ -112,8 +109,8 @@
                        withBlock:^id(AWSTask<CMAPICammentList *> *t) {
                            NSLog(@"Loaded");
                 if (!t.error && t.result && [t.result isKindOfClass:[CMAPICammentList class]]) {
-                    self.paginationKey = t.result.lastKey;
-                    self.canLoadMoreCamments = t.result.lastKey != nil;
+                    _weakSelf.paginationKey = t.result.lastKey;
+                    _weakSelf.canLoadMoreCamments = t.result.lastKey != nil;
                     NSArray *camments = [t.result items];
                     NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
                         CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
@@ -130,43 +127,37 @@
                                 withShouldBeDeleted:NO]
                                 withStatus:cammentStatus] build];
                     }].array;
-                    [self.output didFetchCamments:result canLoadMore:self.canLoadMoreCamments firstPage:isFirstPage];
+                    [_weakSelf.output didFetchCamments:result canLoadMore:_weakSelf.canLoadMoreCamments firstPage:isFirstPage];
                 } else {
-                    [self.output didFailToLoadCamments:t.error];
+                    [_weakSelf.output didFailToLoadCamments:t.error];
                 };
                 return nil;
             }];
 }
 
 - (void)downloadCamment:(CMCamment *)camment {
-    TCBlobDownloadManager *sharedManager = [TCBlobDownloadManager sharedInstance];
     if (!camment.remoteURL) {
         NSLog(@"no remote url for %@", camment);
         return;
     }
 
-    TCBlobDownloader *downloader = [sharedManager startDownloadWithURL:[[NSURL alloc] initWithString:camment.remoteURL]
-                                                            customPath:nil
-                                                         firstResponse:^(NSURLResponse *response) {
-
-                                                         }
-                                                              progress:^(uint64_t receivedLength, uint64_t totalLength, NSInteger remainingTime, float progress) {
-
-                                                              }
-                                                                 error:^(NSError *error) {
-                                                                     DDLogError(@"Error on downloading camment %@", error);
-                                                                 }
-                                                              complete:^(BOOL downloadFinished, NSString *pathToFile) {
-                                                                  if (downloadFinished && pathToFile) {
-                                                                      CMCammentBuilder *builder = [[CMCammentBuilder cammentFromExistingCamment:camment]
-                                                                              withLocalURL:pathToFile];
-                                                                      [self.output didReceiveNewCamment:[builder build]];
-                                                                  }
-                                                              }];
+    NSURL *url = [NSURL URLWithString:camment.remoteURL];
+    
+    NSURLSessionDownloadTask *downloadCammentTask = [[NSURLSession sharedSession]
+                                                     downloadTaskWithURL:url
+                                                     completionHandler:^(NSURL *location, NSURLResponse *response, NSError *error)
+    {
+        if (!error && location) {
+            CMCammentBuilder *builder = [[CMCammentBuilder cammentFromExistingCamment:camment]
+                                         withLocalURL:location.path];
+            [self.output didReceiveNewCamment:[builder build]];
+        } else {
+            DDLogError(@"Couldn't download camment %@", camment);
+        }
+    }];
+    
+    [downloadCammentTask resume];
 }
 
-- (void)dealloc {
-    [[TCBlobDownloadManager sharedInstance] cancelAllDownloadsAndRemoveFiles:YES];
-}
 
 @end

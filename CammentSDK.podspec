@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "CammentSDK"
-  s.version = "2.1.7-rtve"
+  s.version = "2.1.8-rtve"
   s.summary = "iOS SDK for camment.tv"
   s.authors = {"Alexander Fedosov"=>"alex@camment.tv"}
   s.homepage = "https://github.com/camment/sdk-ios.git"
@@ -47,7 +47,6 @@ Pod::Spec.new do |s|
   s.dependency  'GVUserDefaults', '~> 1.0'
   s.dependency  'TLIndexPathTools', '~> 0.4'
   s.dependency  'Mixpanel', '~> 3.2'
-  s.dependency  'TCBlobDownload', '~> 2.1'
   s.dependency  'TBStateMachine', '~> 6.7'
   s.dependency  'PINRemoteImage', '3.0.0-beta.13'
   s.dependency  'FBSDKCoreKit', '~> 4.29'

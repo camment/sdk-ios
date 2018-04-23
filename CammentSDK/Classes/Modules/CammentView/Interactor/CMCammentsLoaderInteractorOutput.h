@@ -15,7 +15,7 @@
 
 @protocol CMCammentsLoaderInteractorOutput <NSObject>
 
-- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore;
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore firstPage:(BOOL)isFirstPage;
 - (void)didReceiveNewCamment:(CMCamment *)camment;
 - (void)didReceiveNewBotCamment:(CMBotCamment *)ads;
 

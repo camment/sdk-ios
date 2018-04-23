@@ -17,6 +17,8 @@
 - (void)deleteItem:(CMCammentsBlockItem *)blockItem;
 - (void)reloadItems:(NSArray<CMCammentsBlockItem *> *)newItems animated:(BOOL)animated;
 
+- (void)updateItems:(NSArray<CMCammentsBlockItem *> *)items animated:(BOOL)animated;
+
 - (void)updateCammentData:(CMCamment *)camment;
 
 @end

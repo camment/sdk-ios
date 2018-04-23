@@ -42,6 +42,7 @@
 #import "CMInvitation.h"
 #import "CMErrorWireframe.h"
 
+
 @interface CMSDKService () <CMGroupManagementInteractorOutput>
 
 @end
@@ -76,8 +77,9 @@
         self.onSDKHasBeenConfiguredQueue.maxConcurrentOperationCount = 1;
         [self.onSDKHasBeenConfiguredQueue setSuspended:YES];
 
-        self.connectionAvailable = YES;
+        [CMStore instance].connectionAvailable = YES;
         self.connectionReachibility = [CMConnectionReachability reachabilityForInternetConnection];
+        [self.connectionReachibility startNotifier];
 
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(reachabilityChanged:)
@@ -224,15 +226,17 @@
     NetworkStatus netStatus = [reachability currentReachabilityStatus];
     BOOL connectionAvailable = netStatus != NotReachable;
 
-    if (connectionAvailable && connectionAvailable != self.connectionAvailable) {
+    if (connectionAvailable && connectionAvailable != [CMStore instance].connectionAvailable) {
 
         if (self.userSessionController.userAuthentificationState == CMCammentUserNotAuthentificated) {
             DDLogDeveloperInfo(@"Reachability changed, updating user session..");
             [self wakeUpUserSession];
         }
+        
+        [[CMStore instance].fetchUpdatesSubject sendNext:@YES];
     }
 
-    self.connectionAvailable = connectionAvailable;
+    [CMStore instance].connectionAvailable = connectionAvailable;
 }
 
 - (void)dealloc {

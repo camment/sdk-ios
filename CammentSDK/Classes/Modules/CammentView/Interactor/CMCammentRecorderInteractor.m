@@ -4,6 +4,7 @@
 //
 
 #import "SCRecorder.h"
+#import "SCRecordSessionSegment.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentRecorderInteractor.h"
 #import "CMCammentRecorderInteractorOutput.h"
@@ -116,7 +117,9 @@
 
     AVAsset *asset = session.assetRepresentingSegments;
     SCAssetExportSession *assetExportSession = [[SCAssetExportSession alloc] initWithAsset:asset];
-    assetExportSession.outputUrl = _recorder.session.outputUrl;
+    NSURL *url = [SCRecordSessionSegment segmentURLForFilename:[NSString stringWithFormat:@"%@.%@", assetKey, @"mp4"]
+                                                  andDirectory:SCRecordSessionTemporaryDirectory];
+    assetExportSession.outputUrl = url;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
 
     assetExportSession.videoConfiguration.preset = SCPresetMediumQuality;
@@ -124,7 +127,7 @@
     __weak typeof(self) weakSelf = self;
     [assetExportSession exportAsynchronouslyWithCompletionHandler: ^{
         if (assetExportSession.error == nil) {
-            [weakSelf.output recorderDidFinishExportingToURL:_recorder.session.outputUrl uuid:assetKey];
+            [weakSelf.output recorderDidFinishExportingToURL:url uuid:assetKey];
         } else {
             // Something bad happened
         }

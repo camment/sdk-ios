@@ -255,6 +255,24 @@
     }
 }
 
+- (void)updateItems:(NSArray<CMCammentsBlockItem *> *)items animated:(BOOL)animated {
+
+    NSArray *notSentCamments = [self.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *item) {
+
+        __block BOOL shouldKeep = NO;
+        [item matchCamment:^(CMCamment *camment) {
+            shouldKeep = camment.status.deliveryStatus == CMCammentDeliveryStatusNotSent;
+        }
+        botCamment:^(CMBotCamment *botCamment) {}];
+
+        return shouldKeep;
+
+    }].array ?: @[];
+
+    NSArray *resultArray = [notSentCamments arrayByAddingObjectsFromArray:items];
+    [self reloadItems:resultArray animated:animated];
+}
+
 - (void)reloadItems:(NSArray<CMCammentsBlockItem *> *)newItems
            animated:(BOOL)animated {
     if (!animated) {

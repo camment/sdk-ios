@@ -104,6 +104,7 @@
     if (!groupUUID) {return;}
     @weakify(self);
     NSLog(@"Load page %@", self.paginationKey);
+    BOOL isFirstPage = [self.paginationKey length] == 0;
     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID
                                                                       lastKey:self.paginationKey ?: @""
                                                                         limit:self.cammentsLimit]
@@ -129,7 +130,7 @@
                                 withShouldBeDeleted:NO]
                                 withStatus:cammentStatus] build];
                     }].array;
-                    [self.output didFetchCamments:result canLoadMore:self.canLoadMoreCamments];
+                    [self.output didFetchCamments:result canLoadMore:self.canLoadMoreCamments firstPage:isFirstPage];
                 } else {
                     [self.output didFailToLoadCamments:t.error];
                 };

@@ -87,6 +87,13 @@
         
         __weak typeof(self) weakSelf = self;
         @weakify(self);
+        [[[[[CMStore instance] fetchUpdatesSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+            @strongify(self);
+            if (shouldReload.boolValue) {
+                [self updateCammentsAfterConnectionHasRestored];
+            }
+        }];
+
         [[[[[CMStore instance] reloadActiveGroupSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
             @strongify(self);
             if (shouldReload.boolValue) {
@@ -374,6 +381,34 @@
     [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingStart];
 }
 
+- (void)updateCammentsAfterConnectionHasRestored {
+    [self.loaderInteractor resetPaginationKey];
+    [self.loaderInteractor loadNextPageOfCamments:[CMStore instance].activeGroup.uuid];
+
+    NSArray *cammentsToUpload = [[self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *item) {
+        __block BOOL shouldUpload = NO;
+        [item matchCamment:^(CMCamment *camment) {
+            shouldUpload = camment.status.deliveryStatus == CMCammentDeliveryStatusNotSent;
+        } botCamment:^(CMBotCamment *botCamment) {
+
+        }];
+        return shouldUpload;
+    }] map:^id(CMCammentsBlockItem *item) {
+        __block  CMCamment *resultCamment = nil;
+        [item matchCamment:^(CMCamment *camment) {
+                    resultCamment = camment;
+                }
+                botCamment:^(CMBotCamment *botCamment) {
+
+                }];
+        return resultCamment;
+    }].array;
+
+    for (CMCamment *item in cammentsToUpload) {
+        [self.interactor uploadCamment:item];
+    }
+}
+
 - (void)updateChatWithActiveGroup {
     [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
     [self.loaderInteractor resetPaginationKey];
@@ -416,12 +451,12 @@
 }
 
 
-- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore {
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore firstPage:(BOOL)isFirstPage {
     self.canLoadMoreCamments = canLoadMore;
-    NSArray<CMCamment *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
+    NSArray<CMCammentsBlockItem *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
         return [CMCammentsBlockItem cammentWithCamment:value];
     }].array;
-    [self.cammentsBlockNodePresenter reloadItems:items animated:YES];
+    [self.cammentsBlockNodePresenter updateItems:items animated:YES];
     if (self.cammentBatchContext) {
         [self.cammentBatchContext completeBatchFetching:YES];
     }
@@ -478,6 +513,7 @@
             withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
             withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
             build];
+    [self.cammentsBlockNodePresenter updateCammentData:cammentToUpload];
     [self.interactor uploadCamment:cammentToUpload];
 }
 

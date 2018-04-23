@@ -57,6 +57,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.cleanUpSignal = [RACSubject new];
         self.authentificationStatusSubject = [RACReplaySubject replaySubjectWithCapacity:1];
         self.serverMessagesSubject = [RACSubject new];
+        self.fetchUpdatesSubject = [RACSubject new];
 
         self.groupInfoInteractor = [CMGroupInfoInteractor new];
         self.groupInfoInteractor.output = self;

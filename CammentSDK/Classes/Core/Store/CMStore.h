@@ -51,6 +51,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property RACSubject<NSNumber *> *startTutorial;
 @property RACSubject<NSNumber *> *userHasJoinedSignal;
 @property RACSubject<NSNumber *> *cleanUpSignal;
+@property RACSubject<NSNumber *> *fetchUpdatesSubject;
 
 @property(nonatomic) BOOL isOfflineMode;
 @property(nonatomic) BOOL awsServicesConfigured;
@@ -58,6 +59,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property(nonatomic, strong) CMGroupsListInteractor *groupListInteractor;
 
 @property(nonatomic, strong) NSArray *avoidTouchesInViews;
+
+@property(nonatomic) BOOL connectionAvailable;
 
 + (CMStore *)instance;
 

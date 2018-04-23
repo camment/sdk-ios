@@ -21,7 +21,6 @@
 @interface CMSDKService : NSObject
 
 @property(nonatomic, strong) CMAWSServicesFactory  * _Nullable awsServicesFactory;
-@property(nonatomic) BOOL connectionAvailable;
 
 @property(nonatomic) NSOperationQueue * _Nullable onSignedInOperationsQueue;
 @property(nonatomic) NSOperationQueue * _Nullable onSDKHasBeenConfiguredQueue;

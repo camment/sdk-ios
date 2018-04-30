@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "CammentSDK"
-  s.version = "2.1.9-rtve"
+  s.version = "2.1.9.1-rtve"
   s.summary = "iOS SDK for camment.tv"
   s.authors = {"Alexander Fedosov"=>"alex@camment.tv"}
   s.homepage = "https://github.com/camment/sdk-ios.git"

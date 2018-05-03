@@ -21,6 +21,7 @@
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
              @"thumbnail": @"thumbnail",
+             @"countryCode": @"countryCode",
              @"uuid": @"uuid",
              @"url": @"url",
              @"startAt": @"startAt"

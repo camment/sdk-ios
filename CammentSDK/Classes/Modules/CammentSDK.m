@@ -6,6 +6,11 @@
 #import "CammentSDK.h"
 #import "CMSDKService.h"
 
+NSString *const CMNewTimestampAvailableVideoPlayerNotification = @"CMNewTimestampAvailableVideoPlayerNotification";
+NSString *const CMNewTimestampKey = @"CMNewTimestampKey";
+NSString *const CMShowUUIDKey = @"CMNewShowUUIDKey";
+NSString *const CMVideoIsPlayingKey = @"CMVideoIsPlayingKey";
+
 @interface CammentSDK()
 
 @property(nonatomic, strong) CMSDKService *sdkService;
@@ -71,6 +76,11 @@
 - (void)logOut {
     [_sdkService logOut];
 }
+
+- (void)updateVideoStreamStateIsPlaying:(BOOL)isPlaying show:(CMShowMetadata *_Nonnull)metadata timestamp:(NSTimeInterval)timestamp {
+    [_sdkService updateVideoStreamStateIsPlaying:isPlaying show:metadata timestamp:timestamp];
+}
+
 
 - (void)applicationDidBecomeActive:(UIApplication *_Nonnull)application {
     [_sdkService applicationDidBecomeActive:application];

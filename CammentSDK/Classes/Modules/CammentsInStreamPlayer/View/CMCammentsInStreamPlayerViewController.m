@@ -59,11 +59,29 @@
     [_cammentOverlayController addToParentViewController:self];
     [self.view addSubview:[_cammentOverlayController cammentView]];
     [_cammentOverlayController setContentView:self.contentViewerNode.view];
-    
+
     UISwipeGestureRecognizer *dismissViewControllerGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController)];
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
     [self.view addGestureRecognizer:dismissViewControllerGesture];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(didReceiveNewTimestamp:)
+                                                 name:CMNewTimestampAvailableVideoPlayerNotification
+                                               object:[CammentSDK instance]];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+};
+
+- (void)didReceiveNewTimestamp:(NSNotification *)notification {
+    NSDictionary *dict = notification.userInfo;
+    NSTimeInterval newTimestamp = [(NSNumber *)dict[CMNewTimestampKey] doubleValue];
+    BOOL isPlaying = [(NSNumber *)dict[CMVideoIsPlayingKey] boolValue];
+
+    [(id<CMContentViewerNode>)self.contentViewerNode setCurrentTimeInterval:newTimestamp];
+    [(id<CMContentViewerNode>)self.contentViewerNode setIsPlaying:isPlaying];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -116,6 +134,7 @@
     } else {
         [show.showType matchVideo:^(CMAPIShow *matchedShow) {
             self.contentViewerNode = [CMVideoContentPlayerNode new];
+            [(CMVideoContentPlayerNode *)self.contentViewerNode setVideoNodeDelegate:self];
             if (startsAt) {
                 [(CMVideoContentPlayerNode *)self.contentViewerNode setStartsAt:startsAt];
             }
@@ -164,6 +183,27 @@
     } else {
         [self presentViewController:viewController animated:YES completion:^{}];
     }
+}
+
+- (void)playerDidUpdateCurrentTimeInterval:(NSTimeInterval)timeInterval {
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = self.showUuid;
+
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES show:metadata timestamp:timeInterval];
+}
+
+- (void)playerDidPlay:(NSTimeInterval)timeInterval {
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = self.showUuid;
+
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES show:metadata timestamp:timeInterval];
+}
+
+- (void)playerDidPause:(NSTimeInterval)timeInterval {
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = self.showUuid;
+
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:NO show:metadata timestamp:timeInterval];
 }
 
 @end

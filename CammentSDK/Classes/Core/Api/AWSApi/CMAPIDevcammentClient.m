@@ -20,6 +20,7 @@
 #import <AWSCore/AWSSignature.h>
 #import <AWSCore/AWSSynchronizedMutableDictionary.h>
 
+#import "CMAPICamment.h"
 #import "CMAPICustomError.h"
 #import "CMAPIDeeplink.h"
 #import "CMAPIFacebookFriendList.h"
@@ -31,6 +32,7 @@
 #import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
+#import "CMAPIIotInRequest.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUpdateUserStateInGroupRequest.h"
 #import "CMAPIUserinfo.h"
@@ -205,6 +207,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                   headerParameters:headerParameters
                               body:nil
                      responseClass:nil];
+}
+
+- (AWSTask *)cammentsCammentUuidGet:(NSString *)cammentUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"cammentUuid": cammentUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/camments/{cammentUuid}"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:[CMAPICamment class]];
 }
 
 - (AWSTask *)cammentsCammentUuidPost:(NSString *)cammentUuid {
@@ -587,7 +611,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIDeeplink class]];
 }
 
-- (AWSTask *)usergroupsGroupUuidIotPost:(NSString *)groupUuid {
+- (AWSTask *)usergroupsGroupUuidIotPost:(NSString *)groupUuid body:(CMAPIIotInRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -597,7 +621,8 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       
                                       };
     NSDictionary *pathParameters = @{
-                                     @"groupUuid": groupUuid
+                                     @"groupUuid": groupUuid,
+                                     
                                      };
     
     return [self invokeHTTPRequest:@"POST"
@@ -605,7 +630,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
-                              body:nil
+                              body:body
                      responseClass:nil];
 }
 

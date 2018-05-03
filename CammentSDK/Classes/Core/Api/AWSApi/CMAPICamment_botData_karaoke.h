@@ -26,4 +26,10 @@
 @property (nonatomic, strong, nullable) NSString *country;
 
 
+@property (nonatomic, strong, nullable) NSString *shareUrl;
+
+
+@property (nonatomic, strong, nullable) NSNumber *maxScore;
+
+
 @end

@@ -21,7 +21,9 @@
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
              @"score": @"score",
-             @"country": @"country"
+             @"country": @"country",
+             @"shareUrl": @"shareUrl",
+             @"maxScore": @"maxScore"
              };
 }
 

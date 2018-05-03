@@ -16,7 +16,8 @@
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+        videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler {
@@ -27,7 +28,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler {
@@ -38,7 +40,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler {
@@ -49,7 +52,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler {
@@ -60,7 +64,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:userRemovedMatchHandler
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler {
@@ -71,7 +76,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:cammentDeliveredMatchHandler
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler {
@@ -82,7 +88,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:adMatchHandler
-userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}];
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
 }
 
 - (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler {
@@ -93,7 +100,20 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
            userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
-userGroupStatusChanged:userGroupStateChangedHadler];
+userGroupStatusChanged:userGroupStateChangedHadler
+            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}];
+}
+
+- (void)matchVideoSyncEvent:(CMServerMessageVideoSyncEventMatchHandler)videoSyncEventMatchHandler {
+    [self matchCamment:^(CMCamment *camment) {}
+            userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
+        cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
+    membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+           userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
+      cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                    ad:^(CMAdBanner *adBanner) {}
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+        videoSyncEvent:videoSyncEventMatchHandler];
 }
 
 @end

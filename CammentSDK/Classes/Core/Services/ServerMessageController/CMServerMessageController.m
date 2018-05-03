@@ -95,6 +95,11 @@
         }
     }];
 
+    [message matchVideoSyncEvent:^(CMVideoSyncEventMessage *message) {
+        [self handleVideoSyncMessage:message];
+        shouldPassToObservers = NO;
+    }];
+
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
@@ -164,5 +169,25 @@
     });
 }
 
+- (void)handleVideoSyncMessage:(CMVideoSyncEventMessage *)message {
+    if (![message.groupUUID isEqualToString:self.store.activeGroup.uuid]) { return; }
+
+    CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+
+    if ([context.user.cognitoUserId isEqualToString:self.store.activeGroup.ownerCognitoUserId]) {
+        return;
+    }
+
+    NSTimeInterval timeInterval = message.timestamp;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:CMNewTimestampAvailableVideoPlayerNotification
+                                                            object:[CammentSDK instance]
+                                                          userInfo:@{
+                                                                  CMNewTimestampKey : @(timeInterval),
+                                                                  CMVideoIsPlayingKey : @(message.isPlaying)
+                                                          }];
+    });
+}
 
 @end

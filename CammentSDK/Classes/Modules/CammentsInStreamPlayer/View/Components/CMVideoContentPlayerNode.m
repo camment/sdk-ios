@@ -69,7 +69,11 @@
 }
 
 - (void)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer didPlayToTime:(CMTime)time {
-    [[CMStore instance] setCurrentShowTimeInterval:CMTimeGetSeconds(time)];
+    Float64 showTimeInterval = CMTimeGetSeconds(time);
+    [[CMStore instance] setCurrentShowTimeInterval:showTimeInterval];
+    if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+        [self.videoNodeDelegate playerDidUpdateCurrentTimeInterval:showTimeInterval];
+    }
 }
 
 - (void)setMuted:(BOOL)muted {
@@ -99,6 +103,26 @@
 }
 
 - (BOOL)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
+
+    switch (state) {
+        case ASVideoNodePlayerStateUnknown:break;
+        case ASVideoNodePlayerStateInitialLoading:break;
+        case ASVideoNodePlayerStateReadyToPlay:break;
+        case ASVideoNodePlayerStatePlaybackLikelyToKeepUpButNotPlaying:break;
+        case ASVideoNodePlayerStatePlaying:
+            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+                [self.videoNodeDelegate playerDidPlay:CMTimeGetSeconds(videoPlayer.videoNode.player.currentTime)];
+            }
+            break;
+        case ASVideoNodePlayerStateLoading:break;
+        case ASVideoNodePlayerStatePaused:
+            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+                [self.videoNodeDelegate playerDidPause:CMTimeGetSeconds(videoPlayer.videoNode.player.currentTime)];
+            }
+            break;
+        case ASVideoNodePlayerStateFinished:break;
+    }
+
     if (state != ASVideoNodePlayerStatePlaying) { return YES; }
 
     if (self.startsAt) {
@@ -123,6 +147,18 @@
 
 - (void)videoPlayerNodeDidFinishInitialLoading:(ASVideoPlayerNode *)videoPlayer {
     
+}
+
+- (void)setCurrentTimeInterval:(NSTimeInterval)timeInterval {
+    [self.videoPlayerNode.videoNode.player seekToTime:CMTimeMakeWithSeconds(timeInterval, self.videoPlayerNode.videoNode.periodicTimeObserverTimescale)];
+}
+
+- (void)setIsPlaying:(BOOL)playing {
+    if (!playing) {
+        [self.videoPlayerNode pause];
+    } else if (self.videoPlayerNode.playerState != ASVideoNodePlayerStatePlaying) {
+        [self.videoPlayerNode play];
+    }
 }
 
 @end

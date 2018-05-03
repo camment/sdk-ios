@@ -62,6 +62,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic) BOOL connectionAvailable;
 
+@property(nonatomic, strong) NSDate *lastTimestampUploaded;
+
 + (CMStore *)instance;
 
 - (void)setupTweaks;

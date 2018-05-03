@@ -14,28 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIIotInRequest.h"
 
- 
-/**
- Camment object model in POST/PUT requests.
- */
-@interface CMAPICammentInRequest : AWSModel
+@implementation CMAPIIotInRequest
 
-@property (nonatomic, strong, nullable) NSNumber *pinned;
-
-
-@property (nonatomic, strong, nullable) NSString *countryCode;
-
-
-@property (nonatomic, strong, nullable) NSNumber *startsAt;
-
-
-@property (nonatomic, strong, nullable) NSNumber *showAt;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"message": @"message"
+             };
+}
 
 @end

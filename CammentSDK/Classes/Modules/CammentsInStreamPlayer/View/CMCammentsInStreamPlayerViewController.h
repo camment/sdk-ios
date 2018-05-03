@@ -14,7 +14,7 @@
 #import "CMCammentsInStreamPlayerNode.h"
 #import "CMLoadingHUD.h"
 
-@interface CMCammentsInStreamPlayerViewController : UIViewController <CMCammentsInStreamPlayerPresenterOutput, CMLoadingHUD>
+@interface CMCammentsInStreamPlayerViewController : UIViewController <CMCammentsInStreamPlayerPresenterOutput, CMLoadingHUD, CMVideoContentNodeDelegate>
 
 @property (nonatomic, strong) id<CMCammentsInStreamPlayerPresenterInput> presenter;
 @property(nonatomic, strong) ASDisplayNode* contentViewerNode;

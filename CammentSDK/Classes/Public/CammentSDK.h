@@ -8,6 +8,12 @@
 #import <CammentSDK/CMCammentOverlayController.h>
 #import <CammentSDK/CMIdentityProvider.h>
 
+
+extern NSString *const CMNewTimestampAvailableVideoPlayerNotification;
+extern NSString *const CMNewTimestampKey;
+extern NSString *const CMShowUUIDKey;
+extern NSString *const CMVideoIsPlayingKey;
+
 @protocol CMCammentSDKDelegate <NSObject>
 
 /**
@@ -86,6 +92,8 @@
  * Also, runs -logOut method for identityProvider class
  */
 - (void)logOut;
+
+- (void)updateVideoStreamStateIsPlaying:(BOOL)isPlaying show:(CMShowMetadata *_Nonnull)metadata timestamp:(NSTimeInterval)timestamp;
 
 /**
  * Proxy methods for appDelegate. Used for additional SDK configuration and handling invitations by deeplink

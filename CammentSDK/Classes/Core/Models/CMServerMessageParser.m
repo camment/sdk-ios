@@ -31,6 +31,17 @@
     NSString *type = self.messageDictionary[@"type"];
     NSDictionary *body = self.messageDictionary[@"body"];
 
+    if ([body isKindOfClass:[NSString class]]) {
+        NSString *jsonString = (NSString *)body;
+        NSError *error = nil;
+        body = [NSJSONSerialization JSONObjectWithData:[jsonString dataUsingEncoding:NSUTF8StringEncoding]
+                                               options:NSJSONReadingAllowFragments
+                                                 error:&error];
+        if (error || !body) {
+            return nil;
+        }
+    }
+    
     CMServerMessage *serverMessage = nil;
 
     if ([type isEqualToString:@"camment"]) {
@@ -164,6 +175,20 @@
                                  user:user
                                 state:CMUserState.Active];
         serverMessage = [CMServerMessage userGroupStatusChangedWithUserGroupStatusChangedMessage:message];
+    } else if ([type isEqualToString:@"custom"]) {
+        NSString *event = body[@"event"];
+        NSString *groupUuid = body[@"groupUuid"];
+        NSString *showUuid = body[@"showUuid"];
+        NSNumber *timestamp = body[@"timestamp"];
+        NSNumber *isPlaying = body[@"isPlaying"];
+
+
+        CMVideoSyncEventMessage *message = [[CMVideoSyncEventMessage alloc] initWithEvent:event
+                                                                                groupUUID:groupUuid
+                                                                                 showUUID:showUuid
+                                                                                isPlaying:isPlaying.boolValue
+                                                                                timestamp:timestamp.doubleValue];
+        serverMessage = [CMServerMessage videoSyncEventWithMessage:message];
     }
 
     return serverMessage;

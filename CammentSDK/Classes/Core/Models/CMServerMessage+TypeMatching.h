@@ -14,6 +14,7 @@
 - (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler;
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler;
 - (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler;
-
 - (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler;
+- (void)matchVideoSyncEvent:(CMServerMessageVideoSyncEventMatchHandler)videoSyncEventMatchHandler;
+
 @end

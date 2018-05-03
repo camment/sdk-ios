@@ -91,20 +91,20 @@ describe(@"InvitationFlow", ^{
         id delegate = OCMPartialMock([CMCammentSDKMockDelegate new]);
         sdkService.sdkDelegate = delegate;
 
-        NSString *invitationURLString = @"camment://group/groupUUID/show/showUUID";
+        NSString *invitationURLString = @"camment://group/groupUUID/show/groupUUID";
         NSURL *deeplinkURL = [[NSURL alloc] initWithString:invitationURLString];
         
         OCMExpect([sdkService verifyInvitation:OCMOCK_ANY]).andForwardToRealObject;
         OCMExpect([delegate didOpenInvitationToShow:[OCMArg checkWithBlock:^BOOL(CMShowMetadata *obj) {
             expect(obj).toNot.beNil();
             expect(obj).to.beKindOf([CMShowMetadata class]);
-            expect(obj.uuid).to.equal(@"showUUID");
+            expect(obj.uuid).to.equal(@"groupUUID");
             return YES;
         }]]);
         OCMExpect([delegate didJoinToShow:[OCMArg checkWithBlock:^BOOL(CMShowMetadata *obj) {
             expect(obj).toNot.beNil();
             expect(obj).to.beKindOf([CMShowMetadata class]);
-            expect(obj.uuid).to.equal(@"showUUID");
+            expect(obj.uuid).to.equal(@"groupUUID");
             return YES;
         }]]);
         
@@ -142,20 +142,20 @@ describe(@"InvitationFlow", ^{
         id delegate = OCMPartialMock([CMCammentSDKMockDelegate new]);
         sdkService.sdkDelegate = delegate;
         
-        NSString *invitationURLString = @"camment://group/groupUUID/show/showUUID";
+        NSString *invitationURLString = @"camment://group/groupUUID/show/groupUUID";
         NSURL *deeplinkURL = [[NSURL alloc] initWithString:invitationURLString];
         
         OCMExpect([sdkService verifyInvitation:OCMOCK_ANY]).andForwardToRealObject;
         OCMExpect([delegate didOpenInvitationToShow:[OCMArg checkWithBlock:^BOOL(CMShowMetadata *obj) {
             expect(obj).toNot.beNil();
             expect(obj).to.beKindOf([CMShowMetadata class]);
-            expect(obj.uuid).to.equal(@"showUUID");
+            expect(obj.uuid).to.equal(@"groupUUID");
             return YES;
         }]]);
         OCMExpect([delegate didJoinToShow:[OCMArg checkWithBlock:^BOOL(CMShowMetadata *obj) {
             expect(obj).toNot.beNil();
             expect(obj).to.beKindOf([CMShowMetadata class]);
-            expect(obj.uuid).to.equal(@"showUUID");
+            expect(obj.uuid).to.equal(@"groupUUID");
             return YES;
         }]]);
         
@@ -188,20 +188,20 @@ describe(@"InvitationFlow", ^{
         id delegate = OCMPartialMock([CMCammentSDKMockDelegate new]);
         sdkService.sdkDelegate = delegate;
         
-        NSString *invitationURLString = @"camment://group/groupUUID/show/showUUID";
+        NSString *invitationURLString = @"camment://group/groupUUID/show/groupUUID";
         NSURL *deeplinkURL = [[NSURL alloc] initWithString:invitationURLString];
         
         OCMExpect([sdkService verifyInvitation:OCMOCK_ANY]).andForwardToRealObject;
         OCMExpect([delegate didOpenInvitationToShow:[OCMArg checkWithBlock:^BOOL(CMShowMetadata *obj) {
             expect(obj).toNot.beNil();
             expect(obj).to.beKindOf([CMShowMetadata class]);
-            expect(obj.uuid).to.equal(@"showUUID");
+            expect(obj.uuid).to.equal(@"groupUUID");
             return YES;
         }]]);
         OCMExpect([delegate didJoinToShow:[OCMArg checkWithBlock:^BOOL(CMShowMetadata *obj) {
             expect(obj).toNot.beNil();
             expect(obj).to.beKindOf([CMShowMetadata class]);
-            expect(obj.uuid).to.equal(@"showUUID");
+            expect(obj.uuid).to.equal(@"groupUUID");
             return YES;
         }]]);
         

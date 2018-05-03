@@ -12,6 +12,7 @@
 #import "CMUserRemovedMessage.h"
 #import "CMAdBanner.h"
 #import "CMUserGroupStatusChangedMessage.h"
+#import "CMVideoSyncEventMessage.h"
 
 typedef void (^CMServerMessageCammentMatchHandler)(CMCamment *camment);
 typedef void (^CMServerMessageUserJoinedMatchHandler)(CMUserJoinedMessage *userJoinedMessage);
@@ -21,6 +22,7 @@ typedef void (^CMServerMessageUserRemovedMatchHandler)(CMUserRemovedMessage *use
 typedef void (^CMServerMessageCammentDeliveredMatchHandler)(CMCammentDeliveredMessage *cammentDelivered);
 typedef void (^CMServerMessageAdMatchHandler)(CMAdBanner *adBanner);
 typedef void (^CMServerMessageUserGroupStatusChangedMatchHandler)(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage);
+typedef void (^CMServerMessageVideoSyncEventMatchHandler)(CMVideoSyncEventMessage *message);
 
 @interface CMServerMessage : NSObject <NSCopying>
 
@@ -40,7 +42,9 @@ typedef void (^CMServerMessageUserGroupStatusChangedMatchHandler)(CMUserGroupSta
 
 + (instancetype)userRemovedWithUserRemovedMessage:(CMUserRemovedMessage *)userRemovedMessage;
 
-- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler cammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler ad:(CMServerMessageAdMatchHandler)adMatchHandler userGroupStatusChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStatusChangedMatchHandler;
++ (instancetype)videoSyncEventWithMessage:(CMVideoSyncEventMessage *)message;
+
+- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler cammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler ad:(CMServerMessageAdMatchHandler)adMatchHandler userGroupStatusChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStatusChangedMatchHandler videoSyncEvent:(CMServerMessageVideoSyncEventMatchHandler)videoSyncEventMatchHandler;
 
 @end
 

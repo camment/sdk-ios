@@ -19,23 +19,11 @@
 
  
 /**
- Camment object model in POST/PUT requests.
+ IOT message model.
  */
-@interface CMAPICammentInRequest : AWSModel
+@interface CMAPIIotInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSNumber *pinned;
-
-
-@property (nonatomic, strong, nullable) NSString *countryCode;
-
-
-@property (nonatomic, strong, nullable) NSNumber *startsAt;
-
-
-@property (nonatomic, strong, nullable) NSNumber *showAt;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
+@property (nonatomic, strong, nullable) NSString *message;
 
 
 @end

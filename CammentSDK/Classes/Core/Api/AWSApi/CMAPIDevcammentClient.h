@@ -17,6 +17,7 @@
 #import <Foundation/Foundation.h>
 #import <AWSAPIGateway/AWSAPIGateway.h>
 
+#import "CMAPICamment.h"
 #import "CMAPICustomError.h"
 #import "CMAPIDeeplink.h"
 #import "CMAPIFacebookFriendList.h"
@@ -28,6 +29,7 @@
 #import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
+#import "CMAPIIotInRequest.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUpdateUserStateInGroupRequest.h"
 #import "CMAPIUserinfo.h"
@@ -203,6 +205,15 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param cammentUuid 
  
+ return type: CMAPICamment *
+ */
+- (AWSTask *)cammentsCammentUuidGet:( NSString *)cammentUuid;
+
+/**
+ 
+ 
+ @param cammentUuid 
+ 
  return type: 
  */
 - (AWSTask *)cammentsCammentUuidPost:( NSString *)cammentUuid;
@@ -357,10 +368,11 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
+ @param body 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidIotPost:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidIotPost:( NSString *)groupUuid body:( CMAPIIotInRequest *)body;
 
 /**
  

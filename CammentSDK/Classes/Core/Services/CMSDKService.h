@@ -17,6 +17,7 @@
 @class CMServerListener;
 @class CMServerMessageController;
 @class CMInvitation;
+@class CMShowMetadata;
 
 @interface CMSDKService : NSObject
 
@@ -58,4 +59,6 @@
 - (void)verifyInvitation:(CMInvitation *)invitation;
 
 - (void)leaveCurrentChatGroup;
+
+- (void)updateVideoStreamStateIsPlaying:(BOOL)isPlaying show:(CMShowMetadata *)show timestamp:(NSTimeInterval)timestamp;
 @end

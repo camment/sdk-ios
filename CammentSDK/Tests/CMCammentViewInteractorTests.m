@@ -18,7 +18,7 @@
 
 NSString *userCognitoUUID = @"userUUID";
 NSString *usergroupUUID = @"groupUUID";
-NSString *showUUID = @"showUUID";
+NSString *showUUID = @"groupUUID";
 NSString *cammentUUID = @"cammentUUID";
 
 

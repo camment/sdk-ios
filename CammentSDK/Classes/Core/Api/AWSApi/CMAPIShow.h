@@ -26,6 +26,9 @@
 @property (nonatomic, strong, nullable) NSString *thumbnail;
 
 
+@property (nonatomic, strong, nullable) NSString *countryCode;
+
+
 @property (nonatomic, strong, nullable) NSString *uuid;
 
 

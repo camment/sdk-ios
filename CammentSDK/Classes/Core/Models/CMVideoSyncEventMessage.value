@@ -1,0 +1,7 @@
+CMVideoSyncEventMessage includes(RMBuilder) {
+  NSString *event
+  NSString *groupUUID
+  NSString *showUUID
+  BOOL isPlaying
+  double timestamp
+}

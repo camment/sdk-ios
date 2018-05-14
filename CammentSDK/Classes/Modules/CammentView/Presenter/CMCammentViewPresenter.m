@@ -34,6 +34,7 @@
 #import "CMCammentCellDisplayingContext.h"
 #import "CMAdsDemoBot.h"
 #import "NSArray+RacSequence.h"
+#import "CMVideoSyncInteractor.h"
 #import <TBStateMachine/TBSMStateMachine.h>
 #import <TBStateMachine/TBSMDebugger.h>
 
@@ -91,6 +92,7 @@
             @strongify(self);
             if (shouldReload.boolValue) {
                 [self updateCammentsAfterConnectionHasRestored];
+                [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded];
             }
         }];
 

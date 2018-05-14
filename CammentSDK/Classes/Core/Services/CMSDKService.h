@@ -61,4 +61,5 @@
 - (void)leaveCurrentChatGroup;
 
 - (void)updateVideoStreamStateIsPlaying:(BOOL)isPlaying show:(CMShowMetadata *)show timestamp:(NSTimeInterval)timestamp;
+
 @end

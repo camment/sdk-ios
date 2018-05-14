@@ -21,6 +21,7 @@
 #import "CMUserContants.h"
 #import "NSArray+RacSequence.h"
 #import "CMUserBuilder.h"
+#import "CMVideoSyncInteractor.h"
 
 @implementation CMServerMessageController
 
@@ -61,6 +62,8 @@
             }
             [self handleFriendJoinedMessage:userJoinedMessage shouldShowToast:shouldShowToast];
         }
+
+        [self askForActualShowTimestampIfNeeded];
     }];
 
     [message matchUserRemoved:^(CMUserRemovedMessage *userRemovedMessage) {
@@ -103,6 +106,10 @@
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
+}
+
+- (void)askForActualShowTimestampIfNeeded {
+    [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded];
 }
 
 - (void)handleMeBlockedInActiveGroup {

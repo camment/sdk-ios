@@ -22,6 +22,7 @@
     return @{
              @"userCognitoIdentityId": @"userCognitoIdentityId",
              @"name": @"name",
+             @"isOnline": @"isOnline",
              @"state": @"state",
              @"picture": @"picture"
              };

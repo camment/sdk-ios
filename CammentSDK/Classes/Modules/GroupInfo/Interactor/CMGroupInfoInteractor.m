@@ -38,11 +38,13 @@
 
         CMAPIUserinfoList *userList = t.result;
         NSArray<CMUser *> *users = [userList.items map:^id(CMAPIUserinfo * userinfo) {
-            return [[[[[[CMUserBuilder user]
+            return [[[[[[[CMUserBuilder user]
                     withCognitoUserId:userinfo.userCognitoIdentityId]
                     withUsername:userinfo.name]
                     withUserPhoto:userinfo.picture] 
-                    withBlockStatus:userinfo.state] build];
+                    withBlockStatus:userinfo.state]
+                    withOnlineStatus:userinfo.isOnline ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
+                    build];
         }];
 
         [self.output groupInfoInteractor:self didFetchUsers:users inGroup:groupId];

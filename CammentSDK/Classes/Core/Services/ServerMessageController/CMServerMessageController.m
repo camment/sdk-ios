@@ -93,7 +93,7 @@
 
         if (![context.user.cognitoUserId isEqualToString:userGroupStatusChangedMessage.user.cognitoUserId]) {
             [self handleUserGroupStateChanged:userGroupStatusChangedMessage];
-        } else if ([userGroupStatusChangedMessage.state isEqualToString:CMUserState.Blocked]) {
+        } else if ([userGroupStatusChangedMessage.state isEqualToString:CMUserBlockStatus.Blocked]) {
             [self handleMeBlockedInActiveGroup];
         }
     }];
@@ -122,14 +122,14 @@
     CMUser *changedUser = message.user;
     [CMStore instance].activeGroupUsers = [[[CMStore instance] activeGroupUsers] map:^CMUser *(CMUser *user) {
         if ([changedUser.cognitoUserId isEqualToString:user.cognitoUserId]) {
-            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withState:message.state] build];
+            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:message.state] build];
             return updatedUser;
         }
         return user;
     }];
     [[CMStore instance] refetchUsersInActiveGroup];
     NSString *username = message.user.username;
-    NSString *notificationTemplate = [message.state isEqualToString:CMUserState.Active] ? CMLocalized(@"toast.user_unblocked") : CMLocalized(@"toast.user_blocked");
+    NSString *notificationTemplate = [message.state isEqualToString:CMUserBlockStatus.Active] ? CMLocalized(@"toast.user_unblocked") : CMLocalized(@"toast.user_blocked");
     [self.notificationPresenter showToastMessage:[NSString stringWithFormat:notificationTemplate, username]];
 }
 

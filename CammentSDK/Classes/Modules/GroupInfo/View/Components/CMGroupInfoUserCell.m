@@ -74,7 +74,7 @@
         self.onlineStatusNode = [ASImageNode new];
         self.onlineStatusNode.contentMode = UIViewContentModeCenter;
 
-        if (self.user.state == CMUserState.Blocked) {
+        if (self.user.blockStatus == CMUserBlockStatus.Blocked) {
             self.usernameNode.alpha = .3f;
             self.userpicImageNode.alpha = .5;
             self.userpicImageNode.imageModificationBlock = ^UIImage *(UIImage *image) {
@@ -141,7 +141,7 @@
     NSMutableArray *stackLayoutChildren = [NSMutableArray arrayWithArray:@[_userpicImageNode, _usernameNode, _onlineStatusNode]];
 
     if (self.showBlockUnblockUserButton) {
-        ASDisplayNode *button = [self.user.state isEqualToString:CMUserState.Active] ? _blockUserButtonNode : _unblockUserButtonNode;
+        ASDisplayNode *button = [self.user.blockStatus isEqualToString:CMUserBlockStatus.Active] ? _blockUserButtonNode : _unblockUserButtonNode;
         button.style.preferredSize = CGSizeMake(44.0f, 44.0f);
         ASRatioLayoutSpec *spec = [ASRatioLayoutSpec ratioLayoutSpecWithRatio:1
                                                                         child:button];

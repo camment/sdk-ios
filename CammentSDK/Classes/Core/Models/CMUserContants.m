@@ -5,8 +5,13 @@
 #import "CMUserContants.h"
 
 
-
-const struct CMUserState CMUserState = {
+const struct CMUserBlockStatus CMUserBlockStatus = {
         .Active = @"active",
         .Blocked = @"blocked"
+};
+
+const struct CMUserOnlineStatus CMUserOnlineStatus = {
+        .Online = @"online",
+        .Offline = @"offline",
+        .Broadcasting = @"broadcasting"
 };

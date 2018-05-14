@@ -89,7 +89,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
     CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
     self.users = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *user) {
-        return YES;//![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
+        return ![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
     }].array ?: @[];
 
     self.users = [self.users.rac_sequence filter:^BOOL(CMUser *user) {
@@ -97,8 +97,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     }].array ?: @[];
 
     self.users = [self.users sortedArrayUsingComparator:^NSComparisonResult(CMUser *obj1, CMUser *obj2) {
-        if (![obj1.state isEqualToString:obj2.state]) {
-            return [obj1.state isEqualToString:CMUserState.Active] ? NSOrderedAscending : NSOrderedDescending;
+        if (![obj1.blockStatus isEqualToString:obj2.blockStatus]) {
+            return [obj1.blockStatus isEqualToString:CMUserBlockStatus.Active] ? NSOrderedAscending : NSOrderedDescending;
         }
 
         return [obj1.username compare:obj2.username];
@@ -225,7 +225,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
             if ([user.cognitoUserId isEqualToString:userToBlock.cognitoUserId]) {
-                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:userToBlock] withState:CMUserState.Blocked] build];
+                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:userToBlock] withBlockStatus:CMUserBlockStatus.Blocked] build];
                 return blockedUser;
             }
             return user;
@@ -248,7 +248,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
             if ([user.cognitoUserId isEqualToString:userToUnblock.cognitoUserId]) {
-                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:userToUnblock] withState:CMUserState.Active] build];
+                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:userToUnblock] withBlockStatus:CMUserBlockStatus.Active] build];
                 return blockedUser;
             }
             return user;
@@ -383,7 +383,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
     [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
         if ([user.cognitoUserId isEqualToString:failedUser.cognitoUserId]) {
-            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withState:CMUserState.Active] build];
+            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:CMUserBlockStatus.Active] build];
             return updatedUser;
         }
         return user;
@@ -418,7 +418,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
     [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
         if ([user.cognitoUserId isEqualToString:failedUser.cognitoUserId]) {
-            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withState:CMUserState.Blocked] build];
+            CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:CMUserBlockStatus.Blocked] build];
             return updatedUser;
         }
         return user;

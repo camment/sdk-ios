@@ -42,7 +42,7 @@
                     withCognitoUserId:userinfo.userCognitoIdentityId]
                     withUsername:userinfo.name]
                     withUserPhoto:userinfo.picture] 
-                    withState:userinfo.state] build];
+                    withBlockStatus:userinfo.state] build];
         }];
 
         [self.output groupInfoInteractor:self didFetchUsers:users inGroup:groupId];
@@ -78,7 +78,7 @@
     if (group.uuid.length == 0 || user.cognitoUserId.length == 0) { return; }
 
     CMAPIUpdateUserStateInGroupRequest *stateInGroupRequest = [[CMAPIUpdateUserStateInGroupRequest alloc] init];
-    stateInGroupRequest.state = CMUserState.Blocked;
+    stateInGroupRequest.state = CMUserBlockStatus.Blocked;
     AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:user.cognitoUserId
                                                                                       groupUuid:group.uuid
                                                                                            body:stateInGroupRequest];
@@ -104,7 +104,7 @@
     if (group.uuid.length == 0 || user.cognitoUserId.length == 0) { return; }
 
     CMAPIUpdateUserStateInGroupRequest *stateInGroupRequest = [[CMAPIUpdateUserStateInGroupRequest alloc] init];
-    stateInGroupRequest.state = CMUserState.Active;
+    stateInGroupRequest.state = CMUserBlockStatus.Active;
     AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:user.cognitoUserId
                                                                                       groupUuid:group.uuid
                                                                                            body:stateInGroupRequest];

@@ -20,7 +20,9 @@
 
 - (instancetype)withUserPhoto:(NSString *)userPhoto;
 
-- (instancetype)withState:(NSString *)state;
+- (instancetype)withBlockStatus:(NSString *)blockStatus;
+
+- (instancetype)withOnlineStatus:(NSString *)onlineStatus;
 
 @end
 

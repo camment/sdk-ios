@@ -160,7 +160,7 @@
         CMUserGroupStatusChangedMessage *message = [[CMUserGroupStatusChangedMessage alloc]
                 initWithUserGroupUuid:body[@"groupUuid"]
                                 user:user
-                                state:CMUserState.Blocked];
+                                state:CMUserBlockStatus.Blocked];
         serverMessage = [CMServerMessage userGroupStatusChangedWithUserGroupStatusChangedMessage:message];
     } else if ([type isEqualToString:@"user-unblocked"]) {
         NSDictionary *userData = body[@"unblockedUser"];
@@ -173,7 +173,7 @@
         CMUserGroupStatusChangedMessage *message = [[CMUserGroupStatusChangedMessage alloc]
                 initWithUserGroupUuid:body[@"groupUuid"]
                                  user:user
-                                state:CMUserState.Active];
+                                state:CMUserBlockStatus.Active];
         serverMessage = [CMServerMessage userGroupStatusChangedWithUserGroupStatusChangedMessage:message];
     } else if ([type isEqualToString:@"custom"]) {
         NSString *event = body[@"event"];

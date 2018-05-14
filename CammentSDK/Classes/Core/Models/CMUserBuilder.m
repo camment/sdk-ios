@@ -12,7 +12,8 @@
   NSString *_username;
   NSString *_email;
   NSString *_userPhoto;
-  NSString *_state;
+  NSString *_blockStatus;
+  NSString *_onlineStatus;
 }
 
 + (instancetype)user
@@ -22,18 +23,19 @@
 
 + (instancetype)userFromExistingUser:(CMUser *)existingUser
 {
-  return [[[[[[[CMUserBuilder user]
-               withCognitoUserId:existingUser.cognitoUserId]
-              withFbUserId:existingUser.fbUserId]
-             withUsername:existingUser.username]
-            withEmail:existingUser.email]
-           withUserPhoto:existingUser.userPhoto]
-          withState:existingUser.state];
+  return [[[[[[[[CMUserBuilder user]
+                withCognitoUserId:existingUser.cognitoUserId]
+               withFbUserId:existingUser.fbUserId]
+              withUsername:existingUser.username]
+             withEmail:existingUser.email]
+            withUserPhoto:existingUser.userPhoto]
+           withBlockStatus:existingUser.blockStatus]
+          withOnlineStatus:existingUser.onlineStatus];
 }
 
 - (CMUser *)build
 {
-  return [[CMUser alloc] initWithCognitoUserId:_cognitoUserId fbUserId:_fbUserId username:_username email:_email userPhoto:_userPhoto state:_state];
+  return [[CMUser alloc] initWithCognitoUserId:_cognitoUserId fbUserId:_fbUserId username:_username email:_email userPhoto:_userPhoto blockStatus:_blockStatus onlineStatus:_onlineStatus];
 }
 
 - (instancetype)withCognitoUserId:(NSString *)cognitoUserId
@@ -66,9 +68,15 @@
   return self;
 }
 
-- (instancetype)withState:(NSString *)state
+- (instancetype)withBlockStatus:(NSString *)blockStatus
 {
-  _state = [state copy];
+  _blockStatus = [blockStatus copy];
+  return self;
+}
+
+- (instancetype)withOnlineStatus:(NSString *)onlineStatus
+{
+  _onlineStatus = [onlineStatus copy];
   return self;
 }
 

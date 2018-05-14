@@ -22,6 +22,7 @@
 @property(nonatomic, strong) ASTextNode *usernameTextNode;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
 @property(nonatomic, strong) ASImageNode *fbImageNode;
+@property(nonatomic, strong) ASImageNode *onlineStatusNode;
 @property(nonatomic, strong) ASButtonNode *settingsButtonNode;
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
 @property(nonatomic, strong) CMSettingsNode *settingsNode;
@@ -79,6 +80,10 @@
         [self.inviteFriendsButtonNode addTarget:self
                                          action:@selector(inviteFriendsAction)
                                forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.onlineStatusNode = [ASImageNode new];
+        self.onlineStatusNode.contentMode = UIViewContentModeCenter;
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -95,6 +100,8 @@
 
 - (void)didLoad {
     [super didLoad];
+
+    self.onlineStatusNode.image = [UIImage imageNamed:@"video_sync_icn" inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
 
     [self.settingsButtonNode setImage:[UIImage imageNamed:@"settings_icn"
                                                  inBundle:[NSBundle cammentSDKBundle]
@@ -149,6 +156,9 @@
     self.userpicImageNode.style.height = ASDimensionMake(58.0f);
     self.userpicImageNode.cornerRadius = 29.0f;
 
+    _onlineStatusNode.style.width = ASDimensionMake(19.0f);
+    _onlineStatusNode.style.height = ASDimensionMake(14.0f);
+
     ASInsetLayoutSpec *userPicWithInsetsSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 22.0f, .0f, 22.0f)
                                                                                       child:_userpicImageNode];
     ASOverlayLayoutSpec *fbLogoOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:userPicWithInsetsSpec
@@ -162,7 +172,11 @@
             [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringX
                                                        sizingOptions:ASCenterLayoutSpecSizingOptionDefault
                                                                child:fbLogoOverlay],
-            _usernameTextNode]
+            [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
+                                                    spacing:4.0f
+                                             justifyContent:ASStackLayoutJustifyContentCenter
+                                                 alignItems:ASStackLayoutAlignItemsCenter
+                                                   children:@[_usernameTextNode, [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(3, 0, 0, 0) child:_onlineStatusNode]]]]
     ];
 
     if (self.context.shouldDisplayInviteFriendsButton) {

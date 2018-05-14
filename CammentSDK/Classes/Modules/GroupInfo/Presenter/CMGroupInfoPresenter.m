@@ -89,7 +89,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
     CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
     self.users = [[CMStore instance].activeGroupUsers.rac_sequence filter:^BOOL(CMUser *user) {
-        return ![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
+        return YES;//![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
     }].array ?: @[];
 
     self.users = [self.users.rac_sequence filter:^BOOL(CMUser *user) {

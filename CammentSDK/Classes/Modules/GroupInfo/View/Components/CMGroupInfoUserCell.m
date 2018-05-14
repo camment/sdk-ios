@@ -7,7 +7,7 @@
 #import "UIColorMacros.h"
 #import "CMUserContants.h"
 #import "UIFont+CammentFonts.h"
-
+#import <AsyncDisplayKit/ASLayoutElement.h>
 
 @interface CMGroupInfoUserCell ()
 @property(nonatomic, strong) ASTextNode *usernameNode;
@@ -15,6 +15,7 @@
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
 @property(nonatomic, strong) CMUser *user;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
+@property(nonatomic, strong) ASImageNode *onlineStatusNode;
 @property(nonatomic, readonly) BOOL showBlockUnblockUserButton;
 
 @property(nonatomic, strong) ASButtonNode *blockUserButtonNode;
@@ -50,7 +51,7 @@
 
         self.bottomSeparatorNode = [ASDisplayNode new];
         self.bottomSeparatorNode.backgroundColor = [UIColorFromRGB(0x4A4A4A) colorWithAlphaComponent:0.3];
-        self.bottomSeparatorNode.style.height = ASDimensionMake(1.0f);
+        ((ASLayoutElementStyle *)self.bottomSeparatorNode.style).height = ASDimensionMake(1.0f);
 
         self.blockUserButtonNode = [ASButtonNode new];
         [self.blockUserButtonNode setImage:[UIImage imageNamed:@"block_icon"
@@ -69,6 +70,9 @@
         [self.unblockUserButtonNode addTarget:self
                                      action:@selector(didHandleUnblockUserAction)
                            forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.onlineStatusNode = [ASImageNode new];
+        self.onlineStatusNode.contentMode = UIViewContentModeCenter;
 
         if (self.user.state == CMUserState.Blocked) {
             self.usernameNode.alpha = .3f;
@@ -110,6 +114,8 @@
 - (void)didLoad {
     [super didLoad];
 
+    self.onlineStatusNode.image = [UIImage imageNamed:@"offline_status_icn" inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
+
     if (!self.user.userPhoto) return;
 
     NSURL *userpicURL = [[NSURL alloc] initWithString:self.user.userPhoto];
@@ -125,11 +131,14 @@
     _userpicImageNode.cornerRadius = 18.0f;
     _userpicImageNode.clipsToBounds = YES;
 
-    _usernameNode.style.flexGrow = 1.0f;
+    _usernameNode.style.flexGrow = .0f;
     _usernameNode.style.flexShrink = 1.0f;
     _usernameNode.style.minHeight = ASDimensionMake(20.0f);
 
-    NSMutableArray *stackLayoutChildren = [NSMutableArray arrayWithArray:@[_userpicImageNode, _usernameNode]];
+    _onlineStatusNode.style.width = ASDimensionMake(19.0f);
+    _onlineStatusNode.style.height = ASDimensionMake(14.0f);
+
+    NSMutableArray *stackLayoutChildren = [NSMutableArray arrayWithArray:@[_userpicImageNode, _usernameNode, _onlineStatusNode]];
 
     if (self.showBlockUnblockUserButton) {
         ASDisplayNode *button = [self.user.state isEqualToString:CMUserState.Active] ? _blockUserButtonNode : _unblockUserButtonNode;

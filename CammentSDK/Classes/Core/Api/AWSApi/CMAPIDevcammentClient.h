@@ -29,6 +29,7 @@
 #import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
+#import "CMAPIGroupHostInRequest.h"
 #import "CMAPIIotInRequest.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUpdateUserStateInGroupRequest.h"
@@ -363,6 +364,16 @@ NS_ASSUME_NONNULL_BEGIN
  return type: CMAPIDeeplink *
  */
 - (AWSTask *)usergroupsGroupUuidDeeplinkPost:( NSString *)groupUuid body:( CMAPIShowUuid *)body;
+
+/**
+ 
+ 
+ @param groupUuid 
+ @param body 
+ 
+ return type: 
+ */
+- (AWSTask *)usergroupsGroupUuidHostPut:( NSString *)groupUuid body:( CMAPIGroupHostInRequest *)body;
 
 /**
  

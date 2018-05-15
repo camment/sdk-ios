@@ -32,6 +32,7 @@
 #import "CMAPIUsergroup.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
+#import "CMAPIGroupHostInRequest.h"
 #import "CMAPIIotInRequest.h"
 #import "CMAPIUserinfoList.h"
 #import "CMAPIUpdateUserStateInGroupRequest.h"
@@ -609,6 +610,29 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                   headerParameters:headerParameters
                               body:body
                      responseClass:[CMAPIDeeplink class]];
+}
+
+- (AWSTask *)usergroupsGroupUuidHostPut:(NSString *)groupUuid body:(CMAPIGroupHostInRequest *)body {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"groupUuid": groupUuid,
+                                     
+                                     };
+    
+    return [self invokeHTTPRequest:@"PUT"
+                         URLString:@"/usergroups/{groupUuid}/host"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:body
+                     responseClass:nil];
 }
 
 - (AWSTask *)usergroupsGroupUuidIotPost:(NSString *)groupUuid body:(CMAPIIotInRequest *)body {

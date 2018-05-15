@@ -14,19 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIGroupHostInRequest.h"
 
- 
-/**
- IOT message model.
- */
-@interface CMAPIIotInRequest : AWSModel
+@implementation CMAPIGroupHostInRequest
 
-@property (nonatomic, strong, nullable) NSString *type;
-
-
-@property (nonatomic, strong, nullable) NSString *message;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"_newHostId": @"newHostId"
+             };
+}
 
 @end

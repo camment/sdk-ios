@@ -19,14 +19,11 @@
 
  
 /**
- IOT message model.
+ Model for setting group host.
  */
-@interface CMAPIIotInRequest : AWSModel
+@interface CMAPIGroupHostInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *type;
-
-
-@property (nonatomic, strong, nullable) NSString *message;
+@property (nonatomic, strong, nullable) NSString *_newHostId;
 
 
 @end

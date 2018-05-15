@@ -1,6 +1,7 @@
 CMUsersGroup includes(RMBuilder)  {
   NSString *uuid
   NSString *ownerCognitoUserId
+  NSString *hostCognitoUserId
   NSString *timestamp
   NSString *invitationLink
 }

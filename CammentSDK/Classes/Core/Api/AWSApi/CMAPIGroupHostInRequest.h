@@ -23,7 +23,7 @@
  */
 @interface CMAPIGroupHostInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *_newHostId;
+@property (nonatomic, strong, nullable) NSString *hostId;
 
 
 @end

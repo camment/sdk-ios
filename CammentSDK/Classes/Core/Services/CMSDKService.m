@@ -347,7 +347,7 @@
         [pb setValue:@"" forPasteboardType:UIPasteboardNameGeneral];
     }
 
-    [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded];
+    [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded:[CMStore instance].activeGroup.uuid];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

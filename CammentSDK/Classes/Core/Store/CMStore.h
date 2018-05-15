@@ -52,6 +52,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property RACSubject<NSNumber *> *userHasJoinedSignal;
 @property RACSubject<NSNumber *> *cleanUpSignal;
 @property RACSubject<NSNumber *> *fetchUpdatesSubject;
+@property RACSubject<NSNumber *> *requestPlayerStateFromHostAppSignal;
 
 @property(nonatomic) BOOL isOfflineMode;
 @property(nonatomic) BOOL awsServicesConfigured;
@@ -76,4 +77,5 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 - (void)refetchUsersInActiveGroup;
 
+- (void)updateHostUuid:(NSString *)hostUuid forGroup:(NSString *)groupUuid;
 @end

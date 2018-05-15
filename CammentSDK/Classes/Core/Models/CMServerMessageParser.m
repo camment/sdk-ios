@@ -14,6 +14,7 @@
 #import "CMUserRemovedMessageBuilder.h"
 #import "CMAdBannerBuilder.h"
 #import "CMUserContants.h"
+#import "CMNewGroupHostMessage.h"
 
 @implementation CMServerMessageParser {
 
@@ -189,6 +190,17 @@
                                                                                 isPlaying:isPlaying.boolValue
                                                                                 timestamp:timestamp.doubleValue];
         serverMessage = [CMServerMessage videoSyncEventWithMessage:message];
+    } else if ([type isEqualToString:@"need-player-state"]) {
+        NSString *groupUuid = body[@"groupUuid"];
+        CMNeededPlayerStateMessage *message = [[CMNeededPlayerStateMessage alloc] initWithGroupUUID:groupUuid];
+        serverMessage = [CMServerMessage neededPlayerStateWithMessage:message];
+    } else if ([type isEqualToString:@"new-group-host"]) {
+        NSString *groupUuid = body[@"groupUuid"];
+        NSString *hostUuid = body[@"hostId"];
+
+        CMNewGroupHostMessage *message = [[CMNewGroupHostMessage alloc] initWithGroupUuid:groupUuid
+                                                                                   hostId:hostUuid];
+        serverMessage = [CMServerMessage newGroupHostWithMessage:message];
     }
 
     return serverMessage;

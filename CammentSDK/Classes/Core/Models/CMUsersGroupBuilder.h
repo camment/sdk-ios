@@ -14,6 +14,8 @@
 
 - (instancetype)withOwnerCognitoUserId:(NSString *)ownerCognitoUserId;
 
+- (instancetype)withHostCognitoUserId:(NSString *)hostCognitoUserId;
+
 - (instancetype)withTimestamp:(NSString *)timestamp;
 
 - (instancetype)withInvitationLink:(NSString *)invitationLink;

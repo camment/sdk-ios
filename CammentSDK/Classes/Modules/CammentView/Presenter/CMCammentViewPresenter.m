@@ -92,7 +92,7 @@
             @strongify(self);
             if (shouldReload.boolValue) {
                 [self updateCammentsAfterConnectionHasRestored];
-                [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded];
+                [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded:[CMStore instance].activeGroup.uuid];
             }
         }];
 

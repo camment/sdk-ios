@@ -11,6 +11,8 @@
 
 @protocol CMCammentOverlayControllerDelegate<NSObject>
 
+- (void)cammentOverlayDidRequestForPlayerState;
+
 @optional
 
  - (void)cammentOverlayDidStartRecording;

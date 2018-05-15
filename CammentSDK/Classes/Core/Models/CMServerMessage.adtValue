@@ -36,4 +36,10 @@ CMServerMessage includes(RMBuilder) {
   videoSyncEvent {
     CMVideoSyncEventMessage *message
   }
+  neededPlayerState {
+    CMNeededPlayerStateMessage *message
+  }
+  newGroupHost {
+    CMNewGroupHostMessage *message
+  }
 }

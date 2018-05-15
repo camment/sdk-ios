@@ -9,6 +9,7 @@
 {
   NSString *_uuid;
   NSString *_ownerCognitoUserId;
+  NSString *_hostCognitoUserId;
   NSString *_timestamp;
   NSString *_invitationLink;
 }
@@ -20,16 +21,17 @@
 
 + (instancetype)usersGroupFromExistingUsersGroup:(CMUsersGroup *)existingUsersGroup
 {
-  return [[[[[CMUsersGroupBuilder usersGroup]
-             withUuid:existingUsersGroup.uuid]
-            withOwnerCognitoUserId:existingUsersGroup.ownerCognitoUserId]
+  return [[[[[[CMUsersGroupBuilder usersGroup]
+              withUuid:existingUsersGroup.uuid]
+             withOwnerCognitoUserId:existingUsersGroup.ownerCognitoUserId]
+            withHostCognitoUserId:existingUsersGroup.hostCognitoUserId]
            withTimestamp:existingUsersGroup.timestamp]
           withInvitationLink:existingUsersGroup.invitationLink];
 }
 
 - (CMUsersGroup *)build
 {
-  return [[CMUsersGroup alloc] initWithUuid:_uuid ownerCognitoUserId:_ownerCognitoUserId timestamp:_timestamp invitationLink:_invitationLink];
+  return [[CMUsersGroup alloc] initWithUuid:_uuid ownerCognitoUserId:_ownerCognitoUserId hostCognitoUserId:_hostCognitoUserId timestamp:_timestamp invitationLink:_invitationLink];
 }
 
 - (instancetype)withUuid:(NSString *)uuid
@@ -41,6 +43,12 @@
 - (instancetype)withOwnerCognitoUserId:(NSString *)ownerCognitoUserId
 {
   _ownerCognitoUserId = [ownerCognitoUserId copy];
+  return self;
+}
+
+- (instancetype)withHostCognitoUserId:(NSString *)hostCognitoUserId
+{
+  _hostCognitoUserId = [hostCognitoUserId copy];
   return self;
 }
 

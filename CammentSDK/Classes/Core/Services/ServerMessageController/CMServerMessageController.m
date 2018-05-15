@@ -103,13 +103,30 @@
         shouldPassToObservers = NO;
     }];
 
+    [message matchNeededPlayerState:^(CMNeededPlayerStateMessage *message) {
+        [self handleNeededPlayerState:message];
+        shouldPassToObservers = NO;
+    }];
+
+    [message matchNewGroupHost:^(CMNewGroupHostMessage *message) {
+        [self handleNewGroupHost:message];
+    }];
+
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
 }
 
+- (void)handleNewGroupHost:(CMNewGroupHostMessage *)message {
+    [[CMStore instance] updateHostUuid:message.hostId forGroup:message.groupUuid];
+}
+
+- (void)handleNeededPlayerState:(CMNeededPlayerStateMessage *)message {
+    [[CMVideoSyncInteractor new] requestNewTimestampsFromHostAppIfNeeded:message.groupUUID];
+}
+
 - (void)askForActualShowTimestampIfNeeded {
-    [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded];
+    [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded:[CMStore instance].activeGroup.uuid];
 }
 
 - (void)handleMeBlockedInActiveGroup {

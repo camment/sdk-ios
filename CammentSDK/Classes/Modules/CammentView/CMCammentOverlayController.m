@@ -72,6 +72,14 @@
                 }
             }
         }];
+
+        [[[RACObserve(store, requestPlayerStateFromHostAppSignal) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
+            @strongify(self);
+            if (self.overlayDelegate && [self.overlayDelegate respondsToSelector:@selector(cammentOverlayDidRequestForPlayerState)]) {
+                [self.overlayDelegate cammentOverlayDidRequestForPlayerState];
+            }
+        }];
+
     }
     return self;
 }

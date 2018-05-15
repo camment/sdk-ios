@@ -33,6 +33,7 @@
             CMAPIUsergroup *group = t.result;
             CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
                                                    ownerCognitoUserId:group.userCognitoIdentityId
+                                                    hostCognitoUserId:group.userCognitoIdentityId
                                                             timestamp:group.timestamp
                                                        invitationLink:nil];
             DDLogVerbose(@"Created new group %@", result);

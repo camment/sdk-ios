@@ -58,6 +58,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.authentificationStatusSubject = [RACReplaySubject replaySubjectWithCapacity:1];
         self.serverMessagesSubject = [RACSubject new];
         self.fetchUpdatesSubject = [RACSubject new];
+        self.requestPlayerStateFromHostAppSignal = [RACSubject new];
 
         self.groupInfoInteractor = [CMGroupInfoInteractor new];
         self.groupInfoInteractor.output = self;
@@ -288,4 +289,22 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     _avoidTouchesInViews = avoidTouchesInViews;
     
 }
+
+- (void)updateHostUuid:(NSString *)hostUuid forGroup:(NSString *)groupUuid {
+    if ([self.activeGroup.uuid isEqualToString:groupUuid]) {
+        self.activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:self.activeGroup]
+                withHostCognitoUserId:hostUuid]
+                build];
+    }
+
+    self.userGroups = [self.userGroups map:^CMUsersGroup *(CMUsersGroup *group) {
+        if ([group.uuid isEqualToString:groupUuid]) {
+            group = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:group]
+                    withHostCognitoUserId:hostUuid]
+                    build];
+        }
+        return group;
+    }];
+}
+
 @end

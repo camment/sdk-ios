@@ -104,24 +104,7 @@
 
 - (BOOL)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
 
-    switch (state) {
-        case ASVideoNodePlayerStateUnknown:break;
-        case ASVideoNodePlayerStateInitialLoading:break;
-        case ASVideoNodePlayerStateReadyToPlay:break;
-        case ASVideoNodePlayerStatePlaybackLikelyToKeepUpButNotPlaying:break;
-        case ASVideoNodePlayerStatePlaying:
-            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
-                [self.videoNodeDelegate playerDidPlay:CMTimeGetSeconds(videoPlayer.videoNode.player.currentTime)];
-            }
-            break;
-        case ASVideoNodePlayerStateLoading:break;
-        case ASVideoNodePlayerStatePaused:
-            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
-                [self.videoNodeDelegate playerDidPause:CMTimeGetSeconds(videoPlayer.videoNode.player.currentTime)];
-            }
-            break;
-        case ASVideoNodePlayerStateFinished:break;
-    }
+    [self getCurrentTimestamp];
 
     if (state != ASVideoNodePlayerStatePlaying) { return YES; }
 
@@ -158,6 +141,27 @@
         [self.videoPlayerNode pause];
     } else if (self.videoPlayerNode.playerState != ASVideoNodePlayerStatePlaying) {
         [self.videoPlayerNode play];
+    }
+}
+
+- (void)getCurrentTimestamp {
+    switch (self.videoPlayerNode.playerState) {
+        case ASVideoNodePlayerStatePlaying:
+            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+                [self.videoNodeDelegate playerDidPlay:CMTimeGetSeconds(self.videoPlayerNode.videoNode.player.currentTime)];
+            }
+            break;
+        case ASVideoNodePlayerStateFinished:
+        case ASVideoNodePlayerStateUnknown:
+        case ASVideoNodePlayerStateInitialLoading:
+        case ASVideoNodePlayerStateReadyToPlay:
+        case ASVideoNodePlayerStatePlaybackLikelyToKeepUpButNotPlaying:
+        case ASVideoNodePlayerStateLoading:
+        case ASVideoNodePlayerStatePaused:
+            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+                [self.videoNodeDelegate playerDidPause:CMTimeGetSeconds(self.videoPlayerNode.videoNode.player.currentTime)];
+            }
+            break;
     }
 }
 

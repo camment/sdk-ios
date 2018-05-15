@@ -15,4 +15,6 @@
 - (void)setMuted:(BOOL)muted;
 
 - (void)setLowVolume:(BOOL)lowVolume;
+
+- (void)getCurrentTimestamp;
 @end

@@ -206,4 +206,8 @@
     [[CammentSDK instance] updateVideoStreamStateIsPlaying:NO show:metadata timestamp:timeInterval];
 }
 
+- (void)cammentOverlayDidRequestForPlayerState {
+    [(CMVideoContentPlayerNode *)self.contentViewerNode getCurrentTimestamp];
+}
+
 @end

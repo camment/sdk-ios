@@ -1,0 +1,5 @@
+CMNewPlayerStateMessage includes(RMBuilder) {
+  NSString *groupUuid
+  BOOL isPlaying
+  double timestamp
+}

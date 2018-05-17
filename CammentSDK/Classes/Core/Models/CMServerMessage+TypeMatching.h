@@ -15,7 +15,7 @@
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler;
 - (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler;
 - (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler;
-- (void)matchVideoSyncEvent:(CMServerMessageVideoSyncEventMatchHandler)videoSyncEventMatchHandler;
+- (void)matchPlayerStateEvent:(CMServerMessagePlayerStateMatchHandler)playerStateHandler;
 
 - (void)matchNeededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler;
 

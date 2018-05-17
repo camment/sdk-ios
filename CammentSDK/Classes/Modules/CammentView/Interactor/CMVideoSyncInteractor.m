@@ -60,7 +60,7 @@
     if (![authStatusChangedEventContext.user.cognitoUserId isEqualToString:[CMStore instance].activeGroup.hostCognitoUserId]) {
         return;
     }
-    
+
     if (![CMStore instance].activeGroup) { return; }
 
     NSString *groupUuid = [CMStore instance].activeGroup.uuid;

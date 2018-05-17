@@ -17,9 +17,9 @@
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-        videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-        neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-        newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler {
@@ -31,9 +31,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler {
@@ -45,9 +45,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler {
@@ -59,9 +59,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler {
@@ -73,9 +73,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler {
@@ -87,9 +87,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:cammentDeliveredMatchHandler
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler {
@@ -101,9 +101,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:adMatchHandler
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler {
@@ -115,12 +115,12 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:userGroupStateChangedHadler
-            videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
-- (void)matchVideoSyncEvent:(CMServerMessageVideoSyncEventMatchHandler)videoSyncEventMatchHandler {
+- (void)matchPlayerStateEvent:(CMServerMessagePlayerStateMatchHandler)playerStateHandler {
     [self matchCamment:^(CMCamment *camment) {}
             userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
         cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
@@ -129,9 +129,9 @@ userGroupStatusChanged:userGroupStateChangedHadler
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-        videoSyncEvent:videoSyncEventMatchHandler
-            neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+           playerState:playerStateHandler
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchNeededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler {
@@ -143,9 +143,9 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-        videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:neededPlayerStateMatchHandler
-            newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
 }
 
 - (void)matchNewGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostHandler {
@@ -157,7 +157,7 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
       cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
                     ad:^(CMAdBanner *adBanner) {}
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
-        videoSyncEvent:^(CMVideoSyncEventMessage *videoSyncEventMessage) {}
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
           newGroupHost:newGroupHostHandler];
 }

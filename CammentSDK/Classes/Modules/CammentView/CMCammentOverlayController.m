@@ -14,6 +14,7 @@
 #import "CMStore.h"
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMUserSessionController.h"
+#import "CMVideoSyncInteractor.h"
 
 @interface CMCammentOverlayController ()
 @property(nonatomic, strong) CMCammentViewController *cammentViewController;
@@ -73,10 +74,15 @@
             }
         }];
 
-        [[[RACObserve(store, requestPlayerStateFromHostAppSignal) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
+        [[[store.requestPlayerStateFromHostAppSignal takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
             @strongify(self);
-            if (self.overlayDelegate && [self.overlayDelegate respondsToSelector:@selector(cammentOverlayDidRequestForPlayerState)]) {
-                [self.overlayDelegate cammentOverlayDidRequestForPlayerState];
+            if (self.overlayDelegate && [self.overlayDelegate respondsToSelector:@selector(cammentOverlayDidRequestPlayerState:)]) {
+                [self.overlayDelegate cammentOverlayDidRequestPlayerState:^(BOOL isPlaying, NSTimeInterval timestamp) {
+                    store.lastTimestampUploaded = nil;
+                    [[CMVideoSyncInteractor new] updateVideoStreamStateIsPlaying:isPlaying
+                                                                            show:metadata
+                                                                       timestamp:timestamp];
+                }];
             }
         }];
 

@@ -197,6 +197,10 @@
             [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
         }];
 
+        [self.rac_willDeallocSignal subscribeCompleted:^{
+            [CMStore instance].lastTimestampUploaded = nil;
+        }];
+
     }
 
     return self;

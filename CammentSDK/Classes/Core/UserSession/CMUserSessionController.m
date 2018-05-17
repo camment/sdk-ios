@@ -67,7 +67,8 @@ static CMUserSessionController *_instance = nil;
     [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:@"UserSessionUpdater"];
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient clientForKey:@"UserSessionUpdater"];
     [client setAPIKey:_appConfig.apiKey];
-    return [[client userinfoGet] continueWithSuccessBlock:^id(AWSTask<id> *t) {
+    AWSTask *getUserInfo = [client userinfoGet];
+    return [getUserInfo continueWithSuccessBlock:^id(AWSTask<id> *t) {
         CMAPIUserinfo *userInfo = t.result;
         if (userInfo) {
             self.user = [[[[CMUserBuilder userFromExistingUser:self.user]

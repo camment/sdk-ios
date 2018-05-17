@@ -98,7 +98,7 @@
         }
     }];
 
-    [message matchVideoSyncEvent:^(CMVideoSyncEventMessage *message) {
+    [message matchPlayerStateEvent:^(CMNewPlayerStateMessage *message) {
         [self handleVideoSyncMessage:message];
         shouldPassToObservers = NO;
     }];
@@ -193,8 +193,8 @@
     });
 }
 
-- (void)handleVideoSyncMessage:(CMVideoSyncEventMessage *)message {
-    if (![message.groupUUID isEqualToString:self.store.activeGroup.uuid]) { return; }
+- (void)handleVideoSyncMessage:(CMNewPlayerStateMessage *)message {
+    if (![message.groupUuid isEqualToString:self.store.activeGroup.uuid]) { return; }
 
     CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
 

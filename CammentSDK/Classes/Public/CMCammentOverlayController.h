@@ -11,7 +11,7 @@
 
 @protocol CMCammentOverlayControllerDelegate<NSObject>
 
-- (void)cammentOverlayDidRequestForPlayerState;
+- (void)cammentOverlayDidRequestPlayerState:(void (^)(BOOL isPlaying, NSTimeInterval timestamp))playerStateBlock;
 
 @optional
 

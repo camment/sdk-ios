@@ -15,6 +15,7 @@
 @property(nonatomic, strong) ASVideoPlayerNode *videoPlayerNode;
 @property(nonatomic, strong) RACDisposable *disposable;
 @property(nonatomic) BOOL muted;
+@property(nonatomic) BOOL shouldRescheduleTimeInterval;
 @end
 
 @implementation CMVideoContentPlayerNode
@@ -104,7 +105,14 @@
 
 - (BOOL)videoPlayerNode:(ASVideoPlayerNode *)videoPlayer shouldChangeVideoNodeStateTo:(ASVideoNodePlayerState)state {
 
-    [self getCurrentTimestamp];
+    [self getCurrentTimestamp:state
+              completionBlock:^(BOOL isPlaying, NSTimeInterval timestamp) {
+                  if (isPlaying && self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+                      [self.videoNodeDelegate playerDidPlay:timestamp];
+                  } else if (!isPlaying && self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
+                      [self.videoNodeDelegate playerDidPause:timestamp];
+                  }
+              }];
 
     if (state != ASVideoNodePlayerStatePlaying) { return YES; }
 
@@ -133,7 +141,25 @@
 }
 
 - (void)setCurrentTimeInterval:(NSTimeInterval)timeInterval {
-    [self.videoPlayerNode.videoNode.player seekToTime:CMTimeMakeWithSeconds(timeInterval, self.videoPlayerNode.videoNode.periodicTimeObserverTimescale)];
+    _shouldRescheduleTimeInterval = NO;
+    switch (self.videoPlayerNode.playerState) {
+        case ASVideoNodePlayerStatePaused:
+        case ASVideoNodePlayerStatePlaying:
+                [self.videoPlayerNode.videoNode.player seekToTime:CMTimeMakeWithSeconds(timeInterval, self.videoPlayerNode.videoNode.periodicTimeObserverTimescale)];
+            break;
+        case ASVideoNodePlayerStateUnknown:
+        case ASVideoNodePlayerStateLoading:
+        case ASVideoNodePlayerStateInitialLoading:
+        case ASVideoNodePlayerStateReadyToPlay:
+        case ASVideoNodePlayerStatePlaybackLikelyToKeepUpButNotPlaying:
+            _shouldRescheduleTimeInterval = YES;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                if (!_shouldRescheduleTimeInterval) { return; }
+                [self setCurrentTimeInterval:timeInterval];
+            });
+            break;
+    }
+
 }
 
 - (void)setIsPlaying:(BOOL)playing {
@@ -144,12 +170,14 @@
     }
 }
 
-- (void)getCurrentTimestamp {
-    switch (self.videoPlayerNode.playerState) {
+- (void)getCurrentTimestampCompletionBlock:(void(^)(BOOL isPlaying, NSTimeInterval timestamp))completion {
+    [self getCurrentTimestamp:self.videoPlayerNode.playerState completionBlock:completion];
+}
+
+- (void)getCurrentTimestamp:(ASVideoNodePlayerState)state completionBlock:(void(^)(BOOL isPlaying, NSTimeInterval timestamp))completion {
+    switch (state) {
         case ASVideoNodePlayerStatePlaying:
-            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
-                [self.videoNodeDelegate playerDidPlay:CMTimeGetSeconds(self.videoPlayerNode.videoNode.player.currentTime)];
-            }
+            completion(YES,CMTimeGetSeconds(self.videoPlayerNode.videoNode.player.currentTime));
             break;
         case ASVideoNodePlayerStateFinished:
         case ASVideoNodePlayerStateUnknown:
@@ -158,9 +186,7 @@
         case ASVideoNodePlayerStatePlaybackLikelyToKeepUpButNotPlaying:
         case ASVideoNodePlayerStateLoading:
         case ASVideoNodePlayerStatePaused:
-            if (self.videoNodeDelegate && [self.videoNodeDelegate respondsToSelector:@selector(playerDidUpdateCurrentTimeInterval:)]) {
-                [self.videoNodeDelegate playerDidPause:CMTimeGetSeconds(self.videoPlayerNode.videoNode.player.currentTime)];
-            }
+            completion(NO,CMTimeGetSeconds(self.videoPlayerNode.videoNode.player.currentTime));
             break;
     }
 }

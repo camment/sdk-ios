@@ -26,7 +26,9 @@
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 @property(nonatomic) RACDisposable *countDownSignalDisposable;
 @property(nonatomic, assign) BOOL viewIsReady;
+@property(nonatomic) NSNotification *notification;
 @property(nonatomic, copy) NSString *showUuid;
+
 @end
 
 @implementation CMCammentsInStreamPlayerViewController
@@ -80,8 +82,12 @@
     NSTimeInterval newTimestamp = [(NSNumber *)dict[CMNewTimestampKey] doubleValue];
     BOOL isPlaying = [(NSNumber *)dict[CMVideoIsPlayingKey] boolValue];
 
-    [(id<CMContentViewerNode>)self.contentViewerNode setCurrentTimeInterval:newTimestamp];
-    [(id<CMContentViewerNode>)self.contentViewerNode setIsPlaying:isPlaying];
+    if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {
+        [(id<CMContentViewerNode>)self.contentViewerNode setCurrentTimeInterval:newTimestamp];
+        [(id<CMContentViewerNode>)self.contentViewerNode setIsPlaying:isPlaying];
+    } else {
+        self.notification = notification;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -186,28 +192,50 @@
 }
 
 - (void)playerDidUpdateCurrentTimeInterval:(NSTimeInterval)timeInterval {
+    if (isnan(timeInterval)) { return; }
+
     CMShowMetadata *metadata = [CMShowMetadata new];
     metadata.uuid = self.showUuid;
-
-    [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES show:metadata timestamp:timeInterval];
+    
+    [(CMVideoContentPlayerNode *)self.contentViewerNode getCurrentTimestampCompletionBlock:^(BOOL isPlaying, NSTimeInterval timestamp){
+        [[CammentSDK instance] updateVideoStreamStateIsPlaying:isPlaying show:metadata timestamp:timestamp];
+    }];
 }
 
 - (void)playerDidPlay:(NSTimeInterval)timeInterval {
+    if (self.notification) {
+        NSNotification *notification = self.notification;
+        self.notification = nil;
+        [self didReceiveNewTimestamp:notification];
+        return;
+    }
+    
+    if (isnan(timeInterval)) { return; }
+    
     CMShowMetadata *metadata = [CMShowMetadata new];
     metadata.uuid = self.showUuid;
-
+    
     [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES show:metadata timestamp:timeInterval];
 }
 
 - (void)playerDidPause:(NSTimeInterval)timeInterval {
+    if (self.notification) {
+        NSNotification *notification = self.notification;
+        self.notification = nil;
+        [self didReceiveNewTimestamp:notification];
+        return;
+    }
+    
+    if (isnan(timeInterval)) { return; }
+    
     CMShowMetadata *metadata = [CMShowMetadata new];
     metadata.uuid = self.showUuid;
 
     [[CammentSDK instance] updateVideoStreamStateIsPlaying:NO show:metadata timestamp:timeInterval];
 }
 
-- (void)cammentOverlayDidRequestForPlayerState {
-    [(CMVideoContentPlayerNode *)self.contentViewerNode getCurrentTimestamp];
+- (void)cammentOverlayDidRequestPlayerState:(void (^)(BOOL isPlaying, NSTimeInterval timestamp))playerStateBlock {
+    [(CMVideoContentPlayerNode *)self.contentViewerNode getCurrentTimestampCompletionBlock:playerStateBlock];
 }
 
 @end

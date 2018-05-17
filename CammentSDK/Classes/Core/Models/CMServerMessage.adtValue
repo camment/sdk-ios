@@ -33,8 +33,8 @@ CMServerMessage includes(RMBuilder) {
   userGroupStatusChanged {
     CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage
   }
-  videoSyncEvent {
-    CMVideoSyncEventMessage *message
+  playerState {
+    CMNewPlayerStateMessage *message
   }
   neededPlayerState {
     CMNeededPlayerStateMessage *message

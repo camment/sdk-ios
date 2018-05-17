@@ -1,13 +1,13 @@
 /**
  * This file is generated using the remodel generation script.
- * The name of the input file is CMVideoSyncEventMessage.value
+ * The name of the input file is CMNewPlayerStateMessage.value
  */
 
 #if  ! __has_feature(objc_arc)
 #error This file must be compiled with ARC. Use -fobjc-arc flag (or convert project to ARC).
 #endif
 
-#import "CMVideoSyncEventMessage.h"
+#import "CMNewPlayerStateMessage.h"
 
 static BOOL CompareDoubles(double givenDouble, double doubleToCompare) {
   return fabs(givenDouble - doubleToCompare) < DBL_EPSILON * fabs(givenDouble + doubleToCompare) || fabs(givenDouble - doubleToCompare) < DBL_MIN;
@@ -29,14 +29,12 @@ static NSUInteger HashDouble(double givenDouble) {
   return (NSUInteger) p;
 }
 
-@implementation CMVideoSyncEventMessage
+@implementation CMNewPlayerStateMessage
 
-- (instancetype)initWithEvent:(NSString *)event groupUUID:(NSString *)groupUUID showUUID:(NSString *)showUUID isPlaying:(BOOL)isPlaying timestamp:(double)timestamp
+- (instancetype)initWithGroupUuid:(NSString *)groupUuid isPlaying:(BOOL)isPlaying timestamp:(double)timestamp
 {
   if ((self = [super init])) {
-    _event = [event copy];
-    _groupUUID = [groupUUID copy];
-    _showUUID = [showUUID copy];
+    _groupUuid = [groupUuid copy];
     _isPlaying = isPlaying;
     _timestamp = timestamp;
   }
@@ -51,14 +49,14 @@ static NSUInteger HashDouble(double givenDouble) {
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t event: %@; \n\t groupUUID: %@; \n\t showUUID: %@; \n\t isPlaying: %@; \n\t timestamp: %lf; \n", [super description], _event, _groupUUID, _showUUID, _isPlaying ? @"YES" : @"NO", _timestamp];
+  return [NSString stringWithFormat:@"%@ - \n\t groupUuid: %@; \n\t isPlaying: %@; \n\t timestamp: %lf; \n", [super description], _groupUuid, _isPlaying ? @"YES" : @"NO", _timestamp];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_event hash], [_groupUUID hash], [_showUUID hash], (NSUInteger)_isPlaying, HashDouble(_timestamp)};
+  NSUInteger subhashes[] = {[_groupUuid hash], (NSUInteger)_isPlaying, HashDouble(_timestamp)};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 5; ++ii) {
+  for (int ii = 1; ii < 3; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -71,7 +69,7 @@ static NSUInteger HashDouble(double givenDouble) {
   return result;
 }
 
-- (BOOL)isEqual:(CMVideoSyncEventMessage *)object
+- (BOOL)isEqual:(CMNewPlayerStateMessage *)object
 {
   if (self == object) {
     return YES;
@@ -81,9 +79,7 @@ static NSUInteger HashDouble(double givenDouble) {
   return
     _isPlaying == object->_isPlaying &&
     CompareDoubles(_timestamp, object->_timestamp) &&
-    (_event == object->_event ? YES : [_event isEqual:object->_event]) &&
-    (_groupUUID == object->_groupUUID ? YES : [_groupUUID isEqual:object->_groupUUID]) &&
-    (_showUUID == object->_showUUID ? YES : [_showUUID isEqual:object->_showUUID]);
+    (_groupUuid == object->_groupUuid ? YES : [_groupUuid isEqual:object->_groupUuid]);
 }
 
 @end

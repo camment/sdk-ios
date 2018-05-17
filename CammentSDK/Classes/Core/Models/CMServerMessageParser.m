@@ -176,20 +176,16 @@
                                  user:user
                                 state:CMUserBlockStatus.Active];
         serverMessage = [CMServerMessage userGroupStatusChangedWithUserGroupStatusChangedMessage:message];
-    } else if ([type isEqualToString:@"custom"]) {
-        NSString *event = body[@"event"];
+    } else if ([type isEqualToString:@"player-state"]) {
         NSString *groupUuid = body[@"groupUuid"];
-        NSString *showUuid = body[@"showUuid"];
         NSNumber *timestamp = body[@"timestamp"];
         NSNumber *isPlaying = body[@"isPlaying"];
 
 
-        CMVideoSyncEventMessage *message = [[CMVideoSyncEventMessage alloc] initWithEvent:event
-                                                                                groupUUID:groupUuid
-                                                                                 showUUID:showUuid
-                                                                                isPlaying:isPlaying.boolValue
-                                                                                timestamp:timestamp.doubleValue];
-        serverMessage = [CMServerMessage videoSyncEventWithMessage:message];
+        CMNewPlayerStateMessage *message = [[CMNewPlayerStateMessage alloc] initWithGroupUuid:groupUuid
+                                                                                    isPlaying:[isPlaying boolValue]
+                                                                                    timestamp:timestamp.doubleValue];
+        serverMessage = [CMServerMessage playerStateWithMessage:message];
     } else if ([type isEqualToString:@"need-player-state"]) {
         NSString *groupUuid = body[@"groupUuid"];
         CMNeededPlayerStateMessage *message = [[CMNeededPlayerStateMessage alloc] initWithGroupUUID:groupUuid];

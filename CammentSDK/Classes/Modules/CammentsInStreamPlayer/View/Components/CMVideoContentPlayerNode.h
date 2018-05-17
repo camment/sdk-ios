@@ -16,5 +16,5 @@
 
 - (void)setLowVolume:(BOOL)lowVolume;
 
-- (void)getCurrentTimestamp;
+- (void)getCurrentTimestampCompletionBlock:(void (^)(BOOL isPlaying, NSTimeInterval timestamp))completion;
 @end

@@ -35,6 +35,9 @@
 @property (nonatomic, strong, nullable) NSString *state;
 
 
+@property (nonatomic, strong, nullable) NSString *activeGroup;
+
+
 @property (nonatomic, strong, nullable) NSString *picture;
 
 

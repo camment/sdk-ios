@@ -14,25 +14,14 @@
  */
  
 
-#import <Foundation/Foundation.h>
-#import <AWSCore/AWSCore.h>
+#import "CMAPIGroupUuidInRequest.h"
 
- 
-/**
- Usergroup object model.
- */
-@interface CMAPIUsergroup : AWSModel
+@implementation CMAPIGroupUuidInRequest
 
-@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
-
-
-@property (nonatomic, strong, nullable) NSString *hostId;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *timestamp;
-
++ (NSDictionary *)JSONKeyPathsByPropertyKey {
+    return @{
+             @"groupUuid": @"groupUuid"
+             };
+}
 
 @end

@@ -24,6 +24,7 @@
              @"name": @"name",
              @"isOnline": @"isOnline",
              @"state": @"state",
+             @"activeGroup": @"activeGroup",
              @"picture": @"picture"
              };
 }

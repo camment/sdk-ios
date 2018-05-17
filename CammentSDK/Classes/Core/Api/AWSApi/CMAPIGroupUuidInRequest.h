@@ -19,20 +19,11 @@
 
  
 /**
- Usergroup object model.
+ Model for requests where group uuid is sent from client.
  */
-@interface CMAPIUsergroup : AWSModel
+@interface CMAPIGroupUuidInRequest : AWSModel
 
-@property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
-
-
-@property (nonatomic, strong, nullable) NSString *hostId;
-
-
-@property (nonatomic, strong, nullable) NSString *uuid;
-
-
-@property (nonatomic, strong, nullable) NSString *timestamp;
+@property (nonatomic, strong, nullable) NSString *groupUuid;
 
 
 @end

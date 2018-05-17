@@ -28,7 +28,7 @@
     };
     NSData *data = [NSJSONSerialization dataWithJSONObject:
                     jsonObject
-                                                   options:NSJSONWritingPrettyPrinted
+                                                   options:NULL
                                                      error:&error];
     iotInRequest.message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
@@ -94,7 +94,7 @@
                     @"groupUuid" : groupUuid,
                     @"timestamp" : @((int)timestamp),
             }
-                                                   options:NSJSONWritingPrettyPrinted
+                                                   options:NULL
                                                      error:&error];
     iotInRequest.message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidIotPost:groupUuid

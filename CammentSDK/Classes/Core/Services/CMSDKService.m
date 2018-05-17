@@ -448,10 +448,11 @@
                 if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
                     CMAPIUsergroup *usergroup = t.result;
 
-                    CMUsersGroup *group = [[[[[CMUsersGroupBuilder new]
+                    CMUsersGroup *group = [[[[[[CMUsersGroupBuilder new]
                             withUuid:invitation.userGroupUuid]
                             withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
                             withTimestamp:usergroup.timestamp]
+                            withHostCognitoUserId:usergroup.hostId]
                             build];
                     CMShow *show = [[CMShow alloc] initWithUuid:invitation.showUuid
                                                             url:nil

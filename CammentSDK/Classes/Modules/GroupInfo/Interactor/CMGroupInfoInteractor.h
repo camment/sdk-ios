@@ -14,4 +14,7 @@
 
 @property (nonatomic, weak) id<CMGroupInfoInteractorOutput> output;
 
+- (void)setActiveGroup:(NSString *)uuid;
+
+- (void)unsetActiveGroup;
 @end

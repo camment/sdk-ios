@@ -128,4 +128,27 @@
     }];
 }
 
+- (void)setActiveGroup:(NSString *)uuid {
+    CMAPIGroupUuidInRequest *groupUuidInRequest = [CMAPIGroupUuidInRequest new];
+    groupUuidInRequest.groupUuid = uuid;
+
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] meActiveGroupPost:groupUuidInRequest];
+    [task continueWithBlock:^id(AWSTask<id> *t) {
+        if (t.error) {
+            DDLogError(@"Could not set active user group %@", t.error);
+        }
+        return nil;
+    }];
+}
+
+- (void)unsetActiveGroup {
+    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] meActiveGroupDelete];
+    [task continueWithBlock:^id(AWSTask<id> *t) {
+        if (t.error) {
+            DDLogError(@"Could not unset active user group %@", t.error);
+        }
+        return nil;
+    }];
+}
+
 @end

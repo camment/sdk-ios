@@ -106,6 +106,9 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
             if (group && group.uuid) {
                 [self.groupInfoInteractor fetchUsersInGroup:group.uuid];
+                [self.groupInfoInteractor setActiveGroup:group.uuid];
+            } else {
+                [self.groupInfoInteractor unsetActiveGroup];
             }
 
             [self.groupListInteractor fetchUserGroups];

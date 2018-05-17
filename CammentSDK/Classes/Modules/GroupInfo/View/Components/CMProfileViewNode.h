@@ -12,4 +12,5 @@
 
 - (instancetype)initWithContext:(CMProfileViewNodeContext *)context NS_DESIGNATED_INITIALIZER;
 
+- (void)updateUserStatus;
 @end

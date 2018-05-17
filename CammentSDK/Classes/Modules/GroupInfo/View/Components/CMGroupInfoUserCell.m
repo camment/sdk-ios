@@ -114,7 +114,14 @@
 - (void)didLoad {
     [super didLoad];
 
-    self.onlineStatusNode.image = [UIImage imageNamed:@"offline_status_icn" inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
+    NSString *userStatusImage = @"offline_status_icn";
+    if ([self.user.onlineStatus isEqualToString:CMUserOnlineStatus.Online]) {
+        userStatusImage = @"online_status_icn";
+    } else if ([self.user.onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
+        userStatusImage = @"video_sync_icn";
+    }
+
+    self.onlineStatusNode.image = [UIImage imageNamed:userStatusImage inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
 
     if (!self.user.userPhoto) return;
 

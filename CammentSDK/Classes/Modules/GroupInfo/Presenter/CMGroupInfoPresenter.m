@@ -41,6 +41,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 @property(nonatomic) BOOL showProfileInfo;
 @property(nonatomic) BOOL haveUserDeletionPermissions;
 @property(nonatomic) BOOL canLeaveTheGroup;
+@property(nonatomic) NSString *groupHost;
 
 @end
 
@@ -65,6 +66,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                     self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
 
                     CMUsersGroup *group = tuple.second;
+                    self.groupHost = group.hostCognitoUserId;
                     self.haveUserDeletionPermissions = group && [group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
                     self.canLeaveTheGroup = group && ![group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
                     [self reloadData];
@@ -202,7 +204,12 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     } else {
         CMUser *user = model;
         BOOL showDeleteUserButton = self.haveUserDeletionPermissions;
+        NSString *onlineStatus = user.onlineStatus;
+        if ([user.cognitoUserId isEqualToString:self.groupHost]) {
+            onlineStatus = CMUserOnlineStatus.Broadcasting;
+        }
 
+        user = [[[CMUserBuilder userFromExistingUser:user] withOnlineStatus:onlineStatus] build];
         __weak typeof(self) delegate = self;
         cellNodeBlock = ^ASCellNode *() {
             CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithUser:user

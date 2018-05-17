@@ -31,6 +31,7 @@
 @property BOOL showSettingsNode;
 
 @property(nonatomic, strong) CMProfileViewNodeContext *context;
+@property(nonatomic, strong) NSString *userId;
 @end
 
 @implementation CMProfileViewNode {
@@ -100,9 +101,7 @@
 
 - (void)didLoad {
     [super didLoad];
-
-    self.onlineStatusNode.image = [UIImage imageNamed:@"video_sync_icn" inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
-
+    
     [self.settingsButtonNode setImage:[UIImage imageNamed:@"settings_icn"
                                                  inBundle:[NSBundle cammentSDKBundle]
                             compatibleWithTraitCollection:nil]
@@ -127,6 +126,7 @@
                 if (!user) {
                     _showSettingsNode = NO;
                 }
+                self.userId = user.cognitoUserId;
                 self.usernameTextNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
                                                                                        attributes:@{
                                                                                                NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
@@ -141,8 +141,21 @@
                     }
                 }
 
+                [self updateUserStatus];
                 [self setNeedsLayout];
             }];
+
+    [[[RACObserve([CMStore instance], activeGroup) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
+        [self updateUserStatus];
+        [self setNeedsLayout];
+    }];
+    
+    [self updateUserStatus];
+}
+
+- (void)updateUserStatus {
+    NSString *statusIconName = [[CMStore instance].activeGroup.hostCognitoUserId isEqualToString:self.userId] ? @"video_sync_icn" : @"online_status_icn";
+    self.onlineStatusNode.image = [UIImage imageNamed:statusIconName inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
 }
 
 - (void)openUserProfile {

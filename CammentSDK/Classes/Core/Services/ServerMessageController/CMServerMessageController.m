@@ -198,20 +198,40 @@
 
     CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
 
-    if ([context.user.cognitoUserId isEqualToString:self.store.activeGroup.ownerCognitoUserId]) {
+    if ([context.user.cognitoUserId isEqualToString:self.store.activeGroup.hostCognitoUserId]) {
         return;
     }
 
     NSTimeInterval timeInterval = message.timestamp;
 
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:CMNewTimestampAvailableVideoPlayerNotification
-                                                            object:[CammentSDK instance]
-                                                          userInfo:@{
-                                                                  CMNewTimestampKey : @(timeInterval),
-                                                                  CMVideoIsPlayingKey : @(message.isPlaying)
-                                                          }];
-    });
+    [[CMStore instance].overlayDelegate cammentOverlayDidRequestPlayerState:^(BOOL isPlaying, NSTimeInterval playerTimeInterval) {
+
+        BOOL shoudSync = (ABS(playerTimeInterval - timeInterval) > 60)
+                || [CMStore instance].shoudForceSynced
+                || isPlaying != message.isPlaying;
+
+        if (!shoudSync) { return; }
+        [CMStore instance].shoudForceSynced = NO;
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            [[NSNotificationCenter defaultCenter] postNotificationName:CMNewTimestampAvailableVideoPlayerNotification
+                                                                object:[CammentSDK instance]
+                                                              userInfo:@{
+                                                                      CMNewTimestampKey : @(timeInterval),
+                                                                      CMVideoIsPlayingKey : @(message.isPlaying)
+                                                              }];
+            NSString *hostUuid = [CMStore instance].activeGroup.hostCognitoUserId;
+            CMUser *host = ([[[CMStore instance].activeGroupUsers rac_sequence] filter:^BOOL(CMUser *value) {
+                return [value.cognitoUserId isEqualToString:hostUuid];
+            }].array ?: @[]).firstObject;
+
+
+            [_notificationPresenter showToastMessage:host.username ?
+                [NSString stringWithFormat:CMLocalized(@"sync.you_synched_with_user"), host.username] :
+                    CMLocalized(@"sync.you_synched_with_host")
+            ];
+        });
+    }];
 }
 
 @end

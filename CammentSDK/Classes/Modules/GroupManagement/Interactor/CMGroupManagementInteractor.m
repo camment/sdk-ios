@@ -43,6 +43,7 @@
 - (void)joinUserToGroup:(CMUsersGroup *)group {
     DDLogInfo(@"Join group id %@", group);
 
+    [CMStore instance].shoudForceSynced = YES;
     if (![group.uuid isEqualToString:self.store.activeGroup.uuid]) {
         [self.store setActiveGroup:group];
         [[self.store reloadActiveGroupSubject] sendNext:@YES];

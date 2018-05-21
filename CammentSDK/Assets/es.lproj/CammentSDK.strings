@@ -84,3 +84,6 @@
 "button.continue_tutorial" = "Continúa con el tutorial";
 "button.leave_group" = "Dejar el grupo";
 "onboarding.skip_tutorial" = "Salta el tutorial";
+
+"sync.you_synched_with_user" = "We are syncing you with the host %@";
+"sync.you_synched_with_host" = "We are syncing you with the host";

@@ -17,6 +17,7 @@
 @class CMAuthStatusChangedEventContext;
 @class CMGroupsListInteractor;
 @class CMServerMessage;
+@protocol CMCammentOverlayControllerDelegate;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -64,6 +65,10 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 @property(nonatomic) BOOL connectionAvailable;
 
 @property(nonatomic, strong) NSDate *lastTimestampUploaded;
+
+@property(nonatomic, weak) id <CMCammentOverlayControllerDelegate> overlayDelegate;
+
+@property(nonatomic) BOOL shoudForceSynced;
 
 + (CMStore *)instance;
 

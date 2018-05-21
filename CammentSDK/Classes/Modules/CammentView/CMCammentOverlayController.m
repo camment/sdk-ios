@@ -124,4 +124,9 @@
     return [CMStore instance].avoidTouchesInViews;
 }
 
+- (void)setOverlayDelegate:(id <CMCammentOverlayControllerDelegate>)overlayDelegate {
+    _overlayDelegate = overlayDelegate;
+    [CMStore instance].overlayDelegate = overlayDelegate;
+}
+
 @end

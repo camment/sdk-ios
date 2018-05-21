@@ -15,4 +15,12 @@
     return font;
 }
 
++ (UIFont *)nunitoLightWithSize:(CGFloat)size {
+    UIFont *font = [UIFont fontWithName:@"Nunito-Light" size:size];
+    if (!font) {
+        font = [UIFont systemFontOfSize:size];
+    }
+    return font;
+}
+
 @end

@@ -6,4 +6,6 @@
 
 @interface UIFont (CammentFonts)
 + (UIFont *)nunitoMediumWithSize:(CGFloat)size;
+
++ (UIFont *)nunitoLightWithSize:(CGFloat)size;
 @end

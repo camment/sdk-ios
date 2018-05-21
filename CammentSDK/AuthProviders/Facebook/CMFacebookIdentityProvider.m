@@ -61,7 +61,7 @@
         return;
     }
 
-    [self.fbsdkLoginManager logInWithReadPermissions:@[@"public_profile", @"user_friends", @"email", @"read_custom_friendlists"]
+    [self.fbsdkLoginManager logInWithReadPermissions:@[@"public_profile", @"user_friends", @"email"]
                                   fromViewController:self.viewController
                                              handler:^(FBSDKLoginManagerLoginResult *result, NSError *error) {
                                                  NSString *fbAccessToken = result.token.tokenString;

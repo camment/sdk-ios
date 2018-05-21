@@ -13,16 +13,16 @@
 #import "CammentSDK.h"
 #import "CMUserRemovedMessage.h"
 #import "CMUserJoinedMessage.h"
+#import "UIView+Toast.h"
 
 @implementation CMSDKNotificationPresenter
 
 - (void)showHud:(NSString *)status hideAfter:(NSUInteger)delay {
     UIWindow *window = [[UIApplication sharedApplication] delegate].window;
-    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:window animated:YES];
-    hud.removeFromSuperViewOnHide = YES;
-    hud.mode = MBProgressHUDModeText;
-    hud.label.text = status;
-    [hud hideAnimated:YES afterDelay:delay];
+    [window makeToast:status
+             duration:delay
+             position:[NSValue valueWithCGPoint:CGPointMake(CGRectGetMidX(window.bounds), CGRectGetMaxY(window.bounds) - 55)]];
+
 }
 
 - (void)showToastMessage:(NSString *)message {

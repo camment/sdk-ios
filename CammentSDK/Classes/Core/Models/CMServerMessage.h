@@ -15,6 +15,7 @@
 #import "CMNewPlayerStateMessage.h"
 #import "CMNeededPlayerStateMessage.h"
 #import "CMNewGroupHostMessage.h"
+#import "CMUserOnlineStatusChangedMessage.h"
 
 typedef void (^CMServerMessageCammentMatchHandler)(CMCamment *camment);
 typedef void (^CMServerMessageUserJoinedMatchHandler)(CMUserJoinedMessage *userJoinedMessage);
@@ -27,6 +28,7 @@ typedef void (^CMServerMessageUserGroupStatusChangedMatchHandler)(CMUserGroupSta
 typedef void (^CMServerMessagePlayerStateMatchHandler)(CMNewPlayerStateMessage *message);
 typedef void (^CMServerMessageNeededPlayerStateMatchHandler)(CMNeededPlayerStateMessage *message);
 typedef void (^CMServerMessageNewGroupHostMatchHandler)(CMNewGroupHostMessage *message);
+typedef void (^CMServerMessageOnlineStatusChangedMatchHandler)(CMUserOnlineStatusChangedMessage *message);
 
 @interface CMServerMessage : NSObject <NSCopying>
 
@@ -44,6 +46,8 @@ typedef void (^CMServerMessageNewGroupHostMatchHandler)(CMNewGroupHostMessage *m
 
 + (instancetype)newGroupHostWithMessage:(CMNewGroupHostMessage *)message;
 
++ (instancetype)onlineStatusChangedWithMessage:(CMUserOnlineStatusChangedMessage *)message;
+
 + (instancetype)playerStateWithMessage:(CMNewPlayerStateMessage *)message;
 
 + (instancetype)userGroupStatusChangedWithUserGroupStatusChangedMessage:(CMUserGroupStatusChangedMessage *)userGroupStatusChangedMessage;
@@ -52,7 +56,7 @@ typedef void (^CMServerMessageNewGroupHostMatchHandler)(CMNewGroupHostMessage *m
 
 + (instancetype)userRemovedWithUserRemovedMessage:(CMUserRemovedMessage *)userRemovedMessage;
 
-- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler cammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler ad:(CMServerMessageAdMatchHandler)adMatchHandler userGroupStatusChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStatusChangedMatchHandler playerState:(CMServerMessagePlayerStateMatchHandler)playerStateMatchHandler neededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler newGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostMatchHandler;
+- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler cammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler ad:(CMServerMessageAdMatchHandler)adMatchHandler userGroupStatusChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStatusChangedMatchHandler playerState:(CMServerMessagePlayerStateMatchHandler)playerStateMatchHandler neededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler newGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostMatchHandler onlineStatusChanged:(CMServerMessageOnlineStatusChangedMatchHandler)onlineStatusChangedMatchHandler;
 
 @end
 

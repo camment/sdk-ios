@@ -87,3 +87,6 @@
 
 "sync.you_synched_with_user" = "We are syncing you with the host %@";
 "sync.you_synched_with_host" = "We are syncing you with the host";
+
+"status.user_is_online" = "%@ came online";
+"status.user_is_offline" = "%@ went offline";

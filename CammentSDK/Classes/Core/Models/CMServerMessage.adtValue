@@ -6,7 +6,6 @@
 %type name="CMUserRemovedMessage"
 %type name="CMAdBanner"
 %type name="CMUserGroupStatusChangedMessage"
-%type name="CMVideoSyncEventMessage"
 
 CMServerMessage includes(RMBuilder) {
   camment {
@@ -41,5 +40,8 @@ CMServerMessage includes(RMBuilder) {
   }
   newGroupHost {
     CMNewGroupHostMessage *message
+  }
+  onlineStatusChanged {
+    CMUserOnlineStatusChangedMessage *message
   }
 }

@@ -43,7 +43,7 @@
                     withUsername:userinfo.name]
                     withUserPhoto:userinfo.picture] 
                     withBlockStatus:userinfo.state]
-                    withOnlineStatus:userinfo.isOnline ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
+                    withOnlineStatus:userinfo.isOnline.boolValue ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
                     build];
         }];
 

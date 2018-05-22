@@ -94,7 +94,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         return ![user.cognitoUserId isEqualToString:context.user.cognitoUserId];
     }].array ?: @[];
 
-    self.users = [self.users.rac_sequence filter:^BOOL(CMUser *user) {
+    self.users = [[self.users.rac_sequence map:^id _Nullable(CMUser * _Nullable value) {
+        return [[CMUserBuilder userFromExistingUser:value] build];
+    }] filter:^BOOL(CMUser *user) {
         return user.username.length > 0;
     }].array ?: @[];
 

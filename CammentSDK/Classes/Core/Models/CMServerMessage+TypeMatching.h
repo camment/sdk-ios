@@ -20,4 +20,6 @@
 - (void)matchNeededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler;
 
 - (void)matchNewGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostHandler;
+
+- (void)matchOnlineStatusChanged:(CMServerMessageOnlineStatusChangedMatchHandler)onlineStatusChangedHandler;
 @end

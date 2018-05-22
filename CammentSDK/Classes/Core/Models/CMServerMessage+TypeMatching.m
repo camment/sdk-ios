@@ -19,7 +19,8 @@
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler {
@@ -33,7 +34,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler {
@@ -47,7 +49,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler {
@@ -61,7 +64,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler {
@@ -75,7 +79,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler {
@@ -89,7 +94,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler {
@@ -103,7 +109,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler {
@@ -117,7 +124,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:userGroupStateChangedHadler
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchPlayerStateEvent:(CMServerMessagePlayerStateMatchHandler)playerStateHandler {
@@ -131,7 +139,8 @@ userGroupStatusChanged:userGroupStateChangedHadler
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:playerStateHandler
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchNeededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler {
@@ -145,7 +154,8 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:neededPlayerStateMatchHandler
-          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}];
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
 }
 
 - (void)matchNewGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostHandler {
@@ -159,7 +169,23 @@ userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChanged
 userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
            playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
      neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
-          newGroupHost:newGroupHostHandler];
+          newGroupHost:newGroupHostHandler
+   onlineStatusChanged:^(CMUserOnlineStatusChangedMessage *onlineStatusChangedMessage) {}];
+}
+
+- (void)matchOnlineStatusChanged:(CMServerMessageOnlineStatusChangedMatchHandler)onlineStatusChangedHandler {
+    [self matchCamment:^(CMCamment *camment) {}
+            userJoined:^(CMUserJoinedMessage *userJoinedMessage) {}
+        cammentDeleted:^(CMCammentDeletedMessage *cammentDeletedMessage) {}
+    membershipAccepted:^(CMMembershipAcceptedMessage *membershipAcceptedMessage) {}
+           userRemoved:^(CMUserRemovedMessage *userRemovedMessage) {}
+      cammentDelivered:^(CMCammentDeliveredMessage *cammentDeliveredMessage) {}
+                    ad:^(CMAdBanner *adBanner) {}
+userGroupStatusChanged:^(CMUserGroupStatusChangedMessage *userGroupStatusChangedMessage) {}
+           playerState:^(CMNewPlayerStateMessage *newPlayerStateMessage) {}
+     neededPlayerState:^(CMNeededPlayerStateMessage * neededPlayerStateMessage) {}
+          newGroupHost:^(CMNewGroupHostMessage *newGroupHostMessage) {}
+   onlineStatusChanged:onlineStatusChangedHandler];
 }
 
 @end

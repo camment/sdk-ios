@@ -112,6 +112,21 @@
         [self handleNewGroupHost:message];
     }];
 
+    [message matchOnlineStatusChanged:^(CMUserOnlineStatusChangedMessage *message) {
+        [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers map:^CMUser*(CMUser *user) {
+            if ([user.cognitoUserId isEqualToString:message.userId]
+                    && ![user.onlineStatus isEqualToString:message.status]) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSString *toastMessageTemplate = [message.status isEqualToString:CMUserOnlineStatus.Online] ? CMLocalized(@"status.user_is_online") : CMLocalized(@"status.user_is_offline");
+                    [self.notificationPresenter showToastMessage:[NSString stringWithFormat:toastMessageTemplate, user.username]];
+                });
+
+                return [[[CMUserBuilder userFromExistingUser:user] withOnlineStatus:message.status] build];
+            }
+            return user;
+        }];
+    }];
+
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }

@@ -197,6 +197,18 @@
         CMNewGroupHostMessage *message = [[CMNewGroupHostMessage alloc] initWithGroupUuid:groupUuid
                                                                                    hostId:hostUuid];
         serverMessage = [CMServerMessage newGroupHostWithMessage:message];
+    } else if ([type isEqualToString:@"user-offline"]) {
+        NSString *userId = body[@"userId"];
+
+        CMUserOnlineStatusChangedMessage *message = [[CMUserOnlineStatusChangedMessage alloc] initWithUserId:userId
+                                                                                                          status:CMUserOnlineStatus.Offline];
+        serverMessage = [CMServerMessage onlineStatusChangedWithMessage:message];
+    } else if ([type isEqualToString:@"user-online"]) {
+        NSString *userId = body[@"userId"];
+
+        CMUserOnlineStatusChangedMessage *message = [[CMUserOnlineStatusChangedMessage alloc] initWithUserId:userId
+                                                                                                          status:CMUserOnlineStatus.Online];
+        serverMessage = [CMServerMessage onlineStatusChangedWithMessage:message];
     }
 
     return serverMessage;

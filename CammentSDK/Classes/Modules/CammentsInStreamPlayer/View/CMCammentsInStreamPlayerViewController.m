@@ -235,7 +235,9 @@
 }
 
 - (void)cammentOverlayDidRequestPlayerState:(void (^)(BOOL isPlaying, NSTimeInterval timestamp))playerStateBlock {
-    [(CMVideoContentPlayerNode *)self.contentViewerNode getCurrentTimestampCompletionBlock:playerStateBlock];
+    if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {
+         [(CMVideoContentPlayerNode *)self.contentViewerNode getCurrentTimestampCompletionBlock:playerStateBlock];
+    }
 }
 
 @end

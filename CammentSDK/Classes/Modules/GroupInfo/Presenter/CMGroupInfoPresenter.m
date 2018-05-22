@@ -111,9 +111,13 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     if (self.showProfileInfo) {
         if (self.users.count == 0) {
             [items addObject:@(_canLeaveTheGroup ? CMGroupInfoSectionUserProfileWithLeaveGroupButton : CMGroupInfoSectionUserProfile)];
+            [self.output hideInviteButton];
         } else {
             [items addObject:@(_canLeaveTheGroup ? CMGroupInfoSectionUserProfileWithInviteButtonLeaveGroupButton : CMGroupInfoSectionUserProfileWithInviteButton)];
+            [self.output showInviteButton];
         }
+    } else {
+        [self.output hideInviteButton];
     }
 
     if (self.users.count == 0) {
@@ -172,7 +176,6 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
             case CMGroupInfoSectionUserProfile:
             case CMGroupInfoSectionUserProfileWithInviteButton: {
                 CMProfileViewNodeContext *context = [CMProfileViewNodeContext new];
-                context.shouldDisplayInviteFriendsButton = self.users.count > 0;
                 context.shouldDisplayLeaveGroupButton = self.canLeaveTheGroup;
                 __weak typeof(self) weakSelf = self;
                 context.onLeaveGroupBlock = ^{
@@ -459,4 +462,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                              fromGroup:[CMStore instance].activeGroup];
     }];
 }
+
+- (void)groupInfoDidPressInviteButton {
+    [self handleDidTapInviteFriendsButton];
+}
+
 @end

@@ -11,11 +11,15 @@
 #import "CMInviteFriendsGroupInfoNode.h"
 
 @protocol CMGroupInfoNodeDelegate<CMInviteFriendsGroupInfoNodeDelegate,ASCollectionDelegate, ASCollectionDataSource, UICollectionViewDelegateFlowLayout>
+
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
+- (void)groupInfoDidPressInviteButton;
+
 @end
 
 @interface CMGroupInfoNode: ASDisplayNode
 
-@property(nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
+@property (nonatomic, assign) BOOL showInviteFriendsButton;
+@property (nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
 
 @end

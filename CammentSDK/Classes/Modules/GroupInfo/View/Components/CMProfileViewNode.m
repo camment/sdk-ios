@@ -26,7 +26,6 @@
 @property(nonatomic, strong) ASButtonNode *settingsButtonNode;
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
 @property(nonatomic, strong) CMSettingsNode *settingsNode;
-@property(nonatomic, strong) CMInviteFriendsButton *inviteFriendsButtonNode;
 
 @property BOOL showSettingsNode;
 
@@ -77,11 +76,6 @@
         self.settingsNode.shouldDisplayLeaveGroup = context.shouldDisplayLeaveGroupButton;
         self.settingsNode.delegate = self;
 
-        self.inviteFriendsButtonNode = [CMInviteFriendsButton new];
-        [self.inviteFriendsButtonNode addTarget:self
-                                         action:@selector(inviteFriendsAction)
-                               forControlEvents:ASControlNodeEventTouchUpInside];
-
         self.onlineStatusNode = [ASImageNode new];
         self.onlineStatusNode.contentMode = UIViewContentModeCenter;
 
@@ -93,10 +87,6 @@
 
 - (void)tapSettingButton {
     [self switchSettingsView];
-}
-
-- (void)inviteFriendsAction {
-    [self.context.delegate handleDidTapInviteFriendsButton];
 }
 
 - (void)didLoad {
@@ -191,13 +181,6 @@
                                                  alignItems:ASStackLayoutAlignItemsCenter
                                                    children:@[_usernameTextNode, [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(3, 0, 0, 0) child:_onlineStatusNode]]]]
     ];
-
-    if (self.context.shouldDisplayInviteFriendsButton) {
-        ASInsetLayoutSpec *inviteFriendsButtonLayoutSpec = [ASInsetLayoutSpec
-                insetLayoutSpecWithInsets:UIEdgeInsetsMake(10.0f, .0f, .0f, .0f)
-                                    child:self.inviteFriendsButtonNode];
-        [centerStackChildren addObject:inviteFriendsButtonLayoutSpec];
-    }
 
     ASStackLayoutSpec *centerStack = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                              spacing:8.0f

@@ -13,4 +13,8 @@
 - (void)presentViewController:(UIViewController *)viewController;
 
 - (void)presentConfirmationDialogToLeaveTheGroup:(void (^)())onConfirmed;
+
+- (void)hideInviteButton;
+
+- (void)showInviteButton;
 @end

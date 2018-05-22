@@ -10,10 +10,12 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMGroupInfoNode.h"
 #import "CMGroupInfoCollectionViewDelegate.h"
+#import "CMInviteFriendsButton.h"
 
 @interface CMGroupInfoNode ()
 
 @property (nonatomic, strong) ASCollectionNode *collectionNode;
+@property (nonatomic, strong) CMInviteFriendsButton *inviteFriendsButton;
 
 @end
 
@@ -25,12 +27,23 @@
 
         self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
                                                              layoutFacilitator:nil];
+
+        self.inviteFriendsButton = [CMInviteFriendsButton new];
+        self.inviteFriendsButton.style.height = ASDimensionMake(44.0f);
+        [self.inviteFriendsButton addTarget:self
+                                     action:@selector(handleInviteButtonPress) forControlEvents:ASControlNodeEventTouchUpInside];
+
+
         self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
 
     }
 
     return self;
+}
+
+- (void)handleInviteButtonPress {
+    [self.delegate groupInfoDidPressInviteButton];
 }
 
 - (void)setDelegate:(id <CMGroupInfoNodeDelegate>)delegate {
@@ -41,8 +54,15 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-  return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
-                                                child:_collectionNode];
+    ASStackLayoutSpec *layoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
+                                                                            spacing:.0f
+                                                                     justifyContent:ASStackLayoutJustifyContentStart
+                                                                         alignItems:ASStackLayoutAlignItemsStretch
+                                                                           children: _showInviteFriendsButton ? @[_collectionNode, _inviteFriendsButton] : @[_collectionNode]];
+    _collectionNode.style.flexGrow = 1;
+    layoutSpec.style.flexGrow = 1;
+
+    return layoutSpec;
 }
 
 - (void)setAlpha:(CGFloat)alpha {

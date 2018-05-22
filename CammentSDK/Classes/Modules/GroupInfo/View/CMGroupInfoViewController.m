@@ -50,4 +50,19 @@
     [self presentViewController:alertController];
 }
 
+- (void)hideInviteButton {
+    self.node.showInviteFriendsButton = NO;
+    [self.node transitionLayoutWithAnimation:YES
+                          shouldMeasureAsync:NO
+                       measurementCompletion:nil];
+}
+
+- (void)showInviteButton {
+    self.node.showInviteFriendsButton = YES;
+    [self.node transitionLayoutWithAnimation:YES
+                          shouldMeasureAsync:NO
+                       measurementCompletion:nil];
+}
+
+
 @end

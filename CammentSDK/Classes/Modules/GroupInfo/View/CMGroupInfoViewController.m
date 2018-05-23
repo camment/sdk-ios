@@ -6,8 +6,13 @@
 //  Copyright 2017 Camment. All rights reserved.
 //
 
+#import "CMContainerNode.h"
 #import "CMGroupInfoViewController.h"
+#import "CMGroupsListWireframe.h"
+#import "CMContainerNode.h"
 
+@implementation CMGroupInfoContainerNode
+@end
 
 @interface CMGroupInfoViewController ()
 @end
@@ -15,16 +20,22 @@
 @implementation CMGroupInfoViewController
 
 - (instancetype)init {
-    self = [super initWithNode:[CMGroupInfoNode new]];
+    self = [super initWithNode:[[CMGroupInfoContainerNode alloc] initWithMasterNode:nil]];
     if (self) {
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
+
+    CMGroupsListWireframe *groupsListWireframe = [CMGroupsListWireframe new];
+    [groupsListWireframe addToViewController:self];
+    self.node.masterNode = groupsListWireframe.view.node;
+    self.node.detailsNode = [CMGroupInfoNode new];
+
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.node.delegate = self.presenter;
+    self.node.detailsNode.delegate = self.presenter;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -51,15 +62,15 @@
 }
 
 - (void)hideInviteButton {
-    self.node.showInviteFriendsButton = NO;
-    [self.node transitionLayoutWithAnimation:YES
+    self.node.detailsNode.showInviteFriendsButton = NO;
+    [self.node.detailsNode transitionLayoutWithAnimation:YES
                           shouldMeasureAsync:NO
                        measurementCompletion:nil];
 }
 
 - (void)showInviteButton {
-    self.node.showInviteFriendsButton = YES;
-    [self.node transitionLayoutWithAnimation:YES
+    self.node.detailsNode.showInviteFriendsButton = YES;
+    [self.node.detailsNode transitionLayoutWithAnimation:YES
                           shouldMeasureAsync:NO
                        measurementCompletion:nil];
 }

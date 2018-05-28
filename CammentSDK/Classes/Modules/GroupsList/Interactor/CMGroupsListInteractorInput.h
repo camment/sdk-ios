@@ -9,5 +9,5 @@
 #import <Foundation/Foundation.h>
 
 @protocol CMGroupsListInteractorInput <NSObject>
-- (void)fetchUserGroups;
+- (void)fetchUserGroupsForShow:(NSString *)uuid;
 @end

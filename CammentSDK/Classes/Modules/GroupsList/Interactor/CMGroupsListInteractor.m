@@ -12,11 +12,18 @@
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
 #import "CMUsersGroupBuilder.h"
+#import "CMAPIUsergroupListItem.h"
 
 @implementation CMGroupsListInteractor
 
-- (void)fetchUserGroups {
-    AWSTask * task = [[CMAPIDevcammentClient defaultAPIClient] meGroupsGet];
+- (void)fetchUserGroupsForShow:(NSString *)uuid {
+
+    if (!uuid) {
+        DDLogError(@"Show UUID can not be empty");
+        return;
+    }
+
+    AWSTask * task = [[CMAPIDevcammentClient defaultAPIClient] meGroupsGet:uuid];
     if (!task) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.output didFailToFetchUserGroups:nil];

@@ -112,7 +112,10 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
                 [self.groupInfoInteractor unsetActiveGroup];
             }
 
-            [self.groupListInteractor fetchUserGroups];
+            if (self.currentShowMetadata.uuid) {
+                [self.groupListInteractor fetchUserGroupsForShow:self.currentShowMetadata.uuid];
+            }
+
         }];
 
         [self.userHasJoinedSignal sendNext:@YES];

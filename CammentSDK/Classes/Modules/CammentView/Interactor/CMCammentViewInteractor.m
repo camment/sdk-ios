@@ -6,9 +6,9 @@
 //  Copyright 2017 Camment. All rights reserved.
 //
 
-#import "CMCammentViewInteractor.h"
-#import "ReactiveObjC.h"
+#import <ReactiveObjC/ReactiveObjC.h>
 #import <AsyncDisplayKit/ASDisplayNode.h>
+#import "CMCammentViewInteractor.h"
 #import "CMCammentUploader.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIDevcammentClient.h"
@@ -16,9 +16,10 @@
 #import "CMCammentBuilder.h"
 #import "CMUsersGroup.h"
 #import "CMStore.h"
-#import "RACSignal+SignalHelpers.h"
 #import "CMCammentPostingOperation.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMShowMetadata.h"
+#import "RACSignal+SignalHelpers.h"
 
 NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewInteractorErrorDomain";
 
@@ -59,8 +60,21 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
 }
 
 - (RACSignal<CMUsersGroup *> *)createEmptyGroup {
+    CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
+    usergroupInRequest.showId = [CMStore instance].currentShowMetadata.uuid;
     return [RACSignal<CMUsersGroup *> createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
-        [[self.client usergroupsPost] continueWithBlock:^id(AWSTask<id> *t) {
+
+        if (!usergroupInRequest.showId) {
+            NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
+                                                      code:CMCammentViewInteractorErrorMissingRequiredParameters
+                                             userInfo:@{
+                    NSLocalizedFailureErrorKey : @"Could not upload camment while show uuid is empty"
+            }];
+            [subscriber sendError:error];
+            return nil;
+        }
+        
+        [[self.client usergroupsPost:usergroupInRequest] continueWithBlock:^id(AWSTask<id> *t) {
             if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
                 CMAPIUsergroup *group = t.result;
                 CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid

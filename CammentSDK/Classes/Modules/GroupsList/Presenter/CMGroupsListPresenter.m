@@ -10,7 +10,8 @@
 #import "CMGroupsListWireframe.h"
 #import "CMUsersGroup.h"
 #import "CMStore.h"
-#import "RACSubject.h"
+#import <ReactiveObjC/ReactiveObjC.h>
+#import "CMShowMetadata.h"
 
 @interface CMGroupsListPresenter ()
 @property(nonatomic, strong) NSArray *groups;
@@ -53,7 +54,7 @@
 }
 
 - (void)reloadGroups {
-    [self.interactor fetchUserGroups];
+    [self.interactor fetchUserGroupsForShow:[CMStore instance].currentShowMetadata.uuid];
 }
 
 - (void)didFetchUserGroups:(NSArray *)groups {

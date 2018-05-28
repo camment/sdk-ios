@@ -16,12 +16,16 @@
 
 #import <Foundation/Foundation.h>
 #import <AWSCore/AWSCore.h>
+#import "CMAPIUserinfo.h"
 
  
 /**
  Usergroup object model.
  */
 @interface CMAPIUsergroup : AWSModel
+
+@property (nonatomic, strong, nullable) NSString *showId;
+
 
 @property (nonatomic, strong, nullable) NSString *userCognitoIdentityId;
 
@@ -30,6 +34,9 @@
 
 
 @property (nonatomic, strong, nullable) NSString *uuid;
+
+
+@property (nonatomic, strong, nullable) NSArray *users;
 
 
 @property (nonatomic, strong, nullable) NSString *timestamp;

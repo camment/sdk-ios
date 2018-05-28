@@ -14,18 +14,16 @@
  */
  
 
-#import "CMAPIUsergroupList.h"
+#import <Foundation/Foundation.h>
+#import <AWSCore/AWSCore.h>
 
-@implementation CMAPIUsergroupList
+ 
+/**
+ Usergroup object model in request.
+ */
+@interface CMAPIUsergroupInRequest : AWSModel
 
-+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-    return @{
-             @"items": @"items"
-             };
-}
+@property (nonatomic, strong, nullable) NSString *showId;
 
-+ (NSValueTransformer *)itemsJSONTransformer {
-	return [NSValueTransformer awsmtl_JSONArrayTransformerWithModelClass:[CMAPIUsergroup class]];
-}
 
 @end

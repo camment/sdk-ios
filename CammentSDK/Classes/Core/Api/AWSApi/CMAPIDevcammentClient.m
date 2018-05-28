@@ -31,6 +31,7 @@
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
 #import "CMAPIUsergroup.h"
+#import "CMAPIUsergroupInRequest.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIIotInRequest.h"
@@ -387,14 +388,14 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIFacebookFriendList class]];
 }
 
-- (AWSTask *)meGroupsGet {
+- (AWSTask *)meGroupsGet:(NSString *)showId {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      
+                                      @"showId": showId
                                       };
     NSDictionary *pathParameters = @{
                                      
@@ -519,7 +520,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPICammentList class]];
 }
 
-- (AWSTask *)usergroupsPost {
+- (AWSTask *)usergroupsPost:(CMAPIUsergroupInRequest *)body {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -537,7 +538,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
-                              body:nil
+                              body:body
                      responseClass:[CMAPIUsergroup class]];
 }
 
@@ -563,15 +564,17 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIUsergroup class]];
 }
 
-- (AWSTask *)usergroupsGroupUuidCammentsGet:(NSString *)groupUuid lastKey:(NSString *)lastKey limit:(NSString *)limit {
+- (AWSTask *)usergroupsGroupUuidCammentsGet:(NSString *)groupUuid timeTo:(NSString *)timeTo limit:(NSString *)limit timeFrom:(NSString *)timeFrom lastKey:(NSString *)lastKey {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
                                        
                                        };
     NSDictionary *queryParameters = @{
-                                      @"lastKey": lastKey,
-                                     @"limit": limit
+                                      @"timeTo": timeTo,
+                                     @"limit": limit,
+                                     @"timeFrom": timeFrom,
+                                     @"lastKey": lastKey
                                       };
     NSDictionary *pathParameters = @{
                                      @"groupUuid": groupUuid,

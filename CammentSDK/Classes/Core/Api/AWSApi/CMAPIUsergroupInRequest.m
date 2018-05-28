@@ -14,18 +14,14 @@
  */
  
 
-#import "CMAPIUsergroupList.h"
+#import "CMAPIUsergroupInRequest.h"
 
-@implementation CMAPIUsergroupList
+@implementation CMAPIUsergroupInRequest
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
-             @"items": @"items"
+             @"showId": @"showId"
              };
-}
-
-+ (NSValueTransformer *)itemsJSONTransformer {
-	return [NSValueTransformer awsmtl_JSONArrayTransformerWithModelClass:[CMAPIUsergroup class]];
 }
 
 @end

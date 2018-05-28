@@ -28,6 +28,7 @@
 #import "CMAPIShow.h"
 #import "CMAPICammentList.h"
 #import "CMAPIUsergroup.h"
+#import "CMAPIUsergroupInRequest.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIIotInRequest.h"
@@ -276,10 +277,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param showId 
  
  return type: CMAPIUsergroupList *
  */
-- (AWSTask *)meGroupsGet;
+- (AWSTask *)meGroupsGet:(nullable NSString *)showId;
 
 /**
  
@@ -327,10 +329,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param body 
  
  return type: CMAPIUsergroup *
  */
-- (AWSTask *)usergroupsPost;
+- (AWSTask *)usergroupsPost:( CMAPIUsergroupInRequest *)body;
 
 /**
  
@@ -345,12 +348,14 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
- @param lastKey 
+ @param timeTo 
  @param limit 
+ @param timeFrom 
+ @param lastKey 
  
  return type: CMAPICammentList *
  */
-- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid lastKey:(nullable NSString *)lastKey limit:(nullable NSString *)limit;
+- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid timeTo:(nullable NSString *)timeTo limit:(nullable NSString *)limit timeFrom:(nullable NSString *)timeFrom lastKey:(nullable NSString *)lastKey;
 
 /**
  

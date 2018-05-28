@@ -8,9 +8,17 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMUsersGroup;
+
 @protocol CMGroupsListPresenterOutput <NSObject>
 
 - (void)reloadData;
 - (void)endRefreshing;
+
+@end
+
+@protocol CMGroupsListPresenterDelegate <NSObject>
+
+- (void)didSelectGroup:(CMUsersGroup *)group;
 
 @end

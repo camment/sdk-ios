@@ -47,8 +47,9 @@
 
 - (void)openGroupAtIndex:(NSInteger)index {
     CMUsersGroup *group = [self groupAtIndex:index];
-    [[CMStore instance] setActiveGroup:group];
-    [[[CMStore instance] reloadActiveGroupSubject] sendNext:@(YES)];
+    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectGroup:)]) {
+        [self.delegate didSelectGroup:group];
+    }
 }
 
 - (void)reloadGroups {

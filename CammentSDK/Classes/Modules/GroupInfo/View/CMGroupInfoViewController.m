@@ -24,17 +24,17 @@
     if (self) {
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
-
-    CMGroupsListWireframe *groupsListWireframe = [CMGroupsListWireframe new];
-    [groupsListWireframe addToViewController:self];
-    self.node.masterNode = groupsListWireframe.view.node;
-    self.node.detailsNode = [CMGroupInfoNode new];
-
     return self;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    CMGroupsListWireframe *groupsListWireframe = [CMGroupsListWireframe new];
+    [groupsListWireframe addToViewController:self];
+    groupsListWireframe.presenter.delegate = self.presenter;
+    self.node.masterNode = groupsListWireframe.view.node;
+    self.node.detailsNode = [CMGroupInfoNode new];
     self.node.detailsNode.delegate = self.presenter;
 }
 
@@ -75,5 +75,11 @@
                        measurementCompletion:nil];
 }
 
+- (void)closeGroupsListView {
+    [self.node setShowDetails:YES];
+    [self.node transitionLayoutWithAnimation:YES
+                          shouldMeasureAsync:NO
+                       measurementCompletion:nil];
+}
 
 @end

@@ -41,7 +41,7 @@
                                                                           justifyContent:ASStackLayoutJustifyContentStart
                                                                               alignItems:ASStackLayoutAlignItemsStretch
                                                                                 children:children];
-    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, _showDetails ? constrainedSize.max.width : .0f, .0f, .0f) child:stackLayoutSpec];
+    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, _showDetails ? -constrainedSize.max.width : .0f, .0f, .0f) child:stackLayoutSpec];
     return insetLayoutSpec;
 }
 
@@ -51,14 +51,14 @@
         return;
     }
 
-    [UIView animateWithDuration:.04f
+    [UIView animateWithDuration:.4f
                      animations:^{
-                        if (_masterNode) {
-                            _masterNode.frame = [context finalFrameForNode:_masterNode];
+                        if (self.masterNode) {
+                            self.masterNode.frame = [context finalFrameForNode:self.masterNode];
                         }
 
-                         if (_detailsNode) {
-                             _detailsNode.frame = [context finalFrameForNode:_detailsNode];
+                         if (self.detailsNode) {
+                             self.detailsNode.frame = [context finalFrameForNode:self.detailsNode];
                          }
                      }
                      completion:^(BOOL finished) {

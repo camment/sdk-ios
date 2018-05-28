@@ -9,8 +9,9 @@
 
 #import <Foundation/Foundation.h>
 #import "CMGroupInfoNode.h"
+#import "CMGroupsListPresenterOutput.h"
 
-@protocol CMGroupInfoPresenterInput <NSObject, CMGroupInfoNodeDelegate>
+@protocol CMGroupInfoPresenterInput <NSObject, CMGroupInfoNodeDelegate, CMGroupsListPresenterDelegate>
 
 - (void)setupView;
 

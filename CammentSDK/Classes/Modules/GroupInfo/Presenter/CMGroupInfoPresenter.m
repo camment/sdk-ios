@@ -467,4 +467,10 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     [self handleDidTapInviteFriendsButton];
 }
 
+-(void)didSelectGroup:(CMUsersGroup *)group {
+    [self.output closeGroupsListView];
+    [[CMStore instance] setActiveGroup:group];
+    [[[CMStore instance] reloadActiveGroupSubject] sendNext:@(YES)];
+}
+
 @end

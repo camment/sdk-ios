@@ -17,6 +17,7 @@
 @interface CMGroupsListPresenter : NSObject<CMGroupsListPresenterInput, CMGroupsListInteractorOutput>
 
 @property (nonatomic, weak) id<CMGroupsListPresenterOutput> output;
+@property (nonatomic, weak) id<CMGroupsListPresenterDelegate> delegate;
 @property (nonatomic) id<CMGroupsListInteractorInput> interactor;
 @property (nonatomic) CMGroupsListWireframe *wireframe;
 

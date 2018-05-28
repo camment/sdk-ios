@@ -17,4 +17,6 @@
 - (void)hideInviteButton;
 
 - (void)showInviteButton;
+
+- (void)closeGroupsListView;
 @end

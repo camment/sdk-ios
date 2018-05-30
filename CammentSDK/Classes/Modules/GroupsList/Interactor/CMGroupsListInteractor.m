@@ -12,7 +12,9 @@
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
 #import "CMUsersGroupBuilder.h"
-#import "CMAPIUsergroupListItem.h"
+#import "CMUserBuilder.h"
+#import "CMUserContants.h"
+#import "NSArray+RacSequence.h"
 
 @implementation CMGroupsListInteractor
 
@@ -39,11 +41,22 @@
             return nil;
         }
 
-        NSArray<CMAPIUsergroupListItem *> *apiGroups = t.result.items;
-        NSArray *groups = [[apiGroups rac_sequence] map:^id(CMAPIUsergroupListItem *data) {
-            return [[[[CMUsersGroupBuilder new]
-                    withUuid:data.groupUuid]
-                      withTimestamp:data.timestamp] build];
+        NSArray<CMAPIUsergroup *> *apiGroups = t.result.items;
+        NSArray *groups = [[apiGroups rac_sequence] map:^id(CMAPIUsergroup *data) {
+            return [[[[[[[[CMUsersGroupBuilder new]
+                    withUuid:data.uuid]
+                    withShowUuid:data.showId] withHostCognitoUserId:data.hostId]
+                    withOwnerCognitoUserId:data.userCognitoIdentityId]
+                    withUsers:[data.users map:^id(CMAPIUserinfo * userinfo) {
+                        return [[[[[[[CMUserBuilder user]
+                                withCognitoUserId:userinfo.userCognitoIdentityId]
+                                withUsername:userinfo.name]
+                                withUserPhoto:userinfo.picture]
+                                withBlockStatus:userinfo.state]
+                                withOnlineStatus:userinfo.isOnline.boolValue ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
+                                build];
+                    }]]
+                    withTimestamp:data.timestamp] build];
         }].array;
 
         dispatch_async(dispatch_get_main_queue(), ^{

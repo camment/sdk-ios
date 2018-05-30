@@ -37,7 +37,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property (nonatomic, copy) CMUsersGroup *activeGroup;
 @property (nonatomic, strong) NSArray<CMUser *> *activeGroupUsers;
-@property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
 
 @property(nonatomic) BOOL isOnboardingFinished;
 @property(nonatomic) BOOL isOnboardingSkipped;

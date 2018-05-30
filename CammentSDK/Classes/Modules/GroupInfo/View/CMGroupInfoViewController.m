@@ -15,6 +15,9 @@
 @end
 
 @interface CMGroupInfoViewController ()
+
+@property (nonatomic, strong) CMGroupInfoNode *infoNode;
+
 @end
 
 @implementation CMGroupInfoViewController
@@ -22,6 +25,7 @@
 - (instancetype)init {
     self = [super initWithNode:[[CMGroupInfoContainerNode alloc] initWithMasterNode:nil]];
     if (self) {
+        self.infoNode = [CMGroupInfoNode new];
         self.automaticallyAdjustsScrollViewInsets = NO;
     }
     return self;
@@ -34,8 +38,12 @@
     [groupsListWireframe addToViewController:self];
     groupsListWireframe.presenter.delegate = self.presenter;
     self.node.masterNode = groupsListWireframe.view.node;
-    self.node.detailsNode = [CMGroupInfoNode new];
+    self.node.detailsNode = self.infoNode;
     self.node.detailsNode.delegate = self.presenter;
+}
+
+-(void)dealloc{
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -61,22 +69,15 @@
     [self presentViewController:alertController];
 }
 
-- (void)hideInviteButton {
-    self.node.detailsNode.showInviteFriendsButton = NO;
-    [self.node.detailsNode transitionLayoutWithAnimation:YES
-                          shouldMeasureAsync:NO
-                       measurementCompletion:nil];
-}
-
-- (void)showInviteButton {
-    self.node.detailsNode.showInviteFriendsButton = YES;
-    [self.node.detailsNode transitionLayoutWithAnimation:YES
-                          shouldMeasureAsync:NO
-                       measurementCompletion:nil];
-}
-
 - (void)closeGroupsListView {
     [self.node setShowDetails:YES];
+    [self.node transitionLayoutWithAnimation:YES
+                          shouldMeasureAsync:NO
+                       measurementCompletion:nil];
+}
+
+- (void)openGroupsListView {
+    [self.node setShowDetails:NO];
     [self.node transitionLayoutWithAnimation:YES
                           shouldMeasureAsync:NO
                        measurementCompletion:nil];

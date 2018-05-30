@@ -11,11 +11,15 @@
 #import "CMGroupInfoNode.h"
 #import "CMGroupInfoCollectionViewDelegate.h"
 #import "CMInviteFriendsButton.h"
+#import "UIColorMacros.h"
 
 @interface CMGroupInfoNode ()
 
 @property (nonatomic, strong) ASCollectionNode *collectionNode;
 @property (nonatomic, strong) CMInviteFriendsButton *inviteFriendsButton;
+@property (nonatomic, strong) ASDisplayNode *headerNode;
+@property (nonatomic, strong) ASTextNode *headerTextNode;
+@property (nonatomic, strong) ASButtonNode *headerBackButton;
 
 @end
 
@@ -34,12 +38,34 @@
                                      action:@selector(handleInviteButtonPress) forControlEvents:ASControlNodeEventTouchUpInside];
 
 
+        self.headerNode = [ASDisplayNode new];
+        self.headerNode.backgroundColor = UIColorFromRGB(0xE6E6E6);
+
+        self.headerBackButton = [ASButtonNode new];
+        self.headerBackButton.style.height = ASDimensionMake(44.0f);
+        self.headerBackButton.style.width = ASDimensionMake(44.0f);
+
+        [self.headerBackButton setContentHorizontalAlignment:ASHorizontalAlignmentLeft];
+        [self.headerBackButton setContentVerticalAlignment:ASVerticalAlignmentCenter];
+
+        [self.headerBackButton setImage:[UIImage imageNamed:@"back_btn"
+                                                            inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil]
+                               forState:UIControlStateNormal];
+        [self.headerBackButton addTarget:self
+                                  action:@selector(handlebackButtonPress)
+                        forControlEvents:ASControlNodeEventTouchUpInside];
+        self.headerNode.style.height = ASDimensionMake(44.0f);
+
         self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
 
     }
 
     return self;
+}
+
+- (void)handlebackButtonPress {
+    [self.delegate groupInfoDidPressBackButton];
 }
 
 - (void)handleInviteButtonPress {
@@ -54,11 +80,19 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+
+    ASOverlayLayoutSpec *overlayLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_headerNode
+                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 8, .0f, 8) child:[ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
+                                                                                                                                                                                                                     spacing:12.0f
+                                                                                                                                                                                                              justifyContent:ASStackLayoutJustifyContentStart
+                                                                                                                                                                                                                  alignItems:ASStackLayoutAlignItemsStretch
+                                                                                                                                                                                                                    children:@[_headerBackButton]]]];
+
     ASStackLayoutSpec *layoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                             spacing:.0f
                                                                      justifyContent:ASStackLayoutJustifyContentStart
                                                                          alignItems:ASStackLayoutAlignItemsStretch
-                                                                           children: _showInviteFriendsButton ? @[_collectionNode, _inviteFriendsButton] : @[_collectionNode]];
+                                                                           children: @[overlayLayoutSpec, _collectionNode, _inviteFriendsButton]];
     _collectionNode.style.flexGrow = 1;
     layoutSpec.style.flexGrow = 1;
 

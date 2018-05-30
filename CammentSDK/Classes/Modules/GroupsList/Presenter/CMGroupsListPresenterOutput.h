@@ -12,8 +12,8 @@
 
 @protocol CMGroupsListPresenterOutput <NSObject>
 
-- (void)reloadData;
-- (void)endRefreshing;
+- (void)hideCreateGroupButton;
+- (void)showCreateGroupButton;
 
 @end
 

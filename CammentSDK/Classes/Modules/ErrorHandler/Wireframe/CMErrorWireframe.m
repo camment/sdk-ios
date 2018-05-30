@@ -30,8 +30,9 @@
     presenter.viewInterface = controller;
     presenter.wireframe = self;
 
+    __weak typeof(controller) _weakController = controller;
     UIAlertAction* cancelAction = [UIAlertAction actionWithTitle:CMLocalized(@"Close") style:UIAlertActionStyleCancel handler:^(UIAlertAction * _Nonnull action) {
-        [controller dismissViewControllerAnimated:YES completion:nil];
+        [_weakController dismissViewControllerAnimated:YES completion:nil];
     }];
 
     [controller addAction:cancelAction];

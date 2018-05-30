@@ -12,9 +12,30 @@
 #import "CMStore.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMShowMetadata.h"
+#import "TLIndexPathDataModel.h"
+#import "CMAuthStatusChangedEventContext.h"
+#import "CMGroupInfoPresenterOutput.h"
+#import "CMProfileViewNodeContext.h"
+#import "CMProfileViewNode.h"
+#import "CMInviteFriendsGroupInfoNode.h"
+#import "CMPeopleJoinedHeaderCell.h"
+#import "CMOpenURLHelper.h"
+#import "TLIndexPathUpdates.h"
+#import "CMGroupCellNode.h"
 
-@interface CMGroupsListPresenter ()
-@property(nonatomic, strong) NSArray *groups;
+typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
+    CMGroupInfoSectionUserProfile,
+    CMGroupInfoInviteFriendsSection,
+    CMGroupInfoInviteFriendsSectionWithContinueTutorialButton
+};
+
+@interface CMGroupsListPresenter ()<CMGroupListNodeDelegate>
+
+@property (nonatomic, copy) NSArray<CMUsersGroup *> *userGroups;
+@property(nonatomic, weak) ASCollectionNode *collectionNode;
+@property(nonatomic) TLIndexPathDataModel *dataModel;
+@property(nonatomic) BOOL showProfileInfo;
+
 @end
 
 @implementation CMGroupsListPresenter
@@ -22,28 +43,36 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        self.groups = [NSArray new];
+        self.userGroups = [NSArray new];
+
+        self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
+
+        RACSignal *groupOrAuthStateChanged = [RACSignal combineLatest:@[
+                [CMStore instance].authentificationStatusSubject,
+                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged]
+        ]];
         @weakify(self);
-        [[RACObserve([CMStore instance], activeGroup) deliverOnMainThread] subscribeNext:^(CMUsersGroup *activeGroup) {
-            @strongify(self);
-            if (!self) { return; }
-            [self reloadGroups];
-        }];
+        [[[groupOrAuthStateChanged
+                takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+                subscribeNext:^(RACTuple *tuple) {
+                    @strongify(self);
+
+                    CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
+                    self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
+
+                    [self reloadGroups];
+                }];
     }
     
     return self;
 }
 
+-(void)dealloc{
+    
+}
+
 - (void)setupView {
     [self reloadGroups];
-}
-
-- (NSInteger)groupsCount {
-    return [self.groups count];
-}
-
-- (CMUsersGroup *)groupAtIndex:(NSInteger)index {
-    return self.groups[(NSUInteger) index];
 }
 
 - (void)openGroupAtIndex:(NSInteger)index {
@@ -58,13 +87,197 @@
 }
 
 - (void)didFetchUserGroups:(NSArray *)groups {
-    self.groups = [NSArray arrayWithArray:groups];
-    [self.output reloadData];
-    [self.output endRefreshing];
+    self.userGroups = [NSArray arrayWithArray:groups];
+    [self reloadData];
 }
 
 - (void)didFailToFetchUserGroups:(NSError *)error {
-    [self.output endRefreshing];
+}
+
+- (void)reloadData {
+    NSMutableArray *items = [NSMutableArray new];
+
+    if (self.showProfileInfo) {
+        [items addObject:@(CMGroupInfoSectionUserProfile)];
+
+        if (self.userGroups.count == 0) {
+            [self.output hideCreateGroupButton];
+        } else {
+            [self.output showCreateGroupButton];
+        }
+    } else {
+        [self.output hideCreateGroupButton];
+    }
+
+    if (self.userGroups.count == 0 || !self.showProfileInfo) {
+        [items addObject:@([CMStore instance].isOnboardingSkipped ? CMGroupInfoInviteFriendsSectionWithContinueTutorialButton : CMGroupInfoInviteFriendsSection)];
+    } else {
+        [items addObjectsFromArray:self.userGroups];
+    }
+
+    TLIndexPathDataModel *updatedModel = [[TLIndexPathDataModel alloc] initWithItems:items];
+    [self updateDataModel:updatedModel];
+}
+
+- (void)setItemCollectionDisplayNode:(ASCollectionNode *)node {
+    self.collectionNode = node;
+    [self reloadData];
+}
+
+- (void)groupInfoDidPressCreateGroupButton {
+    [self handleDidTapInviteFriendsButton];
+}
+
+
+- (void)groupInfoDidPressInviteButton {
+    [self handleDidTapInviteFriendsButton];
+}
+
+
+- (void)updateDataModel:(TLIndexPathDataModel *)dataModel {
+    TLIndexPathDataModel *oldDataModel = self.dataModel;
+    self.dataModel = dataModel;
+
+    TLIndexPathUpdates *updates = [[TLIndexPathUpdates alloc] initWithOldDataModel:oldDataModel
+                                                                  updatedDataModel:self.dataModel];
+
+    [self.collectionNode performBatchUpdates:^{
+
+        if (updates.insertedSectionNames.count) {
+            NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+            for (NSString *sectionName in updates.insertedSectionNames) {
+                NSInteger section = [updates.updatedDataModel sectionForSectionName:sectionName];
+                [indexSet addIndex:(NSUInteger) section];
+            }
+            [self.collectionNode insertSections:indexSet];
+        }
+
+        if (updates.deletedSectionNames.count) {
+            NSMutableIndexSet *indexSet = [[NSMutableIndexSet alloc] init];
+            for (NSString *sectionName in updates.deletedSectionNames) {
+                NSInteger section = [updates.oldDataModel sectionForSectionName:sectionName];
+                [indexSet addIndex:(NSUInteger) section];
+            }
+            [self.collectionNode deleteSections:indexSet];
+        }
+
+        if (updates.insertedItems.count) {
+            NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+            for (id item in updates.insertedItems) {
+                NSIndexPath *indexPath = [updates.updatedDataModel indexPathForItem:item];
+                [indexPaths addObject:indexPath];
+            }
+            [self.collectionNode insertItemsAtIndexPaths:indexPaths];
+        }
+
+        if (updates.deletedItems.count) {
+            NSMutableArray *indexPaths = [[NSMutableArray alloc] init];
+            for (id item in updates.deletedItems) {
+                NSIndexPath *indexPath = [updates.oldDataModel indexPathForItem:item];
+                [indexPaths addObject:indexPath];
+            }
+            [self.collectionNode deleteItemsAtIndexPaths:indexPaths];
+        }
+
+        if (updates.movedItems.count) {
+            for (id item in updates.movedItems) {
+                NSIndexPath *oldIndexPath = [updates.oldDataModel indexPathForItem:item];
+                NSIndexPath *updatedIndexPath = [updates.updatedDataModel indexPathForItem:item];
+
+                NSString *oldSectionName = [updates.oldDataModel sectionNameForSection:oldIndexPath.section];
+                NSString *updatedSectionName = [updates.updatedDataModel sectionNameForSection:updatedIndexPath.section];
+                BOOL oldSectionDeleted = [updates.deletedSectionNames containsObject:oldSectionName];
+                BOOL updatedSectionInserted = [updates.insertedSectionNames containsObject:updatedSectionName];
+                if (oldSectionDeleted && updatedSectionInserted) {
+                } else if (oldSectionDeleted) {
+                    [self.collectionNode insertItemsAtIndexPaths:@[updatedIndexPath]];
+                } else if (updatedSectionInserted) {
+                    [self.collectionNode deleteItemsAtIndexPaths:@[oldIndexPath]];
+                    [self.collectionNode insertItemsAtIndexPaths:@[updatedIndexPath]];
+                } else {
+                    [self.collectionNode moveItemAtIndexPath:oldIndexPath toIndexPath:updatedIndexPath];
+                }
+
+            }
+        }
+    }                             completion:^(BOOL finished) {
+
+    }];
+}
+
+
+- (NSInteger)collectionNode:(ASCollectionNode *)collectionNode numberOfItemsInSection:(NSInteger)section {
+    return [self.dataModel numberOfRowsInSection:section];
+}
+
+- (NSInteger)numberOfSectionsInCollectionNode:(ASCollectionNode *)collectionNode {
+    return [self.dataModel numberOfSections];
+}
+
+- (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
+
+    __weak typeof(self) weakSelf = self;
+    __block ASCellNodeBlock cellNodeBlock = nil;
+
+    id model = [self.dataModel itemAtIndexPath:indexPath];
+
+    if ([model isKindOfClass:[NSNumber class]]) {
+        CMGroupInfoSection section = (CMGroupInfoSection) [model integerValue];
+        switch (section) {
+            case CMGroupInfoSectionUserProfile: {
+                CMProfileViewNodeContext *context = [CMProfileViewNodeContext new];
+                context.shouldDisplayLeaveGroupButton = false;
+                context.onLeaveGroupBlock = ^{
+                };
+                context.delegate = self;
+
+                cellNodeBlock = ^ASCellNode *() {
+                    return [[CMProfileViewNode alloc] initWithContext:context];
+                };
+                break;
+            }
+            case CMGroupInfoInviteFriendsSectionWithContinueTutorialButton:
+            case CMGroupInfoInviteFriendsSection: {
+                BOOL showContinueTutorialButton = [CMStore instance].isOnboardingSkipped;
+                cellNodeBlock = ^ASCellNode *() {
+                    CMInviteFriendsGroupInfoNode *inviteFriendsGroupInfoNode = [CMInviteFriendsGroupInfoNode new];
+                    inviteFriendsGroupInfoNode.delegate = weakSelf;
+                    inviteFriendsGroupInfoNode.showContinueTutorialButton = showContinueTutorialButton;
+                    return inviteFriendsGroupInfoNode;
+                };
+                break;
+            }
+        }
+    } else {
+        CMUsersGroup *group = model;
+        return ^ASCellNode * {
+            return [[CMGroupCellNode alloc] initWithGroup:group];
+        };
+    }
+
+    return cellNodeBlock;
+}
+
+- (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    id model = [self.dataModel itemAtIndexPath:indexPath];
+
+    if ([model isKindOfClass:[CMUsersGroup class]]) {
+        [self.delegate didSelectGroup:model];
+    }
+}
+
+
+- (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
+    NSURL *infoURL = [[NSURL alloc] initWithString:@"http://camment.tv"];
+    [[CMOpenURLHelper new] openURL:infoURL];
+}
+
+- (void)handleDidTapInviteFriendsButton {
+    [[[CMStore instance] inviteFriendsActionSubject] sendNext:@YES];
+}
+
+- (void)handleDidTapContinueTutorialButton {
+    [[[CMStore instance] startTutorial] sendNext:@YES];
 }
 
 @end

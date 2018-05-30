@@ -20,4 +20,5 @@
 @property (nonatomic, weak) id<CMInviteFriendsGroupInfoNodeDelegate> delegate;
 
 @property(nonatomic) BOOL showContinueTutorialButton;
+
 @end

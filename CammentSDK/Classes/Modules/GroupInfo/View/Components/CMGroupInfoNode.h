@@ -15,11 +15,11 @@
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
 - (void)groupInfoDidPressInviteButton;
 
+- (void)groupInfoDidPressBackButton;
 @end
 
 @interface CMGroupInfoNode: ASDisplayNode
 
-@property (nonatomic, assign) BOOL showInviteFriendsButton;
 @property (nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
 
 @end

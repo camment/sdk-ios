@@ -8,10 +8,12 @@
 @implementation CMUsersGroupBuilder
 {
   NSString *_uuid;
+  NSString *_showUuid;
   NSString *_ownerCognitoUserId;
   NSString *_hostCognitoUserId;
   NSString *_timestamp;
   NSString *_invitationLink;
+  NSArray<CMUser *> *_users;
 }
 
 + (instancetype)usersGroup
@@ -21,22 +23,30 @@
 
 + (instancetype)usersGroupFromExistingUsersGroup:(CMUsersGroup *)existingUsersGroup
 {
-  return [[[[[[CMUsersGroupBuilder usersGroup]
-              withUuid:existingUsersGroup.uuid]
-             withOwnerCognitoUserId:existingUsersGroup.ownerCognitoUserId]
-            withHostCognitoUserId:existingUsersGroup.hostCognitoUserId]
-           withTimestamp:existingUsersGroup.timestamp]
-          withInvitationLink:existingUsersGroup.invitationLink];
+  return [[[[[[[[CMUsersGroupBuilder usersGroup]
+                withUuid:existingUsersGroup.uuid]
+               withShowUuid:existingUsersGroup.showUuid]
+              withOwnerCognitoUserId:existingUsersGroup.ownerCognitoUserId]
+             withHostCognitoUserId:existingUsersGroup.hostCognitoUserId]
+            withTimestamp:existingUsersGroup.timestamp]
+           withInvitationLink:existingUsersGroup.invitationLink]
+          withUsers:existingUsersGroup.users];
 }
 
 - (CMUsersGroup *)build
 {
-  return [[CMUsersGroup alloc] initWithUuid:_uuid ownerCognitoUserId:_ownerCognitoUserId hostCognitoUserId:_hostCognitoUserId timestamp:_timestamp invitationLink:_invitationLink];
+  return [[CMUsersGroup alloc] initWithUuid:_uuid showUuid:_showUuid ownerCognitoUserId:_ownerCognitoUserId hostCognitoUserId:_hostCognitoUserId timestamp:_timestamp invitationLink:_invitationLink users:_users];
 }
 
 - (instancetype)withUuid:(NSString *)uuid
 {
   _uuid = [uuid copy];
+  return self;
+}
+
+- (instancetype)withShowUuid:(NSString *)showUuid
+{
+  _showUuid = [showUuid copy];
   return self;
 }
 
@@ -61,6 +71,12 @@
 - (instancetype)withInvitationLink:(NSString *)invitationLink
 {
   _invitationLink = [invitationLink copy];
+  return self;
+}
+
+- (instancetype)withUsers:(NSArray<CMUser *> *)users
+{
+  _users = [users copy];
   return self;
 }
 

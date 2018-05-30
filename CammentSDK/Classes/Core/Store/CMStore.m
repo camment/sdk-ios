@@ -111,13 +111,8 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             } else {
                 [self.groupInfoInteractor unsetActiveGroup];
             }
-
-            if (self.currentShowMetadata.uuid) {
-                [self.groupListInteractor fetchUserGroupsForShow:self.currentShowMetadata.uuid];
-            }
-
         }];
-
+        
         [self.userHasJoinedSignal sendNext:@YES];
     }
 
@@ -232,7 +227,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 }
 
 - (void)didFetchUserGroups:(NSArray *)groups {
-    self.userGroups = groups;
 }
 
 - (void)didFailToFetchUserGroups:(NSError *)error {
@@ -246,7 +240,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
     self.activeGroup = nil;
     self.activeGroupUsers = @[];
-    self.userGroups = @[];
 
     self.isOnboardingFinished = YES;
 }
@@ -267,14 +260,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         }
 
         return oldUser;
-    }];
-
-    self.userGroups = [[CMStore instance].userGroups map:^CMUsersGroup *(CMUsersGroup *oldGroup) {
-        if ([oldGroup.ownerCognitoUserId isEqualToString:oldIdentity]) {
-            return [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:oldGroup]
-                    withOwnerCognitoUserId:newIdentity] build];
-        }
-        return oldGroup;
     }];
 
     DDLogInfo(@"User data have been updated of uuid sync");
@@ -303,15 +288,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
                 withHostCognitoUserId:hostUuid]
                 build];
     }
-
-    self.userGroups = [self.userGroups map:^CMUsersGroup *(CMUsersGroup *group) {
-        if ([group.uuid isEqualToString:groupUuid]) {
-            group = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:group]
-                    withHostCognitoUserId:hostUuid]
-                    build];
-        }
-        return group;
-    }];
 }
 
 @end

@@ -66,6 +66,10 @@
     return nil;
 }
 
+- (void)dealloc {
+    
+}
+
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
                userSessionController:(CMUserSessionController *)userSessionController
                 invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor

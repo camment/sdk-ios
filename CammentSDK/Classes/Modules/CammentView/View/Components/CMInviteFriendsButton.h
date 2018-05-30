@@ -5,6 +5,8 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/ASButtonNode.h>
 
+@interface CMCreateGroupButton : ASButtonNode
+@end
 
 @interface CMInviteFriendsButton : ASButtonNode
 @end

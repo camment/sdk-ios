@@ -78,10 +78,12 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
             if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
                 CMAPIUsergroup *group = t.result;
                 CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
+                                                                 showUuid:[CMStore instance].currentShowMetadata.uuid
                                                        ownerCognitoUserId:group.userCognitoIdentityId
                                                         hostCognitoUserId:group.userCognitoIdentityId
                                                                 timestamp:group.timestamp
-                                                           invitationLink:nil];
+                                                           invitationLink:nil
+                                                                    users:@[]];
                 DDLogVerbose(@"Created new group %@", result);
                 [subscriber sendNext:result];
             } else {

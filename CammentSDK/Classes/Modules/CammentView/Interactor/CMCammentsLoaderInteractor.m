@@ -103,8 +103,10 @@
     __weak typeof(self) _weakSelf = self;
     BOOL isFirstPage = [self.paginationKey length] == 0;
     [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID
-                                                                      lastKey:self.paginationKey ?: @""
-                                                                        limit:self.cammentsLimit]
+                                                                       timeTo:@"10"
+                                                                        limit:self.cammentsLimit
+                                                                     timeFrom:@"0"
+                                                                      lastKey:self.paginationKey ?: @""]
             continueWithExecutor:[AWSExecutor mainThreadExecutor]
                        withBlock:^id(AWSTask<CMAPICammentList *> *t) {
                            NSLog(@"Loaded");

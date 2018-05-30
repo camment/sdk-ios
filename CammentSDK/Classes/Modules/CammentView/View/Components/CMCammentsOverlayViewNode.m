@@ -11,7 +11,7 @@
 #import "CMCammentRecorderPreviewNode.h"
 #import "CMCammentOverlayLayoutConfig.h"
 #import "CMAdsVideoPlayerNode.h"
-#import "CMGroupInfoNode.h"
+#import "CMGroupInfoViewController.h"
 #import "UIColorMacros.h"
 #import "POPSpringAnimation.h"
 #import "CMTouchTransparentView.h"
@@ -163,7 +163,7 @@
                           justifyContent:ASStackLayoutJustifyContentStart
                               alignItems:ASStackLayoutAlignItemsStart
                                 children:@[
-                                        _leftSidebarNode,
+                                           _leftSidebarNode ?: [ASDisplayNode new],
                                         camentBlockLayoutSpec
                                 ]
     ];

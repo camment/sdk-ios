@@ -14,6 +14,7 @@
 @class CMGroupsListNode;
 @class CMAdsVideoPlayerNode;
 @class CMGroupInfoNode;
+@class CMGroupInfoContainerNode;
 
 @protocol CMCammentsOverlayViewNodeDelegate<NSObject>
 
@@ -28,7 +29,7 @@
 @property(nonatomic, strong, readonly) ASDisplayNode* contentNode;
 @property(nonatomic, strong, readonly) ASDisplayNode* backgroundNode;
 @property(nonatomic, strong, readonly) CMCammentsBlockNode *cammentsBlockNode;
-@property(nonatomic, strong) CMGroupInfoNode *leftSidebarNode;
+@property(nonatomic, weak) CMGroupInfoContainerNode *leftSidebarNode;
 @property(nonatomic, strong, readonly) CMCammentRecorderPreviewNode *cammentRecorderNode;
 @property(nonatomic, strong, readonly) CMCammentButton *cammentButton;
 @property(nonatomic, strong, readonly) CMAdsVideoPlayerNode *adsVideoPlayerNode;

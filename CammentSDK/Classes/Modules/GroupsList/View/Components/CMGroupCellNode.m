@@ -5,6 +5,8 @@
 #import "ASCollectionNode.h"
 #import "CMGroupCellNode.h"
 #import "CMUsersGroup.h"
+#import "UIFont+CammentFonts.h"
+#import "NSArray+RacSequence.h"
 
 @interface CMGroupCellNode ()
 @property(nonatomic, strong) ASTextNode *groupNameNode;
@@ -20,7 +22,14 @@
         _group = group;
 
         self.groupNameNode = [ASTextNode new];
-        self.groupNameNode.attributedText = [[NSAttributedString alloc] initWithString:group.uuid];
+        self.groupNameNode.maximumNumberOfLines = 1;
+        self.groupNameNode.truncationMode = NSLineBreakByTruncatingTail;
+        self.groupNameNode.style.minHeight = ASDimensionMake(14.0f);
+        self.groupNameNode.attributedText = [[NSAttributedString alloc] initWithString:[[group.users map:^id(CMUser *user) {
+            return user.username;
+        }] componentsJoinedByString:@", "] attributes:@{
+                NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
+        }];
         self.clipsToBounds = YES;
         self.automaticallyManagesSubnodes = YES;
     }
@@ -29,7 +38,7 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
-    self.groupNameNode.style.minHeight = ASDimensionMake(14.0f);
+
     ASCenterLayoutSpec *centerLayoutSpec = [ASCenterLayoutSpec
             centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringY
                                    sizingOptions:ASCenterLayoutSpecSizingOptionDefault

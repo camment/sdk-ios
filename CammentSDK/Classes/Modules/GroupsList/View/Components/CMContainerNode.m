@@ -51,7 +51,7 @@
         return;
     }
 
-    [UIView animateWithDuration:.4f
+    [UIView animateWithDuration:.3f
                      animations:^{
                         if (self.masterNode) {
                             self.masterNode.frame = [context finalFrameForNode:self.masterNode];

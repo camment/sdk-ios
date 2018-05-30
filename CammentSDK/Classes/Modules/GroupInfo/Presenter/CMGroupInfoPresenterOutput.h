@@ -14,9 +14,7 @@
 
 - (void)presentConfirmationDialogToLeaveTheGroup:(void (^)())onConfirmed;
 
-- (void)hideInviteButton;
-
-- (void)showInviteButton;
-
 - (void)closeGroupsListView;
+
+- (void)openGroupsListView;
 @end

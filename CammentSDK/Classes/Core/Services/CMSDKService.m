@@ -39,6 +39,9 @@
 #import "CMErrorWireframe.h"
 #import "DateTools.h"
 #import "CMVideoSyncInteractor.h"
+#import "CMUserBuilder.h"
+#import "CMUserContants.h"
+#import "NSArray+RacSequence.h"
 
 @interface CMSDKService () <CMGroupManagementInteractorOutput>
 
@@ -448,8 +451,18 @@
                 if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
                     CMAPIUsergroup *usergroup = t.result;
 
-                    CMUsersGroup *group = [[[[[[CMUsersGroupBuilder new]
+                    CMUsersGroup *group = [[[[[[[[CMUsersGroupBuilder new]
                             withUuid:invitation.userGroupUuid]
+                            withShowUuid:usergroup.showId ?: invitation.showUuid]
+                            withUsers:[usergroup.users map:^id(CMAPIUserinfo * userinfo) {
+                                return [[[[[[[CMUserBuilder user]
+                                        withCognitoUserId:userinfo.userCognitoIdentityId]
+                                        withUsername:userinfo.name]
+                                        withUserPhoto:userinfo.picture]
+                                        withBlockStatus:userinfo.state]
+                                        withOnlineStatus:userinfo.isOnline.boolValue ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
+                                        build];
+                            }]]
                             withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
                             withTimestamp:usergroup.timestamp]
                             withHostCognitoUserId:usergroup.hostId]

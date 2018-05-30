@@ -80,6 +80,7 @@
 "alert.user_joined.title" = "%@ se ha unido";
 "alert.user_joined.description" = "Tus amigos se están uniendo al grupo. Siempre puedes deslizar hacia la → derecha para ver quién más está activo en el grupo y bloquear a las personas no deseadas.";
 
+"button.create_group" = "Create new group";
 "button.invite_friends" = "Invita a tus amigos";
 "button.continue_tutorial" = "Continúa con el tutorial";
 "button.leave_group" = "Dejar el grupo";

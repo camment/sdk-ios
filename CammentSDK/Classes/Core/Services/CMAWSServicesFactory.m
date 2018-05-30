@@ -62,10 +62,10 @@
                                                                             credentialsProvider:_awsCognitoCredentialsProvider];
 
     AWSIoTMQTTConfiguration *mqttConfig = [[AWSIoTMQTTConfiguration alloc]
-            initWithKeepAliveTimeInterval:60.0
+            initWithKeepAliveTimeInterval:5.0
                 baseReconnectTimeInterval:1.0
-            minimumConnectionTimeInterval:20.0
-             maximumReconnectTimeInterval:128.0
+            minimumConnectionTimeInterval:5.0
+             maximumReconnectTimeInterval:20.0
                                   runLoop:[NSRunLoop mainRunLoop]
                               runLoopMode:NSDefaultRunLoopMode
                           autoResubscribe:YES

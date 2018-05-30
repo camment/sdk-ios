@@ -71,6 +71,7 @@
 "alert.user_joined.title" = "%@ has joined";
 "alert.user_joined.description" = "Now your friends are joining the discussion. You can always swipe → right to see who else is in the group and remove unwanted people";
 
+"button.create_group" = "Create new group";
 "button.invite_friends" = "Invite friends";
 "button.continue_tutorial" = "Continue tutorial";
 "button.leave_group" = "Leave group";

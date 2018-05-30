@@ -15,6 +15,8 @@
 #import "CMUser.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMStore.h"
+#import "CMShowMetadata.h"
 
 @interface CMInvitationInteractor ()
 @end
@@ -23,25 +25,33 @@
 
 - (AWSTask<CMUsersGroup *> *)createEmptyGroup {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-    AWSTask * task = [client usergroupsPost];
-    if (!task) {
-        return [AWSTask taskWithError:[NSError errorWithDomain:@"tv.camment.invitationInteractor" code:0 userInfo:nil]];
+    CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
+    usergroupInRequest.showId = [CMStore instance].currentShowMetadata.uuid;
+    if (!usergroupInRequest.showId) {
+        NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
+                                             code:0
+                                         userInfo:@{
+                                                    NSLocalizedFailureErrorKey : @"Could not create group while show uuid is empty"
+                                                    }];
+        return [AWSTask taskWithError:error];
     }
     
-    return [task continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
-            CMAPIUsergroup *group = t.result;
-            CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
-                                                   ownerCognitoUserId:group.userCognitoIdentityId
-                                                    hostCognitoUserId:group.userCognitoIdentityId
-                                                            timestamp:group.timestamp
-                                                       invitationLink:nil];
-            DDLogVerbose(@"Created new group %@", result);
-            return [AWSTask taskWithResult:result];
-        } else {
+    return [[client usergroupsPost:usergroupInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+        if (t.error) {
             DDLogError(@"%@", t.error);
             return [AWSTask taskWithError:t.error];
         }
+        
+        CMAPIUsergroup *group = t.result;
+        CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
+                                                         showUuid:[CMStore instance].currentShowMetadata.uuid
+                                               ownerCognitoUserId:group.userCognitoIdentityId
+                                                hostCognitoUserId:group.userCognitoIdentityId
+                                                        timestamp:group.timestamp
+                                                   invitationLink:nil
+                                                            users:@[]];
+        
+        return [AWSTask taskWithResult:result];
     }];
 }
 

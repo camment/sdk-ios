@@ -9,8 +9,8 @@
 @interface CMContainerNode<__covariant MasterNodeType : ASDisplayNode *, __covariant DetailsNodeType : ASDisplayNode *> : ASDisplayNode
 
 @property (nonatomic, assign) BOOL showDetails;
-@property (nonatomic, strong) MasterNodeType masterNode;
-@property (nonatomic, strong) DetailsNodeType detailsNode;
+@property (nonatomic, weak) MasterNodeType masterNode;
+@property (nonatomic, weak) DetailsNodeType detailsNode;
 
 - (instancetype)initWithMasterNode:(MasterNodeType *)masterNode;
 

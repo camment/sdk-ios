@@ -33,6 +33,9 @@
 @property (nonatomic, strong, nullable) NSString *hostId;
 
 
+@property (nonatomic, strong, nullable) NSNumber *isPublic;
+
+
 @property (nonatomic, strong, nullable) NSString *uuid;
 
 

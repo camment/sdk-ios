@@ -26,4 +26,7 @@
 @property (nonatomic, strong, nullable) NSString *showId;
 
 
+@property (nonatomic, strong, nullable) NSNumber *isPublic;
+
+
 @end

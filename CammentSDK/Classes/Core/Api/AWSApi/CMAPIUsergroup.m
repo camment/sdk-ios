@@ -23,6 +23,7 @@
              @"showId": @"showId",
              @"userCognitoIdentityId": @"userCognitoIdentityId",
              @"hostId": @"hostId",
+             @"isPublic": @"isPublic",
              @"uuid": @"uuid",
              @"users": @"users",
              @"timestamp": @"timestamp"

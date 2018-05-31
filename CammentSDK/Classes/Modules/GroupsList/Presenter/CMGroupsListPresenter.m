@@ -22,6 +22,7 @@
 #import "CMOpenURLHelper.h"
 #import "TLIndexPathUpdates.h"
 #import "CMGroupCellNode.h"
+#import "CMUsersGroupBuilder.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
@@ -127,7 +128,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
             [items addObject:@(CMPublicGroupsListHeader)];
             [items addObjectsFromArray:publicGroups];
         }
-        
+
         if (privateGroups.count > 0) {
             [items addObject:@(CMPrivateGroupsListHeader)];
             [items addObjectsFromArray:privateGroups];

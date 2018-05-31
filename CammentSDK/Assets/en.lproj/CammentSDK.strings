@@ -82,3 +82,5 @@
 
 "status.user_is_online" = "%@ came online";
 "status.user_is_offline" = "%@ went offline";
+"status.new_group_host" = "Host changed to %@";
+

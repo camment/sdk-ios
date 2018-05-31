@@ -146,6 +146,9 @@
             return [[builder withOnlineStatus:status] build];
         }];
 
+        [CMStore instance].activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:[CMStore instance].activeGroup]
+                withHostCognitoUserId:message.hostId]
+                build];
     }];
 
     if (shouldPassToObservers) {

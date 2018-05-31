@@ -18,7 +18,7 @@
 #import "CMProfileViewNodeContext.h"
 #import "CMProfileViewNode.h"
 #import "CMInviteFriendsGroupInfoNode.h"
-#import "CMPeopleJoinedHeaderCell.h"
+#import "CMSmallTextHeaderCell.h"
 #import "CMOpenURLHelper.h"
 #import "TLIndexPathUpdates.h"
 #import "CMGroupCellNode.h"
@@ -26,7 +26,9 @@
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
     CMGroupInfoInviteFriendsSection,
-    CMGroupInfoInviteFriendsSectionWithContinueTutorialButton
+    CMGroupInfoInviteFriendsSectionWithContinueTutorialButton,
+    CMPublicGroupsListHeader,
+    CMPrivateGroupsListHeader
 };
 
 @interface CMGroupsListPresenter ()<CMGroupListNodeDelegate>
@@ -60,6 +62,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                     CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
                     self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
 
+                    [self reloadData];
                     [self reloadGroups];
                 }];
     }
@@ -112,7 +115,23 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     if (self.userGroups.count == 0 || !self.showProfileInfo) {
         [items addObject:@([CMStore instance].isOnboardingSkipped ? CMGroupInfoInviteFriendsSectionWithContinueTutorialButton : CMGroupInfoInviteFriendsSection)];
     } else {
-        [items addObjectsFromArray:self.userGroups];
+        NSArray *privateGroups = [self.userGroups.rac_sequence filter:^BOOL(CMUsersGroup *group) {
+            return !group.isPublic;
+        }].array ?: @[];
+
+        NSArray *publicGroups = [self.userGroups.rac_sequence filter:^BOOL(CMUsersGroup *group) {
+            return group.isPublic;
+        }].array ?: @[];
+
+        if (publicGroups.count > 0) {
+            [items addObject:@(CMPublicGroupsListHeader)];
+            [items addObjectsFromArray:publicGroups];
+        }
+        
+        if (privateGroups.count > 0) {
+            [items addObject:@(CMPrivateGroupsListHeader)];
+            [items addObjectsFromArray:privateGroups];
+        }
     }
 
     TLIndexPathDataModel *updatedModel = [[TLIndexPathDataModel alloc] initWithItems:items];
@@ -247,6 +266,16 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 };
                 break;
             }
+            case CMPublicGroupsListHeader:
+                cellNodeBlock = ^ASCellNode *() {
+                    return [[CMSmallTextHeaderCell alloc] initWithText:CMLocalized(@"header.text.special_guest")];
+                };
+                break;
+            case CMPrivateGroupsListHeader:
+                cellNodeBlock = ^ASCellNode *() {
+                    return [[CMSmallTextHeaderCell alloc] initWithText:CMLocalized(@"header.text.camment_chat")];
+                };
+                break;
         }
     } else {
         CMUsersGroup *group = model;

@@ -84,3 +84,5 @@
 "status.user_is_offline" = "%@ went offline";
 "status.new_group_host" = "Host changed to %@";
 
+"header.text.special_guest" = "Special Host";
+"header.text.camment_chat" = "Camment chat";

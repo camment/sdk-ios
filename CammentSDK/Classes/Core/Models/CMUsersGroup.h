@@ -15,8 +15,9 @@
 @property (nonatomic, readonly, copy) NSString *timestamp;
 @property (nonatomic, readonly, copy) NSString *invitationLink;
 @property (nonatomic, readonly, copy) NSArray<CMUser *> *users;
+@property (nonatomic, readonly) BOOL isPublic;
 
-- (instancetype)initWithUuid:(NSString *)uuid showUuid:(NSString *)showUuid ownerCognitoUserId:(NSString *)ownerCognitoUserId hostCognitoUserId:(NSString *)hostCognitoUserId timestamp:(NSString *)timestamp invitationLink:(NSString *)invitationLink users:(NSArray<CMUser *> *)users;
+- (instancetype)initWithUuid:(NSString *)uuid showUuid:(NSString *)showUuid ownerCognitoUserId:(NSString *)ownerCognitoUserId hostCognitoUserId:(NSString *)hostCognitoUserId timestamp:(NSString *)timestamp invitationLink:(NSString *)invitationLink users:(NSArray<CMUser *> *)users isPublic:(BOOL)isPublic;
 
 @end
 

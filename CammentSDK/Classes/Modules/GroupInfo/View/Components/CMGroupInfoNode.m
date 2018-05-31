@@ -12,6 +12,8 @@
 #import "CMGroupInfoCollectionViewDelegate.h"
 #import "CMInviteFriendsButton.h"
 #import "UIColorMacros.h"
+#import "UIFont+CammentFonts.h"
+#import "CMUsersGroup.h"
 
 @interface CMGroupInfoNode ()
 
@@ -28,7 +30,6 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-
         self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
                                                              layoutFacilitator:nil];
 
@@ -56,6 +57,7 @@
                         forControlEvents:ASControlNodeEventTouchUpInside];
         self.headerNode.style.height = ASDimensionMake(44.0f);
 
+        self.headerTextNode = [ASTextNode new];
         self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
 
@@ -81,12 +83,10 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
 
+    ASInsetLayoutSpec *stackLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 20.0f, .0f, 20.0f) child:[ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY child:_headerTextNode]];
     ASOverlayLayoutSpec *overlayLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_headerNode
-                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 8, .0f, 8) child:[ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
-                                                                                                                                                                                                                     spacing:12.0f
-                                                                                                                                                                                                              justifyContent:ASStackLayoutJustifyContentStart
-                                                                                                                                                                                                                  alignItems:ASStackLayoutAlignItemsStretch
-                                                                                                                                                                                                                    children:@[_headerBackButton]]]];
+                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 8, .0f, 24) child:[ASOverlayLayoutSpec overlayLayoutSpecWithChild:stackLayoutSpec
+                                                                                                                                                                                                                          overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, INFINITY, INFINITY) child:_headerBackButton]]]];
 
     ASStackLayoutSpec *layoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                             spacing:.0f
@@ -94,6 +94,7 @@
                                                                          alignItems:ASStackLayoutAlignItemsStretch
                                                                            children: @[overlayLayoutSpec, _collectionNode, _inviteFriendsButton]];
     _collectionNode.style.flexGrow = 1;
+    _headerTextNode.style.flexGrow = 1;
     layoutSpec.style.flexGrow = 1;
 
     return layoutSpec;
@@ -105,6 +106,18 @@
 
 - (CGFloat)alpha {
     return self.collectionNode.alpha;
+}
+
+- (void)updateWithGroup:(CMUsersGroup *)group {
+    NSMutableParagraphStyle *paragraphStyle = [NSMutableParagraphStyle new];
+    paragraphStyle.alignment = NSTextAlignmentCenter;
+    self.headerTextNode.attributedText = [[NSAttributedString alloc] initWithString: group.isPublic ? CMLocalized(@"header.text.special_guest") :CMLocalized(@"header.text.camment_chat")
+                                                                         attributes:@{
+                                                                                 NSFontAttributeName: [UIFont nunitoMediumWithSize:12],
+                                                                                 NSForegroundColorAttributeName: UIColorFromRGB(0x9B9B9B),
+                                                                                 NSParagraphStyleAttributeName: paragraphStyle
+                                                                         }];
+    [self setNeedsLayout];
 }
 
 @end

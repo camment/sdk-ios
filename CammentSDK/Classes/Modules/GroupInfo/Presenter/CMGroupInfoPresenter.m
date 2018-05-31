@@ -12,7 +12,7 @@
 #import "TLIndexPathDataModel.h"
 #import "TLIndexPathUpdates.h"
 #import "CMProfileViewNode.h"
-#import "CMPeopleJoinedHeaderCell.h"
+#import "CMSmallTextHeaderCell.h"
 #import "CMGroupInfoUserCell.h"
 #import "CMUserBuilder.h"
 #import "CMUserSessionController.h"
@@ -22,10 +22,7 @@
 #import "CMUserContants.h"
 #import "CammentSDK.h"
 #import "CMErrorWireframe.h"
-
-typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
-    CMGroupInfoFriendsHeaderSection
-};
+#import "CMGroupManagementInteractor.h"
 
 @interface CMGroupInfoPresenter () <CMGroupInfoUserCellDelegate>
 
@@ -60,7 +57,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                     CMUsersGroup *group = tuple.second;
                     __strongSelf.ownCognitoId = authStatusChangedEventContext.user.cognitoUserId;
                     __strongSelf.groupHost = group.hostCognitoUserId;
-                    __strongSelf.haveUserDeletionPermissions = group && [group.ownerCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
+                    __strongSelf.haveUserDeletionPermissions = group && [group.hostCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
                     [__strongSelf reloadData];
                 }];
 
@@ -96,7 +93,6 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         return [obj1.username compare:obj2.username];
     }];
 
-    [items addObject:@(CMGroupInfoFriendsHeaderSection)];
     [items addObjectsFromArray:self.users];
 
     TLIndexPathDataModel *updatedModel = [[TLIndexPathDataModel alloc] initWithItems:items];
@@ -136,35 +132,22 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
     __block ASCellNodeBlock cellNodeBlock = nil;
 
-    id model = [self.dataModel itemAtIndexPath:indexPath];
+    CMUser *user = [self.dataModel itemAtIndexPath:indexPath];
 
-    if ([model isKindOfClass:[NSNumber class]]) {
-        CMGroupInfoSection section = (CMGroupInfoSection) [model integerValue];
-        switch (section) {
-            case CMGroupInfoFriendsHeaderSection: {
-                cellNodeBlock = ^ASCellNode *() {
-                    return [CMPeopleJoinedHeaderCell new];
-                };
-                break;
-            }
-        }
-    } else {
-        CMUser *user = model;
-        BOOL showDeleteUserButton = self.haveUserDeletionPermissions && ![user.cognitoUserId isEqualToString:self.ownCognitoId] ;
-        NSString *onlineStatus = user.onlineStatus;
-        if ([user.cognitoUserId isEqualToString:self.groupHost]) {
-            onlineStatus = CMUserOnlineStatus.Broadcasting;
-        }
-
-        user = [[[CMUserBuilder userFromExistingUser:user] withOnlineStatus:onlineStatus] build];
-        __weak typeof(self) delegate = self;
-        cellNodeBlock = ^ASCellNode *() {
-            CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithUser:user
-                                                       showBlockUnblockUserButton:showDeleteUserButton];
-            cell.delegate = delegate;
-            return cell;
-        };
+    BOOL showDeleteUserButton = self.haveUserDeletionPermissions && ![user.cognitoUserId isEqualToString:self.ownCognitoId] ;
+    NSString *onlineStatus = user.onlineStatus;
+    if ([user.cognitoUserId isEqualToString:self.groupHost]) {
+        onlineStatus = CMUserOnlineStatus.Broadcasting;
     }
+
+    user = [[[CMUserBuilder userFromExistingUser:user] withOnlineStatus:onlineStatus] build];
+    __weak typeof(self) delegate = self;
+    cellNodeBlock = ^ASCellNode *() {
+        CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithUser:user
+                                                   showBlockUnblockUserButton:showDeleteUserButton];
+        cell.delegate = delegate;
+        return cell;
+    };
 
     return cellNodeBlock;
 }
@@ -415,9 +398,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 
 -(void)didSelectGroup:(CMUsersGroup *)group {
-    [self.output closeGroupsListView];
-    [[CMStore instance] setActiveGroup:group];
-    [[[CMStore instance] reloadActiveGroupSubject] sendNext:@(YES)];
+    [self.output openGroupDetails:group];
+    [[[CMGroupManagementInteractor alloc] initWithOutput:nil store:[CMStore instance]] joinUserToGroup:group];
 }
 
 @end

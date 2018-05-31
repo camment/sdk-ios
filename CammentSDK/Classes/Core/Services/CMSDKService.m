@@ -451,10 +451,10 @@
                 if (!t.error && [t.result isKindOfClass:[CMAPIUsergroup class]]) {
                     CMAPIUsergroup *usergroup = t.result;
 
-                    CMUsersGroup *group = [[[[[[[[CMUsersGroupBuilder new]
+                    CMUsersGroup *group = [[[[[[[[[CMUsersGroupBuilder new]
                             withUuid:invitation.userGroupUuid]
                             withShowUuid:usergroup.showId ?: invitation.showUuid]
-                            withUsers:[usergroup.users map:^id(CMAPIUserinfo * userinfo) {
+                            withUsers:[usergroup.users map:^id(CMAPIUserinfo *userinfo) {
                                 return [[[[[[[CMUserBuilder user]
                                         withCognitoUserId:userinfo.userCognitoIdentityId]
                                         withUsername:userinfo.name]
@@ -466,6 +466,7 @@
                             withOwnerCognitoUserId:usergroup.userCognitoIdentityId]
                             withTimestamp:usergroup.timestamp]
                             withHostCognitoUserId:usergroup.hostId]
+                            withIsPublic:usergroup.isPublic.boolValue]
                             build];
                     CMShow *show = [[CMShow alloc] initWithUuid:invitation.showUuid
                                                             url:nil

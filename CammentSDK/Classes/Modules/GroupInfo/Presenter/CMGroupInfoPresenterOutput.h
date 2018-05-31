@@ -14,7 +14,7 @@
 
 - (void)presentConfirmationDialogToLeaveTheGroup:(void (^)())onConfirmed;
 
-- (void)closeGroupsListView;
+- (void)openGroupDetails:(CMUsersGroup *)group;
 
 - (void)openGroupsListView;
 @end

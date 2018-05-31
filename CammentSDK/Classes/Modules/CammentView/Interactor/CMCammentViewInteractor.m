@@ -83,7 +83,8 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                                         hostCognitoUserId:group.userCognitoIdentityId
                                                                 timestamp:group.timestamp
                                                            invitationLink:nil
-                                                                    users:@[]];
+                                                                    users:@[]
+                                                                 isPublic:group.isPublic.boolValue];
                 DDLogVerbose(@"Created new group %@", result);
                 [subscriber sendNext:result];
             } else {

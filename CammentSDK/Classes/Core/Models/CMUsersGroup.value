@@ -8,4 +8,5 @@ CMUsersGroup includes(RMBuilder)  {
   NSString *timestamp
   NSString *invitationLink
   NSArray<CMUser *> *users
+  BOOL isPublic
 }

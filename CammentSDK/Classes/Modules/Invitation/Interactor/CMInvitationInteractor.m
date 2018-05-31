@@ -49,7 +49,8 @@
                                                 hostCognitoUserId:group.userCognitoIdentityId
                                                         timestamp:group.timestamp
                                                    invitationLink:nil
-                                                            users:@[]];
+                                                            users:@[]
+                                                         isPublic:group.isPublic.boolValue];
         
         return [AWSTask taskWithResult:result];
     }];

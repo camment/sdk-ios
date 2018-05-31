@@ -43,11 +43,11 @@
 
         NSArray<CMAPIUsergroup *> *apiGroups = t.result.items;
         NSArray *groups = [[apiGroups rac_sequence] map:^id(CMAPIUsergroup *data) {
-            return [[[[[[[[CMUsersGroupBuilder new]
+            return [[[[[[[[[CMUsersGroupBuilder new]
                     withUuid:data.uuid]
                     withShowUuid:data.showId] withHostCognitoUserId:data.hostId]
                     withOwnerCognitoUserId:data.userCognitoIdentityId]
-                    withUsers:[data.users map:^id(CMAPIUserinfo * userinfo) {
+                    withUsers:[data.users map:^id(CMAPIUserinfo *userinfo) {
                         return [[[[[[[CMUserBuilder user]
                                 withCognitoUserId:userinfo.userCognitoIdentityId]
                                 withUsername:userinfo.name]
@@ -56,7 +56,9 @@
                                 withOnlineStatus:userinfo.isOnline.boolValue ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
                                 build];
                     }]]
-                    withTimestamp:data.timestamp] build];
+                    withTimestamp:data.timestamp]
+                    withIsPublic:data.isPublic.boolValue]
+                    build];
         }].array;
 
         dispatch_async(dispatch_get_main_queue(), ^{

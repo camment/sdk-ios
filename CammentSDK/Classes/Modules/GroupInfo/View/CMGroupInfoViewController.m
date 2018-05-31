@@ -69,7 +69,8 @@
     [self presentViewController:alertController];
 }
 
-- (void)closeGroupsListView {
+- (void)openGroupDetails:(CMUsersGroup *)group {
+    [self.node.detailsNode updateWithGroup:group];
     [self.node setShowDetails:YES];
     [self.node transitionLayoutWithAnimation:YES
                           shouldMeasureAsync:NO

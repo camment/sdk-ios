@@ -25,5 +25,7 @@
 
 - (instancetype)withUsers:(NSArray<CMUser *> *)users;
 
+- (instancetype)withIsPublic:(BOOL)isPublic;
+
 @end
 

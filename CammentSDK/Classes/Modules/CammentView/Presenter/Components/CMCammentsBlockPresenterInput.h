@@ -8,6 +8,7 @@
 @protocol CMCammentsBlockPresenterInput <NSObject, CMCammentsBlockDelegate>
 
 @property NSArray *items;
+@property NSArray *cammentIdsInQueue;
 @property NSArray *deletedCamments;
 
 - (void)playCamment:(NSString *)cammentId;

@@ -25,6 +25,7 @@
 @interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate, CMCammentsBlockPresenterInput>
 
 @property (strong) NSArray<CMCammentsBlockItem *> *items;
+@property (strong) NSArray<NSString *> *cammentIdsInQueue;
 @property (strong) NSArray<CMCamment *> *deletedCamments;
 
 @property (nonatomic, weak) ASCollectionNode *collectionNode;

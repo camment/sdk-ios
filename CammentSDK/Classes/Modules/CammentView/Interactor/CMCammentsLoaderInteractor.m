@@ -177,12 +177,12 @@
                                _weakSelf.paginationKey = t.result.lastKey;
                                _weakSelf.canLoadMoreCamments = t.result.lastKey != nil;
                                NSArray *camments = [t.result items];
-                               DDLogInfo(@"Fetched %d camments for interval %@-%@", camments.count, from, to);
+                               DDLogInfo(@"Fetched %@ camments for interval %@-%@", @(camments.count), from, to);
                                NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
                                    CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
                                            initWithDeliveryStatus:[value.delivered boolValue] ? CMCammentDeliveryStatusSeen : CMCammentDeliveryStatusSent
                                                         isWatched:YES];
-                                   return [[[[[[[[[[[CMCammentBuilder camment]
+                                   return [[[[[[[[[[[[CMCammentBuilder camment]
                                            withShowUuid:value.showUuid]
                                            withUserGroupUuid:value.userGroupUuid]
                                            withUuid:value.uuid]
@@ -191,6 +191,7 @@
                                            withUserCognitoIdentityId:value.userCognitoIdentityId]
                                            withIsDeleted:NO]
                                            withShouldBeDeleted:NO]
+                                        withShowAt: value.showAt]
                                            withStatus:cammentStatus] build];
                                }].array;
                                [_weakSelf.output didFetchCamments:result canLoadMore:NO firstPage:NO];

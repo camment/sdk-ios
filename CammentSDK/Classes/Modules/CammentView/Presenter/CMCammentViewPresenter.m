@@ -35,6 +35,8 @@
 #import "CMAdsDemoBot.h"
 #import "NSArray+RacSequence.h"
 #import "CMVideoSyncInteractor.h"
+#import "CMPresentationPlayerBot.h"
+#import "CMTimestampPresentationInstruction.h"
 #import <TBStateMachine/TBSMStateMachine.h>
 #import <TBStateMachine/TBSMDebugger.h>
 
@@ -86,6 +88,7 @@
 
         self.botRegistry = [CMBotRegistry new];
         [self.botRegistry addBot:[CMAdsDemoBot new]];
+        [self.botRegistry addBot:[CMPresentationPlayerBot new]];
         [self.botRegistry updateBotsOutputInterface:self];
 
         [self setupOnboardingStateMachine];
@@ -180,32 +183,25 @@
             }];
         }];
 
-        [[[[RACSignal combineLatest:@[
-                RACObserve(self.cammentsBlockNodePresenter, items),
-                RACObserve([CMStore instance], currentShowTimeInterval)
-        ]]
-                takeUntil:self.rac_willDeallocSignal]
-                deliverOn:[RACScheduler schedulerWithPriority:RACSchedulerPriorityLow
-                                                         name:@"track video player time changes"]]
-                subscribeNext:^(RACTuple *tuple) {
-                    @strongify(self);
-                    if (!self) {return;}
-                    CMPresentationState *state = [CMPresentationState new];
-                    state.items = tuple.first;
-                    state.timestamp = [tuple.second unsignedIntegerValue];
-                    [self.presentationPlayerInteractor update:state];
-                }];
-
         [[[[[CMStore instance] cleanUpSignal] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *cleanUp) {
             @strongify(self);
             [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
         }];
 
-        [[[RACObserve([CMStore instance], showTimestamp) takeUntil:self.rac_willDeallocSignal] sample:[RACSignal interval:10 onScheduler:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]]
+        [[[RACObserve([CMStore instance], showTimestamp) takeUntil:self.rac_willDeallocSignal] sample:[RACSignal interval:60 onScheduler:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]]
                 subscribeNext:^(NSNumber *timestamp) {
                     @strongify(self);
                     NSInteger timeFrom = timestamp.integerValue;
-                    [self fetchCammentsFrom:@(timeFrom).stringValue to:@(timeFrom + 10).stringValue];
+                    [self fetchCammentsFrom:@(timeFrom).stringValue to:@(timeFrom + 60).stringValue];
+                }];
+
+        [[[RACObserve([CMStore instance], showTimestamp) takeUntil:self.rac_willDeallocSignal] sample:[RACSignal interval:1 onScheduler:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]]
+                subscribeNext:^(NSNumber *timestamp) {
+                    @strongify(self);
+                    CMPresentationState *state = [CMPresentationState new];
+                    state.items = self.cammentsBlockNodePresenter.items;
+                    state.timestamp = [timestamp unsignedIntegerValue];
+                    [self.presentationPlayerInteractor update:state];
                 }];
 
         [self.rac_willDeallocSignal subscribeCompleted:^{
@@ -434,8 +430,10 @@
 - (void)updateChatWithActiveGroup {
     [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
     [self.loaderInteractor resetPaginationKey];
-    [self.loaderInteractor loadNextPageOfCamments:[CMStore instance].activeGroup.uuid];
     [self setupPresentationInstruction];
+
+    NSInteger timeFrom = (NSInteger) [CMStore instance].showTimestamp;
+    [self fetchCammentsFrom:@(timeFrom).stringValue to:@(timeFrom + 60).stringValue];
 }
 
 - (void)updateCameraOrientation:(AVCaptureVideoOrientation)orientation {
@@ -470,15 +468,23 @@
         return nil;
     }] array];
 #endif
+    self.presentationPlayerInteractor.instructions = @[];
 }
 
 
 - (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore firstPage:(BOOL)isFirstPage {
     self.canLoadMoreCamments = canLoadMore;
-    NSArray<CMCammentsBlockItem *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
-        return [CMCammentsBlockItem cammentWithCamment:value];
-    }].array;
-    [self.cammentsBlockNodePresenter updateItems:items animated:YES shouldAppend:!isFirstPage];
+
+    if (!self.presentationPlayerInteractor.instructions) {
+        self.presentationPlayerInteractor.instructions = @[];
+    }
+
+    self.presentationPlayerInteractor.instructions = [self.presentationPlayerInteractor.instructions arrayByAddingObjectsFromArray:[camments map:^id(CMCamment *item) {
+        return [[CMTimestampPresentationInstruction alloc] initWithTimestamp:item.showAt.doubleValue
+                                                                      action:[[CMDisplayCammentPresentationAction alloc]
+                                                                              initWithItem:[CMCammentsBlockItem cammentWithCamment:item]]];
+    }]];
+    
     if (self.cammentBatchContext) {
         [self.cammentBatchContext completeBatchFetching:YES];
     }
@@ -602,7 +608,7 @@
         return result;
     }].array ?: @[];
 
-    BOOL isNewItem = filteredItemsArray.count == 0;
+    BOOL isNewItem = filteredItemsArray.count == 0 && ![self.cammentsBlockNodePresenter.cammentIdsInQueue containsObject:camment.uuid];
 
     if ([camment.userGroupUuid isEqualToString:[[CMStore instance].activeGroup uuid]]
             || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID]) {

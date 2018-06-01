@@ -28,6 +28,7 @@
     self = [super init];
     if (self) {
         self.items = @[];
+        self.cammentIdsInQueue = @[];
         self.deletedCamments = @[];
         self.updatesQueue = [[NSOperationQueue alloc] init];
         self.updatesQueue.underlyingQueue = dispatch_get_main_queue();
@@ -179,11 +180,30 @@
 
 - (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)(void))completion {
     __weak typeof(self) __weakSelf = self;
+
+    __block NSString *cammentUUID = nil;
+    [item matchCamment:^(CMCamment *camment) {
+            cammentUUID = camment.uuid;
+            self.cammentIdsInQueue = [self.cammentIdsInQueue arrayByAddingObject:camment.uuid];
+    } botCamment:^(CMBotCamment *botCamment) {
+    }];
+
     [self.updatesQueue addOperationWithBlock:^{
         [__weakSelf.collectionNode performBatchAnimated:YES updates:^{
             @synchronized (self.items) {
                 __weakSelf.items = [@[item] arrayByAddingObjectsFromArray:[__weakSelf.items copy]];
             }
+
+            if (cammentUUID) {
+                @synchronized (self.cammentIdsInQueue) {
+                    [item matchCamment:^(CMCamment *camment) {
+                        __weakSelf.cammentIdsInQueue = [__weakSelf.cammentIdsInQueue awsmtl_arrayByRemovingObject:cammentUUID];
+                    } botCamment:^(CMBotCamment *botCamment) {
+
+                    }];
+                }
+            }
+
             [__weakSelf.collectionNode insertItemsAtIndexPaths:@[
                     [NSIndexPath indexPathForItem:0 inSection:0]
             ]];

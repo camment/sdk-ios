@@ -54,6 +54,8 @@
 }
 
 - (void)updateVideoStreamStateIsPlaying:(BOOL)isPlaying show:(CMShowMetadata *)show timestamp:(NSTimeInterval)timestamp {
+    [CMStore instance].showTimestamp = timestamp;
+
     CMAuthStatusChangedEventContext *authStatusChangedEventContext = [CMStore instance].authentificationStatusSubject.first;
     if (authStatusChangedEventContext.state != CMCammentUserAuthentificatedAsKnownUser) { return; }
 

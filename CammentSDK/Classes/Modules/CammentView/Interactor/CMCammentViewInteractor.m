@@ -175,6 +175,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                  completed:^{
                      CMAPICammentInRequest *cammentInRequest = [[CMAPICammentInRequest alloc] init];
                      cammentInRequest.uuid = camment.uuid;
+                     cammentInRequest.showAt = camment.showAt;
                      DDLogVerbose(@"Posting camment %@", camment);
 
                      [[self.client usergroupsGroupUuidCammentsPost:camment.userGroupUuid

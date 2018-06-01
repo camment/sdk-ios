@@ -46,6 +46,10 @@
     CMServerMessage *serverMessage = nil;
 
     if ([type isEqualToString:@"camment"]) {
+        NSNumber *showAt = body[@"showAt"] ?: @0;
+        if ([showAt isKindOfClass:[NSString class]]) {
+            showAt = [[NSNumberFormatter new] numberFromString:showAt] ?: @0;
+        }
         CMCamment *camment = [[CMCamment alloc] initWithShowUuid:body[@"showUuid"]
                                                    userGroupUuid:body[@"userGroupUuid"]
                                                             uuid:body[@"uuid"]
@@ -53,6 +57,7 @@
                                                         localURL:nil
                                                     thumbnailURL:body[@"thumbnail"]
                                            userCognitoIdentityId:body[@"userCognitoIdentityId"]
+                                                          showAt:showAt
                                                       localAsset:nil
                                                      isMadeByBot:NO
                                                          botUuid:nil
@@ -126,6 +131,7 @@
                                                         localURL:nil
                                                     thumbnailURL:body[@"thumbnail"]
                                            userCognitoIdentityId:body[@"userCognitoIdentityId"]
+                                                          showAt:@0
                                                       localAsset:nil
                                                      isMadeByBot:NO
                                                          botUuid:nil

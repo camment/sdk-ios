@@ -48,4 +48,6 @@
                userSessionController:(CMUserSessionController *)userSessionController
                 invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor
               cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter NS_DESIGNATED_INITIALIZER;
+
+- (void)fetchCammentsFrom:(NSString *)value to:(NSString *)to;
 @end

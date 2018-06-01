@@ -15,6 +15,7 @@
   NSString *_localURL;
   NSString *_thumbnailURL;
   NSString *_userCognitoIdentityId;
+  NSNumber *_showAt;
   AVAsset *_localAsset;
   BOOL _isMadeByBot;
   NSString *_botUuid;
@@ -31,14 +32,15 @@
 
 + (instancetype)cammentFromExistingCamment:(CMCamment *)existingCamment
 {
-  return [[[[[[[[[[[[[[[CMCammentBuilder camment]
-                       withShowUuid:existingCamment.showUuid]
-                      withUserGroupUuid:existingCamment.userGroupUuid]
-                     withUuid:existingCamment.uuid]
-                    withRemoteURL:existingCamment.remoteURL]
-                   withLocalURL:existingCamment.localURL]
-                  withThumbnailURL:existingCamment.thumbnailURL]
-                 withUserCognitoIdentityId:existingCamment.userCognitoIdentityId]
+  return [[[[[[[[[[[[[[[[CMCammentBuilder camment]
+                        withShowUuid:existingCamment.showUuid]
+                       withUserGroupUuid:existingCamment.userGroupUuid]
+                      withUuid:existingCamment.uuid]
+                     withRemoteURL:existingCamment.remoteURL]
+                    withLocalURL:existingCamment.localURL]
+                   withThumbnailURL:existingCamment.thumbnailURL]
+                  withUserCognitoIdentityId:existingCamment.userCognitoIdentityId]
+                 withShowAt:existingCamment.showAt]
                 withLocalAsset:existingCamment.localAsset]
                withIsMadeByBot:existingCamment.isMadeByBot]
               withBotUuid:existingCamment.botUuid]
@@ -50,7 +52,7 @@
 
 - (CMCamment *)build
 {
-  return [[CMCamment alloc] initWithShowUuid:_showUuid userGroupUuid:_userGroupUuid uuid:_uuid remoteURL:_remoteURL localURL:_localURL thumbnailURL:_thumbnailURL userCognitoIdentityId:_userCognitoIdentityId localAsset:_localAsset isMadeByBot:_isMadeByBot botUuid:_botUuid botAction:_botAction isDeleted:_isDeleted shouldBeDeleted:_shouldBeDeleted status:_status];
+  return [[CMCamment alloc] initWithShowUuid:_showUuid userGroupUuid:_userGroupUuid uuid:_uuid remoteURL:_remoteURL localURL:_localURL thumbnailURL:_thumbnailURL userCognitoIdentityId:_userCognitoIdentityId showAt:_showAt localAsset:_localAsset isMadeByBot:_isMadeByBot botUuid:_botUuid botAction:_botAction isDeleted:_isDeleted shouldBeDeleted:_shouldBeDeleted status:_status];
 }
 
 - (instancetype)withShowUuid:(NSString *)showUuid
@@ -92,6 +94,12 @@
 - (instancetype)withUserCognitoIdentityId:(NSString *)userCognitoIdentityId
 {
   _userCognitoIdentityId = [userCognitoIdentityId copy];
+  return self;
+}
+
+- (instancetype)withShowAt:(NSNumber *)showAt
+{
+  _showAt = [showAt copy];
   return self;
 }
 

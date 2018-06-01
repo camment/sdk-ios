@@ -255,13 +255,13 @@
     }
 }
 
-- (void)updateItems:(NSArray<CMCammentsBlockItem *> *)items animated:(BOOL)animated {
+- (void)updateItems:(NSArray<CMCammentsBlockItem *> *)items animated:(BOOL)animated shouldAppend:(BOOL)shouldAppend {
 
     NSArray *notSentCamments = [self.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *item) {
 
         __block BOOL shouldKeep = NO;
         [item matchCamment:^(CMCamment *camment) {
-            shouldKeep = camment.status.deliveryStatus == CMCammentDeliveryStatusNotSent;
+            shouldKeep = camment.status.deliveryStatus == CMCammentDeliveryStatusNotSent || shouldAppend;
         }
         botCamment:^(CMBotCamment *botCamment) {}];
 

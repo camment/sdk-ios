@@ -11,7 +11,7 @@
 
 @implementation CMCamment
 
-- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId localAsset:(AVAsset *)localAsset isMadeByBot:(BOOL)isMadeByBot botUuid:(NSString *)botUuid botAction:(NSString *)botAction isDeleted:(BOOL)isDeleted shouldBeDeleted:(BOOL)shouldBeDeleted status:(CMCammentStatus *)status
+- (instancetype)initWithShowUuid:(NSString *)showUuid userGroupUuid:(NSString *)userGroupUuid uuid:(NSString *)uuid remoteURL:(NSString *)remoteURL localURL:(NSString *)localURL thumbnailURL:(NSString *)thumbnailURL userCognitoIdentityId:(NSString *)userCognitoIdentityId showAt:(NSNumber *)showAt localAsset:(AVAsset *)localAsset isMadeByBot:(BOOL)isMadeByBot botUuid:(NSString *)botUuid botAction:(NSString *)botAction isDeleted:(BOOL)isDeleted shouldBeDeleted:(BOOL)shouldBeDeleted status:(CMCammentStatus *)status
 {
   if ((self = [super init])) {
     _showUuid = [showUuid copy];
@@ -21,6 +21,7 @@
     _localURL = [localURL copy];
     _thumbnailURL = [thumbnailURL copy];
     _userCognitoIdentityId = [userCognitoIdentityId copy];
+    _showAt = [showAt copy];
     _localAsset = [localAsset copy];
     _isMadeByBot = isMadeByBot;
     _botUuid = [botUuid copy];
@@ -40,14 +41,14 @@
 
 - (NSString *)description
 {
-  return [NSString stringWithFormat:@"%@ - \n\t showUuid: %@; \n\t userGroupUuid: %@; \n\t uuid: %@; \n\t remoteURL: %@; \n\t localURL: %@; \n\t thumbnailURL: %@; \n\t userCognitoIdentityId: %@; \n\t localAsset: %@; \n\t isMadeByBot: %@; \n\t botUuid: %@; \n\t botAction: %@; \n\t isDeleted: %@; \n\t shouldBeDeleted: %@; \n\t status: %@; \n", [super description], _showUuid, _userGroupUuid, _uuid, _remoteURL, _localURL, _thumbnailURL, _userCognitoIdentityId, _localAsset, _isMadeByBot ? @"YES" : @"NO", _botUuid, _botAction, _isDeleted ? @"YES" : @"NO", _shouldBeDeleted ? @"YES" : @"NO", _status];
+  return [NSString stringWithFormat:@"%@ - \n\t showUuid: %@; \n\t userGroupUuid: %@; \n\t uuid: %@; \n\t remoteURL: %@; \n\t localURL: %@; \n\t thumbnailURL: %@; \n\t userCognitoIdentityId: %@; \n\t showAt: %@; \n\t localAsset: %@; \n\t isMadeByBot: %@; \n\t botUuid: %@; \n\t botAction: %@; \n\t isDeleted: %@; \n\t shouldBeDeleted: %@; \n\t status: %@; \n", [super description], _showUuid, _userGroupUuid, _uuid, _remoteURL, _localURL, _thumbnailURL, _userCognitoIdentityId, _showAt, _localAsset, _isMadeByBot ? @"YES" : @"NO", _botUuid, _botAction, _isDeleted ? @"YES" : @"NO", _shouldBeDeleted ? @"YES" : @"NO", _status];
 }
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {[_showUuid hash], [_userGroupUuid hash], [_uuid hash], [_remoteURL hash], [_localURL hash], [_thumbnailURL hash], [_userCognitoIdentityId hash], [_localAsset hash], (NSUInteger)_isMadeByBot, [_botUuid hash], [_botAction hash], (NSUInteger)_isDeleted, (NSUInteger)_shouldBeDeleted, [_status hash]};
+  NSUInteger subhashes[] = {[_showUuid hash], [_userGroupUuid hash], [_uuid hash], [_remoteURL hash], [_localURL hash], [_thumbnailURL hash], [_userCognitoIdentityId hash], [_showAt hash], [_localAsset hash], (NSUInteger)_isMadeByBot, [_botUuid hash], [_botAction hash], (NSUInteger)_isDeleted, (NSUInteger)_shouldBeDeleted, [_status hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 14; ++ii) {
+  for (int ii = 1; ii < 15; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -71,11 +72,12 @@
     _isMadeByBot == object->_isMadeByBot &&
     _isDeleted == object->_isDeleted &&
     _shouldBeDeleted == object->_shouldBeDeleted &&
-    (_localAsset == object->_localAsset ? YES : [_localAsset isEqual:object->_localAsset]) &&
+    (_showAt == object->_showAt ? YES : [_showAt isEqual:object->_showAt]) &&
     (_localURL == object->_localURL ? YES : [_localURL isEqual:object->_localURL]) &&
     (_thumbnailURL == object->_thumbnailURL ? YES : [_thumbnailURL isEqual:object->_thumbnailURL]) &&
     (_userCognitoIdentityId == object->_userCognitoIdentityId ? YES : [_userCognitoIdentityId isEqual:object->_userCognitoIdentityId]) &&
     (_userGroupUuid == object->_userGroupUuid ? YES : [_userGroupUuid isEqual:object->_userGroupUuid]) &&
+    (_localAsset == object->_localAsset ? YES : [_localAsset isEqual:object->_localAsset]) &&
     (_showUuid == object->_showUuid ? YES : [_showUuid isEqual:object->_showUuid]) &&
     (_botUuid == object->_botUuid ? YES : [_botUuid isEqual:object->_botUuid]) &&
     (_botAction == object->_botAction ? YES : [_botAction isEqual:object->_botAction]) &&

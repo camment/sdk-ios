@@ -201,13 +201,25 @@
             [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
         }];
 
+        [[[RACObserve([CMStore instance], showTimestamp) takeUntil:self.rac_willDeallocSignal] sample:[RACSignal interval:10 onScheduler:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]]
+                subscribeNext:^(NSNumber *timestamp) {
+                    @strongify(self);
+                    NSInteger timeFrom = timestamp.integerValue;
+                    [self fetchCammentsFrom:@(timeFrom).stringValue to:@(timeFrom + 10).stringValue];
+                }];
+
         [self.rac_willDeallocSignal subscribeCompleted:^{
             [CMStore instance].lastTimestampUploaded = nil;
+            [CMStore instance].showTimestamp = 0;
         }];
 
     }
 
     return self;
+}
+
+- (void)fetchCammentsFrom:(NSString *)from to:(NSString *)to {
+    [self.loaderInteractor fetchCammentsFrom:from to:to groupUuid:[CMStore instance].activeGroup.uuid];
 }
 
 - (void)setupOnboardingStateMachine {
@@ -466,7 +478,7 @@
     NSArray<CMCammentsBlockItem *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
         return [CMCammentsBlockItem cammentWithCamment:value];
     }].array;
-    [self.cammentsBlockNodePresenter updateItems:items animated:YES];
+    [self.cammentsBlockNodePresenter updateItems:items animated:YES shouldAppend:!isFirstPage];
     if (self.cammentBatchContext) {
         [self.cammentBatchContext completeBatchFetching:YES];
     }
@@ -490,11 +502,12 @@
         if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
         NSString *groupUUID = [[CMStore instance].activeGroup uuid];
         CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
-        CMCamment *camment = [[[[[[[cammentBuilder withUuid:uuid]
+        CMCamment *camment = [[[[[[[[cammentBuilder withUuid:uuid]
                 withShowUuid:[CMStore instance].currentShowMetadata.uuid]
                 withUserGroupUuid:groupUUID]
                 withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
                 withLocalAsset:asset]
+                withShowAt:@([CMStore instance].showTimestamp)]
                 withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
                                                                  isWatched:YES]]
                 build];
@@ -517,11 +530,12 @@
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
-    CMCamment *cammentToUpload = [[[[[[[CMCammentBuilder new] withUuid:uuid]
+    CMCamment *cammentToUpload = [[[[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
             withShowUuid:[CMStore instance].currentShowMetadata.uuid]
             withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
             withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
+            withShowAt:@([CMStore instance].showTimestamp)]
             build];
     [self.cammentsBlockNodePresenter updateCammentData:cammentToUpload];
     [self.interactor uploadCamment:cammentToUpload];

@@ -69,6 +69,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic) BOOL shoudForceSynced;
 
+@property(nonatomic) NSTimeInterval showTimestamp;
+
 + (CMStore *)instance;
 
 - (void)setupTweaks;

@@ -13,4 +13,6 @@
 - (void)loadNextPageOfCamments:(NSString *)groupUUID;
 
 - (void)resetPaginationKey;
+
+- (void)fetchCammentsFrom:(NSString *)from to:(NSString *)to groupUuid:(NSString *)uuid;
 @end

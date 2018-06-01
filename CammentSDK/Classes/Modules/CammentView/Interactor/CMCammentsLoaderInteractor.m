@@ -102,39 +102,39 @@
     if (!groupUUID) {return;}
     __weak typeof(self) _weakSelf = self;
     BOOL isFirstPage = [self.paginationKey length] == 0;
-    [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID
-                                                                       timeTo:@"10"
-                                                                        limit:self.cammentsLimit
-                                                                     timeFrom:@"0"
-                                                                      lastKey:self.paginationKey ?: @""]
-            continueWithExecutor:[AWSExecutor mainThreadExecutor]
-                       withBlock:^id(AWSTask<CMAPICammentList *> *t) {
-                           NSLog(@"Loaded");
-                if (!t.error && t.result && [t.result isKindOfClass:[CMAPICammentList class]]) {
-                    _weakSelf.paginationKey = t.result.lastKey;
-                    _weakSelf.canLoadMoreCamments = t.result.lastKey != nil;
-                    NSArray *camments = [t.result items];
-                    NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
-                        CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
-                                initWithDeliveryStatus:[value.delivered boolValue] ? CMCammentDeliveryStatusSeen : CMCammentDeliveryStatusSent
-                                             isWatched:YES];
-                        return [[[[[[[[[[[CMCammentBuilder camment]
-                                withShowUuid:value.showUuid]
-                                withUserGroupUuid:value.userGroupUuid]
-                                withUuid:value.uuid]
-                                withRemoteURL:value.url]
-                                withThumbnailURL:value.thumbnail]
-                                withUserCognitoIdentityId:value.userCognitoIdentityId]
-                                withIsDeleted:NO]
-                                withShouldBeDeleted:NO]
-                                withStatus:cammentStatus] build];
-                    }].array;
-                    [_weakSelf.output didFetchCamments:result canLoadMore:_weakSelf.canLoadMoreCamments firstPage:isFirstPage];
-                } else {
-                    [_weakSelf.output didFailToLoadCamments:t.error];
-                };
-                return nil;
-            }];
+//    [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID
+//                                                                       timeTo:@"10"
+//                                                                        limit:self.cammentsLimit
+//                                                                     timeFrom:@"0"
+//                                                                      lastKey:self.paginationKey ?: @""]
+//            continueWithExecutor:[AWSExecutor mainThreadExecutor]
+//                       withBlock:^id(AWSTask<CMAPICammentList *> *t) {
+//                           NSLog(@"Loaded");
+//                if (!t.error && t.result && [t.result isKindOfClass:[CMAPICammentList class]]) {
+//                    _weakSelf.paginationKey = t.result.lastKey;
+//                    _weakSelf.canLoadMoreCamments = t.result.lastKey != nil;
+//                    NSArray *camments = [t.result items];
+//                    NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
+//                        CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
+//                                initWithDeliveryStatus:[value.delivered boolValue] ? CMCammentDeliveryStatusSeen : CMCammentDeliveryStatusSent
+//                                             isWatched:YES];
+//                        return [[[[[[[[[[[CMCammentBuilder camment]
+//                                withShowUuid:value.showUuid]
+//                                withUserGroupUuid:value.userGroupUuid]
+//                                withUuid:value.uuid]
+//                                withRemoteURL:value.url]
+//                                withThumbnailURL:value.thumbnail]
+//                                withUserCognitoIdentityId:value.userCognitoIdentityId]
+//                                withIsDeleted:NO]
+//                                withShouldBeDeleted:NO]
+//                                withStatus:cammentStatus] build];
+//                    }].array;
+//                    [_weakSelf.output didFetchCamments:result canLoadMore:_weakSelf.canLoadMoreCamments firstPage:isFirstPage];
+//                } else {
+//                    [_weakSelf.output didFailToLoadCamments:t.error];
+//                };
+//                return nil;
+//            }];
 }
 
 - (void)downloadCamment:(CMCamment *)camment {
@@ -161,5 +161,44 @@
     [downloadCammentTask resume];
 }
 
+- (void)fetchCammentsFrom:(NSString *)from to:(NSString *)to groupUuid:(NSString *)uuid {
+    if (!uuid) {return;}
+    __weak typeof(self) _weakSelf = self;
+    DDLogInfo(@"Fetching camments %@-%@", from, to);
+    [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:uuid
+                                                                       timeTo:to
+                                                                        limit:self.cammentsLimit
+                                                                     timeFrom:from
+                                                                      lastKey:self.paginationKey ?: @""]
+            continueWithExecutor:[AWSExecutor mainThreadExecutor]
+                       withBlock:^id(AWSTask<CMAPICammentList *> *t) {
+                           NSLog(@"Loaded");
+                           if (!t.error && t.result && [t.result isKindOfClass:[CMAPICammentList class]]) {
+                               _weakSelf.paginationKey = t.result.lastKey;
+                               _weakSelf.canLoadMoreCamments = t.result.lastKey != nil;
+                               NSArray *camments = [t.result items];
+                               DDLogInfo(@"Fetched %d camments for interval %@-%@", camments.count, from, to);
+                               NSArray *result = [camments.rac_sequence map:^id(CMAPICamment *value) {
+                                   CMCammentStatus *cammentStatus = [[CMCammentStatus alloc]
+                                           initWithDeliveryStatus:[value.delivered boolValue] ? CMCammentDeliveryStatusSeen : CMCammentDeliveryStatusSent
+                                                        isWatched:YES];
+                                   return [[[[[[[[[[[CMCammentBuilder camment]
+                                           withShowUuid:value.showUuid]
+                                           withUserGroupUuid:value.userGroupUuid]
+                                           withUuid:value.uuid]
+                                           withRemoteURL:value.url]
+                                           withThumbnailURL:value.thumbnail]
+                                           withUserCognitoIdentityId:value.userCognitoIdentityId]
+                                           withIsDeleted:NO]
+                                           withShouldBeDeleted:NO]
+                                           withStatus:cammentStatus] build];
+                               }].array;
+                               [_weakSelf.output didFetchCamments:result canLoadMore:NO firstPage:NO];
+                           } else {
+                               [_weakSelf.output didFailToLoadCamments:t.error];
+                           };
+                           return nil;
+                       }];
+}
 
 @end

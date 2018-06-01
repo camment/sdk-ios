@@ -81,5 +81,4 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 - (void)refetchUsersInActiveGroup;
 
-- (void)updateHostUuid:(NSString *)hostUuid forGroup:(NSString *)groupUuid;
 @end

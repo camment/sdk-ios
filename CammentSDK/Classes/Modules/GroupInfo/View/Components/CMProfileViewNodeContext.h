@@ -13,4 +13,6 @@
 @property (nonatomic, weak) id<CMInviteFriendsGroupInfoNodeDelegate> delegate;
 
 @property(nonatomic, copy) void (^onLeaveGroupBlock)();
+@property(nonatomic, copy) void (^onLogout)();
+
 @end

@@ -127,37 +127,33 @@
         }];
     }];
 
-    [message matchNewGroupHost:^(CMNewGroupHostMessage *message) {
-        if (![message.groupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) { return; }
-
-        [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers map:^CMUser*(CMUser *user) {
-            CMUserBuilder *builder = [CMUserBuilder userFromExistingUser:user];
-            NSString *status = user.onlineStatus;
-            if ([user.cognitoUserId isEqualToString:message.hostId]) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSString *toastMessageTemplate = CMLocalized(@"status.new_group_host");
-                    [self.notificationPresenter showToastMessage:[NSString stringWithFormat:toastMessageTemplate, user.username]];
-                });
-
-                status = CMUserOnlineStatus.Broadcasting;
-            } else if ([user.onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
-                status = CMUserOnlineStatus.Offline;
-            }
-            return [[builder withOnlineStatus:status] build];
-        }];
-
-        [CMStore instance].activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:[CMStore instance].activeGroup]
-                withHostCognitoUserId:message.hostId]
-                build];
-    }];
-
     if (shouldPassToObservers) {
         [self.store.serverMessagesSubject sendNext:message];
     }
 }
 
 - (void)handleNewGroupHost:(CMNewGroupHostMessage *)message {
-    [[CMStore instance] updateHostUuid:message.hostId forGroup:message.groupUuid];
+    if (![message.groupUuid isEqualToString:[CMStore instance].activeGroup.uuid]) { return; }
+
+    [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers map:^CMUser*(CMUser *user) {
+        CMUserBuilder *builder = [CMUserBuilder userFromExistingUser:user];
+        NSString *status = user.onlineStatus;
+        if ([user.cognitoUserId isEqualToString:message.hostId]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSString *toastMessageTemplate = CMLocalized(@"status.new_group_host");
+                [self.notificationPresenter showToastMessage:[NSString stringWithFormat:toastMessageTemplate, user.username]];
+            });
+
+            status = CMUserOnlineStatus.Broadcasting;
+        } else if ([user.onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
+            status = CMUserOnlineStatus.Offline;
+        }
+        return [[builder withOnlineStatus:status] build];
+    }];
+
+    [CMStore instance].activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:[CMStore instance].activeGroup]
+            withHostCognitoUserId:message.hostId]
+            build];
 }
 
 - (void)handleNeededPlayerState:(CMNeededPlayerStateMessage *)message {

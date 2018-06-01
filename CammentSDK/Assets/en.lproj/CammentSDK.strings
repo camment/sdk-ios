@@ -86,3 +86,7 @@
 
 "header.text.special_guest" = "Special Host";
 "header.text.camment_chat" = "Camment chat";
+
+"group.created_at" = "Created: %@";
+"alert.logout.title" = "Do you want to logout?";
+

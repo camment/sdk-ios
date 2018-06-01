@@ -17,20 +17,15 @@
 #import "CMInviteFriendsGroupInfoNode.h"
 #import "UIFont+CammentFonts.h"
 
-@interface CMProfileViewNode () <CMSettingsNodeDelegate>
+@interface CMProfileViewNode ()
 
 @property(nonatomic, strong) ASTextNode *usernameTextNode;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
-@property(nonatomic, strong) ASImageNode *fbImageNode;
-@property(nonatomic, strong) ASImageNode *onlineStatusNode;
-@property(nonatomic, strong) ASButtonNode *settingsButtonNode;
+@property(nonatomic, strong) ASButtonNode *logoutButtonNode;
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
-@property(nonatomic, strong) CMSettingsNode *settingsNode;
-
-@property BOOL showSettingsNode;
-
 @property(nonatomic, strong) CMProfileViewNodeContext *context;
 @property(nonatomic, strong) NSString *userId;
+
 @end
 
 @implementation CMProfileViewNode {
@@ -55,29 +50,18 @@
         self.userpicImageNode.clipsToBounds = YES;
         self.userpicImageNode.contentMode = UIViewContentModeScaleAspectFill;
 
-        self.settingsButtonNode = [ASButtonNode new];
-        self.settingsButtonNode.style.height = ASDimensionMake(38.0f);
-        self.settingsButtonNode.style.width = ASDimensionMake(38.0f);
-        [self.settingsButtonNode setContentEdgeInsets:UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f)];
+        self.logoutButtonNode = [ASButtonNode new];
+        self.logoutButtonNode.style.height = ASDimensionMake(38.0f);
+        self.logoutButtonNode.style.width = ASDimensionMake(38.0f);
+        [self.logoutButtonNode setContentEdgeInsets:UIEdgeInsetsMake(10.0f, 10.0f, 10.0f, 10.0f)];
 
-        [self.settingsButtonNode addTarget:self
-                                    action:@selector(tapSettingButton)
+        [self.logoutButtonNode addTarget:self
+                                    action:@selector(tapLogoutButton)
                           forControlEvents:ASControlNodeEventTouchUpInside];
 
         self.bottomSeparatorNode = [ASDisplayNode new];
         self.bottomSeparatorNode.backgroundColor = [UIColorFromRGB(0x4A4A4A) colorWithAlphaComponent:0.3];
         self.bottomSeparatorNode.style.height = ASDimensionMake(1.0f);
-
-        self.fbImageNode = [ASImageNode new];
-        self.fbImageNode.style.height = ASDimensionMake(18.0f);
-        self.fbImageNode.style.width = ASDimensionMake(18.0f);
-
-        self.settingsNode = [CMSettingsNode new];
-        self.settingsNode.shouldDisplayLeaveGroup = context.shouldDisplayLeaveGroupButton;
-        self.settingsNode.delegate = self;
-
-        self.onlineStatusNode = [ASImageNode new];
-        self.onlineStatusNode.contentMode = UIViewContentModeCenter;
 
         self.automaticallyManagesSubnodes = YES;
     }
@@ -85,25 +69,19 @@
     return self;
 }
 
-- (void)tapSettingButton {
-    [self switchSettingsView];
+- (void)tapLogoutButton {
+    if (self.context.onLogout) {
+        self.context.onLogout();
+    }
 }
 
 - (void)didLoad {
     [super didLoad];
     
-    [self.settingsButtonNode setImage:[UIImage imageNamed:@"settings_icn"
+    [self.logoutButtonNode setImage:[UIImage imageNamed:@"logout_button"
                                                  inBundle:[NSBundle cammentSDKBundle]
                             compatibleWithTraitCollection:nil]
                              forState:UIControlStateNormal];
-
-    [self.fbImageNode setImage:[UIImage imageNamed:@"fb_logo"
-                                          inBundle:[NSBundle cammentSDKBundle]
-                     compatibleWithTraitCollection:nil]];
-
-    self.userpicImageNode.userInteractionEnabled = YES;
-    UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(openUserProfile)];
-    [self.userpicImageNode.view addGestureRecognizer:gestureRecognizer];
 
     NSMutableParagraphStyle *mutableParagraphStyle = [NSMutableParagraphStyle new];
     mutableParagraphStyle.alignment = NSTextAlignmentCenter;
@@ -113,9 +91,6 @@
             subscribeNext:^(CMUser *user) {
                 @strongify(self);
 
-                if (!user) {
-                    _showSettingsNode = NO;
-                }
                 self.userId = user.cognitoUserId;
                 self.usernameTextNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
                                                                                        attributes:@{
@@ -131,27 +106,10 @@
                     }
                 }
 
-                [self updateUserStatus];
                 [self setNeedsLayout];
             }];
-
-    [[[RACObserve([CMStore instance], activeGroup) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
-        [self updateUserStatus];
-        [self setNeedsLayout];
-    }];
-    
-    [self updateUserStatus];
 }
 
-- (void)updateUserStatus {
-    NSString *statusIconName = [[CMStore instance].activeGroup.hostCognitoUserId isEqualToString:self.userId] ? @"video_sync_icn" : @"online_status_icn";
-    self.onlineStatusNode.image = [UIImage imageNamed:statusIconName inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
-}
-
-- (void)openUserProfile {
-//    NSURL *url = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://facebook.com/%@", [CMUserSessionController instance].user.fbUserId]];
-//    [[CMOpenURLHelper new] openURL:url];
-}
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
 
@@ -159,27 +117,19 @@
     self.userpicImageNode.style.height = ASDimensionMake(58.0f);
     self.userpicImageNode.cornerRadius = 29.0f;
 
-    _onlineStatusNode.style.width = ASDimensionMake(19.0f);
-    _onlineStatusNode.style.height = ASDimensionMake(14.0f);
-
     ASInsetLayoutSpec *userPicWithInsetsSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 22.0f, .0f, 22.0f)
                                                                                       child:_userpicImageNode];
-    ASOverlayLayoutSpec *fbLogoOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:userPicWithInsetsSpec
-                                                                                 overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f)
-                                                                                                                                child:[ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringY
-                                                                                                                                                                                 sizingOptions:ASCenterLayoutSpecSizingOptionMinimumX
-                                                                                                                                                                                         child:_fbImageNode]]];
 
     NSMutableArray *centerStackChildren = [NSMutableArray new];
     [centerStackChildren addObjectsFromArray:@[
             [ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringX
                                                        sizingOptions:ASCenterLayoutSpecSizingOptionDefault
-                                                               child:fbLogoOverlay],
+                                                               child:userPicWithInsetsSpec],
             [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                     spacing:4.0f
                                              justifyContent:ASStackLayoutJustifyContentCenter
                                                  alignItems:ASStackLayoutAlignItemsCenter
-                                                   children:@[_usernameTextNode, [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(3, 0, 0, 0) child:_onlineStatusNode]]]]
+                                                   children:@[_usernameTextNode]]]
     ];
 
     ASStackLayoutSpec *centerStack = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
@@ -187,31 +137,18 @@
                                                                       justifyContent:ASStackLayoutJustifyContentCenter
                                                                           alignItems:ASStackLayoutAlignItemsStretch
                                                                             children:centerStackChildren];
-    ASInsetLayoutSpec *componentsStack = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(28.0f, 32.0f, 28.0f, 32.0f)
+    ASInsetLayoutSpec *componentsStack = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(28.0f, 32.0f, 15.0f, 32.0f)
                                                                                 child:centerStack];
 
     ASOverlayLayoutSpec *overlayLayout = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:componentsStack
-                                                                                 overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f) child:_settingsButtonNode]];
-    NSArray *childen = @[ _showSettingsNode ? _settingsNode : overlayLayout, _bottomSeparatorNode];
+                                                                                 overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, INFINITY, INFINITY, .0f) child:_logoutButtonNode]];
+    NSArray *childen = @[overlayLayout, _bottomSeparatorNode];
 
     return [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                    spacing:.0f
                                             justifyContent:ASStackLayoutJustifyContentStart
                                                 alignItems:ASStackLayoutAlignItemsStretch
                                                   children:childen];
-}
-
-- (void)settingsNodeDidCloseSettingsView:(CMSettingsNode *)node {
-    [self switchSettingsView];
-}
-
-- (void)switchSettingsView {
-    self.showSettingsNode = !self.showSettingsNode;
-    [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
-}
-
-- (void)settingsNodeDidLogout:(CMSettingsNode *)node {
-    [[CammentSDK instance] logOut];
 }
 
 - (void)animateLayoutTransition:(id<ASContextTransitioning>)context {
@@ -235,10 +172,5 @@
     }];
 }
 
-- (void)settingsNodeDidLeaveTheGroup:(CMSettingsNode *)node {
-    if (self.context.onLeaveGroupBlock) {
-        self.context.onLeaveGroupBlock();
-    }
-}
 
 @end

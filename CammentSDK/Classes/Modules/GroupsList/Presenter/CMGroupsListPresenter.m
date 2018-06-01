@@ -23,6 +23,7 @@
 #import "TLIndexPathUpdates.h"
 #import "CMGroupCellNode.h"
 #import "CMUsersGroupBuilder.h"
+#import <CammentSDK/CammentSDK.h>
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
@@ -77,13 +78,6 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 - (void)setupView {
     [self reloadGroups];
-}
-
-- (void)openGroupAtIndex:(NSInteger)index {
-    CMUsersGroup *group = [self groupAtIndex:index];
-    if (self.delegate && [self.delegate respondsToSelector:@selector(didSelectGroup:)]) {
-        [self.delegate didSelectGroup:group];
-    }
 }
 
 - (void)reloadGroups {
@@ -151,6 +145,10 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 - (void)groupInfoDidPressInviteButton {
     [self handleDidTapInviteFriendsButton];
+}
+
+- (void)groupInfoDidPressBackButton {
+
 }
 
 
@@ -249,6 +247,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
                 context.shouldDisplayLeaveGroupButton = false;
                 context.onLeaveGroupBlock = ^{
                 };
+                context.onLogout = ^{
+                    [self handleDidTapLogoutButton];
+                };
                 context.delegate = self;
 
                 cellNodeBlock = ^ASCellNode *() {
@@ -308,6 +309,21 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 - (void)handleDidTapContinueTutorialButton {
     [[[CMStore instance] startTutorial] sendNext:@YES];
+}
+
+- (void)handleDidTapLogoutButton {
+    UIAlertController *controller = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.logout.title")
+                                                                        message:CMLocalized(@"Logout from Facebook account will remove your from current discussion.")
+                                                                 preferredStyle:UIAlertControllerStyleAlert];
+
+    [controller addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Logout") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        [[CammentSDK instance] logOut];
+    }]];
+
+    [controller addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
+    }]];
+
+    [[[CammentSDK instance] sdkUIDelegate] cammentSDKWantsPresentViewController:controller];
 }
 
 @end

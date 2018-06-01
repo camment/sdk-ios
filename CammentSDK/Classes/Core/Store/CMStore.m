@@ -282,12 +282,4 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     
 }
 
-- (void)updateHostUuid:(NSString *)hostUuid forGroup:(NSString *)groupUuid {
-    if ([self.activeGroup.uuid isEqualToString:groupUuid]) {
-        self.activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:self.activeGroup]
-                withHostCognitoUserId:hostUuid]
-                build];
-    }
-}
-
 @end

@@ -23,6 +23,7 @@
 #import "CammentSDK.h"
 #import "CMErrorWireframe.h"
 #import "CMGroupManagementInteractor.h"
+#import "CMVideoSyncInteractor.h"
 
 @interface CMGroupInfoPresenter () <CMGroupInfoUserCellDelegate>
 
@@ -134,10 +135,12 @@
 
     CMUser *user = [self.dataModel itemAtIndexPath:indexPath];
 
-    BOOL showDeleteUserButton = self.haveUserDeletionPermissions && ![user.cognitoUserId isEqualToString:self.ownCognitoId] ;
+    BOOL showDeleteUserButton = self.haveUserDeletionPermissions && ![user.cognitoUserId isEqualToString:self.groupHost] ;
     NSString *onlineStatus = user.onlineStatus;
     if ([user.cognitoUserId isEqualToString:self.groupHost]) {
         onlineStatus = CMUserOnlineStatus.Broadcasting;
+    } else if ([onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
+        onlineStatus = CMUserOnlineStatus.Online;
     }
 
     user = [[[CMUserBuilder userFromExistingUser:user] withOnlineStatus:onlineStatus] build];
@@ -400,6 +403,7 @@
 -(void)didSelectGroup:(CMUsersGroup *)group {
     [self.output openGroupDetails:group];
     [[[CMGroupManagementInteractor alloc] initWithOutput:nil store:[CMStore instance]] joinUserToGroup:group];
+    [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded:[CMStore instance].activeGroup.uuid];
 }
 
 @end

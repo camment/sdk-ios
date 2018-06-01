@@ -484,7 +484,7 @@
                                                                       action:[[CMDisplayCammentPresentationAction alloc]
                                                                               initWithItem:[CMCammentsBlockItem cammentWithCamment:item]]];
     }]];
-    
+
     if (self.cammentBatchContext) {
         [self.cammentBatchContext completeBatchFetching:YES];
     }

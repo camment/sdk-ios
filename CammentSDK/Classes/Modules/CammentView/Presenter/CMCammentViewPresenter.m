@@ -69,7 +69,7 @@
 }
 
 - (void)dealloc {
-    
+    [[CammentSDK instance] leaveCurrentChatGroup];
 }
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata

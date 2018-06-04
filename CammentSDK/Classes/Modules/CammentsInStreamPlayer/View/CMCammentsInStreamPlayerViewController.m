@@ -55,6 +55,7 @@
 
     CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
     overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
+    overlayLayoutConfig.cammentButtonLayoutVerticalInset = 60.0f;
     _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata
                                                                      overlayLayoutConfig:overlayLayoutConfig];
     _cammentOverlayController.overlayDelegate = self;

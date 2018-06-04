@@ -81,7 +81,15 @@
 
     self.users = [CMStore instance].activeGroupUsers;
     self.users = [[self.users.rac_sequence map:^id _Nullable(CMUser * _Nullable value) {
-        return [[CMUserBuilder userFromExistingUser:value] build];
+        
+        NSString *onlineStatus = value.onlineStatus;
+        if ([value.cognitoUserId isEqualToString:self.groupHost]) {
+            onlineStatus = CMUserOnlineStatus.Broadcasting;
+        } else if ([onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
+            onlineStatus = CMUserOnlineStatus.Online;
+        }
+        
+        return [[[CMUserBuilder userFromExistingUser:value] withOnlineStatus:onlineStatus] build];
     }] filter:^BOOL(CMUser *user) {
         return user.username.length > 0;
     }].array ?: @[];
@@ -136,14 +144,6 @@
     CMUser *user = [self.dataModel itemAtIndexPath:indexPath];
 
     BOOL showDeleteUserButton = self.haveUserDeletionPermissions && ![user.cognitoUserId isEqualToString:self.groupHost] ;
-    NSString *onlineStatus = user.onlineStatus;
-    if ([user.cognitoUserId isEqualToString:self.groupHost]) {
-        onlineStatus = CMUserOnlineStatus.Broadcasting;
-    } else if ([onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
-        onlineStatus = CMUserOnlineStatus.Online;
-    }
-
-    user = [[[CMUserBuilder userFromExistingUser:user] withOnlineStatus:onlineStatus] build];
     __weak typeof(self) delegate = self;
     cellNodeBlock = ^ASCellNode *() {
         CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithUser:user

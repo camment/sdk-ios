@@ -128,9 +128,9 @@
     return YES;
 }
 
-- (NSArray *)videoPlayerNodeNeededDefaultControls:(ASVideoPlayerNode *)videoPlayer {
-    return @[];
-}
+//- (NSArray *)videoPlayerNodeNeededDefaultControls:(ASVideoPlayerNode *)videoPlayer {
+//    return @[];
+//}
 
 - (void)videoPlayerNodeDidStartInitialLoading:(ASVideoPlayerNode *)videoPlayer {
 

@@ -22,6 +22,7 @@
 @property (nonatomic, strong) ASDisplayNode *headerNode;
 @property (nonatomic, strong) ASTextNode *headerTextNode;
 @property (nonatomic, strong) ASButtonNode *headerBackButton;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
 
@@ -32,7 +33,6 @@
     if (self) {
         self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
                                                              layoutFacilitator:nil];
-
         self.inviteFriendsButton = [CMInviteFriendsButton new];
         self.inviteFriendsButton.style.height = ASDimensionMake(44.0f);
         [self.inviteFriendsButton addTarget:self
@@ -58,12 +58,27 @@
         self.headerNode.style.height = ASDimensionMake(44.0f);
 
         self.headerTextNode = [ASTextNode new];
+
         self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
 
     }
 
     return self;
+}
+
+- (void)didLoad {
+    [super didLoad];
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(handleRefreshAction) forControlEvents:UIControlEventValueChanged];
+    self.collectionNode.view.alwaysBounceVertical = YES;
+    [self.collectionNode.view addSubview:self.refreshControl];
+}
+
+- (void)handleRefreshAction {
+    if ([self.delegate respondsToSelector:@selector(groupInfoDidHandleRefreshAction:)]) {
+        [self.delegate groupInfoDidHandleRefreshAction:self.refreshControl];
+    }
 }
 
 - (void)handlebackButtonPress {
@@ -119,5 +134,10 @@
                                                                          }];
     [self setNeedsLayout];
 }
+
+- (void)endRefreshing {
+    [self.refreshControl endRefreshing];
+}
+
 
 @end

@@ -17,4 +17,7 @@
 - (void)openGroupDetails:(CMUsersGroup *)group;
 
 - (void)openGroupsListView;
+
+- (void)hideLoadingIndicator;
+
 @end

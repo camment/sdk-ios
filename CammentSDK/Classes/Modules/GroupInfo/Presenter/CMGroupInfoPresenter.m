@@ -114,6 +114,10 @@
     [self reloadData];
 }
 
+- (void)groupInfoDidHandleRefreshAction:(UIRefreshControl *)refreshControl {
+    [self fetchUsersInActiveGroup];
+}
+
 - (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
     NSURL *infoURL = [[NSURL alloc] initWithString:@"http://camment.tv"];
     [[CMOpenURLHelper new] openURL:infoURL];
@@ -270,15 +274,26 @@
     }];
 }
 
+- (void)fetchUsersInActiveGroup {
+    [self.interactor fetchUsersInGroup:[CMStore instance].activeGroup.uuid];
+}
+
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
  didFailToFetchUsersInGroup:(NSError *)group
 {
     DDLogError(@"failed to fetch users in group %@",group);
+    [self.output hideLoadingIndicator];
 }
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
-              didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group
-{}
+              didFetchUsers:(NSArray<CMUser *> *)users
+                    inGroup:(NSString *)group
+{
+    [self.output hideLoadingIndicator];
+    if ([group isEqualToString:[CMStore instance].activeGroup.uuid]) {
+        [CMStore instance].activeGroupUsers = users;
+    }
+}
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor
         didFailToDeleteUser:(CMUser *)user

@@ -84,4 +84,9 @@
                        measurementCompletion:nil];
 }
 
+- (void)hideLoadingIndicator {
+    [self.node.detailsNode endRefreshing];
+}
+
+
 @end

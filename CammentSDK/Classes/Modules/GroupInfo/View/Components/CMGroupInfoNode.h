@@ -15,6 +15,7 @@
 @protocol CMGroupInfoNodeDelegate<CMInviteFriendsGroupInfoNodeDelegate,ASCollectionDelegate, ASCollectionDataSource, UICollectionViewDelegateFlowLayout>
 
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
+- (void)groupInfoDidHandleRefreshAction:(UIRefreshControl *)refreshControl;
 - (void)groupInfoDidPressInviteButton;
 - (void)groupInfoDidPressBackButton;
 
@@ -25,4 +26,6 @@
 @property (nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
 
 - (void)updateWithGroup:(CMUsersGroup *)group;
+- (void)endRefreshing;
+
 @end

@@ -109,6 +109,7 @@
     [self.delegate useCell:self didHandleBlockUserAction:self.user];
 }
 
+
 - (void)didLoad {
     [super didLoad];
 

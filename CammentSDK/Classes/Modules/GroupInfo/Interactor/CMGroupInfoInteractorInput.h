@@ -17,8 +17,8 @@
 
 - (void)deleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group;
 
-- (void)blockUser:(CMUser *)user group:(CMUsersGroup *)group;
+- (void)blockUser:(NSString *)user group:(CMUsersGroup *)group;
 
-- (void)unblockUser:(CMUser *)user group:(CMUsersGroup *)group;
+- (void)unblockUser:(NSString *)user group:(CMUsersGroup *)group;
 
 @end

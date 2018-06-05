@@ -22,11 +22,11 @@
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didDeleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group;
 
-- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didFailToBlockUser:(CMUser *)user group:(CMUsersGroup *)group error:(NSError *)error;
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didFailToBlockUser:(NSString *)user group:(CMUsersGroup *)group error:(NSError *)error;
 
-- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didBlockUser:(CMUser *)user group:(CMUsersGroup *)group;
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didBlockUser:(NSString *)user group:(CMUsersGroup *)group;
 
-- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didFailToUnblockUser:(CMUser *)user group:(CMUsersGroup *)group error:(NSError *)error;
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didFailToUnblockUser:(NSString *)user group:(CMUsersGroup *)group error:(NSError *)error;
 
-- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didUnblockUser:(CMUser *)user group:(CMUsersGroup *)group;
+- (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor didUnblockUser:(NSString *)user group:(CMUsersGroup *)group;
 @end

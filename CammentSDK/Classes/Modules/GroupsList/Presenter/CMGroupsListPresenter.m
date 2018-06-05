@@ -23,6 +23,7 @@
 #import "TLIndexPathUpdates.h"
 #import "CMGroupCellNode.h"
 #import "CMUsersGroupBuilder.h"
+#import <AWSCore/AWSCategory.h>
 #import <CammentSDK/CammentSDK.h>
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
@@ -120,12 +121,16 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
         if (publicGroups.count > 0) {
             [items addObject:@(CMPublicGroupsListHeader)];
-            [items addObjectsFromArray:publicGroups];
+            [items addObjectsFromArray:[publicGroups sortedArrayUsingComparator:^NSComparisonResult(CMUsersGroup * obj1, CMUsersGroup * obj2) {
+                return [[NSDate aws_dateFromString:obj2.timestamp] compare:[NSDate aws_dateFromString:obj1.timestamp]];
+            }]];
         }
 
         if (privateGroups.count > 0) {
             [items addObject:@(CMPrivateGroupsListHeader)];
-            [items addObjectsFromArray:privateGroups];
+            [items addObjectsFromArray:[privateGroups sortedArrayUsingComparator:^NSComparisonResult(CMUsersGroup * obj1, CMUsersGroup * obj2) {
+                return [[NSDate aws_dateFromString:obj2.timestamp] compare:[NSDate aws_dateFromString:obj1.timestamp]];
+            }]];
         }
     }
 

@@ -24,15 +24,16 @@
 #import "CMErrorWireframe.h"
 #import "CMGroupManagementInteractor.h"
 #import "CMVideoSyncInteractor.h"
+#import "CMUsersGroupBuilder.h"
+#import "CMUserCellViewModel.h"
 
 @interface CMGroupInfoPresenter () <CMGroupInfoUserCellDelegate>
 
 @property(nonatomic, weak) ASCollectionNode *collectionNode;
 @property(nonatomic) TLIndexPathDataModel *dataModel;
-@property(nonatomic) NSArray<CMUser *> *users;
+@property(nonatomic) NSArray<CMUserCellViewModel *> *users;
 @property(nonatomic) BOOL haveUserDeletionPermissions;
 @property(nonatomic) NSString *groupHost;
-@property(nonatomic) NSString *ownCognitoId;
 
 @end
 
@@ -44,29 +45,22 @@
         self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
 
         RACSignal *groupOrAuthStateChanged = [RACSignal combineLatest:@[
-                [CMStore instance].authentificationStatusSubject,
-                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged]
+                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged],
+                RACObserve([CMStore instance], activeGroupUsers)
         ]];
         @weakify(self);
         __weak typeof(self) __weakSelf = self;
         [[[groupOrAuthStateChanged
-                takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+                takeUntil:self.rac_willDeallocSignal] deliverOn:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]
                 subscribeNext:^(RACTuple *tuple) {
-                    CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
-
                     typeof(__weakSelf) __strongSelf = __weakSelf;
-                    CMUsersGroup *group = tuple.second;
-                    __strongSelf.ownCognitoId = authStatusChangedEventContext.user.cognitoUserId;
+                    CMUsersGroup *group = tuple.first;
                     __strongSelf.groupHost = group.hostCognitoUserId;
-                    __strongSelf.haveUserDeletionPermissions = group && [group.hostCognitoUserId isEqualToString:authStatusChangedEventContext.user.cognitoUserId];
-                    [__strongSelf reloadData];
+                    __strongSelf.haveUserDeletionPermissions = group && [group.ownerCognitoUserId isEqualToString:[CMStore instance].authentificationStatusSubject.first.user.cognitoUserId];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [__weakSelf reloadData];
+                    });
                 }];
-
-        [[[RACObserve([CMStore instance], activeGroupUsers)
-                takeUntil:self.rac_willDeallocSignal]
-                deliverOnMainThread] subscribeNext:^(NSArray *currentGroupUsers) {
-            [__weakSelf reloadData];
-        }];
     }
 
     return self;
@@ -78,9 +72,7 @@
 
 - (void)reloadData {
     NSMutableArray *items = [NSMutableArray new];
-
-    self.users = [CMStore instance].activeGroupUsers;
-    self.users = [[self.users.rac_sequence map:^id _Nullable(CMUser * _Nullable value) {
+    self.users = [[[CMStore instance].activeGroupUsers.rac_sequence map:^id _Nullable(CMUser * _Nullable value) {
         
         NSString *onlineStatus = value.onlineStatus;
         if ([value.cognitoUserId isEqualToString:self.groupHost]) {
@@ -89,12 +81,17 @@
             onlineStatus = CMUserOnlineStatus.Online;
         }
         
-        return [[[CMUserBuilder userFromExistingUser:value] withOnlineStatus:onlineStatus] build];
-    }] filter:^BOOL(CMUser *user) {
-        return user.username.length > 0;
+        return [CMUserCellViewModel modelWithUuid:value.cognitoUserId
+                                         username:value.username
+                                           avatar:value.userPhoto
+                                     onlineStatus:onlineStatus
+                                      blockStatus:value.blockStatus
+                        shouldDisplayBlockOptions:self.haveUserDeletionPermissions && ![value.cognitoUserId isEqualToString:[CMStore instance].authentificationStatusSubject.first.user.cognitoUserId]];
+    }] filter:^BOOL(CMUserCellViewModel *viewModel) {
+        return viewModel.username.length > 0;
     }].array ?: @[];
 
-    self.users = [self.users sortedArrayUsingComparator:^NSComparisonResult(CMUser *obj1, CMUser *obj2) {
+    self.users = [self.users sortedArrayUsingComparator:^NSComparisonResult(CMUserCellViewModel *obj1, CMUserCellViewModel *obj2) {
         if (![obj1.blockStatus isEqualToString:obj2.blockStatus]) {
             return [obj1.blockStatus isEqualToString:CMUserBlockStatus.Active] ? NSOrderedAscending : NSOrderedDescending;
         }
@@ -141,13 +138,11 @@
 - (ASCellNodeBlock)collectionNode:(ASCollectionNode *)collectionNode nodeBlockForItemAtIndexPath:(NSIndexPath *)indexPath {
     __block ASCellNodeBlock cellNodeBlock = nil;
 
-    CMUser *user = [self.dataModel itemAtIndexPath:indexPath];
+    CMUserCellViewModel *viewModel = [self.dataModel itemAtIndexPath:indexPath];
 
-    BOOL showDeleteUserButton = self.haveUserDeletionPermissions && ![user.cognitoUserId isEqualToString:self.groupHost] ;
     __weak typeof(self) delegate = self;
     cellNodeBlock = ^ASCellNode *() {
-        CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithUser:user
-                                                   showBlockUnblockUserButton:showDeleteUserButton];
+        CMGroupInfoUserCell *cell = [[CMGroupInfoUserCell alloc] initWithCellViewModel:viewModel];
         cell.delegate = delegate;
         return cell;
     };
@@ -158,20 +153,20 @@
 - (void)collectionNode:(ASCollectionNode *)collectionNode didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
 }
 
-- (void)useCell:(CMGroupInfoUserCell *)cell didHandleBlockUserAction:(CMUser *)userToBlock {
+- (void)useCell:(CMGroupInfoUserCell *)cell didHandleBlockUserAction:(CMUserCellViewModel *)userToBlock {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.confirm_block_user.title")
                                                                              message:[NSString stringWithFormat:CMLocalized(@"alert.confirm_block_user.text"), userToBlock.username]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
-            if ([user.cognitoUserId isEqualToString:userToBlock.cognitoUserId]) {
-                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:userToBlock] withBlockStatus:CMUserBlockStatus.Blocked] build];
+            if ([user.cognitoUserId isEqualToString:userToBlock.uuid]) {
+                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:CMUserBlockStatus.Blocked] build];
                 return blockedUser;
             }
             return user;
         }].array;
         [self reloadData];
-        [self.interactor blockUser:userToBlock
+        [self.interactor blockUser:userToBlock.uuid
                              group:[CMStore instance].activeGroup];
     }]];
 
@@ -181,20 +176,20 @@
     [self.output presentViewController:alertController];
 }
 
-- (void)useCell:(CMGroupInfoUserCell *)cell didHandleUnblockUserAction:(CMUser *)userToUnblock {
+- (void)useCell:(CMGroupInfoUserCell *)cell didHandleUnblockUserAction:(CMUserCellViewModel *)userToUnblock {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:CMLocalized(@"alert.confirm_unblock_user.title")
                                                                              message:[NSString stringWithFormat:CMLocalized(@"alert.confirm_unblock_user.text"), userToUnblock.username]
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"Yes") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
         [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
-            if ([user.cognitoUserId isEqualToString:userToUnblock.cognitoUserId]) {
-                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:userToUnblock] withBlockStatus:CMUserBlockStatus.Active] build];
+            if ([user.cognitoUserId isEqualToString:userToUnblock.uuid]) {
+                CMUser *blockedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:CMUserBlockStatus.Active] build];
                 return blockedUser;
             }
             return user;
         }].array;
         [self reloadData];
-        [self.interactor unblockUser:userToUnblock
+        [self.interactor unblockUser:userToUnblock.uuid
                                group:[CMStore instance].activeGroup];
     }]];
 
@@ -313,7 +308,7 @@
                   fromGroup:(CMUsersGroup *)group {}
 
 - (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor
-         didFailToBlockUser:(CMUser *)failedUser
+         didFailToBlockUser:(NSString *)failedUserId
                       group:(CMUsersGroup *)group
                       error:(NSError *)error
 {
@@ -321,13 +316,15 @@
         return;
     }
 
-    [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
-        if ([user.cognitoUserId isEqualToString:failedUser.cognitoUserId]) {
+    NSArray *users = [[CMStore instance].activeGroup.users.rac_sequence map:^CMUser *(CMUser *user) {
+        if ([user.cognitoUserId isEqualToString:failedUserId]) {
             CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:CMUserBlockStatus.Active] build];
             return updatedUser;
         }
         return user;
     }].array;
+    [CMStore instance].activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:[CMStore instance].activeGroup] withUsers:users] build];
+
     [self reloadData];
     [[CMStore instance] refetchUsersInActiveGroup];
 
@@ -340,15 +337,15 @@
         [[CammentSDK instance].sdkUIDelegate cammentSDKWantsPresentViewController:errorViewController];
     }
 
-    DDLogError(@"failed to block failedUser %@ in group %@, error %@",failedUser, group, error);
+    DDLogError(@"failed to block failedUserId %@ in group %@, error %@",failedUserId, group, error);
 }
 
 - (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor
-               didBlockUser:(CMUser *)user
+               didBlockUser:(NSString *)userId
                       group:(CMUsersGroup *)group {}
 
 - (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor
-       didFailToUnblockUser:(CMUser *)failedUser
+       didFailToUnblockUser:(NSString *)failedUserId
                       group:(CMUsersGroup *)group
                       error:(NSError *)error
 {
@@ -356,13 +353,15 @@
         return;
     }
 
-    [CMStore instance].activeGroupUsers = [[CMStore instance].activeGroupUsers.rac_sequence map:^CMUser *(CMUser *user) {
-        if ([user.cognitoUserId isEqualToString:failedUser.cognitoUserId]) {
+    NSArray *users = [[CMStore instance].activeGroup.users.rac_sequence map:^CMUser *(CMUser *user) {
+        if ([user.cognitoUserId isEqualToString:failedUserId]) {
             CMUser *updatedUser = [[[CMUserBuilder userFromExistingUser:user] withBlockStatus:CMUserBlockStatus.Blocked] build];
             return updatedUser;
         }
         return user;
     }].array;
+
+    [CMStore instance].activeGroup = [[[CMUsersGroupBuilder usersGroupFromExistingUsersGroup:[CMStore instance].activeGroup] withUsers:users] build];
     [self reloadData];
     [[CMStore instance] refetchUsersInActiveGroup];
 
@@ -375,11 +374,11 @@
         [[CammentSDK instance].sdkUIDelegate cammentSDKWantsPresentViewController:errorViewController];
     }
 
-    DDLogError(@"failed to unblock failedUser %@ in group %@, error %@", failedUser, group, error);
+    DDLogError(@"failed to unblock failedUserId %@ in group %@, error %@", failedUserId, group, error);
 }
 
 - (void)groupInfoInteractor:(CMGroupInfoInteractor *)interactor
-             didUnblockUser:(CMUser *)user
+             didUnblockUser:(NSString *)userId
                       group:(CMUsersGroup *)group {}
 
 - (void)leaveTheGroup {
@@ -396,6 +395,7 @@
 }
 
 - (void)groupInfoDidPressBackButton {
+    [[CammentSDK instance] leaveCurrentChatGroup];
     [self.output openGroupsListView];
 }
 

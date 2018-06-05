@@ -7,17 +7,16 @@
 #import "UIColorMacros.h"
 #import "CMUserContants.h"
 #import "UIFont+CammentFonts.h"
+#import "CMUserCellViewModel.h"
 #import <AsyncDisplayKit/ASLayoutElement.h>
 
 @interface CMGroupInfoUserCell ()
 @property(nonatomic, strong) ASTextNode *usernameNode;
 
 @property(nonatomic, strong) ASDisplayNode *bottomSeparatorNode;
-@property(nonatomic, strong) CMUser *user;
+@property(nonatomic, strong) CMUserCellViewModel *user;
 @property(nonatomic, strong) ASNetworkImageNode *userpicImageNode;
 @property(nonatomic, strong) ASImageNode *onlineStatusNode;
-@property(nonatomic, readonly) BOOL showBlockUnblockUserButton;
-
 @property(nonatomic, strong) ASButtonNode *blockUserButtonNode;
 @property(nonatomic, strong) ASButtonNode *unblockUserButtonNode;
 
@@ -27,27 +26,25 @@
 
 }
 
-
-- (instancetype)initWithUser:(CMUser *)user showBlockUnblockUserButton:(BOOL)showDeleteUserButton {
+- (instancetype)initWithCellViewModel:(CMUserCellViewModel *)model {
     self = [super init];
     if (self) {
-        self.user = user;
-        _showBlockUnblockUserButton = showDeleteUserButton;
-        
+        self.user = model;
+
         self.backgroundColor = [UIColor whiteColor];
 
         self.userpicImageNode = [ASNetworkImageNode new];
         self.userpicImageNode.clipsToBounds = YES;
         self.userpicImageNode.contentMode = UIViewContentModeScaleAspectFill;
-        
+
         self.usernameNode = [ASTextNode new];
         self.usernameNode.maximumNumberOfLines = 1;
         self.usernameNode.truncationMode = NSLineBreakByTruncatingTail;
-        self.usernameNode.attributedText = [[NSAttributedString alloc] initWithString:user.username ?: @""
-                                                                             attributes:@{
-                                                                                     NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
-                                                                                     NSForegroundColorAttributeName: [UIColor blackColor]
-                                                                             }];
+        self.usernameNode.attributedText = [[NSAttributedString alloc] initWithString:self.user.username ?: @""
+                                                                           attributes:@{
+                                                                                   NSFontAttributeName: [UIFont nunitoMediumWithSize:14],
+                                                                                   NSForegroundColorAttributeName: [UIColor blackColor]
+                                                                           }];
 
         self.bottomSeparatorNode = [ASDisplayNode new];
         self.bottomSeparatorNode.backgroundColor = [UIColorFromRGB(0x4A4A4A) colorWithAlphaComponent:0.3];
@@ -55,21 +52,21 @@
 
         self.blockUserButtonNode = [ASButtonNode new];
         [self.blockUserButtonNode setImage:[UIImage imageNamed:@"block_icon"
-                                                       inBundle:[NSBundle cammentSDKBundle]
-                                  compatibleWithTraitCollection:nil]
-                                   forState:UIControlStateNormal];
-        [self.blockUserButtonNode addTarget:self
-                                      action:@selector(didHandleBlockUserAction)
-                            forControlEvents:ASControlNodeEventTouchUpInside];
-
-        self.unblockUserButtonNode = [ASButtonNode new];
-        [self.unblockUserButtonNode setImage:[UIImage imageNamed:@"unblock_icon"
                                                       inBundle:[NSBundle cammentSDKBundle]
                                  compatibleWithTraitCollection:nil]
                                   forState:UIControlStateNormal];
-        [self.unblockUserButtonNode addTarget:self
-                                     action:@selector(didHandleUnblockUserAction)
+        [self.blockUserButtonNode addTarget:self
+                                     action:@selector(didHandleBlockUserAction)
                            forControlEvents:ASControlNodeEventTouchUpInside];
+
+        self.unblockUserButtonNode = [ASButtonNode new];
+        [self.unblockUserButtonNode setImage:[UIImage imageNamed:@"unblock_icon"
+                                                        inBundle:[NSBundle cammentSDKBundle]
+                                   compatibleWithTraitCollection:nil]
+                                    forState:UIControlStateNormal];
+        [self.unblockUserButtonNode addTarget:self
+                                       action:@selector(didHandleUnblockUserAction)
+                             forControlEvents:ASControlNodeEventTouchUpInside];
 
         self.onlineStatusNode = [ASImageNode new];
         self.onlineStatusNode.contentMode = UIViewContentModeCenter;
@@ -103,6 +100,7 @@
     return self;
 }
 
+
 - (void)didHandleUnblockUserAction {
     [self.delegate useCell:self didHandleUnblockUserAction:self.user];
 }
@@ -123,9 +121,9 @@
 
     self.onlineStatusNode.image = [UIImage imageNamed:userStatusImage inBundle:[NSBundle cammentSDKBundle] compatibleWithTraitCollection:nil];
 
-    if (!self.user.userPhoto) return;
+    if (!self.user.avatar) return;
 
-    NSURL *userpicURL = [[NSURL alloc] initWithString:self.user.userPhoto];
+    NSURL *userpicURL = [[NSURL alloc] initWithString:self.user.avatar];
     if (!userpicURL) return;
     
     [self.userpicImageNode setURL:userpicURL resetToDefault:NO];
@@ -147,7 +145,7 @@
 
     NSMutableArray *stackLayoutChildren = [NSMutableArray arrayWithArray:@[_userpicImageNode, _usernameNode, _onlineStatusNode]];
 
-    if (self.showBlockUnblockUserButton) {
+    if (self.user.shouldDisplayBlockOptions) {
         ASDisplayNode *button = [self.user.blockStatus isEqualToString:CMUserBlockStatus.Active] ? _blockUserButtonNode : _unblockUserButtonNode;
         button.style.preferredSize = CGSizeMake(44.0f, 44.0f);
         ASRatioLayoutSpec *spec = [ASRatioLayoutSpec ratioLayoutSpecWithRatio:1
@@ -157,10 +155,10 @@
     
     ASInsetLayoutSpec * insetSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:
                                      UIEdgeInsetsMake(
-                                                      self.showBlockUnblockUserButton ? .0f : 5.0f,
+                                                      self.user.shouldDisplayBlockOptions ? .0f : 5.0f,
                                                       10.0f,
-                                                      self.showBlockUnblockUserButton ? .0f : 5.0f,
-                                                      self.showBlockUnblockUserButton ? 2.0f : 10.0f)
+                                                      self.user.shouldDisplayBlockOptions ? .0f : 5.0f,
+                                                      self.user.shouldDisplayBlockOptions ? 2.0f : 10.0f)
                                                                            child:[ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
                                                                                                                          spacing:5.0f
                                                                                                                   justifyContent:ASStackLayoutJustifyContentStart

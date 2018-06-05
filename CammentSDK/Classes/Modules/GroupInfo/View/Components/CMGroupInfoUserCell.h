@@ -6,11 +6,12 @@
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 
 @class CMUser, CMGroupInfoUserCell;
+@class CMUserCellViewModel;
 
 @protocol CMGroupInfoUserCellDelegate<NSObject>
 
-- (void)useCell:(CMGroupInfoUserCell *)cell didHandleBlockUserAction:(CMUser *)user;
-- (void)useCell:(CMGroupInfoUserCell *)cell didHandleUnblockUserAction:(CMUser *)user;
+- (void)useCell:(CMGroupInfoUserCell *)cell didHandleBlockUserAction:(CMUserCellViewModel *)user;
+- (void)useCell:(CMGroupInfoUserCell *)cell didHandleUnblockUserAction:(CMUserCellViewModel *)user;
 
 @end
 
@@ -18,6 +19,6 @@
 
 @property (nonatomic, weak) id<CMGroupInfoUserCellDelegate> delegate;
 
-- (instancetype)initWithUser:(CMUser *)user showBlockUnblockUserButton:(BOOL)showDeleteUserButton;
+- (id)initWithCellViewModel:(CMUserCellViewModel *)model;
 
 @end

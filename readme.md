@@ -80,10 +80,11 @@ Add following code to your Info.plist to prevent any restrictions from iOS:
 
 ### Copy custom font to your Xcode project
 
-Camment SDK uses custom font `Nunito-Medium.ttf`.
-Make sure you downloaded this font from our github and added the file to your project.
-You can download the font by the link
+Camment SDK uses custom fonts `Nunito-Medium.ttf` and `Nunito-Light`.
+Make sure you downloaded fonts from our github and added the files to your project.
+You can download fonts by the links
 https://github.com/camment/sdk-ios/blob/master/Nunito-Medium.ttf
+https://github.com/camment/sdk-ios/blob/master/Nunito-Light.ttf
 
 Declare custom font in Info.plist file
 
@@ -91,6 +92,7 @@ Declare custom font in Info.plist file
 <key>UIAppFonts</key>
 <array>
   <string>Nunito-Medium.ttf</string>
+  <string>Nunito-Light.ttf</string>
 </array>
 ```
 
@@ -103,7 +105,7 @@ Open `AppDelegate.m` and import CammentSDK header:
 ```
 
 Add following lines to AppDelegate
-```objc
+```obj-c
 
 @interface AppDelegate ()
 @property (nonatomic, strong) CMFacebookIdentityProvider *facebookIdentityProvider;
@@ -151,7 +153,7 @@ Add following lines to AppDelegate
 ```
 
 Configure CammentSDK with an `API Key`
-```objc
+```obj-c
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     ...
     NSString *apiKey = @"YOUR_API_KEY";
@@ -259,4 +261,76 @@ Implement `CMCammentSDKDelegate` wherever it works better for your app. General 
   NSString *showUuid = metadata.uuid;
   // open video player for show with uuid
 }
+```
+
+## Synchronizing video between group members
+CammentSDK makes sure everyone is watching a show at the same time. All the synchronization happens automatically, you just have to make sure that your video player reacts properly to all the events coming from SDK.
+The first step is providing SDK current playback state from your player. We would recommend to do it every second and immediately when a user presses play/pause buttons, so when playback state has changed you should call
+
+```obj-c
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = @"YOUR_SHOW_IDENTIFIER";
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:isPlaying
+                                                      show:metadata
+                                                 timestamp:timeInterval];
+```
+`isPlaying` here indicates if your video player paused or not
+`metadata` is your show metadata object, you use the same to configure camment overlay
+`timeInterval` is current playing position in seconds starting from show beginning
+
+Take a look on a few examples.
+
+```obj-c
+    // User watched your show for one minute
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES
+                                                      show:metadata
+                                                 timestamp:60];
+
+    // Then paused video
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:NO
+                                                      show:metadata
+                                                 timestamp:60];
+    // Then started  again
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES
+                                                      show:metadata
+                                                 timestamp:60];
+    // After 1 second
+    [[CammentSDK instance] updateVideoStreamStateIsPlaying:YES
+                                                      show:metadata
+                                                 timestamp:61];
+    // etc
+```
+
+Sometimes CammentSDK has to know your player state immediately, without waiting until you call the update method. In order to provide player state by request you should implement the required method of `CammentOverlayControllerDelegate` protocol:
+
+```obj-c
+- (void)cammentOverlayDidRequestPlayerState:(void (^)(BOOL isPlaying, NSTimeInterval timestamp))playerStateBlock {
+    // call playerStateBlock with current player state
+    // Notice that CammentSDK don't need metadata object at the moment
+    playerStateBlock(YES, 62);
+}
+```
+
+By this moment we have established one-way communication between your video player and CammentSDK, so it knows all about the player position and state. If we want to synchronize video between multiple client SDK should have a way to change player state. To do that your application should subscribe to notification about new timestamps from CammentSDK:
+
+```obj-c
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    ...
+    // here you setup CammentSDK overlay
+    ...
+    // Subscribe to notification about player state
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didReceiveNewTimestamp:) name:CMNewTimestampAvailableVideoPlayerNotification object:[CammentSDK instance]];
+    }
+
+- (void)didReceiveNewTimestamp:(NSNotification *)notification {
+    NSDictionary *dict = notification.userInfo;
+    NSTimeInterval newTimestamp = [(NSNumber *)dict[CMNewTimestampKey] doubleValue];
+    BOOL isPlaying = [(NSNumber *)dict[CMVideoIsPlayingKey] boolValue];
+
+    // here you already know if player should be paused or not and the right timestamp
+    // pass those values to your video player
+}  
+
 ```

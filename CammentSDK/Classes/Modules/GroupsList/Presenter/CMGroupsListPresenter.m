@@ -144,6 +144,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)groupInfoDidPressCreateGroupButton {
+    [[CammentSDK instance] leaveCurrentChatGroup];
     [self handleDidTapInviteFriendsButton];
 }
 

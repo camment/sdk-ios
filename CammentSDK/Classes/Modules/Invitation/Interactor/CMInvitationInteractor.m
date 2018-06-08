@@ -27,11 +27,12 @@
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
     CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
     usergroupInRequest.showId = [CMStore instance].currentShowMetadata.uuid;
+
     if (!usergroupInRequest.showId) {
         NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
                                              code:0
                                          userInfo:@{
-                                                    NSLocalizedFailureErrorKey : @"Could not create group while show uuid is empty"
+                                                    NSLocalizedFailureReasonErrorKey : @"Could not create group while show uuid is empty"
                                                     }];
         return [AWSTask taskWithError:error];
     }

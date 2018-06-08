@@ -26,6 +26,8 @@
 #import "CMVideoSyncInteractor.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMUserCellViewModel.h"
+#import "CMAPIDevcammentClient+defaultApiClient.h"
+#import <AWSCore/AWSCore.h>
 
 @interface CMGroupInfoPresenter () <CMGroupInfoUserCellDelegate>
 
@@ -416,6 +418,16 @@
 
 
 -(void)didSelectGroup:(CMUsersGroup *)group {
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    CMAPIShowUuid *showUuid = [CMAPIShowUuid new];
+    showUuid.showUuid = [CMStore instance].currentShowMetadata.uuid;
+    [[client usergroupsGroupUuidUsersPost:group.uuid body:showUuid] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {
+        if (t.error) {
+            DDLogError(@"Couldn't join show %@", t.error);
+        }
+        return nil;
+    }];
+    
     [self.output openGroupDetails:group];
     [[[CMGroupManagementInteractor alloc] initWithOutput:nil store:[CMStore instance]] joinUserToGroup:group];
     [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded:[CMStore instance].activeGroup.uuid];

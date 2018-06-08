@@ -68,7 +68,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
             NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
                                                       code:CMCammentViewInteractorErrorMissingRequiredParameters
                                              userInfo:@{
-                    NSLocalizedFailureErrorKey : @"Could not upload camment while show uuid is empty"
+                    NSLocalizedFailureReasonErrorKey : @"Could not upload camment while show uuid is empty"
             }];
             [subscriber sendError:error];
             return nil;

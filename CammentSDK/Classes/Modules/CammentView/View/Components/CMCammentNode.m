@@ -33,7 +33,7 @@
         self.videoPlayerNode.cornerRoundingType = ASCornerRoundingTypeDefaultSlowCALayer;
         self.videoPlayerNode.clipsToBounds = YES;
 
-        if (!_camment.thumbnailURL) {
+        if (!_camment.thumbnailURL || _camment.localURL) {
             _videoPlayerNode.imageModificationBlock = ^UIImage *(UIImage *image) {
 
                 CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
@@ -71,7 +71,7 @@
     
     [self setVideoAsset];
     
-    if (_camment.thumbnailURL) {
+    if (_camment.thumbnailURL && !_camment.localURL) {
         [_videoPlayerNode setURL:[[NSURL alloc] initWithString:_camment.thumbnailURL]];
     }
 }

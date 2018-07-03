@@ -25,6 +25,7 @@
 #import "CMUsersGroupBuilder.h"
 #import <AWSCore/AWSCategory.h>
 #import <CammentSDK/CammentSDK.h>
+#import "CMAnalytics.h"
 
 typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     CMGroupInfoSectionUserProfile,
@@ -145,6 +146,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 - (void)groupInfoDidPressCreateGroupButton {
     [[CammentSDK instance] leaveCurrentChatGroup];
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCreateGroup];
     [self handleDidTapInviteFriendsButton];
 }
 

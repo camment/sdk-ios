@@ -82,6 +82,9 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
         [RACObserve(self, isOnboardingSkipped) subscribeNext:^(NSNumber *value) {
             [GVUserDefaults standardUserDefaults].isOnboardingSkipped = value.boolValue;
+            if (value.boolValue) {
+                [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingSkip];
+            }
         }];
 
         [RACObserve(self, playingCammentId) subscribeNext:^(NSString *id) {

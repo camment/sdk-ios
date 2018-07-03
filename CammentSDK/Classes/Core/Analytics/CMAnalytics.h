@@ -11,6 +11,7 @@ extern NSString *kAnalyticsEventShowScreen;
 extern NSString *kAnalyticsEventInvite;
 extern NSString *kAnalyticsEventOpenDeeplink;
 extern NSString *kAnalyticsEventJoinGroup;
+extern NSString *kAnalyticsEventCreateGroup;
 extern NSString *kAnalyticsEventRemovedFromGroup;
 extern NSString *kAnalyticsEventAcceptJoinRequest;
 extern NSString *kAnalyticsEventDeclineJoinRequest;
@@ -20,6 +21,7 @@ extern NSString *kAnalyticsEventCammentPlay;
 extern NSString *kAnalyticsEventCammentDelete;
 extern NSString *kAnalyticsEventOnboardingStart;
 extern NSString *kAnalyticsEventOnboardingEnd;
+extern NSString *kAnalyticsEventOnboardingSkip;
 
 @interface CMAnalytics : NSObject
 

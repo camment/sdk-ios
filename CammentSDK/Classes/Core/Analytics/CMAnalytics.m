@@ -15,6 +15,7 @@ NSString *kAnalyticsEventShowScreen = @"Show Screen";
 NSString *kAnalyticsEventInvite = @"Invite to Group";
 NSString *kAnalyticsEventOpenDeeplink = @"Open Deeplink";
 NSString *kAnalyticsEventJoinGroup = @"Join Group";
+NSString *kAnalyticsEventCreateGroup = @"Create Group";
 NSString *kAnalyticsEventRemovedFromGroup = @"Removed From Group";
 NSString *kAnalyticsEventAcceptJoinRequest = @"Accept Join Request";
 NSString *kAnalyticsEventDeclineJoinRequest = @"Decline Join Request";
@@ -24,6 +25,7 @@ NSString *kAnalyticsEventCammentPlay = @"Play Camment";
 NSString *kAnalyticsEventCammentDelete = @"Delete Camment";
 NSString *kAnalyticsEventOnboardingStart = @"Onboarding Start";
 NSString *kAnalyticsEventOnboardingEnd = @"Onboarding End";
+NSString *kAnalyticsEventOnboardingSkip = @"Onboarding Skip";
 
 @interface CMAnalytics ()
 @property(nonatomic, strong) AWSMobileAnalytics *analytics;

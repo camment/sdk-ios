@@ -40,6 +40,7 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic) BOOL isOnboardingFinished;
 @property(nonatomic) BOOL isOnboardingSkipped;
+@property(nonatomic) BOOL isFetchingGroupUsers;
 
 @property(nonatomic) CMShowMetadata *currentShowMetadata;
 

@@ -92,8 +92,18 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentPlay];
         }];
 
+        RACSignal *activeGroupUpdateSignal = [[[RACObserve(self, activeGroup)
+                combinePreviousWithStart:self.activeGroup
+                                  reduce:^id(CMUsersGroup *previous, CMUsersGroup *current) {
+                                      return @([previous.uuid isEqualToString:current.uuid]);
+                                  }]
+                ignore:@(YES)]
+                map:^id(id value) {
+                    return self.activeGroup;
+                }];
+
         NSArray *updateGroupsSignals = @[
-                RACObserve(self, activeGroup),
+                activeGroupUpdateSignal,
                 self.userHasJoinedSignal,
                 self.authentificationStatusSubject,
                 RACObserve(self, awsServicesConfigured),
@@ -109,6 +119,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
             }
 
             if (group && group.uuid) {
+                self.isFetchingGroupUsers = YES;
                 [self.groupInfoInteractor fetchUsersInGroup:group.uuid];
                 [self.groupInfoInteractor setActiveGroup:group.uuid];
             } else {
@@ -220,13 +231,14 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 }
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group {
-
+    self.isFetchingGroupUsers = NO;
 }
 
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group {
     if ([group isEqualToString:self.activeGroup.uuid]) {
         self.activeGroupUsers = users;
     }
+    self.isFetchingGroupUsers = NO;
 }
 
 - (void)didFetchUserGroups:(NSArray *)groups {

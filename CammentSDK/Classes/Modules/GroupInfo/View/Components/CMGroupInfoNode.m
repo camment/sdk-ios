@@ -14,6 +14,8 @@
 #import "UIColorMacros.h"
 #import "UIFont+CammentFonts.h"
 #import "CMUsersGroup.h"
+#import <ReactiveObjC/ReactiveObjC.h>
+#import "CMStore.h"
 
 @interface CMGroupInfoNode ()
 
@@ -58,6 +60,14 @@
         self.headerNode.style.height = ASDimensionMake(44.0f);
 
         self.headerTextNode = [ASTextNode new];
+
+        [[[RACObserve([CMStore instance], isFetchingGroupUsers) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *isFetchingGroupUsers) {
+            if (isFetchingGroupUsers.boolValue) {
+                [self.refreshControl beginRefreshing];
+            } else {
+                [self.refreshControl endRefreshing];
+            }
+        }];
 
         self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;

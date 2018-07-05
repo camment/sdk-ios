@@ -90,7 +90,7 @@
                                       blockStatus:value.blockStatus
                         shouldDisplayBlockOptions:self.haveUserDeletionPermissions && ![value.cognitoUserId isEqualToString:[CMStore instance].authentificationStatusSubject.first.user.cognitoUserId]];
     }] filter:^BOOL(CMUserCellViewModel *viewModel) {
-        return viewModel.username.length > 0;
+        return YES;
     }].array ?: @[];
 
     self.users = [self.users sortedArrayUsingComparator:^NSComparisonResult(CMUserCellViewModel *obj1, CMUserCellViewModel *obj2) {

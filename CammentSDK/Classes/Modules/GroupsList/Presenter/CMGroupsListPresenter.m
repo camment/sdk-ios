@@ -55,22 +55,24 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
         RACSignal *groupOrAuthStateChanged = [RACSignal combineLatest:@[
                 [CMStore instance].authentificationStatusSubject,
-                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged]
+                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged],
+                [RACObserve([CMStore instance], currentShowMetadata) distinctUntilChanged]
         ]];
         @weakify(self);
-        [[[groupOrAuthStateChanged
-                takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
-                subscribeNext:^(RACTuple *tuple) {
-                    @strongify(self);
+        [[[[groupOrAuthStateChanged
+                takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] filter:^BOOL(RACTuple *tuple) {
+            return tuple.third != nil;
+        }] subscribeNext:^(RACTuple *tuple) {
+            @strongify(self);
 
-                    CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
-                    self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
+            CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
+            self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
 
-                    [self reloadData];
-                    [self reloadGroups];
-                }];
+            [self reloadData];
+            [self reloadGroups];
+        }];
     }
-    
+
     return self;
 }
 
@@ -92,6 +94,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)didFailToFetchUserGroups:(NSError *)error {
+    DDLogError(@"Couldn't fetch user groups %@", error);
 }
 
 - (void)reloadData {
@@ -165,7 +168,19 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     self.dataModel = dataModel;
 
     TLIndexPathUpdates *updates = [[TLIndexPathUpdates alloc] initWithOldDataModel:oldDataModel
-                                                                  updatedDataModel:self.dataModel];
+                                                                  updatedDataModel:self.dataModel
+                                                       modificationComparatorBlock:^BOOL(id item1, id item2) {
+                                                            return YES;
+                                                       }];
+
+    id item = [self.userGroups.rac_sequence filter:^BOOL(CMUsersGroup * value) {
+        return [value.uuid isEqualToString:[CMStore instance].activeGroup.uuid];
+    }].array.firstObject;
+
+    NSIndexPath *indexPathToHighlight = nil;
+    if (item) {
+        indexPathToHighlight = [dataModel indexPathForItem:item];
+    }
 
     [self.collectionNode performBatchUpdates:^{
 
@@ -226,8 +241,17 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
             }
         }
-    }                             completion:^(BOOL finished) {
-
+    }                             completion:^(BOOL finished)
+    {
+        if (indexPathToHighlight) {
+            [self.collectionNode selectItemAtIndexPath:indexPathToHighlight
+                                              animated:NO
+                                        scrollPosition:UICollectionViewScrollPositionNone];
+        } else {
+            for (NSIndexPath *indexpath in [self.collectionNode indexPathsForSelectedItems]) {
+                [self.collectionNode deselectItemAtIndexPath:indexpath animated:NO];
+            }
+        }
     }];
 }
 

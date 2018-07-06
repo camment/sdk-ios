@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name = "CammentSDK"
-  s.version = "3.0.0"
+  s.version = "3.0.1"
   s.summary = "iOS SDK for camment.tv"
   s.authors = {"Alexander Fedosov"=>"alex@camment.tv"}
   s.homepage = "https://github.com/camment/sdk-ios.git"
   s.description = "Camment is disrupting the second screen experience, replacing it with a patent pending first screen technology.\nOur technology is a simple SDK that allows broadcasters, and anyone with video, whether its streaming or clips, to add a social layer to their streams."
-  s.source = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.0' }
+  s.source = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.1' }
 
   s.ios.deployment_target    = '8.1'
 
@@ -47,7 +47,7 @@ Pod::Spec.new do |s|
   s.dependency  'GVUserDefaults', '~> 1.0'
   s.dependency  'TLIndexPathTools', '~> 0.4'
   s.dependency  'Mixpanel', '~> 3.2'
-  s.dependency  'TBStateMachine', '6.7.2'
+  s.dependency  'TBStateMachine', '6.10.0'
   s.dependency  'FBSDKCoreKit', '~> 4.29'
   s.dependency  'FBSDKLoginKit', '~> 4.29'
 end

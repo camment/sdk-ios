@@ -52,6 +52,12 @@
             return ![value.cognitoUserId isEqualToString:context.user.cognitoUserId];
         }].array.count > 0;
 
+        // if another user joins the group that is not active for the current user now
+        // we do nothing
+        if (!imJoining && ![userJoinedMessage.usersGroup.uuid isEqualToString:self.store.activeGroup.uuid]) {
+            return;
+        }
+
         [self.groupManagementInteractor joinUserToGroup:userJoinedMessage.usersGroup];
 
         if (imJoining) {

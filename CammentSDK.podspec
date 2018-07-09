@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name = "CammentSDK"
-  s.version = "3.0.1"
+  s.version = "3.0.2"
   s.summary = "iOS SDK for camment.tv"
   s.authors = {"Alexander Fedosov"=>"alex@camment.tv"}
   s.homepage = "https://github.com/camment/sdk-ios.git"
   s.description = "Camment is disrupting the second screen experience, replacing it with a patent pending first screen technology.\nOur technology is a simple SDK that allows broadcasters, and anyone with video, whether its streaming or clips, to add a social layer to their streams."
-  s.source = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.1' }
+  s.source = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.2' }
 
   s.ios.deployment_target    = '8.1'
 

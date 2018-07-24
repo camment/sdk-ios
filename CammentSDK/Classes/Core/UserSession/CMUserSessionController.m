@@ -93,7 +93,7 @@ static CMUserSessionController *_instance = nil;
                 }
 
                 _user = [[[CMUserBuilder userFromExistingUser:self.user] withCognitoUserId:t.result] build];
-
+                
                 return [self updateUserProfileInfo];
             }]
             continueWithSuccessBlock:^id(AWSTask<id> *t) {
@@ -118,6 +118,13 @@ static CMUserSessionController *_instance = nil;
 }
 
 - (void)notifyAboutAuthStatusChanged {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"kCammentAdsUserIdHasChangedNotification"
+                                                            object:nil
+                                                          userInfo:@{
+                                                                     @"uuid" : self.user.cognitoUserId ?: [[NSUUID new] UUIDString]
+                                                                     }];
+    });
     [self.authChangedEventSubject sendNext:[self currentAuthenticationContext]];
 }
 

@@ -20,14 +20,17 @@
 #import "GVUserDefaults+CammentSDKConfig.h"
 #import "CMWaitContentNode.h"
 #import "CMAnalytics.h"
+#import "CMABannerView.h"
 
 @interface CMCammentsInStreamPlayerViewController () <CMCammentOverlayControllerDelegate, CMCammentSDKUIDelegate>
 
 @property (nonatomic, strong) CMCammentOverlayController *cammentOverlayController;
 @property(nonatomic) RACDisposable *countDownSignalDisposable;
 @property(nonatomic, assign) BOOL viewIsReady;
+@property(nonatomic, assign) BOOL cammentOverlayWasAdded;
 @property(nonatomic) NSNotification *notification;
 @property(nonatomic, copy) NSString *showUuid;
+@property (nonatomic, weak) CMABannerView *bannerView;
 
 @end
 
@@ -50,19 +53,6 @@
 
     self.view.backgroundColor = [UIColor blackColor];
 
-    CMShowMetadata *metadata = [CMShowMetadata new];
-    metadata.uuid = self.showUuid;
-
-    CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
-    overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
-    overlayLayoutConfig.cammentButtonLayoutVerticalInset = 60.0f;
-    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata
-                                                                     overlayLayoutConfig:overlayLayoutConfig];
-    _cammentOverlayController.overlayDelegate = self;
-    [_cammentOverlayController addToParentViewController:self];
-    [self.view addSubview:[_cammentOverlayController cammentView]];
-    [_cammentOverlayController setContentView:self.contentViewerNode.view];
-
     UISwipeGestureRecognizer *dismissViewControllerGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(dismissViewController)];
     dismissViewControllerGesture.direction = UISwipeGestureRecognizerDirectionRight;
     dismissViewControllerGesture.numberOfTouchesRequired = 2;
@@ -72,6 +62,22 @@
                                              selector:@selector(didReceiveNewTimestamp:)
                                                  name:CMNewTimestampAvailableVideoPlayerNotification
                                                object:[CammentSDK instance]];
+}
+
+- (void)addCammentOverlay {
+    CMShowMetadata *metadata = [CMShowMetadata new];
+    metadata.uuid = self.showUuid;
+    
+    CMCammentOverlayLayoutConfig *overlayLayoutConfig = [CMCammentOverlayLayoutConfig new];
+    overlayLayoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
+    overlayLayoutConfig.cammentButtonLayoutVerticalInset = 60.0f;
+    _cammentOverlayController = [[CMCammentOverlayController alloc] initWithShowMetadata:metadata
+                                                                     overlayLayoutConfig:overlayLayoutConfig];
+    _cammentOverlayController.overlayDelegate = self;
+    [_cammentOverlayController addToParentViewController:self];
+    [self.view addSubview:[_cammentOverlayController cammentView]];
+    [_cammentOverlayController setContentView:self.contentViewerNode.view];
+    _cammentOverlayWasAdded = YES;
 }
 
 - (void)dealloc {
@@ -111,6 +117,11 @@
     CGFloat statusBarHeight = [[UIApplication sharedApplication] statusBarFrame].size.height;
     cammentViewFrame = CGRectMake(.0f, statusBarHeight, cammentViewFrame.size.width, cammentViewFrame.size.height - statusBarHeight);
     [[_cammentOverlayController cammentView] setFrame:cammentViewFrame];
+
+    if (_bannerView) {
+        _bannerView.frame = self.view.bounds;
+    }
+
 }
 
 - (void)dismissViewController {
@@ -119,6 +130,10 @@
 }
 
 - (void)startShow:(CMShow *)show {
+    if (!_cammentOverlayWasAdded) {
+        [self addCammentOverlay];
+    }
+    
     NSDate *startsAt = show.startsAt ? [NSDate dateWithTimeIntervalSince1970:show.startsAt.integerValue] : nil;
     if (startsAt && [[NSDate date] isEarlierThan:startsAt]) {
         self.contentViewerNode = [[CMWaitContentNode alloc] initWithStartDate:startsAt];
@@ -153,6 +168,25 @@
     [_cammentOverlayController setContentView:self.contentViewerNode.view];
     [(id<CMContentViewerNode>)self.contentViewerNode openContentAtUrl:[[NSURL alloc] initWithString:show.url]];
 }
+
+- (void)showPrerollBanner:(CMABanner *)banner completion:(dispatch_block_t)completion {
+    CMABannerView *cmaBannerView = [[CMABannerView alloc] initWithBanner:banner
+                                                     bannerDeletionBlock:^{
+                                                         [UIView animateWithDuration:0.3
+                                                                          animations:^{
+                                                                              self.bannerView.alpha = .0f;
+                                                                          }
+                                                                          completion:^(BOOL finished) {
+                                                                              [self.bannerView removeFromSuperview];
+                                                                              completion();
+                                                                          }];
+                                                     }];
+
+    self.bannerView = cmaBannerView;
+    [self.view addSubview:cmaBannerView];
+    [self.view bringSubviewToFront:cmaBannerView];
+}
+
 
 - (void)cammentOverlayDidStartRecording {
     if ([self.contentViewerNode isKindOfClass:[CMVideoContentPlayerNode class]]) {

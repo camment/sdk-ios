@@ -76,5 +76,6 @@ s.dependency  'TLIndexPathTools', '~> 0.4'
 s.dependency  'Mixpanel', '~> 3.2'
 s.dependency  'TBStateMachine', '~> 6.7'
 s.dependency  'TBStateMachine/DebugSupport'
+s.dependency  'CammentAds'
 
 end

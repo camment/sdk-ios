@@ -12,6 +12,9 @@
 #import "CMAPIDevcammentClient.h"
 #import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMErrorWireframe.h"
+#import "CMACammentAds.h"
+#import "CMAShowMetadata.h"
+#import "CMABanner.h"
 
 @interface CMCammentsInStreamPlayerPresenter ()
 
@@ -41,8 +44,24 @@
 }
 
 - (void)startShow:(CMShow *)show {
-    [self.output hideLoadingHUD];
-    [self.output startShow:show];
+
+    dispatch_block_t startShowBlock = ^{
+        [self.output hideLoadingHUD];
+        [self.output startShow:show];
+    };
+
+    [[CMACammentAds sharedInstance] getPrerollBannerForShowWithMetadata:[CMAShowMetadata new]
+                                                                success:^(CMABanner *banner) {
+                                                                    if (banner) {
+                                                                        [self.output showPrerollBanner:banner completion:startShowBlock];
+                                                                    } else {
+                                                                        startShowBlock();
+                                                                    }
+
+                                                                }
+                                                                failure:^(NSError *error) {
+                                                                    startShowBlock();
+                                                                }];
 }
 
 

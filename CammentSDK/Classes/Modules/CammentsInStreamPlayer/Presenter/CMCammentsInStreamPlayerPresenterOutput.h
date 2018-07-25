@@ -10,9 +10,11 @@
 #import "CMCammentsBlockNode.h"
 
 @class CMShow;
+@class CMABanner;
 
 @protocol CMCammentsInStreamPlayerPresenterOutput <NSObject>
 
 - (void)startShow:(CMShow *)show;
 
+- (void)showPrerollBanner:(CMABanner *)banner completion:(dispatch_block_t)completion;
 @end

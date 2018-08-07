@@ -76,6 +76,10 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
     return self;
 }
 
+- (void)groupListDidHandleRefreshAction:(UIRefreshControl *)refreshControl {
+    [self reloadGroups];
+}
+
 -(void)dealloc{
     
 }

@@ -85,7 +85,7 @@ describe(@"InvitationFlow", ^{
         cmapiUsergroup.timestamp = [@([NSDate new].timeIntervalSince1970) stringValue];
         
         AWSTask *getGroupInfoResult = [AWSTask taskWithResult:cmapiUsergroup];
-        OCMStub([client usergroupsGroupUuidGet:OCMOCK_ANY]).andReturn(getGroupInfoResult);
+        OCMStub([client usergroupsGroupUuidGet:@"groupUUID"]).andReturn(getGroupInfoResult);
         [CMAPIDevcammentClient updateTestableInstance:client];
         
         // stub delegate's methods
@@ -109,7 +109,9 @@ describe(@"InvitationFlow", ^{
             return YES;
         }]]);
         
-        [sdkService openURL:deeplinkURL sourceApplication:nil annotation:nil];
+        [sdkService application:[UIApplication sharedApplication]
+                        openURL:deeplinkURL
+                        options:nil];
 
         OCMVerifyAllWithDelay((id)sdkService, 30);
         OCMVerifyAllWithDelay(delegate, 30);
@@ -165,8 +167,12 @@ describe(@"InvitationFlow", ^{
                 withTimestamp:cmapiUsergroup.timestamp]
                 withInvitationLink:invitationURLString]
                 build];
+        
         [CMStore instance].activeGroup = group;
-        [sdkService openURL:deeplinkURL sourceApplication:nil annotation:nil];
+        
+        [sdkService application:[UIApplication sharedApplication]
+                        openURL:deeplinkURL
+                        options:nil];
         
         OCMVerifyAllWithDelay((id)sdkService, 30);
         OCMVerifyAllWithDelay(delegate, 30);
@@ -215,7 +221,9 @@ describe(@"InvitationFlow", ^{
         }];
         
         [sdkService wakeUpUserSession];
-        [sdkService openURL:deeplinkURL sourceApplication:nil annotation:nil];
+        [sdkService application:[UIApplication sharedApplication]
+                        openURL:deeplinkURL
+                        options:nil];
         
         OCMVerifyAllWithDelay((id)sdkService, 30);
         OCMVerifyAllWithDelay(delegate, 30);

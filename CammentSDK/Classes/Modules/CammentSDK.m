@@ -97,10 +97,4 @@ NSString *const CMVideoIsPlayingKey = @"CMVideoIsPlayingKey";
                             options:options];
 }
 
-- (BOOL)openURL:(NSURL *_Nonnull)url sourceApplication:(NSString *_Nullable)application annotation:(id _Nullable)annotation {
-    return [_sdkService openURL:url
-              sourceApplication:application
-                     annotation:annotation];
-}
-
 @end

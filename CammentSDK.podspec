@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'CammentSDK'
-s.version          = '3.0.2'
+s.version          = '3.0.3'
 s.summary          = 'iOS SDK for camment.tv'
 s.platform = :ios
 
@@ -14,28 +14,12 @@ s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Alexander Fedosov' => 'alex@camment.tv' }
 s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.2' }
 
-s.ios.deployment_target = '8.1'
+s.ios.deployment_target = '9'
 
 s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
-
-s.subspec 'FacebookAuthProvider' do |ss|
-   ss.public_header_files = 'CammentSDK/AuthProviders/Facebook/**/*.h'
-   ss.source_files = 'CammentSDK/AuthProviders/Facebook/**/*.{h,m,mm,cpp}'
-   ss.dependency  'FBSDKCoreKit', '~> 4.29'
-   ss.dependency  'FBSDKLoginKit', '~> 4.29'
-end
-
-s.test_spec 'Tests' do |test_spec|
-    test_spec.source_files = 'CammentSDK/Tests/**/*.{h,m,mm,cpp}'
-    test_spec.dependency  'Specta'
-    test_spec.dependency  'Expecta'
-    test_spec.dependency  'OCMock'
-    test_spec.requires_app_host = true
-end
-
 s.resources = 'CammentSDK/Assets/**/*'
-s.public_header_files = 'CammentSDK/Classes/Public/*.{h}'
 s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
+s.public_header_files = 'CammentSDK/Classes/**/*.{h}'
 
 s.library = 'sqlite3', 'z'
 s.frameworks = [
@@ -57,7 +41,7 @@ s.frameworks = [
 ]
 
 s.dependency  'AMPopTip', '~> 1.5'
-s.dependency  'Texture', '~> 2.6'
+s.dependency  'Texture', '~> 2.7'
 s.dependency  'FLAnimatedImage', '~> 1.0'
 s.dependency  'AWSCognito', '~> 2.6'
 s.dependency  'AWSCognitoIdentityProvider', '~> 2.6'
@@ -76,6 +60,8 @@ s.dependency  'TLIndexPathTools', '~> 0.4'
 s.dependency  'Mixpanel', '~> 3.2'
 s.dependency  'TBStateMachine', '~> 6.7'
 s.dependency  'TBStateMachine/DebugSupport'
+s.dependency  'FBSDKCoreKit', '~> 4.29'
+s.dependency  'FBSDKLoginKit', '~> 4.29'
 s.dependency  'CammentAds'
 
 end

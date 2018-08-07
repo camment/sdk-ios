@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GVUserDefaults.h"
+#import <GVUserDefaults/GVUserDefaults.h>
 
 @interface GVUserDefaults (CammentSDKConfig)
 

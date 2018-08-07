@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import <AWSCore/AWSCognitoIdentity.h>
 #import <AWSS3/AWSS3.h>
-#import "AWSIoT.h"
+#import <AWSIoT/AWSIoT.h>
 #import "AWSIoTDataManager.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 

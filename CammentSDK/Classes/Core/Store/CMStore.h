@@ -7,7 +7,7 @@
 #import "ReactiveObjC.h"
 #import "CMUser.h"
 #import "CMUsersGroup.h"
-#import "FBTweak.h"
+#import <Tweaks/FBTweak.h>
 #import "CMIdentityProvider.h"
 
 @class CMShow;

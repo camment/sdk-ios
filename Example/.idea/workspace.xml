@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="60a9b60c-16f1-4e2c-830b-40516a4e4d53" name="Default" comment="" />
+    <ignored path="$USER_HOME$/Library/Developer/Xcode/DerivedData/CammentSDK-aasebrbkvmodyseoyewjcrbqilqn/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="iphonesimulator_776D84EB-8C4B-40F7-B8A0-38555C191A10" />
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="CMUserSessionContollerTests.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/CMUserSessionContollerTests.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-197">
+              <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+              <folding>
+                <element signature="e#116#141#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMAppServiceInvitationFlowTests.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/CMAppServiceInvitationFlowTests.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="217">
+              <caret line="35" column="17" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="17" />
+              <folding>
+                <element signature="e#108#133#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMTestAppConfig.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/CMTestAppConfig.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="135">
+              <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMTestAppConfig.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Tests/CMTestAppConfig.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="164">
+              <caret line="19" column="47" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMCammentViewInteractorTests.m" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Tests/CMCammentViewInteractorTests.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="159">
+              <caret line="60" column="11" lean-forward="true" selection-start-line="60" selection-start-column="11" selection-end-line="60" selection-end-column="11" />
+              <folding>
+                <element signature="e#163#188#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMCammentViewInteractor.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Modules/CammentView/Interactor/CMCammentViewInteractor.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="25">
+              <caret line="99" column="8" selection-start-line="99" selection-start-column="8" selection-end-line="99" selection-end-column="8" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMUserSessionController.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/UserSession/CMUserSessionController.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="126" column="7" selection-start-line="126" selection-start-column="7" selection-end-line="126" selection-end-column="7" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMFacebookIdentityProvider.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/AuthProviders/Facebook/CMFacebookIdentityProvider.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-505">
+              <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMCognitoFacebookAuthProvider.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Api/Authentication/Providers/Facebook/CMCognitoFacebookAuthProvider.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="193">
+              <caret line="37" column="33" selection-start-line="37" selection-start-column="24" selection-end-line="37" selection-end-column="46" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMAPIDevcammentClient.m" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Api/AWSApi/CMAPIDevcammentClient.m">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="208">
+              <caret line="812" column="37" selection-start-line="812" selection-start-column="37" selection-end-line="812" selection-end-column="61" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/../CammentSDK/Classes/Core/Store/CMStore.h" />
+        <option value="$PROJECT_DIR$/Tests/MockHelpers/CMAPIDevcammentClient+OCMock.m" />
+        <option value="$PROJECT_DIR$/Tests/CMTestAppConfig.h" />
+        <option value="$PROJECT_DIR$/Tests/MockHelpers/CMTestFacebookIdentityProvider.h" />
+        <option value="$PROJECT_DIR$/Tests/CMUserSessionContollerTests.m" />
+        <option value="$PROJECT_DIR$/Tests/MockHelpers/CMCammentUploader+OCMock.h" />
+        <option value="$PROJECT_DIR$/Tests/CMAppServiceTests.m" />
+        <option value="$PROJECT_DIR$/Tests/CMCammentUploaderTests.m" />
+        <option value="$PROJECT_DIR$/Tests/CMAppServiceInvitationFlowTests.m" />
+        <option value="$PROJECT_DIR$/Tests/CMTestAppConfig.m" />
+        <option value="$PROJECT_DIR$/Tests/CMCammentViewInteractorTests.m" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6" fullScreen="true">
+    <option name="width" value="1440" />
+    <option name="height" value="900" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="CammentSDK" type="1d218c8b:XcodeProjectNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="CammentSDK" type="1d218c8b:XcodeProjectNode" />
+              <item name="Tests" type="fcab9f18:XcodeViewNode" />
+            </path>
+            <path>
+              <item name="" type="efc3779f:XcodeRootNode" />
+              <item name="Pods" type="1d218c8b:XcodeProjectNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Cidr.FilesView" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="com.jetbrains.cidr.execution.build.XcodeMessageFilterConfiguration.INFO" value="false" />
+    <property name="com.jetbrains.cidr.execution.build.XcodeMessageFilterConfiguration.NOTE" value="false" />
+    <property name="com.jetbrains.cidr.execution.build.XcodeMessageFilterConfiguration.WARNING" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/CammentSDK.xcworkspace" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="XCTest.Tests">
+    <configuration name="Tests" type="OCUnitRunConfiguration" factoryName="XCTest/Kiwi" PASS_PARENT_ENVS_2="true" PROJECT_NAME="CammentSDK" TARGET_NAME="CammentSDK_Tests" CONFIG_NAME="Debug" SCHEME_NAME="Tests" IS_LOCATION_SIMULATION_ALLOWED="true" LOCATION_SCENARIO_ID="com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier" LOCATION_SCENARIO_TYPE="1" TEST_MODE="SUITE_TEST" XCODE_SKIPPED_TESTS_HASH_CODE="0" />
+    <list>
+      <item itemvalue="Application.CammentSDK-Example" />
+      <item itemvalue="XCTest.Tests" />
+    </list>
+  </component>
+  <component name="TestHistory">
+    <history-entry file="Tests - 2018.08.07 at 15h 12m 47s.xml">
+      <configuration name="Tests" configurationId="OCUnitRunConfiguration" />
+    </history-entry>
+    <history-entry file="Tests - 2018.08.07 at 15h 16m 41s.xml">
+      <configuration name="Tests" configurationId="OCUnitRunConfiguration" />
+    </history-entry>
+    <history-entry file="Tests - 2018.08.07 at 15h 24m 20s.xml">
+      <configuration name="Tests" configurationId="OCUnitRunConfiguration" />
+    </history-entry>
+    <history-entry file="Tests - 2018.08.07 at 15h 24m 27s.xml">
+      <configuration name="Tests" configurationId="OCUnitRunConfiguration" />
+    </history-entry>
+    <history-entry file="Tests - 2018.08.07 at 15h 31m 01s.xml">
+      <configuration name="Tests" configurationId="OCUnitRunConfiguration" />
+    </history-entry>
+    <history-entry file="Tests - 2018.08.07 at 15h 31m 35s.xml">
+      <configuration name="Tests" configurationId="OCUnitRunConfiguration" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1440" height="900" extended-state="6" />
+    <layout>
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Cargo" />
+      <window_info anchor="bottom" id="Messages" weight="0.29090908" />
+      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2739394" />
+      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Terminal" weight="0.32969698" />
+      <window_info id="Designer" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49916527" visible="true" weight="0.24964234" />
+      <window_info id="Structure" order="1" sideWeight="0.5008347" side_tool="true" visible="true" weight="0.24964234" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="right" id="Commander" order="0" weight="0.4" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/Tests/CMAppServiceInvitationFlowTests.m</url>
+          <line>51</line>
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Api/Authentication/Providers/Facebook/CMCognitoFacebookAuthProvider.m</url>
+          <line>36</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Api/Authentication/Providers/Facebook/CMCognitoFacebookAuthProvider.m</url>
+          <line>40</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="3" />
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Store/CMStore.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="14" column="20" lean-forward="true" selection-start-line="14" selection-start-column="20" selection-end-line="14" selection-end-column="20" />
+          <folding>
+            <element signature="e#106#139#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Developer/Xcode/DerivedData/CammentSDK-aasebrbkvmodyseoyewjcrbqilqn/Build/Products/Debug-iphoneos/CammentSDK/CammentSDK.framework/Headers/CMAPIDevcammentClient.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="335" column="53" selection-start-line="335" selection-start-column="30" selection-end-line="335" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Library/Developer/Xcode/DerivedData/CammentSDK-aasebrbkvmodyseoyewjcrbqilqn/Build/Products/Debug-iphoneos/CammentSDK/CammentSDK.framework/Headers/CMCamment.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/MockHelpers/CMAPIDevcammentClient+OCMock.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="34" selection-start-line="7" selection-start-column="34" selection-end-line="7" selection-end-column="34" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/MockHelpers/CMAPIDevcammentClient+OCMock.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="503">
+          <caret line="50" column="39" lean-forward="true" selection-start-line="50" selection-start-column="39" selection-end-line="50" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/MockHelpers/CMCammentSDKMockDelegate.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#115#148#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/MockHelpers/CMCammentUploader+OCMock.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="4" selection-start-line="12" selection-start-column="4" selection-end-line="12" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMAppServiceTests.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="15" column="27" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="27" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMCammentUploaderTests.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="13" column="40" selection-start-line="13" selection-start-column="40" selection-end-line="13" selection-end-column="40" />
+          <folding>
+            <element signature="e#167#192#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Pods/FBSDKCoreKit/FBSDKCoreKit/FBSDKCoreKit/FBSDKTestUsersManager.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="69" column="55" selection-start-line="69" selection-start-column="8" selection-end-line="69" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/MockHelpers/CMTestFacebookIdentityProvider.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="150">
+          <caret line="10" column="11" selection-start-line="10" selection-start-column="11" selection-end-line="10" selection-end-column="11" />
+          <folding>
+            <element signature="e#121#154#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/MockHelpers/CMTestFacebookIdentityProvider.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="113">
+          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Services/CMSDKService.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="228">
+          <caret line="117" column="66" lean-forward="true" selection-start-line="117" selection-start-column="66" selection-end-line="117" selection-end-column="66" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/UserSession/CMUserSessionController.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="126" column="7" selection-start-line="126" selection-start-column="7" selection-end-line="126" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/AuthProviders/Facebook/CMFacebookIdentityProvider.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-505">
+          <caret line="9" column="16" selection-start-line="9" selection-start-column="16" selection-end-line="9" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Api/Authentication/Providers/Facebook/CMCognitoFacebookAuthProvider.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="193">
+          <caret line="37" column="33" selection-start-line="37" selection-start-column="24" selection-end-line="37" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Core/Api/AWSApi/CMAPIDevcammentClient.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="208">
+          <caret line="812" column="37" selection-start-line="812" selection-start-column="37" selection-end-line="812" selection-end-column="61" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMUserSessionContollerTests.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-197">
+          <caret line="20" column="38" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="38" />
+          <folding>
+            <element signature="e#116#141#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMAppServiceInvitationFlowTests.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="35" column="17" selection-start-line="35" selection-start-column="17" selection-end-line="35" selection-end-column="17" />
+          <folding>
+            <element signature="e#108#133#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMTestAppConfig.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" column="11" selection-start-line="9" selection-start-column="11" selection-end-line="9" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMTestAppConfig.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="19" column="47" selection-start-line="19" selection-start-column="47" selection-end-line="19" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../CammentSDK/Classes/Modules/CammentView/Interactor/CMCammentViewInteractor.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="99" column="8" selection-start-line="99" selection-start-column="8" selection-end-line="99" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/CMCammentViewInteractorTests.m">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="159">
+          <caret line="60" column="11" lean-forward="true" selection-start-line="60" selection-start-column="11" selection-end-line="60" selection-end-column="11" />
+          <folding>
+            <element signature="e#163#188#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

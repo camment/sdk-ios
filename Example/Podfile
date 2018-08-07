@@ -1,0 +1,17 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'CammentSDK_Example' do
+  pod 'CammentSDK', :path => '../'
+
+  target 'CammentSDK_Tests' do
+      
+    inherit! :search_paths
+    
+    pod 'Specta'
+    pod 'Expecta'
+    pod 'OCMock'
+    
+  end
+end

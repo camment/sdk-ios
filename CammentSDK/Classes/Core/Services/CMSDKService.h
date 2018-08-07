@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CocoaLumberjack/CocoaLumberjack.h>
 
 @protocol CMCammentSDKDelegate;
 @protocol CMCammentSDKUIDelegate;

@@ -89,18 +89,19 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)reloadGroups {
+    [CMStore instance].isFetchingGroupList = YES;
     [self.interactor fetchUserGroupsForShow:[CMStore instance].currentShowMetadata.uuid];
 }
 
 - (void)groupListInteractor:(id <CMGroupsListInteractorInput>)interactor didFetchUserGroups:(NSArray *)groups {
-    [self.output hideLoadingIndicator];
+    [CMStore instance].isFetchingGroupList = NO;
     self.userGroups = [NSArray arrayWithArray:groups];
     [self reloadData];
 }
 
 - (void)groupListInteractor:(id <CMGroupsListInteractorInput>)interactor didFailToFetchUserGroups:(NSError *)error {
     DDLogError(@"Couldn't fetch user groups %@", error);
-    [self.output hideLoadingIndicator];
+    [CMStore instance].isFetchingGroupList = NO;
 }
 
 - (void)reloadData {

@@ -46,5 +46,8 @@
                        measurementCompletion:nil];
 }
 
+- (void)hideLoadingIndicator {
+    [self.node endRefreshing];
+}
 
 @end

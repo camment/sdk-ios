@@ -14,6 +14,7 @@
 
 - (void)hideCreateGroupButton;
 - (void)showCreateGroupButton;
+- (void)hideLoadingIndicator;
 
 @end
 

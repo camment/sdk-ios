@@ -230,6 +230,14 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     }
 }
 
+- (void)groupListInteractor:(id<CMGroupsListInteractorInput>)interactor didFetchUserGroups:(NSArray *)group {
+    self.isFetchingGroupList = NO;
+}
+
+- (void)groupListInteractor:(id<CMGroupsListInteractorInput>)interactor didFailToFetchUserGroups:(NSError *)error {
+    self.isFetchingGroupList = NO;
+}
+
 - (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group {
     self.isFetchingGroupUsers = NO;
 }

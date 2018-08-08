@@ -10,17 +10,14 @@
 #import "CMGroupAvatarNode.h"
 #import "UIColorMacros.h"
 #import <AWSCore/AWSCategory.h>
-#import "CMStore.h"
 
 @interface CMGroupCellNode ()
 
-@property(nonatomic, strong) ASCollectionNode *collectionNode;
 @property(nonatomic, strong) ASTextNode *groupNameNode;
 @property(nonatomic, strong) ASTextNode *groupCreationDateNode;
 @property(nonatomic, strong) CMGroupAvatarNode *avatarNode;
 @property(nonatomic, strong) ASDisplayNode *backgroundNode;
 @property(nonatomic, strong) ASImageNode *disclosureInidcatorNode;
-@property(nonatomic, strong) UIRefreshControl *refreshControl;
 
 @end
 
@@ -83,13 +80,7 @@
         self.backgroundNode.style.height = ASDimensionMake(44.0f);
         self.clipsToBounds = YES;
         
-        [[[RACObserve([CMStore instance], isFetchingGroupList) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *isFetchingGroupList) {
-            if (isFetchingGroupList.boolValue) {
-                [self.refreshControl beginRefreshing];
-            } else {
-                [self.refreshControl endRefreshing];
-            }
-        }];
+
         
         self.automaticallyManagesSubnodes = YES;
     }
@@ -99,18 +90,9 @@
 
 - (void)didLoad {
     [super didLoad];
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
-    self.collectionNode.view.alwaysBounceVertical = YES;
-    [self.collectionNode.view addSubview:self.refreshControl];
     self.avatarNode.layer.masksToBounds = YES;
 }
 
-- (void)handlerRefreshAction {
-    if ([self.delegate respondsToSelector:@selector(groupListDidHandleRefreshAction:)]) {
-        [self.delegate groupListDidHandleRefreshAction:self.refreshControl];
-    }
-}
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     ASStackLayoutSpec *textsLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical

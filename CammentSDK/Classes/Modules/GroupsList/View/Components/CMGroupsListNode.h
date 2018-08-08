@@ -16,6 +16,7 @@
 
 - (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
 - (void)groupInfoDidPressCreateGroupButton;
+- (void)groupListDidHandleRefreshAction:(UIRefreshControl *)refreshControl;
 
 @end
 
@@ -26,5 +27,7 @@
 @property (nonatomic, strong) CMCreateGroupButton *createNewGroupButton;
 @property (nonatomic, assign) BOOL showCreateGroupButton;
 @property (nonatomic, weak) id<CMGroupListNodeDelegate>delegate;
+
+- (void)endRefreshing;
 
 @end

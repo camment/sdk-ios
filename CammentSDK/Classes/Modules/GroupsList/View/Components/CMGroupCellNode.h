@@ -7,16 +7,9 @@
 
 @class CMUsersGroup;
 
-@protocol CMGroupsListNodeDelegate<ASCollectionDelegate, ASCollectionDataSource, UICollectionViewDelegateFlowLayout>
-
-- (void)groupListDidHandleRefreshAction:(UIRefreshControl *)refreshControl;
-
-@end
-
 @interface CMGroupCellNode : ASCellNode
 
 @property(nonatomic, strong, readonly) CMUsersGroup *group;
-@property (nonatomic, weak) id<CMGroupsListNodeDelegate>delegate;
 
 - (instancetype)initWithGroup:(CMUsersGroup *)group;
 @end

@@ -13,8 +13,12 @@
 #import "CMInviteFriendsButton.h"
 #import "CMGroupInfoCollectionViewDelegate.h"
 #import "UIFont+CammentFonts.h"
+#import "CMStore.h"
 
 @interface CMGroupsListNode ()
+
+@property(nonatomic, strong) UIRefreshControl *refreshControl;
+
 @end
 
 @implementation CMGroupsListNode
@@ -31,13 +35,34 @@
         [self.createNewGroupButton addTarget:self
                                      action:@selector(handleInviteButtonPress) forControlEvents:ASControlNodeEventTouchUpInside];
 
-
+        [[[RACObserve([CMStore instance], isFetchingGroupList) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *isFetchingGroupList) {
+            if (isFetchingGroupList.boolValue) {
+                [self.refreshControl beginRefreshing];
+            } else {
+                [self.refreshControl endRefreshing];
+            }
+        }];
+        
         self.backgroundColor = [UIColor clearColor];
         self.automaticallyManagesSubnodes = YES;
 
     }
 
     return self;
+}
+
+- (void)didLoad {
+    [super didLoad];
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
+    self.collectionNode.view.alwaysBounceVertical = YES;
+    [self.collectionNode.view addSubview:self.refreshControl];
+}
+
+- (void)handlerRefreshAction {
+    if ([self.delegate respondsToSelector:@selector(groupListDidHandleRefreshAction:)]) {
+        [self.delegate groupListDidHandleRefreshAction:self.refreshControl];
+    }
 }
 
 - (void)handleInviteButtonPress {
@@ -71,5 +96,8 @@
     return self.collectionNode.alpha;
 }
 
+- (void)endRefreshing {
+    [self.refreshControl endRefreshing];
+}
 
 @end

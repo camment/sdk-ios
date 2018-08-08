@@ -3,7 +3,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "YapDatabase.h"
+#import <YapDatabase/YapDatabase.h>
 
 
 @interface CMYapDatabaseSerializers : NSObject

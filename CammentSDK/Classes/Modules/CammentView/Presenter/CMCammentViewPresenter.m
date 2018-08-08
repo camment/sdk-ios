@@ -536,14 +536,22 @@
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
-    CMCamment *cammentToUpload = [[[[[[[[CMCammentBuilder new] withUuid:uuid]
+    CMCamment *cammentToUpload = [[[[[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
             withShowUuid:[CMStore instance].currentShowMetadata.uuid]
             withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
             withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
             withShowAt:@([CMStore instance].showTimestamp)]
+            withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
+                                                             isWatched:YES]]
             build];
-    [self.cammentsBlockNodePresenter updateCammentData:cammentToUpload];
+    @weakify(self);
+    [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:cammentToUpload]
+                                        completion:^{
+                                            @strongify(self);
+                                            if (!self) { return; }
+                                            [self sendOnboardingEvent:CMOnboardingEvent.CammentRecorded];
+                                        }];
     [self.interactor uploadCamment:cammentToUpload];
 }
 

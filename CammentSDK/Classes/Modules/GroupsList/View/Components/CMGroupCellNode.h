@@ -7,7 +7,6 @@
 
 @class CMUsersGroup;
 
-
 @interface CMGroupCellNode : ASCellNode
 
 @property(nonatomic, strong, readonly) CMUsersGroup *group;

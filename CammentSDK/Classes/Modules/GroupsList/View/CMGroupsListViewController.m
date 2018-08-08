@@ -46,5 +46,4 @@
                        measurementCompletion:nil];
 }
 
-
 @end

@@ -28,7 +28,7 @@
     AWSTask * task = [[CMAPIDevcammentClient defaultAPIClient] meGroupsGet:uuid];
     if (!task) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.output didFailToFetchUserGroups:nil];
+            [self.output groupListInteractor:self didFailToFetchUserGroups:nil];
         });
         return;
     }
@@ -36,7 +36,7 @@
     [task continueWithBlock:^id(AWSTask<CMAPIUsergroupList *> *t) {
         if (t.error || ![t.result isKindOfClass:[CMAPIUsergroupList class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didFailToFetchUserGroups:t.error];
+                [self.output groupListInteractor:self didFailToFetchUserGroups:t.error];
             });
             return nil;
         }
@@ -62,7 +62,7 @@
         }].array;
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.output didFetchUserGroups:groups];
+            [self.output groupListInteractor:self didFetchUserGroups:groups];
         });
         return nil;
     }];

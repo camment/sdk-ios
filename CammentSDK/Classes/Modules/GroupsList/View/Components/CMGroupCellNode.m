@@ -79,6 +79,9 @@
         self.backgroundNode.backgroundColor = UIColorFromRGB(0xE6E6E6);
         self.backgroundNode.style.height = ASDimensionMake(44.0f);
         self.clipsToBounds = YES;
+        
+
+        
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -89,6 +92,7 @@
     [super didLoad];
     self.avatarNode.layer.masksToBounds = YES;
 }
+
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     ASStackLayoutSpec *textsLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical

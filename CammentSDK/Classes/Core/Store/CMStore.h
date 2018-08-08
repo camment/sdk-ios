@@ -4,7 +4,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ReactiveObjC.h"
+#import <ReactiveObjC/ReactiveObjC.h>
 #import "CMUser.h"
 #import "CMUsersGroup.h"
 #import <Tweaks/FBTweak.h>
@@ -15,7 +15,6 @@
 @class CMInvitation;
 @class CMCammentOverlayLayoutConfig;
 @class CMAuthStatusChangedEventContext;
-@class CMGroupsListInteractor;
 @class CMServerMessage;
 @protocol CMCammentOverlayControllerDelegate;
 
@@ -58,8 +57,6 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 
 @property(nonatomic) BOOL isOfflineMode;
 @property(nonatomic) BOOL awsServicesConfigured;
-
-@property(nonatomic, strong) CMGroupsListInteractor *groupListInteractor;
 
 @property(nonatomic, strong) NSArray *avoidTouchesInViews;
 

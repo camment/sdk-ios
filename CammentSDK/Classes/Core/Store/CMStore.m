@@ -22,7 +22,7 @@
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
-@interface CMStore () <CMGroupInfoInteractorOutput, CMGroupsListInteractorOutput>
+@interface CMStore () <CMGroupInfoInteractorOutput>
 @property(nonatomic, strong) FBTweak *offlineTweak;
 
 @property(nonatomic, strong) CMGroupInfoInteractor *groupInfoInteractor;
@@ -63,9 +63,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
         self.groupInfoInteractor = [CMGroupInfoInteractor new];
         self.groupInfoInteractor.output = self;
-
-        self.groupListInteractor = [CMGroupsListInteractor new];
-        self.groupListInteractor.output = self;
 
         self.isOfflineMode = NO;
         self.awsServicesConfigured = NO;
@@ -239,12 +236,6 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.activeGroupUsers = users;
     }
     self.isFetchingGroupUsers = NO;
-}
-
-- (void)didFetchUserGroups:(NSArray *)groups {
-}
-
-- (void)didFailToFetchUserGroups:(NSError *)error {
 }
 
 - (void)cleanUp {

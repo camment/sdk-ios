@@ -63,11 +63,6 @@
 
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
-
-    if (_camment.localAsset) {
-        _videoPlayerNode.asset = _camment.localAsset;
-        return;
-    }
     
     [self setVideoAsset];
     
@@ -82,10 +77,6 @@
 }
 
 - (void)setVideoAsset {
-    if (_camment.localAsset) {
-        return;
-    }
-
     NSURL *assetURL;
     BOOL localFileExists = NO;
     if (_camment.localURL != nil) {

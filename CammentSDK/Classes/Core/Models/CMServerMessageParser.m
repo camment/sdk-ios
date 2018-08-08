@@ -58,7 +58,6 @@
                                                     thumbnailURL:body[@"thumbnail"]
                                            userCognitoIdentityId:body[@"userCognitoIdentityId"]
                                                           showAt:showAt
-                                                      localAsset:nil
                                                      isMadeByBot:NO
                                                          botUuid:nil
                                                        botAction:nil
@@ -132,7 +131,6 @@
                                                     thumbnailURL:body[@"thumbnail"]
                                            userCognitoIdentityId:body[@"userCognitoIdentityId"]
                                                           showAt:@0
-                                                      localAsset:nil
                                                      isMadeByBot:NO
                                                          botUuid:nil
                                                        botAction:nil

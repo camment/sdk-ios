@@ -1,5 +1,4 @@
-%type name="AVAsset" library="AVFoundation" file="AVAsset"
-CMCamment includes(RMBuilder) {
+CMCamment includes(RMBuilder, RMCoding) {
   NSString* showUuid
   NSString* userGroupUuid
   NSString* uuid
@@ -8,7 +7,6 @@ CMCamment includes(RMBuilder) {
   NSString* thumbnailURL
   NSString* userCognitoIdentityId
   NSNumber* showAt
-  AVAsset* localAsset
   BOOL isMadeByBot
   NSString *botUuid
   NSString *botAction

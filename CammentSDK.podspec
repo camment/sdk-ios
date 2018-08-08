@@ -62,6 +62,8 @@ s.dependency  'TBStateMachine', '~> 6.7'
 s.dependency  'TBStateMachine/DebugSupport'
 s.dependency  'FBSDKCoreKit', '~> 4.29'
 s.dependency  'FBSDKLoginKit', '~> 4.29'
+s.dependency  'YapDatabase', '3.1.1'
+s.dependency  'Bolts'
 s.dependency  'CammentAds'
 
 end

@@ -1,6 +1,6 @@
 %type name="CMCammentDeliveryStatus"
 
-CMCammentStatus {
+CMCammentStatus includes(RMCoding) {
     CMCammentDeliveryStatus(NSInteger) deliveryStatus
     BOOL isWatched
 }

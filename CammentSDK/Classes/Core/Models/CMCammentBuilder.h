@@ -1,7 +1,6 @@
 #import <Foundation/Foundation.h>
 
 @class CMCamment;
-@class AVAsset;
 @class CMCammentStatus;
 
 @interface CMCammentBuilder : NSObject
@@ -27,8 +26,6 @@
 - (instancetype)withUserCognitoIdentityId:(NSString *)userCognitoIdentityId;
 
 - (instancetype)withShowAt:(NSNumber *)showAt;
-
-- (instancetype)withLocalAsset:(AVAsset *)localAsset;
 
 - (instancetype)withIsMadeByBot:(BOOL)isMadeByBot;
 

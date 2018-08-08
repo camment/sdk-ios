@@ -46,6 +46,7 @@ PODS:
     - AWSIoT (~> 2.6)
     - AWSMobileAnalytics (~> 2.6)
     - AWSS3 (~> 2.6)
+    - Bolts
     - CammentAds
     - CocoaLumberjack (~> 3.4)
     - DateTools (~> 2.0)
@@ -62,6 +63,7 @@ PODS:
     - Texture (~> 2.7)
     - TLIndexPathTools (~> 0.4)
     - Tweaks (~> 2.2)
+    - YapDatabase (= 3.1.1)
   - CocoaLumberjack (3.4.2):
     - CocoaLumberjack/Default (= 3.4.2)
     - CocoaLumberjack/Extensions (= 3.4.2)
@@ -111,6 +113,69 @@ PODS:
     - Texture/Core
   - TLIndexPathTools (0.4.4)
   - Tweaks (2.2.0)
+  - YapDatabase (3.1.1):
+    - YapDatabase/Standard (= 3.1.1)
+  - YapDatabase/Standard (3.1.1):
+    - YapDatabase/Standard/Core (= 3.1.1)
+    - YapDatabase/Standard/Extensions (= 3.1.1)
+  - YapDatabase/Standard/Core (3.1.1):
+    - CocoaLumberjack
+  - YapDatabase/Standard/Extensions (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/ActionManager (= 3.1.1)
+    - YapDatabase/Standard/Extensions/AutoView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudCore (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudKit (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FilteredView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Hooks (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ManualView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Relationships (= 3.1.1)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/View (= 3.1.1)
+  - YapDatabase/Standard/Extensions/ActionManager (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/AutoView
+  - YapDatabase/Standard/Extensions/AutoView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/CloudCore (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/CloudKit (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionPool (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionProxy (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/FilteredView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/FullTextSearch (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Hooks (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ManualView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/Relationships (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResultsView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/AutoView
+    - YapDatabase/Standard/Extensions/FullTextSearch
+  - YapDatabase/Standard/Extensions/SecondaryIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/View (3.1.1):
+    - YapDatabase/Standard/Core
 
 DEPENDENCIES:
   - CammentSDK (from `../`)
@@ -135,7 +200,7 @@ SPEC CHECKSUMS:
   AWSS3: 4d857a223704bd956e91a659aec17ba1896ee0a9
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   CammentAds: d76a98c1f4853f5e1718c12cb754b69e48e509ea
-  CammentSDK: 35835cc131f1b3c9de8aca4b4568337f935631d5
+  CammentSDK: 0142b53faa927d9bf8121cb27f55884fda3560fb
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   Expecta: 3b6bd90a64b9a1dcb0b70aa0e10a7f8f631667d5
@@ -156,6 +221,7 @@ SPEC CHECKSUMS:
   Texture: 9d7e38965cf22ccd7cd9c249dd78b3f14e70ab6c
   TLIndexPathTools: 956bf0686bcd5e7dc8e2c408d28e7a312ec268a1
   Tweaks: 0c41be06d41b82a11f515c27711b65d343aa4af6
+  YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
 
 PODFILE CHECKSUM: 578355f5254cf8b105e44c585997a9a74a031dc6
 

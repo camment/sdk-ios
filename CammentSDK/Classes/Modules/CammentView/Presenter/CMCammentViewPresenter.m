@@ -504,27 +504,27 @@
 }
 
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
-    if (asset) {
-        if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
-        NSString *groupUUID = [[CMStore instance].activeGroup uuid];
-        CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
-        CMCamment *camment = [[[[[[[[cammentBuilder withUuid:uuid]
-                withShowUuid:[CMStore instance].currentShowMetadata.uuid]
-                withUserGroupUuid:groupUUID]
-                withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
-                withLocalAsset:asset]
-                withShowAt:@([CMStore instance].showTimestamp)]
-                withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
-                                                                 isWatched:YES]]
-                build];
-        @weakify(self);
-        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
-                                            completion:^{
-                                                @strongify(self);
-                                                if (!self) { return; }
-                                                [self sendOnboardingEvent:CMOnboardingEvent.CammentRecorded];
-                                            }];
-    }
+//    if (asset) {
+//        if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
+//        NSString *groupUUID = [[CMStore instance].activeGroup uuid];
+//        CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
+//        CMCamment *camment = [[[[[[[[cammentBuilder withUuid:uuid]
+//                withShowUuid:[CMStore instance].currentShowMetadata.uuid]
+//                withUserGroupUuid:groupUUID]
+//                withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
+//                withLocalAsset:asset]
+//                withShowAt:@([CMStore instance].showTimestamp)]
+//                withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
+//                                                                 isWatched:YES]]
+//                build];
+//        @weakify(self);
+//        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
+//                                            completion:^{
+//                                                @strongify(self);
+//                                                if (!self) { return; }
+//                                                [self sendOnboardingEvent:CMOnboardingEvent.CammentRecorded];
+//                                            }];
+//    }
 }
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {

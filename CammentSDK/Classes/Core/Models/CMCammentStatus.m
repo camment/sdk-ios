@@ -9,7 +9,19 @@
 
 #import "CMCammentStatus.h"
 
+static __unsafe_unretained NSString * const kDeliveryStatusKey = @"DELIVERY_STATUS";
+static __unsafe_unretained NSString * const kIsWatchedKey = @"IS_WATCHED";
+
 @implementation CMCammentStatus
+
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+  if ((self = [super init])) {
+    _deliveryStatus = [aDecoder decodeIntegerForKey:kDeliveryStatusKey];
+    _isWatched = [aDecoder decodeBoolForKey:kIsWatchedKey];
+  }
+  return self;
+}
 
 - (instancetype)initWithDeliveryStatus:(CMCammentDeliveryStatus)deliveryStatus isWatched:(BOOL)isWatched
 {
@@ -29,6 +41,12 @@
 - (NSString *)description
 {
   return [NSString stringWithFormat:@"%@ - \n\t deliveryStatus: %zd; \n\t isWatched: %@; \n", [super description], _deliveryStatus, _isWatched ? @"YES" : @"NO"];
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+  [aCoder encodeInteger:_deliveryStatus forKey:kDeliveryStatusKey];
+  [aCoder encodeBool:_isWatched forKey:kIsWatchedKey];
 }
 
 - (NSUInteger)hash

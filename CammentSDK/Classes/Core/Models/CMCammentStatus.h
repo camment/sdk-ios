@@ -6,7 +6,7 @@
 #import <Foundation/Foundation.h>
 #import "CMCammentDeliveryStatus.h"
 
-@interface CMCammentStatus : NSObject <NSCopying>
+@interface CMCammentStatus : NSObject <NSCopying, NSCoding>
 
 @property (nonatomic, readonly) CMCammentDeliveryStatus deliveryStatus;
 @property (nonatomic, readonly) BOOL isWatched;

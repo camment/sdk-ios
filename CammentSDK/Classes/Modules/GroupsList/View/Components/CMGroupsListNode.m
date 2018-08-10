@@ -9,6 +9,7 @@
 #import "ASCollectionNode.h"
 #import "ASTableNode.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMAuthStatusChangedEventContext.h"
 #import "CMGroupsListNode.h"
 #import "CMInviteFriendsButton.h"
 #import "CMGroupInfoCollectionViewDelegate.h"
@@ -53,10 +54,31 @@
 
 - (void)didLoad {
     [super didLoad];
-    self.refreshControl = [UIRefreshControl new];
-    [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
-    self.collectionNode.view.alwaysBounceVertical = YES;
-    [self.collectionNode.view addSubview:self.refreshControl];
+    CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
+    if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
+        self.refreshControl = [UIRefreshControl new];
+        [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
+        self.collectionNode.view.alwaysBounceVertical = YES;
+        [self.collectionNode.view addSubview:self.refreshControl];
+    } else {
+        self.refreshControl = nil;
+    }
+    
+    [[[CMStore instance].authentificationStatusSubject
+      takeUntil:self.rac_willDeallocSignal]
+     subscribeNext:^(CMAuthStatusChangedEventContext * _Nullable context) {
+         
+         if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 self.refreshControl = [UIRefreshControl new];
+                 [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
+                 self.collectionNode.view.alwaysBounceVertical = YES;
+                 [self.collectionNode.view addSubview:self.refreshControl];
+             });
+         } else {
+             self.refreshControl = nil;
+         }
+     }];
 }
 
 - (void)handlerRefreshAction {

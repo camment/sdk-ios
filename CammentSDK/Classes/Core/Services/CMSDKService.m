@@ -91,6 +91,21 @@
                                                      name:AWSCognitoIdentityIdChangedNotification
                                                    object:nil];
 
+        [[[[CMStore instance].authentificationStatusSubject
+                takeUntil:self.rac_willDeallocSignal]
+                deliverOnMainThread]
+                subscribeNext:^(CMAuthStatusChangedEventContext *authStatusChangedEventContext) {
+                    if (authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser) {
+                        if (_sdkDelegate && [_sdkDelegate respondsToSelector:@selector(didLogIn)]) {
+                            [_sdkDelegate didLogIn];
+                        }
+                    } else {
+                        if (_sdkDelegate && [_sdkDelegate respondsToSelector:@selector(didLogOut)]) {
+                            [_sdkDelegate didLogOut];
+                        }
+                    }
+                }];
+
         [self clearTmpDirectory];
 
         DDLogDeveloperInfo(@"SDK started");

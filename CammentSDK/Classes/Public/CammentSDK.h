@@ -32,18 +32,17 @@ extern NSString *const CMVideoIsPlayingKey;
 - (void)didOpenInvitationToShow:(CMShowMetadata * _Nonnull)metadata;
 
 /**
- * Calls when user joined to show.
- * @deprecated: use didJoinToShow: instead
- * @param metadata Class provides additional information related to your show
+ * Calls when user logged in to cammentSDK
+ * IMPORTANT: Could be called several times
  */
-- (void)didAcceptInvitationToShow:(CMShowMetadata * _Nonnull)metadata __deprecated;
+- (void)didLogIn;
 
 /**
- * Calls when user accept someone's joining request
- * @deprecated: use didJoinToShow: instead
- * @param metadata Class provides additional information related to your show
+ * Calls when user logged out from cammentSDK
+ * IMPORTANT: Could be called several times
  */
-- (void)didAcceptJoiningRequest:(CMShowMetadata * _Nonnull)metadata __deprecated;
+- (void)didLogOut;
+
 @end
 
 @protocol CMCammentSDKUIDelegate <NSObject>

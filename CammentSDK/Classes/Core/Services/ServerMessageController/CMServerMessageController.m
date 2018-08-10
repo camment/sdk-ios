@@ -226,8 +226,6 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didJoinToShow:)]) {
             [self.sdkDelegate didJoinToShow:metadata];
-        } else if (self.sdkDelegate && [self.sdkDelegate respondsToSelector:@selector(didAcceptInvitationToShow:)]) {
-            [self.sdkDelegate didAcceptInvitationToShow:metadata];
         }
 
         [self.notificationPresenter presentUserJoinedToTheGroupAlert:message];

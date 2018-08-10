@@ -54,28 +54,31 @@
 
 - (void)didLoad {
     [super didLoad];
-    CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
-    if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
-        self.refreshControl = [UIRefreshControl new];
-        [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
-        self.collectionNode.view.alwaysBounceVertical = YES;
-        [self.collectionNode.view addSubview:self.refreshControl];
-    } else {
-        self.refreshControl = nil;
-    }
+//    CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
+//    if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
+//        self.refreshControl = [UIRefreshControl new];
+//        [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
+//        self.collectionNode.view.alwaysBounceVertical = YES;
+//        [self.collectionNode.view addSubview:self.refreshControl];
+//    } else {
+//        self.refreshControl = nil;
+//    }
     
-    [[[CMStore instance].authentificationStatusSubject
-      takeUntil:self.rac_willDeallocSignal]
+    [[[[CMStore instance].authentificationStatusSubject takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
      subscribeNext:^(CMAuthStatusChangedEventContext * _Nullable context) {
          
          if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
-             dispatch_async(dispatch_get_main_queue(), ^{
+             
+             if (!self.refreshControl) {
                  self.refreshControl = [UIRefreshControl new];
                  [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
                  self.collectionNode.view.alwaysBounceVertical = YES;
                  [self.collectionNode.view addSubview:self.refreshControl];
-             });
+                 }
+             
          } else {
+             [self.refreshControl removeFromSuperview];
+             self.collectionNode.view.alwaysBounceVertical = NO;
              self.refreshControl = nil;
          }
      }];

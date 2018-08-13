@@ -32,7 +32,7 @@
                                                              layoutFacilitator:nil];
 
         self.createNewGroupButton = [CMCreateGroupButton new];
-        self.createNewGroupButton.style.height = ASDimensionMake(44.0f);
+        self.createNewGroupButton.style.minHeight = ASDimensionMake(44.0f);
         [self.createNewGroupButton addTarget:self
                                      action:@selector(handleInviteButtonPress) forControlEvents:ASControlNodeEventTouchUpInside];
 
@@ -45,8 +45,8 @@
         }];
         
         self.backgroundColor = [UIColor clearColor];
-        self.automaticallyManagesSubnodes = YES;
-
+        self.displaysAsynchronously = NO;
+        [self addSubnode:self.collectionNode];
     }
 
     return self;
@@ -54,33 +54,15 @@
 
 - (void)didLoad {
     [super didLoad];
-//    CMAuthStatusChangedEventContext *context = [CMStore instance].authentificationStatusSubject.first;
-//    if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
-//        self.refreshControl = [UIRefreshControl new];
-//        [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
-//        self.collectionNode.view.alwaysBounceVertical = YES;
-//        [self.collectionNode.view addSubview:self.refreshControl];
-//    } else {
-//        self.refreshControl = nil;
-//    }
+    
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
+    [self.collectionNode.view addSubview:self.refreshControl];
     
     [[[[CMStore instance].authentificationStatusSubject takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
      subscribeNext:^(CMAuthStatusChangedEventContext * _Nullable context) {
-         
-         if (context.state == CMCammentUserAuthentificatedAsKnownUser) {
-             
-             if (!self.refreshControl) {
-                 self.refreshControl = [UIRefreshControl new];
-                 [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
-                 self.collectionNode.view.alwaysBounceVertical = YES;
-                 [self.collectionNode.view addSubview:self.refreshControl];
-                 }
-             
-         } else {
-             [self.refreshControl removeFromSuperview];
-             self.collectionNode.view.alwaysBounceVertical = NO;
-             self.refreshControl = nil;
-         }
+         self.refreshControl.alpha = @(context.state == CMCammentUserAuthentificatedAsKnownUser).floatValue;
+         self.collectionNode.view.alwaysBounceVertical = context.state == CMCammentUserAuthentificatedAsKnownUser;
      }];
 }
 
@@ -107,10 +89,22 @@
                                                                      justifyContent:ASStackLayoutJustifyContentStart
                                                                          alignItems:ASStackLayoutAlignItemsStretch
                                                                            children: _showCreateGroupButton ? @[_collectionNode, _createNewGroupButton] : @[_collectionNode]];
-    _collectionNode.style.flexGrow = 1;
+    self.collectionNode.style.flexGrow = 1;
     layoutSpec.style.flexGrow = 1;
-
     return layoutSpec;
+}
+
+- (void)setShowCreateGroupButton:(BOOL)showCreateGroupButton {
+    _showCreateGroupButton = showCreateGroupButton;
+    if (showCreateGroupButton && !self.createNewGroupButton.supernode) {
+        [self addSubnode:self.createNewGroupButton];
+    }
+    
+    if (!showCreateGroupButton && self.createNewGroupButton.supernode) {
+        [self.createNewGroupButton removeFromSupernode];
+    }
+    
+    [self setNeedsLayout];
 }
 
 - (void)setAlpha:(CGFloat)alpha {

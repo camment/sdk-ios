@@ -159,7 +159,7 @@
 
 - (void)setupBindings {
     __weak typeof(self) __weakSelf = self;
-    [[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *state) {
+    [[[[RACObserve([CMStore instance], cammentRecordingState) distinctUntilChanged] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *state) {
         typeof(__weakSelf) _self = __weakSelf;
         if (![_self.presenter isCameraSessionConfigured]) { return; }
         _self.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;

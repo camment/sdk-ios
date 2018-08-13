@@ -33,17 +33,13 @@
 }
 
 - (void)hideCreateGroupButton {
+    if (!self.node.showCreateGroupButton) { return; }
     self.node.showCreateGroupButton = NO;
-    [self.node transitionLayoutWithAnimation:YES
-                          shouldMeasureAsync:NO
-                       measurementCompletion:nil];
 }
 
 - (void)showCreateGroupButton {
+    if (self.node.showCreateGroupButton) { return; }
     self.node.showCreateGroupButton = YES;
-    [self.node transitionLayoutWithAnimation:YES
-                          shouldMeasureAsync:NO
-                       measurementCompletion:nil];
 }
 
 @end

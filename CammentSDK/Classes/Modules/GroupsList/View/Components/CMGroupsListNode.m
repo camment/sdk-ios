@@ -9,6 +9,7 @@
 #import "ASCollectionNode.h"
 #import "ASTableNode.h"
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMAuthStatusChangedEventContext.h"
 #import "CMGroupsListNode.h"
 #import "CMInviteFriendsButton.h"
 #import "CMGroupInfoCollectionViewDelegate.h"
@@ -31,7 +32,7 @@
                                                              layoutFacilitator:nil];
 
         self.createNewGroupButton = [CMCreateGroupButton new];
-        self.createNewGroupButton.style.height = ASDimensionMake(44.0f);
+        self.createNewGroupButton.style.minHeight = ASDimensionMake(44.0f);
         [self.createNewGroupButton addTarget:self
                                      action:@selector(handleInviteButtonPress) forControlEvents:ASControlNodeEventTouchUpInside];
 
@@ -44,8 +45,8 @@
         }];
         
         self.backgroundColor = [UIColor clearColor];
-        self.automaticallyManagesSubnodes = YES;
-
+        self.displaysAsynchronously = NO;
+        [self addSubnode:self.collectionNode];
     }
 
     return self;
@@ -53,10 +54,16 @@
 
 - (void)didLoad {
     [super didLoad];
+    
     self.refreshControl = [UIRefreshControl new];
     [self.refreshControl addTarget:self action:@selector(handlerRefreshAction) forControlEvents:UIControlEventValueChanged];
-    self.collectionNode.view.alwaysBounceVertical = YES;
     [self.collectionNode.view addSubview:self.refreshControl];
+    
+    [[[[CMStore instance].authentificationStatusSubject takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+     subscribeNext:^(CMAuthStatusChangedEventContext * _Nullable context) {
+         self.refreshControl.alpha = @(context.state == CMCammentUserAuthentificatedAsKnownUser).floatValue;
+         self.collectionNode.view.alwaysBounceVertical = context.state == CMCammentUserAuthentificatedAsKnownUser;
+     }];
 }
 
 - (void)handlerRefreshAction {
@@ -82,10 +89,22 @@
                                                                      justifyContent:ASStackLayoutJustifyContentStart
                                                                          alignItems:ASStackLayoutAlignItemsStretch
                                                                            children: _showCreateGroupButton ? @[_collectionNode, _createNewGroupButton] : @[_collectionNode]];
-    _collectionNode.style.flexGrow = 1;
+    self.collectionNode.style.flexGrow = 1;
     layoutSpec.style.flexGrow = 1;
-
     return layoutSpec;
+}
+
+- (void)setShowCreateGroupButton:(BOOL)showCreateGroupButton {
+    _showCreateGroupButton = showCreateGroupButton;
+    if (showCreateGroupButton && !self.createNewGroupButton.supernode) {
+        [self addSubnode:self.createNewGroupButton];
+    }
+    
+    if (!showCreateGroupButton && self.createNewGroupButton.supernode) {
+        [self.createNewGroupButton removeFromSupernode];
+    }
+    
+    [self setNeedsLayout];
 }
 
 - (void)setAlpha:(CGFloat)alpha {

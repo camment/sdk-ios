@@ -54,9 +54,17 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
 
         RACSignal *groupOrAuthStateChanged = [RACSignal combineLatest:@[
-                [CMStore instance].authentificationStatusSubject,
-                [RACObserve([CMStore instance], activeGroup) distinctUntilChanged],
-                [RACObserve([CMStore instance], currentShowMetadata) distinctUntilChanged]
+                [[[CMStore instance].authentificationStatusSubject
+                        map:^id(CMAuthStatusChangedEventContext *authStatusChangedEventContext) {
+                    return @(authStatusChangedEventContext.state);
+                }] distinctUntilChanged],
+                [[RACObserve([CMStore instance], activeGroup)
+                        map:^NSString *(CMUsersGroup *  _Nullable activeGroup) {
+                            return activeGroup.uuid;
+                        }] distinctUntilChanged],
+                [[RACObserve([CMStore instance], currentShowMetadata) map:^id(CMShowMetadata * metadata) {
+                    return metadata.uuid;
+                }] distinctUntilChanged]
         ]];
         @weakify(self);
         [[[[groupOrAuthStateChanged
@@ -65,8 +73,8 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
         }] subscribeNext:^(RACTuple *tuple) {
             @strongify(self);
 
-            CMAuthStatusChangedEventContext *authStatusChangedEventContext = tuple.first;
-            self.showProfileInfo = authStatusChangedEventContext.state == CMCammentUserAuthentificatedAsKnownUser;
+            NSNumber *authState = tuple.first;
+            self.showProfileInfo = authState.integerValue == CMCammentUserAuthentificatedAsKnownUser;
 
             [self reloadData];
             [self reloadGroups];

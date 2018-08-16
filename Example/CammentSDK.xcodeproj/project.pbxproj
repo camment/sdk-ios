@@ -97,7 +97,7 @@
 		953304F72119B93500D37595 /* CMAppServiceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAppServiceTests.m; sourceTree = "<group>"; };
 		953304F82119B93500D37595 /* CMAppServiceInvitationFlowTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAppServiceInvitationFlowTests.m; sourceTree = "<group>"; };
 		95A992D6211B13B900C12E71 /* test-camment.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "test-camment.mp4"; sourceTree = "<group>"; };
-		AA770F01B5A933242D0C1EDF /* CammentSDK.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = CammentSDK.podspec; path = ../CammentSDK.podspec; sourceTree = "<group>"; };
+		AA770F01B5A933242D0C1EDF /* CammentSDK.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = CammentSDK.podspec; path = ../CammentSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

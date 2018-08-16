@@ -415,7 +415,7 @@
 - (BOOL)verifyURL:(NSURL *)url {
     NSURLComponents *urlComponents = [NSURLComponents componentsWithURL:url resolvingAgainstBaseURL:YES];
 
-    if ([urlComponents.scheme isEqualToString:@"camment"]
+    if ([urlComponents.scheme hasPrefix:@"camment"]
             && [urlComponents.host isEqualToString:@"group"]) {
         NSArray *components = [urlComponents.path pathComponents];
         if (components.count < 4) {return NO;}

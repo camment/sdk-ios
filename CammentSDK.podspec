@@ -12,7 +12,7 @@ DESC
 s.homepage         = 'https://github.com/alexfedosov/CammentSDK'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Alexander Fedosov' => 'alex@camment.tv' }
-s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.2' }
+s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.3' }
 
 s.ios.deployment_target = '9'
 

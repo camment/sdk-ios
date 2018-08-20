@@ -15,11 +15,11 @@
 
 @implementation CMCammentNode
 
-- (instancetype)initWithCamment:(CMCamment *)camment {
+- (instancetype)init {
     self = [super init];
     if (self) {
-    
-        self.camment = camment;
+        self.backgroundColor = [UIColor lightGrayColor];
+
         self.videoPlayerNode = [ASVideoNode new];
         self.videoPlayerNode.shouldAutorepeat = NO;
         self.videoPlayerNode.shouldAutoplay = NO;
@@ -27,33 +27,11 @@
         self.videoPlayerNode.delegate = self;
         self.videoPlayerNode.userInteractionEnabled = NO;
 
-        self.videoPlayerNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
+        self.videoPlayerNode.borderColor = [UIColor whiteColor].CGColor;
         self.videoPlayerNode.borderWidth = 2.0f;
         self.videoPlayerNode.cornerRadius = 4.0f;
         self.videoPlayerNode.cornerRoundingType = ASCornerRoundingTypeDefaultSlowCALayer;
         self.videoPlayerNode.clipsToBounds = YES;
-
-        if (!_camment.thumbnailURL || _camment.localURL) {
-            _videoPlayerNode.imageModificationBlock = ^UIImage *(UIImage *image) {
-
-                CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
-                CIContext *context = [CIContext contextWithOptions:nil];
-
-                CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
-                [filter setValue:inputImage forKey:kCIInputImageKey];
-                [filter setValue:@(0.0) forKey:kCIInputSaturationKey];
-
-                CIImage *outputImage = filter.outputImage;
-
-                CGImageRef cgImageRef = [context createCGImage:outputImage fromRect:outputImage.extent];
-
-                UIImage *result = [UIImage imageWithCGImage:cgImageRef];
-                CGImageRelease(cgImageRef);
-
-                return result;
-            };
-            
-        }
 
         self.automaticallyManagesSubnodes = YES;
     }
@@ -61,9 +39,45 @@
     return self;
 }
 
+
+- (instancetype)initWithCamment:(CMCamment *)camment {
+    self = [self init];
+    if (self) {
+        self.camment = camment;
+    }
+
+    return self;
+}
+
+- (void)setCamment:(CMCamment *)camment {
+    _camment = camment;
+    if (!_camment.thumbnailURL || _camment.localURL) {
+        _videoPlayerNode.imageModificationBlock = ^UIImage *(UIImage *image) {
+
+            CIImage *inputImage = [CIImage imageWithCGImage:image.CGImage];
+            CIContext *context = [CIContext contextWithOptions:nil];
+
+            CIFilter *filter = [CIFilter filterWithName:@"CIColorControls"];
+            [filter setValue:inputImage forKey:kCIInputImageKey];
+            [filter setValue:@(0.0) forKey:kCIInputSaturationKey];
+
+            CIImage *outputImage = filter.outputImage;
+
+            CGImageRef cgImageRef = [context createCGImage:outputImage fromRect:outputImage.extent];
+
+            UIImage *result = [UIImage imageWithCGImage:cgImageRef];
+            CGImageRelease(cgImageRef);
+
+            return result;
+        };
+    }
+}
+
 - (void)didEnterPreloadState {
     [super didEnterPreloadState];
-    
+
+    if (!_camment) { return; }
+
     [self setVideoAsset];
     
     if (_camment.thumbnailURL && !_camment.localURL) {
@@ -77,6 +91,9 @@
 }
 
 - (void)setVideoAsset {
+
+    if (!_camment) { return; }
+
     NSURL *assetURL;
     BOOL localFileExists = NO;
     if (_camment.localURL != nil) {
@@ -141,15 +158,19 @@
 }
 
 - (void)videoDidPlayToEnd:(ASVideoNode *)videoNode {
-    [[CMStore instance] setPlayingCammentId: kCMStoreCammentIdIfNotPlaying];
+    if (self.onStoppedPlaying) {
+        self.onStoppedPlaying();
+    } else {
+        [[CMStore instance] setPlayingCammentId: kCMStoreCammentIdIfNotPlaying];
+    }
 }
 
 - (void)videoNodeDidStartInitialLoading:(ASVideoNode *)videoNode {
-    self.alpha = 0.2;
+    self.videoPlayerNode.alpha = 0.2;
 }
 
 - (void)videoNodeDidFinishInitialLoading:(ASVideoNode *)videoNode {
-    self.alpha = 1;
+    self.videoPlayerNode.alpha = 1;
 }
 
 @end

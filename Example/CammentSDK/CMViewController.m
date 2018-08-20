@@ -6,6 +6,7 @@
 //  Copyright (c) 2018 Alexander Fedosov. All rights reserved.
 //
 
+#import <CammentSDK/CMSofaView.h>
 #import "CMViewController.h"
 
 @interface CMViewController ()
@@ -17,13 +18,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
+    self.sofaView = [CMSofaView new];
+    [self.view addSubview:self.sofaView];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewWillLayoutSubviews {
+    [super viewWillLayoutSubviews];
+
+    if (@available(iOS 11, *)) {
+        self.sofaView.topInset = self.view.safeAreaInsets.top;
+    } else {
+        self.sofaView.topInset = self.topLayoutGuide.length;
+    }
+
+    self.sofaView.frame = self.view.bounds;
 }
 
 @end

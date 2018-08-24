@@ -3,7 +3,10 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import "SCImageView.h"
 
 @interface CMSofaCameraPreviewView: UIView
+
+@property (nonatomic, strong) SCImageView *imageView;
+
 @end

@@ -11,6 +11,9 @@
 #import "CMCamment.h"
 #import "CMSofaCameraPreviewView.h"
 #import "CMSofaInviteFriendsView.h"
+#import "CMCammentRecorderInteractor.h"
+#import "CMTouchTransparentView.h"
+#import "CMCameraPreviewInteractor.h"
 
 @implementation CMSofaView
 
@@ -25,6 +28,10 @@
         [self addSubview:self.backgroundImageView];
 
         self.cameraPreviewView = [CMSofaCameraPreviewView new];
+        self.activatCameraGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleOnActivateCamera:)];
+        [self.activatCameraGestureRecognizer setEnabled:NO];
+        [self.cameraPreviewView addGestureRecognizer:self.activatCameraGestureRecognizer];
+        [self.cameraPreviewView setUserInteractionEnabled:YES];
         [self addSubview:self.cameraPreviewView];
 
         self.inviteFriendsView = [CMSofaInviteFriendsView new];
@@ -41,7 +48,7 @@
         self.headerTextNode.lineBreakMode = NSLineBreakByTruncatingTail;
         [self addSubview:self.headerTextNode];
 
-        self.dimView = [UIView new];
+        self.dimView = [CMTouchTransparentView new];
         self.dimView.backgroundColor = [UIColor blackColor];
         self.dimView.alpha = .0f;
         [self addSubview:self.dimView];
@@ -69,13 +76,33 @@
                                                                  shouldBeDeleted:NO
                                                                           status:[CMCammentStatus new]];
         [self.influencerCammentNode setDisplaysAsynchronously:NO];
+        
         UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnCamment:)];
         [self.influencerCammentNode.view addGestureRecognizer:gestureRecognizer];
         [self.influencerCammentNode.view setUserInteractionEnabled:YES];
+        
         [self addSubview:self.influencerCammentNode.view];
+
+        self.recorder = [CMCameraPreviewInteractor new];
     }
 
     return self;
+}
+
+- (void)handleOnActivateCamera:(UITapGestureRecognizer *)gestureRecognizer {
+    [self askCameraPermissions];
+}
+
+- (void)didMoveToSuperview {
+    if (self.superview == nil) {
+        return;
+    }
+
+    [self checkCameraPermissions];
+}
+
+- (void)dealloc {
+    [self.recorder releaseCamera];
 }
 
 - (void)checkCameraPermissions {
@@ -95,27 +122,31 @@
 }
 
 - (void)askCameraPermissions {
-    // not determined?!
+    [self.activatCameraGestureRecognizer setEnabled:NO];
     NSString *mediaType = AVMediaTypeVideo;
     [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
         if(granted){
             NSLog(@"Granted access to %@", mediaType);
+            [self setCameraPermissionsGrantedState];
         } else {
             NSLog(@"Not granted access to %@", mediaType);
+            [self setCameraPermissionsDeniedState];
         }
     }];
 }
 
 - (void)setCameraPermissionsNotDeterminedState{
-
+    [self.activatCameraGestureRecognizer setEnabled:YES];
 }
 
 - (void)setCameraPermissionsGrantedState {
-
+    [self.activatCameraGestureRecognizer setEnabled:NO];
+    [self.recorder configureCamera];
+    [self.recorder connectPreviewViewToRecorder:self.cameraPreviewView.imageView];
 }
 
 - (void)setCameraPermissionsDeniedState {
-
+    [self.activatCameraGestureRecognizer setEnabled:YES];
 }
 
 - (void)cammentDidStop {

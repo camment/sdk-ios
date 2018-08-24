@@ -64,7 +64,7 @@
 
         self.headerTextNode = [[UILabel alloc] init];
         self.headerTextNode.textColor = [UIColor blackColor];
-        self.headerTextNode.text = @"When user enters the sofa view and camera / microphone has no permissions - notification is displayed to tap camera icon to enable camera and microphone with standard procedure.";
+        self.headerTextNode.text = @"Enjoy the show with Brian and Samsung. Invite a friend to your virtual couch and WIN prices!";
         self.headerTextNode.textAlignment = NSTextAlignmentCenter;
         self.headerTextNode.adjustsFontSizeToFitWidth = YES;
         self.headerTextNode.minimumScaleFactor = 12.0f / 48.0f;

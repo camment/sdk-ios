@@ -19,7 +19,8 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor lightGrayColor];
-
+        self.cornerRadius = 4.0f;
+        
         self.videoPlayerNode = [ASVideoNode new];
         self.videoPlayerNode.shouldAutorepeat = NO;
         self.videoPlayerNode.shouldAutoplay = NO;
@@ -32,6 +33,14 @@
         self.videoPlayerNode.cornerRadius = 4.0f;
         self.videoPlayerNode.cornerRoundingType = ASCornerRoundingTypeDefaultSlowCALayer;
         self.videoPlayerNode.clipsToBounds = YES;
+
+        self.playIconImageNode = [ASImageNode new];
+        self.playIconImageNode.contentMode = UIViewContentModeScaleAspectFill;
+        [self.playIconImageNode onDidLoad:^(__kindof ASImageNode *node) {
+            node.image = [UIImage imageNamed:@"play_icon"
+                                    inBundle:[NSBundle cammentSDKBundle]
+               compatibleWithTraitCollection:nil];
+        }];
 
         self.automaticallyManagesSubnodes = YES;
     }
@@ -114,6 +123,7 @@
         NSLog(@"Coudn't play camment in background thread!");
         return;
     }
+    _playIconImageNode.alpha = .0f;
     [_videoPlayerNode.player pause];
     [_videoPlayerNode.player seekToTime:kCMTimeZero];
     [_videoPlayerNode play];
@@ -125,14 +135,19 @@
         return;
     }
 
+    _playIconImageNode.alpha = 1.0f;
     [_videoPlayerNode.player pause];
     [_videoPlayerNode resetToPlaceholder];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+    _playIconImageNode.style.width = ASDimensionMake(@"35%");
+    _playIconImageNode.style.height = ASDimensionMake(@"35%");
+    ASInsetLayoutSpec *insetLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(INFINITY, 0.0f, 0.0f, INFINITY) child:_playIconImageNode];
     ASInsetLayoutSpec *layoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero
                                                                            child:[ASRatioLayoutSpec ratioLayoutSpecWithRatio:1.0f
-                                                                                                                       child:_videoPlayerNode]];
+                                                                                                                       child:[ASOverlayLayoutSpec overlayLayoutSpecWithChild:_videoPlayerNode
+                                                                                                                                                                     overlay:insetLayoutSpec]]];
 
     return layoutSpec;
 }
@@ -158,6 +173,7 @@
 }
 
 - (void)videoDidPlayToEnd:(ASVideoNode *)videoNode {
+    _playIconImageNode.alpha = 1.0f;
     if (self.onStoppedPlaying) {
         self.onStoppedPlaying();
     } else {

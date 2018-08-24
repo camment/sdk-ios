@@ -6,6 +6,7 @@
 //
 #import <AVFoundation/AVFoundation.h>
 #import <AsyncDisplayKit/ASTextNode.h>
+#import <Bolts/Bolts.h>
 #import "CMSofaView.h"
 #import "CMCammentNode.h"
 #import "CMCamment.h"
@@ -15,6 +16,7 @@
 #import "CMTouchTransparentView.h"
 #import "CMCameraPreviewInteractor.h"
 #import "UIFont+CammentFonts.h"
+#import "CMOpenURLHelper.h"
 
 @implementation CMSofaView
 
@@ -113,7 +115,18 @@
 }
 
 - (void)handleOnActivateCamera:(UITapGestureRecognizer *)gestureRecognizer {
-    [self askCameraPermissions];
+
+    AVAuthorizationStatus cameraPermissions = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    AVAuthorizationStatus microphonePermissions = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+
+    BOOL cameraDenied = cameraPermissions == AVAuthorizationStatusDenied || cameraPermissions == AVAuthorizationStatusRestricted;
+    BOOL microphoneDenied = microphonePermissions == AVAuthorizationStatusDenied || microphonePermissions == AVAuthorizationStatusRestricted;
+
+    if (cameraDenied || microphoneDenied) {
+        [self showAllowCameraPermissionsView];
+    } else {
+        [self askCameraPermissions];
+    }
 }
 
 - (void)didMoveToSuperview {
@@ -130,34 +143,36 @@
 
 - (void)checkCameraPermissions {
 
-    NSString *mediaType = AVMediaTypeVideo;
-    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
-    if(authStatus == AVAuthorizationStatusAuthorized) {
+    AVAuthorizationStatus cameraAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    AVAuthorizationStatus micAuthStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+
+    if(cameraAuthStatus == AVAuthorizationStatusAuthorized && micAuthStatus == AVAuthorizationStatusAuthorized) {
         [self setCameraPermissionsGrantedState];
-    } else if(authStatus == AVAuthorizationStatusDenied){
+    } else if(cameraAuthStatus == AVAuthorizationStatusDenied || micAuthStatus == AVAuthorizationStatusDenied){
         [self setCameraPermissionsDeniedState];
-    } else if(authStatus == AVAuthorizationStatusRestricted){
-        // restricted, normally won't happen
-    } else if(authStatus == AVAuthorizationStatusNotDetermined){
+    } else if(cameraAuthStatus == AVAuthorizationStatusRestricted  || micAuthStatus == AVAuthorizationStatusRestricted){
+        [self setCameraPermissionsDeniedState];
+    } else {
         [self setCameraPermissionsNotDeterminedState];
     }
-
 }
 
 - (void)askCameraPermissions {
     [self.activateCameraGestureRecognizer setEnabled:NO];
-    NSString *mediaType = AVMediaTypeVideo;
-    [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if(granted){
-                NSLog(@"Granted access to %@", mediaType);
-                [self setCameraPermissionsGrantedState];
-            } else {
-                NSLog(@"Not granted access to %@", mediaType);
-                [self setCameraPermissionsDeniedState];
-            }
-        });
-    }];
+
+    [[[self.recorder requestPermissionsForMediaTypeIfNeeded:AVMediaTypeVideo]
+            continueWithSuccessBlock:^id(BFTask <AVMediaType> *task) {
+                return [self.recorder requestPermissionsForMediaTypeIfNeeded:AVMediaTypeAudio];
+            }]
+            continueWithExecutor:[BFExecutor mainThreadExecutor]
+                       withBlock:^id(BFTask <AVMediaType> *t) {
+                           if (!t.error) {
+                               [self setCameraPermissionsGrantedState];
+                           } else {
+                               [self setCameraPermissionsDeniedState];
+                           }
+                           return nil;
+                       }];
 }
 
 - (void)setCameraPermissionsNotDeterminedState{
@@ -287,6 +302,24 @@
     result =  CGRectApplyAffineTransform(result, CGAffineTransformMakeTranslation(imageRect.origin.x, imageRect.origin.y));
 
     return result;
+}
+
+- (void)showAllowCameraPermissionsView {
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"error.no_camera_permissions_title")]
+                                                                             message:CMLocalized(@"error.no_camera_permissions_alert")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {}]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"error.open_settings")
+                                                        style:UIAlertActionStyleDefault
+                                                      handler:^(UIAlertAction *action) {
+                                                          NSURL *settingsURL = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+                                                          [[CMOpenURLHelper new] openURL:settingsURL];
+                                                      }]];
+    [self.delegate sofaViewWantsToPresentViewController:alertController];
 }
 
 @end

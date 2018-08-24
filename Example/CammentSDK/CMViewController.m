@@ -9,7 +9,7 @@
 #import <CammentSDK/CMSofaView.h>
 #import "CMViewController.h"
 
-@interface CMViewController ()
+@interface CMViewController () <CMSofaViewDelegate>
 
 @end
 
@@ -19,6 +19,7 @@
 {
     [super viewDidLoad];
     self.sofaView = [CMSofaView new];
+    self.sofaView.delegate = self;
     [self.view addSubview:self.sofaView];
 }
 
@@ -33,5 +34,12 @@
 
     self.sofaView.frame = self.view.bounds;
 }
+
+- (void)sofaViewWantsToPresentViewController:(UIViewController *)viewController {
+    [self presentViewController:viewController
+                       animated:YES
+                     completion:nil];
+}
+
 
 @end

@@ -3,9 +3,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 
+static NSString *const CMSofaRecorderErrorDomain = @"CMSofaRecorderErrorDamain";
 @class SCRecorder;
 @class SCImageView;
+@class BFTask;
 
 
 @interface CMCameraPreviewInteractor : NSObject
@@ -17,4 +20,6 @@
 - (void)releaseCamera;
 
 - (void)connectPreviewViewToRecorder:(SCImageView *)view;
+
+- (BFTask *)requestPermissionsForMediaTypeIfNeeded:(AVMediaType)mediaType;
 @end

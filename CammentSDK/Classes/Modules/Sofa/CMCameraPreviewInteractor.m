@@ -3,8 +3,10 @@
 //
 
 #import "CMCameraPreviewInteractor.h"
+#import <Bolts/Bolts.h>
 #import "SCRecorder.h"
 #import "SCImageView.h"
+#import "BFTask.h"
 
 
 @interface CMCameraPreviewInteractor () <SCRecorderDelegate>
@@ -71,5 +73,33 @@
     }
 }
 
+- (BFTask *)requestPermissionsForMediaTypeIfNeeded:(AVMediaType)mediaType {
+    BFTaskCompletionSource *cameraPermission = [BFTaskCompletionSource new];
+
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+
+    NSError *permissionDeniedError = [NSError errorWithDomain:CMSofaRecorderErrorDomain
+                                                         code:0
+                                                     userInfo:@{
+                                                             @"mediaType" : mediaType
+                                                     }];
+    if(authStatus == AVAuthorizationStatusAuthorized) {
+        [cameraPermission setResult:mediaType];
+    } else if(authStatus == AVAuthorizationStatusDenied){
+        [cameraPermission setError:permissionDeniedError];
+    } else if(authStatus == AVAuthorizationStatusRestricted){
+        [cameraPermission setError:permissionDeniedError];
+    } else if(authStatus == AVAuthorizationStatusNotDetermined){
+        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+            if(granted){
+                [cameraPermission setResult:mediaType];
+            } else {
+                [cameraPermission setError:permissionDeniedError];
+            }
+        }];
+    }
+
+    return cameraPermission.task;
+}
 
 @end

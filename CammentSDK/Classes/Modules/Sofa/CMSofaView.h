@@ -13,6 +13,10 @@
 @class CMSofaInviteFriendsView;
 @class CMCameraPreviewInteractor;
 
+@protocol CMSofaViewDelegate<NSObject>
+- (void)sofaViewWantsToPresentViewController:(UIViewController *)viewController;
+@end
+
 @interface CMSofaView : UIView
 
 @property(nonatomic, strong) UIImageView *backgroundImageView;
@@ -25,6 +29,7 @@
 @property(nonatomic, strong) UIImageView *enableCameraTextShadow;
 @property(nonatomic, assign) CGFloat topInset;
 @property(nonatomic, strong) CMCameraPreviewInteractor *recorder;
+@property(nonatomic, weak) id<CMSofaViewDelegate> delegate;
 
 @property(nonatomic, strong) UITapGestureRecognizer *activateCameraGestureRecognizer;
 

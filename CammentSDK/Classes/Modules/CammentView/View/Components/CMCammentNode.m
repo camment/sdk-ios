@@ -19,7 +19,7 @@
     self = [super init];
     if (self) {
         self.backgroundColor = [UIColor lightGrayColor];
-        self.cornerRadius = 4.0f;
+        self.cornerRadius = 2.0f;
         
         self.videoPlayerNode = [ASVideoNode new];
         self.videoPlayerNode.shouldAutorepeat = NO;
@@ -30,7 +30,7 @@
 
         self.videoPlayerNode.borderColor = [UIColor whiteColor].CGColor;
         self.videoPlayerNode.borderWidth = 2.0f;
-        self.videoPlayerNode.cornerRadius = 4.0f;
+        self.videoPlayerNode.cornerRadius = 2.0f;
         self.videoPlayerNode.cornerRoundingType = ASCornerRoundingTypeDefaultSlowCALayer;
         self.videoPlayerNode.clipsToBounds = YES;
 
@@ -123,7 +123,14 @@
         NSLog(@"Coudn't play camment in background thread!");
         return;
     }
-    _playIconImageNode.alpha = .0f;
+
+    [UIView animateWithDuration:.3f animations:^{
+        self.playIconImageNode.alpha = .0f;
+        self.cornerRadius = 4.0f;
+        self.videoPlayerNode.borderWidth = 4.0f;
+        self.videoPlayerNode.cornerRadius = 4.0f;
+    }];
+
     [_videoPlayerNode.player pause];
     [_videoPlayerNode.player seekToTime:kCMTimeZero];
     [_videoPlayerNode play];
@@ -135,7 +142,12 @@
         return;
     }
 
-    _playIconImageNode.alpha = 1.0f;
+    [UIView animateWithDuration:.3f animations:^{
+        self.playIconImageNode.alpha = 1.0f;
+        self.cornerRadius = 2.0f;
+        self.videoPlayerNode.borderWidth = 2.0f;
+        self.videoPlayerNode.cornerRadius = 2.0f;
+    }];
     [_videoPlayerNode.player pause];
     [_videoPlayerNode resetToPlaceholder];
 }
@@ -173,7 +185,13 @@
 }
 
 - (void)videoDidPlayToEnd:(ASVideoNode *)videoNode {
-    _playIconImageNode.alpha = 1.0f;
+    [UIView animateWithDuration:.3f animations:^{
+        self.playIconImageNode.alpha = 1.0f;
+        self.cornerRadius = 2.0f;
+        self.videoPlayerNode.borderWidth = 2.0f;
+        self.videoPlayerNode.cornerRadius = 2.0f;
+    }];
+    
     if (self.onStoppedPlaying) {
         self.onStoppedPlaying();
     } else {

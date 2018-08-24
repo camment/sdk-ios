@@ -14,6 +14,7 @@
 #import "CMCammentRecorderInteractor.h"
 #import "CMTouchTransparentView.h"
 #import "CMCameraPreviewInteractor.h"
+#import "UIFont+CammentFonts.h"
 
 @implementation CMSofaView
 
@@ -27,10 +28,32 @@
         self.backgroundImageView.contentMode = UIViewContentModeScaleToFill;
         [self addSubview:self.backgroundImageView];
 
+        self.enableCameraTextShadow = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"camera_text_shadow_rect"
+                                                                                    inBundle:[NSBundle cammentSDKBundle]
+                                                               compatibleWithTraitCollection:nil]];
+        self.enableCameraTextShadow.contentMode = UIViewContentModeScaleToFill;
+        [self addSubview:self.enableCameraTextShadow];
+
+        self.enableCameraTextLabel = [[UILabel alloc] init];
+        self.enableCameraTextLabel.textColor = [UIColor whiteColor];
+        self.enableCameraTextLabel.text = @"Tap Camera icon to enable camera";
+        self.enableCameraTextLabel.textAlignment = NSTextAlignmentCenter;
+        self.enableCameraTextLabel.adjustsFontSizeToFitWidth = YES;
+        self.enableCameraTextLabel.minimumScaleFactor = 11.0f / 18.0f;
+        self.enableCameraTextLabel.font = [UIFont nunitoLightWithSize:18.0f];
+        self.enableCameraTextLabel.numberOfLines = 0;
+        self.enableCameraTextLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        self.enableCameraTextLabel.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.enableCameraTextLabel.layer.shadowOffset = CGSizeMake(.0f, .0f);
+        self.enableCameraTextLabel.layer.shadowOpacity = .8f;
+        self.enableCameraTextLabel.layer.shadowRadius = 20.0f;
+        self.enableCameraTextLabel.layer.masksToBounds = NO;
+        [self addSubview:self.enableCameraTextLabel];
+
         self.cameraPreviewView = [CMSofaCameraPreviewView new];
-        self.activatCameraGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleOnActivateCamera:)];
-        [self.activatCameraGestureRecognizer setEnabled:NO];
-        [self.cameraPreviewView addGestureRecognizer:self.activatCameraGestureRecognizer];
+        self.activateCameraGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleOnActivateCamera:)];
+        [self.activateCameraGestureRecognizer setEnabled:NO];
+        [self.cameraPreviewView addGestureRecognizer:self.activateCameraGestureRecognizer];
         [self.cameraPreviewView setUserInteractionEnabled:YES];
         [self addSubview:self.cameraPreviewView];
 
@@ -122,31 +145,42 @@
 }
 
 - (void)askCameraPermissions {
-    [self.activatCameraGestureRecognizer setEnabled:NO];
+    [self.activateCameraGestureRecognizer setEnabled:NO];
     NSString *mediaType = AVMediaTypeVideo;
     [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-        if(granted){
-            NSLog(@"Granted access to %@", mediaType);
-            [self setCameraPermissionsGrantedState];
-        } else {
-            NSLog(@"Not granted access to %@", mediaType);
-            [self setCameraPermissionsDeniedState];
-        }
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if(granted){
+                NSLog(@"Granted access to %@", mediaType);
+                [self setCameraPermissionsGrantedState];
+            } else {
+                NSLog(@"Not granted access to %@", mediaType);
+                [self setCameraPermissionsDeniedState];
+            }
+        });
     }];
 }
 
 - (void)setCameraPermissionsNotDeterminedState{
-    [self.activatCameraGestureRecognizer setEnabled:YES];
+    self.enableCameraTextLabel.hidden = NO;
+    self.enableCameraTextShadow.hidden = NO;
+    [self.cameraPreviewView setPermissionsNotDeterminedState];
+    [self.activateCameraGestureRecognizer setEnabled:YES];
 }
 
 - (void)setCameraPermissionsGrantedState {
-    [self.activatCameraGestureRecognizer setEnabled:NO];
+    self.enableCameraTextLabel.hidden = YES;
+    self.enableCameraTextShadow.hidden = YES;
+    [self.cameraPreviewView setPermissionsGrantedState];
+    [self.activateCameraGestureRecognizer setEnabled:NO];
     [self.recorder configureCamera];
     [self.recorder connectPreviewViewToRecorder:self.cameraPreviewView.imageView];
 }
 
 - (void)setCameraPermissionsDeniedState {
-    [self.activatCameraGestureRecognizer setEnabled:YES];
+    self.enableCameraTextLabel.hidden = YES;
+    self.enableCameraTextShadow.hidden = YES;
+    [self.cameraPreviewView setPermissionsDeniedState];
+    [self.activateCameraGestureRecognizer setEnabled:YES];
 }
 
 - (void)cammentDidStop {
@@ -196,6 +230,16 @@
             CGRectGetMinY(self.influencerCammentNode.view.frame) - margin - MIN(headerSize.height, availableHeight),
             headerSize.width,
             MIN(headerSize.height, availableHeight));
+
+    CGFloat availableWidthForCameraText = CGRectGetMaxX(self.inviteFriendsView.frame) - CGRectGetMinX(self.influencerCammentNode.view.frame);
+    CGSize enableCameraTextSize = [self.enableCameraTextLabel sizeThatFits:CGSizeMake(availableWidthForCameraText, CGFLOAT_MAX)];
+    self.enableCameraTextLabel.frame = CGRectMake(
+            self.center.x - enableCameraTextSize.width / 2,
+            CGRectGetMaxY(self.cameraPreviewView.frame) + 14,
+            enableCameraTextSize.width,
+            MIN(enableCameraTextSize.height, (self.bounds.size.height - CGRectGetMaxY(self.inviteFriendsView.frame)) / 2 - 14));
+    self.enableCameraTextShadow.frame = CGRectInset(self.enableCameraTextLabel.frame, -50, -50);
+    self.enableCameraTextShadow.center = CGPointMake(self.enableCameraTextLabel.center.x, self.enableCameraTextLabel.center.y + 10.0f);
 }
 
 // Returns frame for image calculated in a way that "rect" stays always visible at the screen

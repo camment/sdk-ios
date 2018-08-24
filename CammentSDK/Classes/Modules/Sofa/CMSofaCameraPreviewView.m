@@ -34,4 +34,23 @@
     self.imageView.frame = self.bounds;
 }
 
+- (void)setPermissionsGrantedState {
+    [self.imageView setImageByUIImage:nil];
+}
+
+- (void)setPermissionsDeniedState {
+    [self.imageView setImageByUIImage:[UIImage imageNamed:@"no_permissions_icon"
+                                                 inBundle:[NSBundle cammentSDKBundle]
+                            compatibleWithTraitCollection:nil]];
+    [self.imageView setNeedsDisplay];
+}
+
+- (void)setPermissionsNotDeterminedState {
+    [self.imageView setImageByUIImage:[UIImage imageNamed:@"sofa_camera_icon"
+                                                 inBundle:[NSBundle cammentSDKBundle]
+                            compatibleWithTraitCollection:nil]];
+    [self.imageView setNeedsDisplay];
+}
+
+
 @end

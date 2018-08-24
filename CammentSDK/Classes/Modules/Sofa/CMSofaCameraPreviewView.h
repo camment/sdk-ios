@@ -9,4 +9,8 @@
 
 @property (nonatomic, strong) SCImageView *imageView;
 
+- (void)setPermissionsGrantedState;
+- (void)setPermissionsDeniedState;
+- (void)setPermissionsNotDeterminedState;
+
 @end

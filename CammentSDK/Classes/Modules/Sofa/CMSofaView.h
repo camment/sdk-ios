@@ -21,10 +21,12 @@
 @property(nonatomic, strong) CMSofaCameraPreviewView *cameraPreviewView;
 @property(nonatomic, strong) CMSofaInviteFriendsView *inviteFriendsView;
 @property(nonatomic, strong) UILabel *headerTextNode;
+@property(nonatomic, strong) UILabel *enableCameraTextLabel;
+@property(nonatomic, strong) UIImageView *enableCameraTextShadow;
 @property(nonatomic, assign) CGFloat topInset;
 @property(nonatomic, strong) CMCameraPreviewInteractor *recorder;
 
-@property(nonatomic, strong) UITapGestureRecognizer *activatCameraGestureRecognizer;
+@property(nonatomic, strong) UITapGestureRecognizer *activateCameraGestureRecognizer;
 
 - (void)cammentDidStop;
 

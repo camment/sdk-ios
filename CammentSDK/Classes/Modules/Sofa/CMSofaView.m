@@ -63,12 +63,12 @@
         [self addSubview:self.inviteFriendsView];
 
         self.headerTextNode = [[UILabel alloc] init];
-        self.headerTextNode.textColor = [UIColor blackColor];
+        self.headerTextNode.textColor = [UIColor whiteColor];
         self.headerTextNode.text = @"Enjoy the show with Brian and Samsung. Invite a friend to your virtual couch and WIN prices!";
         self.headerTextNode.textAlignment = NSTextAlignmentCenter;
         self.headerTextNode.adjustsFontSizeToFitWidth = YES;
-        self.headerTextNode.minimumScaleFactor = 12.0f / 48.0f;
-        self.headerTextNode.font = [UIFont systemFontOfSize:48];
+        self.headerTextNode.minimumScaleFactor = 8.0f / 36.0f;
+        self.headerTextNode.font = [UIFont systemFontOfSize:36.0f];
         self.headerTextNode.numberOfLines = 0;
         self.headerTextNode.lineBreakMode = NSLineBreakByTruncatingTail;
         [self addSubview:self.headerTextNode];
@@ -223,26 +223,26 @@
 
     self.dimView.frame = self.bounds;
 
-    self.backgroundImageView.frame = [self frameToFitInternalRect:CGRectMake(238, 498, 858, 484) toScreenRect:CGRectMake(.0f, self.bounds.size.height / 4, self.bounds.size.width, self.bounds.size.height / 2)];
+    self.backgroundImageView.frame = [self frameToFitInternalRect:CGRectMake(571, 680, 453, 278) toScreenRect:CGRectMake(.0f, self.bounds.size.height / 4, self.bounds.size.width, self.bounds.size.height / 2)];
 
-    self.influencerCammentNode.view.frame = [self convertOriginalRect:CGRectMake(362, 533, 160, 160)
+    self.influencerCammentNode.view.frame = [self convertOriginalRect:CGRectMake(637, 689, 80, 80)
                                                         toScaledImage:self.backgroundImageView.frame];
 
-    self.cameraPreviewView.frame = [self convertOriginalRect:CGRectMake(592, 533, 160, 160)
+    self.cameraPreviewView.frame = [self convertOriginalRect:CGRectMake(760, 689, 80, 80)
                                                toScaledImage:self.backgroundImageView.frame];
 
-    self.inviteFriendsView.frame = [self convertOriginalRect:CGRectMake(792, 533, 160, 160)
+    self.inviteFriendsView.frame = [self convertOriginalRect:CGRectMake(880, 689, 80, 80)
                                                toScaledImage:self.backgroundImageView.frame];
     self.inviteFriendsView.layer.cornerRadius = ceilf(self.inviteFriendsView.frame.size.width / 2);
 
-    CGFloat margin = 30.0f;
+    CGFloat margin = 20.0f;
 
     CGFloat availableHeight = CGRectGetMinY(self.influencerCammentNode.view.frame) - margin * 2 - _topInset;
     CGSize headerSize = [self.headerTextNode sizeThatFits:CGSizeMake(self.bounds.size.width - margin * 2, availableHeight)];
 
     self.headerTextNode.frame = CGRectMake(
             (self.bounds.size.width - headerSize.width) / 2,
-            CGRectGetMinY(self.influencerCammentNode.view.frame) - margin - MIN(headerSize.height, availableHeight),
+            CGRectGetMinY(self.influencerCammentNode.view.frame)/ 2 - MIN(headerSize.height, availableHeight) / 2,
             headerSize.width,
             MIN(headerSize.height, availableHeight));
 

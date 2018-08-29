@@ -26,9 +26,10 @@
 #import "CMAPIPublicGroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
-#import "CMAPICammentList.h"
+#import "CMAPISofa.h"
 #import "CMAPIUsergroup.h"
 #import "CMAPIUsergroupInRequest.h"
+#import "CMAPICammentList.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIIotInRequest.h"
@@ -197,6 +198,15 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param adUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)adsAdUuidGet:( NSString *)adUuid;
+
+/**
+ 
+ 
  
  return type: 
  */
@@ -219,24 +229,6 @@ NS_ASSUME_NONNULL_BEGIN
  return type: 
  */
 - (AWSTask *)cammentsCammentUuidPost:( NSString *)cammentUuid;
-
-/**
- 
- 
- @param cammentUuid 
- 
- return type: 
- */
-- (AWSTask *)cammentsCammentUuidPinPut:( NSString *)cammentUuid;
-
-/**
- 
- 
- @param cammentUuid 
- 
- return type: 
- */
-- (AWSTask *)cammentsCammentUuidPinDelete:( NSString *)cammentUuid;
 
 /**
  
@@ -320,11 +312,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param uuid 
+ @param showUuid 
  
- return type: CMAPICammentList *
+ return type: CMAPISofa *
  */
-- (AWSTask *)showsUuidCammentsGet:( NSString *)uuid;
+- (AWSTask *)sofaShowUuidGet:( NSString *)showUuid;
 
 /**
  

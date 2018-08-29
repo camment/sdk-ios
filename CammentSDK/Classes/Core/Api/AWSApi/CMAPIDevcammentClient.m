@@ -29,9 +29,10 @@
 #import "CMAPIPublicGroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
-#import "CMAPICammentList.h"
+#import "CMAPISofa.h"
 #import "CMAPIUsergroup.h"
 #import "CMAPIUsergroupInRequest.h"
+#import "CMAPICammentList.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIIotInRequest.h"
@@ -189,6 +190,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:nil];
 }
 
+- (AWSTask *)adsAdUuidGet:(NSString *)adUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"adUuid": adUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/ads/{adUuid}"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
 - (AWSTask *)adsAdUuidConfirmPost {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
@@ -248,50 +271,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     
     return [self invokeHTTPRequest:@"POST"
                          URLString:@"/camments/{cammentUuid}"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:nil];
-}
-
-- (AWSTask *)cammentsCammentUuidPinPut:(NSString *)cammentUuid {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"cammentUuid": cammentUuid
-                                     };
-    
-    return [self invokeHTTPRequest:@"PUT"
-                         URLString:@"/camments/{cammentUuid}/pin"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:nil];
-}
-
-- (AWSTask *)cammentsCammentUuidPinDelete:(NSString *)cammentUuid {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"cammentUuid": cammentUuid
-                                     };
-    
-    return [self invokeHTTPRequest:@"DELETE"
-                         URLString:@"/camments/{cammentUuid}/pin"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
@@ -498,7 +477,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIShow class]];
 }
 
-- (AWSTask *)showsUuidCammentsGet:(NSString *)uuid {
+- (AWSTask *)sofaShowUuidGet:(NSString *)showUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -508,16 +487,16 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       
                                       };
     NSDictionary *pathParameters = @{
-                                     @"uuid": uuid
+                                     @"showUuid": showUuid
                                      };
     
     return [self invokeHTTPRequest:@"GET"
-                         URLString:@"/shows/{uuid}/camments"
+                         URLString:@"/sofa/{showUuid}"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:nil
-                     responseClass:[CMAPICammentList class]];
+                     responseClass:[CMAPISofa class]];
 }
 
 - (AWSTask *)usergroupsPost:(CMAPIUsergroupInRequest *)body {

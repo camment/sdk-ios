@@ -47,7 +47,7 @@
 
         self.enableCameraTextLabel = [[UILabel alloc] init];
         self.enableCameraTextLabel.textColor = [UIColor whiteColor];
-        self.enableCameraTextLabel.text = @"Tap Camera icon to enable camera";
+        self.enableCameraTextLabel.text = CMLocalized(@"sofaview.tap_to_enable_camera");
         self.enableCameraTextLabel.textAlignment = NSTextAlignmentCenter;
         self.enableCameraTextLabel.adjustsFontSizeToFitWidth = YES;
         self.enableCameraTextLabel.minimumScaleFactor = 11.0f / 18.0f;
@@ -87,8 +87,11 @@
         [self.continueToShowButton setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.5]];
         self.continueToShowButton.layer.masksToBounds = YES;
         self.continueToShowButton.titleEdgeInsets = UIEdgeInsetsMake(5.0f, 15.0f, 5.0f, 15.0f);
-        [self.continueToShowButton setTitle:@"Continue to show" forState:UIControlStateNormal];
-        [self.continueToShowButton addTarget:self action:@selector(handleCloseSofaViewEvent:) forControlEvents:UIControlEventTouchUpInside];
+        [self.continueToShowButton setTitle:CMLocalized(@"sofaview.button.continue_to_show")
+                                   forState:UIControlStateNormal];
+        [self.continueToShowButton addTarget:self
+                                      action:@selector(handleCloseSofaViewEvent:)
+                            forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:self.continueToShowButton];
 
         self.dimView = [CMTouchTransparentView new];

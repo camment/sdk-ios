@@ -17,6 +17,11 @@
 #import "CMCameraPreviewInteractor.h"
 #import "UIFont+CammentFonts.h"
 #import "CMOpenURLHelper.h"
+#import "CMSofaInteractor.h"
+
+@interface CMSofaView() <CMSofaInteractorOutput>
+@end
+
 
 @implementation CMSofaView
 
@@ -24,6 +29,9 @@
     self = [super initWithFrame:frame];
 
     if (self) {
+        
+        self.interactor = [CMSofaInteractor new];
+        self.interactor.output = self;
         self.backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sofa_bg"
                                                                                  inBundle:[NSBundle cammentSDKBundle]
                                                             compatibleWithTraitCollection:nil]];
@@ -109,6 +117,10 @@
         [self addSubview:self.influencerCammentNode.view];
 
         self.recorder = [CMCameraPreviewInteractor new];
+        
+        [self.interactor fetchSofaViewForShow:@"test_show_uuid"];
+
+        self.clipsToBounds = YES;
     }
 
     return self;
@@ -320,6 +332,14 @@
                                                           [[CMOpenURLHelper new] openURL:settingsURL];
                                                       }]];
     [self.delegate sofaViewWantsToPresentViewController:alertController];
+}
+
+- (void)sofaViewDidFetchedContent:(CMAPISofa *)sofa {
+    
+}
+
+- (void)sofaViewDidFailedFetching:(NSError *)error {
+    
 }
 
 @end

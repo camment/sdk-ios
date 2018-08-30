@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMUsersGroup;
+
 @protocol CMInvitationInteractorOutput <NSObject>
 
 - (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink;

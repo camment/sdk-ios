@@ -6,6 +6,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CMSofaInteractor.h"
 
 @class CMCammentNode;
 @class ASTextNode;
@@ -19,7 +20,7 @@
 - (void)sofaViewDidClose;
 @end
 
-@interface CMSofaView : UIView
+@interface CMSofaView : UIView <CMSofaInteractorOutput>
 
 @property (nonatomic, strong) NSString *showUUID;
 @property (nonatomic, strong) UIImageView *backgroundImageView;

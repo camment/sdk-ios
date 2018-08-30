@@ -6,4 +6,8 @@
 
 
 @interface CMSofaInviteFriendsView : UIView
+
+@property (nonatomic, strong) UIImageView * inviteFriendsImageView;
+@property (nonatomic, copy) dispatch_block_t onInviteAction;
+
 @end

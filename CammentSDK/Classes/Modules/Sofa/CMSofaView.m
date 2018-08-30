@@ -19,6 +19,8 @@
 #import "CMOpenURLHelper.h"
 #import "CMSofaInteractor.h"
 #import "UIColorMacros.h"
+#import "CMSofaInvitationInteractor.h"
+#import "CMErrorWireframe.h"
 
 @interface CMSofaView() <CMSofaInteractorOutput>
 @end
@@ -30,9 +32,6 @@
     self = [super initWithFrame:frame];
 
     if (self) {
-        
-        self.interactor = [CMSofaInteractor new];
-        self.interactor.output = self;
         self.backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sofa_bg"
                                                                                  inBundle:[NSBundle cammentSDKBundle]
                                                             compatibleWithTraitCollection:nil]];
@@ -69,6 +68,11 @@
         [self addSubview:self.cameraPreviewView];
 
         self.inviteFriendsView = [CMSofaInviteFriendsView new];
+        __weak typeof(self) __weakSelf = self;
+        self.inviteFriendsView.onInviteAction = ^{
+            [__weakSelf inviteFriends];
+        };
+
         [self addSubview:self.inviteFriendsView];
 
         self.headerTextNode = [[UILabel alloc] init];
@@ -100,7 +104,6 @@
         [self addSubview:self.dimView];
 
         self.influencerCammentNode = [CMCammentNode new];
-        __weak typeof(self) __weakSelf = self;
         self.influencerCammentNode.onStoppedPlaying = ^{
             [__weakSelf cammentDidStop];
         };
@@ -122,21 +125,35 @@
                                                                  shouldBeDeleted:NO
                                                                           status:[CMCammentStatus new]];
         [self.influencerCammentNode setDisplaysAsynchronously:NO];
-        
+
         UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnCamment:)];
         [self.influencerCammentNode.view addGestureRecognizer:gestureRecognizer];
         [self.influencerCammentNode.view setUserInteractionEnabled:YES];
-        
+
         [self addSubview:self.influencerCammentNode.view];
 
         self.recorder = [CMCameraPreviewInteractor new];
-        
+
         [self.interactor fetchSofaViewForShow:@"test_show_uuid"];
 
         self.clipsToBounds = YES;
     }
 
     return self;
+}
+
+- (void)inviteFriends {
+    [[self.interactor.invitationInteractor inviteFriends] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                                     withBlock:^id(BFTask <NSString *> *task) {
+                                                                         if (task.error) {
+                                                                             if ([self.delegate respondsToSelector:@selector(sofaViewWantsToPresentViewController:)]) {
+                                                                                 [self.delegate sofaViewWantsToPresentViewController:[[CMErrorWireframe new] viewControllerDisplayingError:task.error]];
+                                                                             }
+                                                                         } else {
+                                                                             [self showShareDeeplinkDialog:task.result];
+                                                                         }
+                                                                         return nil;
+                                                                     }];
 }
 
 - (void)handleCloseSofaViewEvent:(UIButton *)continueToShowButton {
@@ -364,12 +381,38 @@
     [self.delegate sofaViewWantsToPresentViewController:alertController];
 }
 
+- (void)showShareDeeplinkDialog:(NSString *)link {
+
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"Send the invitation link")]
+                                                                             message:CMLocalized(@"Invite users by sharing the invitation link via channel of your choice")
+                                                                      preferredStyle:UIAlertControllerStyleAlert];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
+        NSString *textToShare = @"";
+        NSURL *url = [NSURL URLWithString:link];
+
+        NSString *shareString = [NSString stringWithFormat:@"%@ %@", textToShare, url.absoluteString];
+        NSArray *objectsToShare = @[shareString];
+
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare
+                                                                                 applicationActivities:nil];
+
+        activityVC.popoverPresentationController.sourceView = self;
+        [self.delegate sofaViewWantsToPresentViewController:activityVC];
+    }]];
+
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
+
+    [self.delegate sofaViewWantsToPresentViewController:alertController];
+}
 - (void)sofaViewDidFetchedContent:(CMAPISofa *)sofa {
-    
+
 }
 
 - (void)sofaViewDidFailedFetching:(NSError *)error {
-    
+
 }
 
 @end

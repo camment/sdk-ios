@@ -18,6 +18,7 @@
 #import "UIFont+CammentFonts.h"
 #import "CMOpenURLHelper.h"
 #import "CMSofaInteractor.h"
+#import "UIColorMacros.h"
 
 @interface CMSofaView() <CMSofaInteractorOutput>
 @end
@@ -81,6 +82,15 @@
         self.headerTextNode.lineBreakMode = NSLineBreakByTruncatingTail;
         [self addSubview:self.headerTextNode];
 
+        self.continueToShowButton = [[UIButton alloc] init];
+        [self.continueToShowButton.titleLabel setFont:[UIFont nunitoLightWithSize:16]];
+        [self.continueToShowButton setBackgroundColor:[[UIColor blackColor] colorWithAlphaComponent:0.5]];
+        self.continueToShowButton.layer.masksToBounds = YES;
+        self.continueToShowButton.titleEdgeInsets = UIEdgeInsetsMake(5.0f, 15.0f, 5.0f, 15.0f);
+        [self.continueToShowButton setTitle:@"Continue to show" forState:UIControlStateNormal];
+        [self.continueToShowButton addTarget:self action:@selector(handleCloseSofaViewEvent:) forControlEvents:UIControlEventTouchUpInside];
+        [self addSubview:self.continueToShowButton];
+
         self.dimView = [CMTouchTransparentView new];
         self.dimView.backgroundColor = [UIColor blackColor];
         self.dimView.alpha = .0f;
@@ -124,6 +134,12 @@
     }
 
     return self;
+}
+
+- (void)handleCloseSofaViewEvent:(UIButton *)continueToShowButton {
+    if (self.delegate && [self.delegate respondsToSelector:@selector(sofaViewDidClose)]) {
+        [self.delegate sofaViewDidClose];
+    }
 }
 
 - (void)handleOnActivateCamera:(UITapGestureRecognizer *)gestureRecognizer {
@@ -267,6 +283,17 @@
             MIN(enableCameraTextSize.height, (self.bounds.size.height - CGRectGetMaxY(self.inviteFriendsView.frame)) / 2 - 14));
     self.enableCameraTextShadow.frame = CGRectInset(self.enableCameraTextLabel.frame, -50, -50);
     self.enableCameraTextShadow.center = CGPointMake(self.enableCameraTextLabel.center.x, self.enableCameraTextLabel.center.y + 10.0f);
+
+    CGSize buttonSize = [self.continueToShowButton sizeThatFits:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)];
+    buttonSize = CGSizeMake(
+            buttonSize.width + self.continueToShowButton.titleEdgeInsets.left + self.continueToShowButton.titleEdgeInsets.right,
+            buttonSize.height + self.continueToShowButton.titleEdgeInsets.top + self.continueToShowButton.titleEdgeInsets.bottom);
+    self.continueToShowButton.frame = CGRectMake(
+            self.bounds.size.width - margin - buttonSize.width,
+            self.bounds.size.height - margin - buttonSize.height,
+            buttonSize.width,
+            buttonSize.height);
+    self.continueToShowButton.layer.cornerRadius = self.continueToShowButton.bounds.size.height / 2.0f;
 }
 
 // Returns frame for image calculated in a way that "rect" stays always visible at the screen

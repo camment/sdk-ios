@@ -6,6 +6,8 @@
 #import <Bolts/Bolts.h>
 #import "CMInvitationInteractorOutput.h"
 
+static NSString *const CMSofaInteractorErrorDomain = @"sofa.camment.tv";
+static const int CMSofaInteractorLoginFlowCancelled = 2265;
 @class CMUserSessionController;
 @class CMStore;
 @protocol CMInvitationInteractorInput;

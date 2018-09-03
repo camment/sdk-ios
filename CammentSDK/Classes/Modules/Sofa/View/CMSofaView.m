@@ -143,14 +143,21 @@
 }
 
 - (void)inviteFriends {
+    [self.inviteFriendsView showActivityIndicator];
     [[self.interactor.invitationInteractor inviteFriends] continueWithExecutor:[BFExecutor mainThreadExecutor]
                                                                      withBlock:^id(BFTask <NSString *> *task) {
                                                                          if (task.error) {
+                                                                             [self.inviteFriendsView hideActivityIndicator];
+                                                                             if ([task.error.domain isEqualToString:CMSofaInteractorErrorDomain] && task.error.code == CMSofaInteractorLoginFlowCancelled) {
+                                                                                 return nil;
+                                                                             }
+
                                                                              if ([self.delegate respondsToSelector:@selector(sofaViewWantsToPresentViewController:)]) {
                                                                                  [self.delegate sofaViewWantsToPresentViewController:[[CMErrorWireframe new] viewControllerDisplayingError:task.error]];
                                                                              }
                                                                          } else {
                                                                              [self showShareDeeplinkDialog:task.result];
+                                                                             [self.inviteFriendsView hideActivityIndicator];
                                                                          }
                                                                          return nil;
                                                                      }];

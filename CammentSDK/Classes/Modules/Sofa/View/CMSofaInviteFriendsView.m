@@ -26,11 +26,18 @@
         self.inviteFriendsImageView.layer.masksToBounds = NO;
         [self addSubview:self.inviteFriendsImageView];
 
+        self.activityIndicator = [CMActivityIndicator new];
+        self.activityIndicator.layer.shadowColor = [UIColor blackColor].CGColor;
+        self.activityIndicator.layer.shadowOffset = CGSizeMake(.0f, .0f);
+        self.activityIndicator.layer.shadowOpacity = .8f;
+        self.activityIndicator.layer.shadowRadius = 10.0f;
+        self.activityIndicator.layer.masksToBounds = NO;
+        [self addSubview:self.activityIndicator];
 
         UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
         [self addGestureRecognizer:tapGestureRecognizer];
 
-        [self setUserInteractionEnabled:YES];
+        [self hideActivityIndicator];
     }
 
     return self;
@@ -39,6 +46,7 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.inviteFriendsImageView.frame = CGRectInset(self.bounds, 20, 20);
+    self.activityIndicator.frame = self.inviteFriendsImageView.frame;
 }
 
 
@@ -46,6 +54,20 @@
     if (self.onInviteAction) {
         self.onInviteAction();
     }
+}
+
+- (void)showActivityIndicator {
+    self.inviteFriendsImageView.hidden = YES;
+    self.activityIndicator.hidden = NO;
+    [self.activityIndicator startAnimation];
+    self.userInteractionEnabled = NO;
+}
+
+- (void)hideActivityIndicator {
+    self.inviteFriendsImageView.hidden = NO;
+    self.activityIndicator.hidden = YES;
+    [self.activityIndicator stopAnimation];
+    self.userInteractionEnabled = YES;
 }
 
 @end

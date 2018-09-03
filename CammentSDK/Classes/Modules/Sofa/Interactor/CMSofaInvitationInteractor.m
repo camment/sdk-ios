@@ -36,7 +36,12 @@
 
 - (BFTask *)inviteFriends {
 
-    self.invitationTaskCompletionSource = [BFTaskCompletionSource new];
+    if (!self.invitationTaskCompletionSource
+            || self.invitationTaskCompletionSource.task.cancelled
+            || self.invitationTaskCompletionSource.task.completed
+            || self.invitationTaskCompletionSource.task.faulted) {
+        self.invitationTaskCompletionSource = [BFTaskCompletionSource new];
+    }
 
     if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
         [self getInvitationDeeplink];
@@ -44,8 +49,12 @@
         [[self.userSessionController refreshSession:YES]
                 continueWithExecutor:[AWSExecutor mainThreadExecutor]
                            withBlock:^id(AWSTask<CMAuthStatusChangedEventContext *> *task) {
-                               if (task.error || task.result.state != CMCammentUserAuthentificatedAsKnownUser) {
+                               if (task.error) {
                                    [self.invitationTaskCompletionSource setError:task.error];
+                               } else if (task.result.state != CMCammentUserAuthentificatedAsKnownUser) {
+                                   [self.invitationTaskCompletionSource setError:[NSError errorWithDomain:CMSofaInteractorErrorDomain
+                                                                                                     code:CMSofaInteractorLoginFlowCancelled
+                                                                                                 userInfo:@{}]];
                                } else {
                                    [self inviteFriends];
                                }

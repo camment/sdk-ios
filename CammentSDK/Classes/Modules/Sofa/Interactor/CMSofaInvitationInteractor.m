@@ -34,7 +34,7 @@
     return self;
 }
 
-- (BFTask *)inviteFriends {
+- (BFTask *)inviteFriends:(NSString *)showUUID {
 
     if (!self.invitationTaskCompletionSource
             || self.invitationTaskCompletionSource.task.cancelled
@@ -44,7 +44,7 @@
     }
 
     if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
-        [self getInvitationDeeplink];
+        [self getInvitationDeeplink:showUUID];
     } else {
         [[self.userSessionController refreshSession:YES]
                 continueWithExecutor:[AWSExecutor mainThreadExecutor]
@@ -56,7 +56,7 @@
                                                                                                      code:CMSofaInteractorLoginFlowCancelled
                                                                                                  userInfo:@{}]];
                                } else {
-                                   [self inviteFriends];
+                                   [self inviteFriends:showUUID];
                                }
                                return nil;
                            }];
@@ -66,9 +66,9 @@
     return self.invitationTaskCompletionSource.task;
 }
 
-- (void)getInvitationDeeplink {
-    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup
-                                  showUuid:[CMStore instance].currentShowMetadata.uuid];
+- (void)getInvitationDeeplink:(NSString *)showUUID {
+    [self.invitationInteractor getDeeplink:nil
+                                  showUuid:showUUID];
 }
 
 - (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink {

@@ -61,7 +61,6 @@
     self.fullRotation.repeatCount = MAXFLOAT;
     self.fullRotation.delegate = self;
     [self.imageView.layer addAnimation:self.fullRotation forKey:@"360"];
-
 }
 
 - (void)stopAnimation {

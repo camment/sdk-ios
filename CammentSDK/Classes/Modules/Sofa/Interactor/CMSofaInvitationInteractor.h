@@ -21,6 +21,6 @@ static const int CMSofaInteractorLoginFlowCancelled = 2265;
 
 - (instancetype)initWithUserSessionController:(CMUserSessionController *)userSessionController invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor store:(CMStore *)store;
 
-- (BFTask *)inviteFriends;
+- (BFTask *)inviteFriends:(NSString *)showUUID;
 
 @end

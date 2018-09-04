@@ -6,27 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CMAPISofa.h"
-
-@class CMSofaInvitationInteractor;
-
-@protocol CMSofaInteractorOutput<NSObject>
-
-- (void)sofaViewDidFetchedContent:(CMAPISofa *)sofa;
-- (void)sofaViewDidFailedFetching:(NSError *)error;
-
-@end
+#import <Bolts/Bolts.h>
 
 
 @interface CMSofaInteractor : NSObject
 
-@property (nonatomic, strong) CMSofaInvitationInteractor * invitationInteractor;
-@property (nonatomic, weak) id<CMSofaInteractorOutput> output;
-
-- (instancetype)initWithInvitationInteractor:(CMSofaInvitationInteractor *)invitationInteractor output:(id <CMSofaInteractorOutput>)output;
-
-+ (instancetype)interactorWithInvitationInteractor:(CMSofaInvitationInteractor *)invitationInteractor output:(id <CMSofaInteractorOutput>)output;
-
-- (void)fetchSofaViewForShow:(NSString *)uuid;
+- (BFTask *)fetchSofaViewForShow:(NSString *)uuid;
 
 @end

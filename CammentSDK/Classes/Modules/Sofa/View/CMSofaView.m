@@ -7,6 +7,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AsyncDisplayKit/ASTextNode.h>
 #import <Bolts/Bolts.h>
+#import <CammentSDK/CMAPISofa.h>
 #import "CMSofaView.h"
 #import "CMCammentNode.h"
 #import "CMCamment.h"
@@ -17,13 +18,9 @@
 #import "CMCameraPreviewInteractor.h"
 #import "UIFont+CammentFonts.h"
 #import "CMOpenURLHelper.h"
-#import "CMSofaInteractor.h"
-#import "UIColorMacros.h"
 #import "CMSofaInvitationInteractor.h"
 #import "CMErrorWireframe.h"
-
-@interface CMSofaView() <CMSofaInteractorOutput>
-@end
+#import "CMProgressiveImageView.h"
 
 
 @implementation CMSofaView
@@ -32,6 +29,29 @@
     self = [super initWithFrame:frame];
 
     if (self) {
+        self.progressivebackgroundImage = [CMProgressiveImageView new];
+        self.progressivebackgroundImage.contentMode = UIViewContentModeScaleToFill;
+        __weak typeof(self) __weakSelf = self;
+        [self.progressivebackgroundImage setLoadingHandler:^{
+            [__weakSelf layoutSubviews];
+            [UIView animateWithDuration:.3f animations:^{
+                __weakSelf.progressivebackgroundImage.alpha = 1.0f;
+            } completion:^(BOOL finished) {}];
+        }];
+        self.progressivebackgroundImage.alpha = .0f;
+        [self addSubview:self.progressivebackgroundImage];
+        
+        self.brandLogoImage = [CMProgressiveImageView new];
+        self.brandLogoImage.contentMode = UIViewContentModeScaleAspectFit;
+        [self.brandLogoImage setLoadingHandler:^{
+            [__weakSelf layoutSubviews];
+            [UIView animateWithDuration:.3f animations:^{
+                __weakSelf.brandLogoImage.alpha = 1.0f;
+            } completion:^(BOOL finished) {}];
+        }];
+        self.brandLogoImage.alpha = .0f;
+        [self addSubview:self.brandLogoImage];
+        
         self.backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sofa_bg"
                                                                                  inBundle:[NSBundle cammentSDKBundle]
                                                             compatibleWithTraitCollection:nil]];
@@ -68,7 +88,6 @@
         [self addSubview:self.cameraPreviewView];
 
         self.inviteFriendsView = [CMSofaInviteFriendsView new];
-        __weak typeof(self) __weakSelf = self;
         self.inviteFriendsView.onInviteAction = ^{
             [__weakSelf inviteFriends];
         };
@@ -109,21 +128,6 @@
         };
         self.influencerCammentNode.style.width = ASDimensionMake(90);
         self.influencerCammentNode.style.height = ASDimensionMake(90);
-        NSString *remoteURL = @"https://d17vsv1e5spnkm.cloudfront.net/uploads/01d1c040-3c60-4e03-8f5b-c5c86da7a882.mp4";
-        self.influencerCammentNode.camment = [[CMCamment alloc] initWithShowUuid:@""
-                                                                   userGroupUuid:@""
-                                                                            uuid:@""
-                                                                       remoteURL:remoteURL
-                                                                        localURL:@""
-                                                                    thumbnailURL:@""
-                                                           userCognitoIdentityId:@""
-                                                                          showAt:@0
-                                                                     isMadeByBot:NO
-                                                                         botUuid:nil
-                                                                       botAction:nil
-                                                                       isDeleted:NO
-                                                                 shouldBeDeleted:NO
-                                                                          status:[CMCammentStatus new]];
         [self.influencerCammentNode setDisplaysAsynchronously:NO];
 
         UIGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnCamment:)];
@@ -134,8 +138,6 @@
 
         self.recorder = [CMCameraPreviewInteractor new];
 
-        [self.interactor fetchSofaViewForShow:@"test_show_uuid"];
-
         self.clipsToBounds = YES;
     }
 
@@ -144,23 +146,23 @@
 
 - (void)inviteFriends {
     [self.inviteFriendsView showActivityIndicator];
-    [[self.interactor.invitationInteractor inviteFriends] continueWithExecutor:[BFExecutor mainThreadExecutor]
-                                                                     withBlock:^id(BFTask <NSString *> *task) {
-                                                                         if (task.error) {
-                                                                             [self.inviteFriendsView hideActivityIndicator];
-                                                                             if ([task.error.domain isEqualToString:CMSofaInteractorErrorDomain] && task.error.code == CMSofaInteractorLoginFlowCancelled) {
-                                                                                 return nil;
-                                                                             }
+    [[self.invitationInteractor inviteFriends:self.sofaModel.showId] continueWithExecutor:[BFExecutor mainThreadExecutor]
+                                                                                withBlock:^id(BFTask <NSString *> *task) {
+                                                                                    if (task.error) {
+                                                                                        [self.inviteFriendsView hideActivityIndicator];
+                                                                                        if ([task.error.domain isEqualToString:CMSofaInteractorErrorDomain] && task.error.code == CMSofaInteractorLoginFlowCancelled) {
+                                                                                            return nil;
+                                                                                        }
 
-                                                                             if ([self.delegate respondsToSelector:@selector(sofaViewWantsToPresentViewController:)]) {
-                                                                                 [self.delegate sofaViewWantsToPresentViewController:[[CMErrorWireframe new] viewControllerDisplayingError:task.error]];
-                                                                             }
-                                                                         } else {
-                                                                             [self showShareDeeplinkDialog:task.result];
-                                                                             [self.inviteFriendsView hideActivityIndicator];
-                                                                         }
-                                                                         return nil;
-                                                                     }];
+                                                                                        if ([self.delegate respondsToSelector:@selector(sofaViewWantsToPresentViewController:)]) {
+                                                                                            [self.delegate sofaViewWantsToPresentViewController:[[CMErrorWireframe new] viewControllerDisplayingError:task.error]];
+                                                                                        }
+                                                                                    } else {
+                                                                                        [self showShareDeeplinkDialog:task.result];
+                                                                                        [self.inviteFriendsView hideActivityIndicator];
+                                                                                    }
+                                                                                    return nil;
+                                                                                }];
 }
 
 - (void)handleCloseSofaViewEvent:(UIButton *)continueToShowButton {
@@ -278,15 +280,17 @@
 
     self.dimView.frame = self.bounds;
 
-    self.backgroundImageView.frame = [self frameToFitInternalRect:CGRectMake(571, 680, 453, 278) toScreenRect:CGRectMake(.0f, self.bounds.size.height / 4, self.bounds.size.width, self.bounds.size.height / 2)];
+    self.backgroundImageView.frame = [self frameToFitInternalRect:CGRectMake(994, 1195, 800, 520) toScreenRect:CGRectMake(.0f, self.bounds.size.height / 4, self.bounds.size.width, self.bounds.size.height / 2)];
+    self.progressivebackgroundImage.frame = self.backgroundImageView.frame;
+    [self sendSubviewToBack:self.progressivebackgroundImage];
 
-    self.influencerCammentNode.view.frame = [self convertOriginalRect:CGRectMake(637, 689, 80, 80)
+    self.influencerCammentNode.view.frame = [self convertOriginalRect:CGRectMake(1110, 1211, 140, 140)
                                                         toScaledImage:self.backgroundImageView.frame];
 
-    self.cameraPreviewView.frame = [self convertOriginalRect:CGRectMake(760, 689, 80, 80)
+    self.cameraPreviewView.frame = [self convertOriginalRect:CGRectMake(1325, 1211, 140, 140)
                                                toScaledImage:self.backgroundImageView.frame];
 
-    self.inviteFriendsView.frame = [self convertOriginalRect:CGRectMake(880, 689, 80, 80)
+    self.inviteFriendsView.frame = [self convertOriginalRect:CGRectMake(1522, 1211, 140, 140)
                                                toScaledImage:self.backgroundImageView.frame];
     self.inviteFriendsView.layer.cornerRadius = ceilf(self.inviteFriendsView.frame.size.width / 2);
 
@@ -321,41 +325,66 @@
             buttonSize.width,
             buttonSize.height);
     self.continueToShowButton.layer.cornerRadius = self.continueToShowButton.bounds.size.height / 2.0f;
+    
+    CGSize logoSize = CGSizeMake(CGRectGetMinX(self.continueToShowButton.frame) - margin*2, self.bounds.size.height / 3 - margin);
+//    self.brandLogoImage.frame = CGRectMake(margin,
+//                                           self.bounds.size.height - logoSize.height - margin,
+//                                           logoSize.width,
+//                                           logoSize.height);
+
+    CGSize imageSize = self.brandLogoImage.image.size;
+
+    if (!self.brandLogoImage || CGSizeEqualToSize(imageSize, CGSizeZero)) {
+        self.brandLogoImage.frame = CGRectZero;
+        return;
+    }
+
+    CGRect brandlogoFrame = [self frameToFitInternalRect:CGRectMake(.0f, .0f, imageSize.width, imageSize.height)
+                                            toScreenRect:CGRectMake(.0f, .0f, logoSize.width, logoSize.height)
+                                                   Image:self.brandLogoImage.image];
+
+    self.brandLogoImage.frame = CGRectMake(margin,
+                                           self.bounds.size.height - brandlogoFrame.size.height - margin,
+                                           brandlogoFrame.size.width,
+                                           brandlogoFrame.size.height);
 }
 
-// Returns frame for image calculated in a way that "rect" stays always visible at the screen
-- (CGRect)frameToFitInternalRect:(CGRect)rect toScreenRect:(CGRect)screenRect {
-
+- (CGRect)frameToFitInternalRect:(CGRect)rect toScreenRect:(CGRect)screenRect Image:(UIImage *)image {
+    
     //Calculate scale factor needed to fit rect into screen bounds
     //Fit width first
     CGFloat s = CGRectGetWidth(screenRect) / CGRectGetWidth(rect);
-
+    
     //If height doesn't fit with current scale factor we fix that
     if (CGRectGetHeight(rect) * s > CGRectGetHeight(screenRect)) {
         s = CGRectGetHeight(screenRect) / CGRectGetHeight(rect);
     }
-
+    
     // Make sure we never scale image up, scaling down is fine
     if (s > 1) { s = 1; }
-
+    
     NSLog(@"scale factor %f", s);
-
+    
     //Scale provided rect
     CGRect scaledRect = CGRectApplyAffineTransform(rect, CGAffineTransformMakeScale(s, s));
-
+    
     //Scale original image
-    CGSize imageSize = CGSizeApplyAffineTransform(self.backgroundImageView.image.size, CGAffineTransformMakeScale(s, s));
-
+    CGSize imageSize = CGSizeApplyAffineTransform(image.size, CGAffineTransformMakeScale(s, s));
+    
     //Construct a new frame for scaled image, image aligned to the left top corner of a screen
     CGRect imageRect = CGRectMake(0, 0, imageSize.width, imageSize.height);
-
+    
     //Move image on the screen to make provided rect visible
-    imageRect = CGRectApplyAffineTransform(
-            imageRect,
-            CGAffineTransformMakeTranslation(CGRectGetMidX(screenRect) - CGRectGetMidX(scaledRect),
-                    CGRectGetMidY(screenRect) - CGRectGetMidY(scaledRect)));
-
+    imageRect = CGRectApplyAffineTransform(imageRect,
+                                           CGAffineTransformMakeTranslation(CGRectGetMidX(screenRect) - CGRectGetMidX(scaledRect),
+                                                                            CGRectGetMidY(screenRect) - CGRectGetMidY(scaledRect)));
+    
     return imageRect;
+}
+
+// Returns frame for image calculated in a way that "rect" stays always visible at the screen
+- (CGRect)frameToFitInternalRect:(CGRect)rect toScreenRect:(CGRect)screenRect {
+    return [self frameToFitInternalRect:rect toScreenRect:screenRect Image:self.backgroundImageView.image];
 }
 
 - (CGRect)convertOriginalRect:(CGRect)originalRect toScaledImage:(CGRect)imageRect {
@@ -394,7 +423,7 @@
                                                                              message:CMLocalized(@"Invite users by sharing the invitation link via channel of your choice")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        NSString *textToShare = @"";
+        NSString *textToShare = self.sofaModel.invitationText;
         NSURL *url = [NSURL URLWithString:link];
 
         NSString *shareString = [NSString stringWithFormat:@"%@ %@", textToShare, url.absoluteString];
@@ -414,12 +443,27 @@
 
     [self.delegate sofaViewWantsToPresentViewController:alertController];
 }
-- (void)sofaViewDidFetchedContent:(CMAPISofa *)sofa {
 
-}
+- (void)setSofaModel:(CMAPISofa *)sofaModel {
+    _sofaModel = sofaModel;
+    _progressivebackgroundImage.URL = [[NSURL alloc] initWithString:sofaModel.backgroundImage];
+    _brandLogoImage.URL = [[NSURL alloc] initWithString:sofaModel.brandLogo];
+    _headerTextNode.text = sofaModel.screenText;
 
-- (void)sofaViewDidFailedFetching:(NSError *)error {
-
+    _influencerCammentNode.camment = [[CMCamment alloc] initWithShowUuid:sofaModel.showId
+                                                           userGroupUuid:@""
+                                                                    uuid:@""
+                                                               remoteURL:sofaModel.influencerCamment
+                                                                localURL:@""
+                                                            thumbnailURL:@""
+                                                   userCognitoIdentityId:@""
+                                                                  showAt:@0
+                                                             isMadeByBot:NO
+                                                                 botUuid:nil
+                                                               botAction:nil
+                                                               isDeleted:NO
+                                                         shouldBeDeleted:NO
+                                                                  status:[CMCammentStatus new]];
 }
 
 @end

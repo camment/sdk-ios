@@ -20,12 +20,10 @@
             initWithUserSessionController:[CMUserSessionController instance]
                      invitationInteractor:cmInvitationInteractor
                                     store:[CMStore new]];
-    CMSofaInteractor *sofaInteractor = [[CMSofaInteractor alloc] initWithInvitationInteractor:invitationInteractor
-                                                                                       output:nil];
+    CMSofaInteractor *sofaInteractor = [CMSofaInteractor new];
     cmInvitationInteractor.output = invitationInteractor;
     CMSofaView *view = [CMSofaView new];
-    view.interactor = sofaInteractor;
-    sofaInteractor.output = view;
+    view.invitationInteractor = invitationInteractor;
 
     return view;
 }

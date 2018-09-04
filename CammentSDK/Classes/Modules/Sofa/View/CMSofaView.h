@@ -6,24 +6,27 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CMSofaInteractor.h"
 
 @class CMCammentNode;
 @class ASTextNode;
 @class CMSofaCameraPreviewView;
 @class CMSofaInviteFriendsView;
 @class CMCameraPreviewInteractor;
-@class CMSofaInteractor;
+@class CMProgressiveImageView;
+@class CMSofaInvitationInteractor;
+@class CMAPISofa;
 
 @protocol CMSofaViewDelegate<NSObject>
 - (void)sofaViewWantsToPresentViewController:(UIViewController *)viewController;
 - (void)sofaViewDidClose;
 @end
 
-@interface CMSofaView : UIView <CMSofaInteractorOutput>
+@interface CMSofaView : UIView
 
-@property (nonatomic, strong) NSString *showUUID;
+@property (nonatomic, strong) CMAPISofa *sofaModel;
 @property (nonatomic, strong) UIImageView *backgroundImageView;
+@property (nonatomic, strong) CMProgressiveImageView *progressivebackgroundImage;
+@property (nonatomic, strong) CMProgressiveImageView *brandLogoImage;
 @property (nonatomic, strong) UIView *dimView;
 @property (nonatomic, strong) CMCammentNode *influencerCammentNode;
 @property (nonatomic, strong) CMSofaCameraPreviewView *cameraPreviewView;
@@ -37,7 +40,7 @@
 @property (nonatomic, strong) UITapGestureRecognizer *activateCameraGestureRecognizer;
 
 @property(nonatomic, strong) CMCameraPreviewInteractor *recorder;
-@property(nonatomic, strong) CMSofaInteractor *interactor;
+@property(nonatomic, strong) CMSofaInvitationInteractor *invitationInteractor;
 
 - (void)cammentDidStop;
 

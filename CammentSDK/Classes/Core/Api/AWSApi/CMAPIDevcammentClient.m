@@ -85,53 +85,22 @@ static NSString *const AWSInfoClientKey = @"CMAPIDevcammentClient";
 static AWSSynchronizedMutableDictionary *_serviceClients = nil;
 
 + (instancetype)defaultClient {
-    AWSServiceConfiguration *serviceConfiguration = nil;
-    AWSServiceInfo *serviceInfo = [[AWSInfo defaultAWSInfo] defaultServiceInfo:AWSInfoClientKey];
-    if (serviceInfo) {
-        serviceConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:serviceInfo.region
-                                                           credentialsProvider:serviceInfo.cognitoCredentialsProvider];
-    } else if ([AWSServiceManager defaultServiceManager].defaultServiceConfiguration) {
-        serviceConfiguration = AWSServiceManager.defaultServiceManager.defaultServiceConfiguration;
-    } else {
-        serviceConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUnknown
-                                                           credentialsProvider:nil];
-    }
-
-    static CMAPIDevcammentClient *_defaultClient = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _defaultClient = [[CMAPIDevcammentClient alloc] initWithConfiguration:serviceConfiguration];
-    });
-
-    return _defaultClient;
+    return [CMAPIDevcammentClient clientForKey:CMAPIClientName];
 }
 
-+ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key {
++ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key appConfig:(CMAppConfig *)appConfig {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _serviceClients = [AWSSynchronizedMutableDictionary new];
     });
-    [_serviceClients setObject:[[CMAPIDevcammentClient alloc] initWithConfiguration:configuration]
+    [_serviceClients setObject:[[CMAPIDevcammentClient alloc] initWithConfiguration:configuration appConfig:appConfig]
                         forKey:key];
 }
 
 + (instancetype)clientForKey:(NSString *)key {
     @synchronized(self) {
         CMAPIDevcammentClient *serviceClient = [_serviceClients objectForKey:key];
-        if (serviceClient) {
-            return serviceClient;
-        }
-
-        AWSServiceInfo *serviceInfo = [[AWSInfo defaultAWSInfo] serviceInfo:AWSInfoClientKey
-                                                                     forKey:key];
-        if (serviceInfo) {
-            AWSServiceConfiguration *serviceConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:serviceInfo.region
-                                                                                        credentialsProvider:serviceInfo.cognitoCredentialsProvider];
-            [CMAPIDevcammentClient registerClientWithConfiguration:serviceConfiguration
-                                                    forKey:key];
-        }
-
-        return [_serviceClients objectForKey:key];
+        return serviceClient;
     }
 }
 
@@ -146,11 +115,11 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     return nil;
 }
 
-- (instancetype)initWithConfiguration:(AWSServiceConfiguration *)configuration {
+- (instancetype)initWithConfiguration:(AWSServiceConfiguration *)configuration appConfig:(CMAppConfig *)config {
     if (self = [super init]) {
         _configuration = [configuration copy];
 
-        NSString *URLString = [CMAppConfig instance].apiHost;
+        NSString *URLString = config.apiHost;
         if ([URLString hasSuffix:@"/"]) {
             URLString = [URLString substringToIndex:[URLString length] - 1];
         }

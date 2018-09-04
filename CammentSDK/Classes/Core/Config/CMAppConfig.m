@@ -13,24 +13,12 @@ NSString* const CMCognitoName = @"defaultCognito";
 
 @implementation CMAppConfig
 
-+ (CMAppConfig *)instance {
-    static CMAppConfig *_instance = nil;
-
-    @synchronized (self) {
-        if (_instance == nil) {
-            _instance = [[self alloc] init];
-        }
-    }
-
-    return _instance;
-}
-
-- (instancetype)init {
+- (instancetype)init:(NSString *)sdkEnvironment {
     self = [super init];
     if (self) {
         NSString *propertyListPath = [[NSBundle cammentSDKBundle] pathForResource:@"Config" ofType:@"plist"];
         NSDictionary *propertyList = [NSDictionary dictionaryWithContentsOfFile:propertyListPath];
-        _sdkEnvironment = (NSString *) CMSDKEnvironment;
+        _sdkEnvironment = sdkEnvironment;
         DDLogDeveloperInfo(@"SDK environment %@", _sdkEnvironment);
         NSDictionary *envPropertyList = [propertyList valueForKey:_sdkEnvironment];
         DDLogInfo(@"env config %@", envPropertyList);

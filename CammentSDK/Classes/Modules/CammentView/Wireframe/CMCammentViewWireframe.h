@@ -15,6 +15,7 @@
 
 @class CMShowMetadata;
 @protocol CMIdentityProvider;
+@class CMAppConfig;
 
 @interface CMCammentViewWireframe : NSObject
 
@@ -33,7 +34,7 @@
 
 @property(nonatomic, strong) RACSubject *serverMessagesSubject;
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig userSessionController:(CMUserSessionController *)userSessionController serverMessagesSubject:(RACSubject *)serverMessagesSubject;
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig userSessionController:(CMUserSessionController *)userSessionController serverMessagesSubject:(RACSubject *)serverMessagesSubject appConfig:(CMAppConfig *)appConfig;
 
 - (CMCammentViewController *)controller;
 

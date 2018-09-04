@@ -8,7 +8,6 @@
 
 #import "CMGroupsListInteractor.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
 #import "CMUsersGroupBuilder.h"
@@ -25,7 +24,7 @@
         return;
     }
 
-    AWSTask * task = [[CMAPIDevcammentClient defaultAPIClient] meGroupsGet:uuid];
+    AWSTask * task = [[CMAPIDevcammentClient defaultClient] meGroupsGet:uuid];
     if (!task) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.output groupListInteractor:self didFailToFetchUserGroups:nil];

@@ -19,6 +19,7 @@
 #import "CMUsersGroupBuilder.h"
 #import "NSArray+RacSequence.h"
 #import "CMCammentOverlayController.h"
+#import "CMAppConfig.h"
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 

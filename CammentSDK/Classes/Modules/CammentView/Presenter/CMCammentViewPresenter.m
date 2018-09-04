@@ -445,7 +445,7 @@
 }
 
 - (void)setupPresentationInstruction {
-#ifdef INTERNALSDK
+#ifdef USE_INTERNAL_FEATURES
     NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Demo"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
 
     id <CMPresentationBuilder> builder = nil;

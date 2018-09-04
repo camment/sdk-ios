@@ -9,7 +9,6 @@
 #import "DateTools.h"
 #import "CMAPIIotInRequest.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMNeededPlayerStateMessage.h"
 
 @implementation CMVideoSyncInteractor {
@@ -37,7 +36,7 @@
         return;
     }
 
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidIotPost:groupUuid
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidIotPost:groupUuid
                                                                                     body:iotInRequest];
     if (!task) {
         DDLogError(@"Couldn't create aws task to request new player state");
@@ -99,7 +98,7 @@
                                                    options:NULL
                                                      error:&error];
     iotInRequest.message = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidIotPost:groupUuid
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidIotPost:groupUuid
                                                                                     body:iotInRequest];
     if (!task) {
         DDLogError(@"Couldn't create aws task to upload new video stream timing");

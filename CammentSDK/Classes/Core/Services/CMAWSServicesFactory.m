@@ -10,7 +10,6 @@
 #import "AWSS3TransferManager.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMStore.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMCognitoFacebookAuthProvider.h"
 #import "CMCognitoFacebookAuthProvider.h"
 
@@ -30,7 +29,9 @@
         self.appConfig = appConfig;
         AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
                                                                              credentialsProvider:nil];
-        [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAnonymousAPIClientName];
+        [CMAPIDevcammentClient registerClientWithConfiguration:configuration
+                                                        forKey:CMAnonymousAPIClientName
+                                                     appConfig:self.appConfig];
         self.anonymousAPIClient = [CMAPIDevcammentClient clientForKey:CMAnonymousAPIClientName];
         [self.anonymousAPIClient setAPIKey:appConfig.apiKey];
 
@@ -75,7 +76,7 @@
                                                         forKey:CMIotManagerName];
     self.IoTDataManager = [AWSIoTDataManager IoTDataManagerForKey:CMIotManagerName];
 
-    [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName];
+    [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:CMAPIClientName appConfig:self.appConfig];
     self.APIClient = [CMAPIDevcammentClient clientForKey:CMAPIClientName];
     [self.APIClient setAPIKey:self.appConfig.apiKey];
 

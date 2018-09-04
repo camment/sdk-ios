@@ -14,37 +14,25 @@
 @interface CMCammentUploader ()
 
 @property(nonatomic, copy) NSString *bucketName;
-@property(nonatomic, strong) AWSS3TransferManager *transferManager;
 
 @end
 
 @implementation CMCammentUploader
 
-+ (CMCammentUploader *)instance {
-    static CMCammentUploader *_instance = nil;
-
-    @synchronized (self) {
-        if (_instance == nil) {
-            _instance = [[self alloc] init];
-        }
-    }
-
-    return _instance;
-}
-
 - (instancetype)init {
-    return [self initWithBucketName:[CMAppConfig instance].awsS3BucketName
-                aws3TransferManager:[AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName]];
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `+ initWithBucketName:aws3TransferManager` instead."
+                                 userInfo:nil];
+    return nil;
 }
 
-- (instancetype)initWithBucketName:(NSString *)bucketName aws3TransferManager:(AWSS3TransferManager *)awss3TransferManager {
+- (instancetype)initWithBucketName:(NSString *)bucketName {
     self = [super init];
 
     if (self) {
         self.bucketName = bucketName;
-        self.transferManager = awss3TransferManager;
     }
-    
+
     return self;
 }
 
@@ -64,11 +52,8 @@
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
 
-        if (!self.transferManager) {
-            _transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
-        }
-        
-        [[self.transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
+        AWSS3TransferManager *awss3TransferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
+        [[awss3TransferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                     switch ((AWSS3TransferManagerErrorType)task.error.code) {

@@ -5,6 +5,7 @@
 
 #import "CammentSDK.h"
 #import "CMSDKService.h"
+#import "CMAppConfig.h"
 
 NSString *const CMNewTimestampAvailableVideoPlayerNotification = @"CMNewTimestampAvailableVideoPlayerNotification";
 NSString *const CMNewTimestampKey = @"CMNewTimestampKey";
@@ -58,8 +59,16 @@ NSString *const CMVideoIsPlayingKey = @"CMVideoIsPlayingKey";
 
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey
            identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider {
-    [_sdkService configureWithApiKey:apiKey
-                    identityProvider:identityProvider];
+    CMAppConfig *appConfig = [[CMAppConfig alloc] init:@"production"];
+    [self configureWithApiKey:apiKey
+             identityProvider:identityProvider
+                    appConfig:appConfig];
+}
+
+- (void)configureWithApiKey:(NSString *_Nonnull)apiKey
+           identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider
+                  appConfig:(CMAppConfig *)appConfig {
+    [_sdkService configureWithApiKey:apiKey identityProvider:identityProvider appConfig:appConfig];
     [_sdkService wakeUpUserSession];
 }
 

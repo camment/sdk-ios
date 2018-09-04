@@ -15,7 +15,6 @@
 #import "CMServerListenerCredentials.h"
 #import "CMAPIDevcammentClient.h"
 #import "CMServerMessage.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMCammentBuilder.h"
 #import "CMCammentStatus.h"
 #import "CMServerMessage+TypeMatching.h"
@@ -102,7 +101,7 @@
     if (!groupUUID) {return;}
     __weak typeof(self) _weakSelf = self;
     BOOL isFirstPage = [self.paginationKey length] == 0;
-//    [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:groupUUID
+//    [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsGet:groupUUID
 //                                                                       timeTo:@"10"
 //                                                                        limit:self.cammentsLimit
 //                                                                     timeFrom:@"0"
@@ -165,7 +164,7 @@
     if (!uuid) {return;}
     __weak typeof(self) _weakSelf = self;
     DDLogInfo(@"Fetching camments %@-%@", from, to);
-    [[[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidCammentsGet:uuid
+    [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsGet:uuid
                                                                        timeTo:to
                                                                         limit:self.cammentsLimit
                                                                      timeFrom:from

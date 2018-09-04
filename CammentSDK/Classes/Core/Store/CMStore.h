@@ -17,6 +17,7 @@
 @class CMAuthStatusChangedEventContext;
 @class CMServerMessage;
 @protocol CMCammentOverlayControllerDelegate;
+@class CMAppConfig;
 
 extern NSString *kCMStoreCammentIdIfNotPlaying;
 
@@ -28,6 +29,8 @@ typedef NS_ENUM(NSInteger, CMCammentRecordingState) {
 };
 
 @interface CMStore: NSObject <FBTweakObserver>
+
+@property (nonatomic, strong) CMAppConfig *appConfig;
 
 @property (nonatomic, assign) NSTimeInterval currentShowTimeInterval;
 @property (nonatomic, copy) NSString *playingCammentId;

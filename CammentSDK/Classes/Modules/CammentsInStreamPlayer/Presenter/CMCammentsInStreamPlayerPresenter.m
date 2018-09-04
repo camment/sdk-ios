@@ -10,7 +10,6 @@
 #import "CMShow.h"
 #import "CMLoadingHUD.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMErrorWireframe.h"
 #import "CMACammentAds.h"
 #import "CMAShowMetadata.h"
@@ -66,7 +65,7 @@
 
 
 - (void)getShowInfo:(NSString *)uuid {
-    AWSTask *loadShowInfo = [[CMAPIDevcammentClient defaultAPIClient] showsUuidGet:uuid];
+    AWSTask *loadShowInfo = [[CMAPIDevcammentClient defaultClient] showsUuidGet:uuid];
     if (!loadShowInfo) {
         [self.output hideLoadingHUD];
         return;

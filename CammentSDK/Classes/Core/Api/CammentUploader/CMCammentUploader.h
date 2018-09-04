@@ -10,10 +10,8 @@
 
 @interface CMCammentUploader : NSObject
 
-- (instancetype)initWithBucketName:(NSString *)bucketName
-               aws3TransferManager:(AWSS3TransferManager *)awss3TransferManager NS_DESIGNATED_INITIALIZER;
-
-+ (CMCammentUploader *)instance;
+- (instancetype)initWithBucketName:(NSString *)bucketName;
 
 - (RACSignal *)uploadVideoAsset:(NSURL *)url uuid:(NSString *)uuid;
+
 @end

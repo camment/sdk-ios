@@ -38,6 +38,8 @@
 #import "CMAPIUserinfo.h"
 #import "CMAPIOpenIdToken.h"
 
+@class CMAppConfig;
+
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -132,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param configuration A service configuration object.
  @param key           A string to identify the service client.
  */
-+ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key;
++ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key appConfig:(CMAppConfig *)appConfig;
 
 /**
  Retrieves the service client associated with the key. You need to call `+ registerClientWithConfiguration:forKey:` before invoking this method or alternatively, set the configuration in your application's `info.plist` file. If `+ registerClientWithConfiguration:forKey:` has not been called in advance or if a configuration is not present in the `info.plist` file of the app, this method returns `nil`.

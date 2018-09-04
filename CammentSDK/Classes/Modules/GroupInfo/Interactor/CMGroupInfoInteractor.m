@@ -8,7 +8,6 @@
 
 #import "CMGroupInfoInteractor.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "NSArray+RacSequence.h"
 #import "CMUserBuilder.h"
 #import "CMUsersGroup.h"
@@ -22,7 +21,7 @@
 - (void)fetchUsersInGroup:(NSString *)groupId {
     if (groupId.length == 0) { return; }
 
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersGet:groupId];
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidUsersGet:groupId];
     if (!task) {
         [self.output groupInfoInteractor:self didFailToFetchUsersInGroup:[NSError new]];
         return;
@@ -56,7 +55,7 @@
 - (void)deleteUser:(CMUser *)user fromGroup:(CMUsersGroup *)group {
     if (group.uuid.length == 0 || user.cognitoUserId.length == 0) { return; }
 
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdDelete:user.cognitoUserId
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidUsersUserIdDelete:user.cognitoUserId
                                                                                          groupUuid:group.uuid];
     if (!task) {
         [self.output groupInfoInteractor:self didFailToDeleteUser:user fromGroup:group error:nil];
@@ -81,7 +80,7 @@
 
     CMAPIUpdateUserStateInGroupRequest *stateInGroupRequest = [[CMAPIUpdateUserStateInGroupRequest alloc] init];
     stateInGroupRequest.state = CMUserBlockStatus.Blocked;
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:userId
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidUsersUserIdPut:userId
                                                                                       groupUuid:group.uuid
                                                                                            body:stateInGroupRequest];
     if (!task) {
@@ -107,7 +106,7 @@
 
     CMAPIUpdateUserStateInGroupRequest *stateInGroupRequest = [[CMAPIUpdateUserStateInGroupRequest alloc] init];
     stateInGroupRequest.state = CMUserBlockStatus.Active;
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidUsersUserIdPut:userId
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidUsersUserIdPut:userId
                                                                                       groupUuid:group.uuid
                                                                                            body:stateInGroupRequest];
     if (!task) {
@@ -132,7 +131,7 @@
     CMAPIGroupUuidInRequest *groupUuidInRequest = [CMAPIGroupUuidInRequest new];
     groupUuidInRequest.groupUuid = uuid;
 
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] meActiveGroupPost:groupUuidInRequest];
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] meActiveGroupPost:groupUuidInRequest];
     [task continueWithBlock:^id(AWSTask<id> *t) {
         if (t.error) {
             DDLogError(@"Could not set active user group %@", t.error);
@@ -142,7 +141,7 @@
 }
 
 - (void)unsetActiveGroup {
-    AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] meActiveGroupDelete];
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] meActiveGroupDelete];
     [task continueWithBlock:^id(AWSTask<id> *t) {
         if (t.error) {
             DDLogError(@"Could not unset active user group %@", t.error);

@@ -17,6 +17,12 @@
 #import "CMAuthInteractor.h"
 #import "CMIdentityProvider.h"
 #import "CMInvitationInteractor.h"
+#import "CMCammentUploader.h"
+#import "CMAppConfig.h"
+
+@interface CMCammentViewWireframe ()
+@property(nonatomic, strong) CMAppConfig *appConfig;
+@end
 
 @implementation CMCammentViewWireframe
 
@@ -29,10 +35,11 @@
     return nil;
 }
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata 
                  overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
-               userSessionController:(CMUserSessionController *)userSessionController
-               serverMessagesSubject:(RACSubject *)serverMessagesSubject {
+               userSessionController:(CMUserSessionController *)userSessionController 
+               serverMessagesSubject:(RACSubject *)serverMessagesSubject 
+                           appConfig:(CMAppConfig *)appConfig {
     self = [super init];
 
     if (self) {
@@ -40,6 +47,7 @@
         self.overlayLayoutConfig = overlayLayoutConfig;
         self.userSessionController = userSessionController;
         self.serverMessagesSubject = serverMessagesSubject;
+        self.appConfig = appConfig;
     }
 
     return self;
@@ -57,7 +65,8 @@
     invitationInteractor.output = presenter;
     cammentsBlockPresenter.output = presenter;
 
-    CMCammentViewInteractor *interactor = [CMCammentViewInteractor new];
+    CMCammentUploader *uploader = [[CMCammentUploader alloc] initWithBucketName:self.appConfig.awsS3BucketName];
+    CMCammentViewInteractor *interactor = [[CMCammentViewInteractor alloc] initWithCammentUploader:uploader];
 
     view.presenter = presenter;
     view.sidebarWireframe = [CMGroupInfoWireframe new];

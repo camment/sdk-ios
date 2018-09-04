@@ -17,7 +17,6 @@
 #import "CMUsersGroup.h"
 #import "CMStore.h"
 #import "CMCammentPostingOperation.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMShowMetadata.h"
 #import "RACSignal+SignalHelpers.h"
 
@@ -25,7 +24,6 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
 
 @interface CMCammentViewInteractor ()
 
-@property(nonatomic, strong) CMAPIDevcammentClient *client;
 @property(nonatomic, strong) CMCammentUploader *cammentUploader;
 @property(nonatomic, strong) NSOperationQueue *cammentPostingQueue;
 
@@ -36,13 +34,15 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
 @implementation CMCammentViewInteractor
 
 - (instancetype)init {
-    return [self initWithAPIClient:[CMAPIDevcammentClient defaultAPIClient] cammentUploader:[CMCammentUploader new]];
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `- initWithCammentUploader:` instead."
+                                 userInfo:nil];
+    return nil;
 }
 
-- (instancetype)initWithAPIClient:(CMAPIDevcammentClient *)APIClient cammentUploader:(CMCammentUploader *)cammentUploader {
+- (instancetype)initWithCammentUploader:(CMCammentUploader *)cammentUploader {
     self = [super init];
     if (self) {
-        self.client = APIClient;
         self.cammentUploader = cammentUploader;
         self.maxUploadRetries = 3;
         self.cammentPostingQueue = [[NSOperationQueue alloc] init];
@@ -54,11 +54,6 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
     return self;
 }
 
-- (CMAPIDevcammentClient *)client {
-    if (_client) { return _client; }
-    return [CMAPIDevcammentClient defaultAPIClient];
-}
-
 - (RACSignal<CMUsersGroup *> *)createEmptyGroup {
     CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
     usergroupInRequest.showId = [CMStore instance].currentShowMetadata.uuid;
@@ -66,15 +61,15 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
 
         if (!usergroupInRequest.showId) {
             NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
-                                                      code:CMCammentViewInteractorErrorMissingRequiredParameters
+                                                 code:CMCammentViewInteractorErrorMissingRequiredParameters
                                              userInfo:@{
-                    NSLocalizedFailureReasonErrorKey : @"Could not upload camment while show uuid is empty"
-            }];
+                                                     NSLocalizedFailureReasonErrorKey : @"Could not upload camment while show uuid is empty"
+                                             }];
             [subscriber sendError:error];
             return nil;
         }
-        
-        [[self.client usergroupsPost:usergroupInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+
+        [[[CMAPIDevcammentClient defaultClient] usergroupsPost:usergroupInRequest] continueWithBlock:^id(AWSTask<id> *t) {
             if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
                 CMAPIUsergroup *group = t.result;
                 CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
@@ -105,7 +100,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                   camment:camment];
         return;
     }
-    
+
     if (!camment.uuid) {
         [self handleCammentUploadingError:[NSError errorWithDomain:CMCammentViewInteractorErrorDomain
                                                               code:CMCammentViewInteractorErrorProvidedParametersAreIncorrect
@@ -113,7 +108,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                   camment:camment];
         return;
     }
-    
+
     NSNumber *retriesCount = self.cammentUploadingRetries[camment.uuid] ?: @0;
     NSInteger nextAttemptNumber = retriesCount.integerValue + 1;
     self.cammentUploadingRetries[camment.uuid] = @(nextAttemptNumber);
@@ -148,7 +143,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                   camment:camment];
         return;
     }
-    
+
     if (!camment.localURL || !camment.uuid) {
         [self handleCammentUploadingError:[NSError errorWithDomain:CMCammentViewInteractorErrorDomain
                                                               code:CMCammentViewInteractorErrorProvidedParametersAreIncorrect
@@ -156,7 +151,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                   camment:camment];
         return;
     }
-    
+
     NSURL *urlToUpload = [[NSURL alloc] initWithString:camment.localURL];
     if (!urlToUpload) {
         [self handleCammentUploadingError:[NSError errorWithDomain:CMCammentViewInteractorErrorDomain
@@ -165,10 +160,10 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                                   camment:camment];
         return;
     }
-    
+
     __weak typeof(self) __weakSelf = self;
     [[self.cammentUploader uploadVideoAsset:urlToUpload
-                                        uuid:camment.uuid]
+                                       uuid:camment.uuid]
             subscribeError:^(NSError *error) {
                 [__weakSelf handleCammentUploadingError:error camment:camment];
             }
@@ -178,20 +173,20 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
                      cammentInRequest.showAt = @([camment.showAt integerValue]);
                      DDLogVerbose(@"Posting camment %@", camment);
 
-                     [[self.client usergroupsGroupUuidCammentsPost:camment.userGroupUuid
-                                                              body:cammentInRequest]
+                     [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsPost:camment.userGroupUuid
+                                                                                        body:cammentInRequest]
                              continueWithBlock:^id(AWSTask<CMAPICamment *> *t) {
                                  if (t.error) {
                                      [__weakSelf handleCammentUploadingError:t.error camment:camment];
                                  } else {
                                      CMAPICamment *cmCamment = t.result;
                                      CMCamment *uploadedCamment = [[[[[[[CMCammentBuilder cammentFromExistingCamment:camment]
-                                                                        withUuid:cmCamment.uuid ?: camment.uuid]
-                                                                       withShowUuid:cmCamment.showUuid ?: camment.showUuid]
-                                                                      withRemoteURL:cmCamment.url ?: camment.remoteURL]
-                                                                     withUserGroupUuid:cmCamment.userGroupUuid ?: camment.userGroupUuid]
-                                                                    withLocalURL:camment.localURL]
-                                                                   build];
+                                             withUuid:cmCamment.uuid ?: camment.uuid]
+                                             withShowUuid:cmCamment.showUuid ?: camment.showUuid]
+                                             withRemoteURL:cmCamment.url ?: camment.remoteURL]
+                                             withUserGroupUuid:cmCamment.userGroupUuid ?: camment.userGroupUuid]
+                                             withLocalURL:camment.localURL]
+                                             build];
                                      [__weakSelf completeCammentUploadingTask:uploadedCamment];
                                  }
                                  return nil;
@@ -214,7 +209,7 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
         [self.output interactorFailedToUploadCamment:camment error:error];
         return;
     }
-    
+
     DDLogVerbose(@"Start uploading attempt %ld", (long)nextAttemptNumber);
     [self uploadCamment:camment];
 }
@@ -227,8 +222,8 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
     }
 
     CMCammentBuilder *cammentBuilder = [[CMCammentBuilder cammentFromExistingCamment:camment]
-                                        withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusSent
-                                                                                         isWatched:YES]];
+            withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusSent
+                                                             isWatched:YES]];
     dispatch_async(dispatch_get_main_queue(), ^{
         [self.output interactorDidUploadCamment:[cammentBuilder build]];
     });
@@ -238,8 +233,8 @@ NSString *const CMCammentViewInteractorErrorDomain = @"tv.camment.CMCammentViewI
     NSString *cammentUuid = camment.uuid;
     NSString *groupUuid = camment.userGroupUuid ?: [CMStore instance].activeGroup.uuid;
     if (!cammentUuid || !groupUuid) { return; }
-    [[self.client usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
-                                                     groupUuid:groupUuid]
+    [[[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidCammentsCammentUuidDelete:cammentUuid
+                                                                               groupUuid:groupUuid]
             continueWithBlock:^id(AWSTask<id> *t) {
                 if (t.error) {
                     DDLogError(@"Error while camment deletion %@", t.error);

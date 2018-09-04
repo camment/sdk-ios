@@ -8,7 +8,7 @@
 @interface CMProgressiveImageView() <NSURLSessionDelegate>
 
 @property(nonatomic, strong) NSURLSessionDataTask *connection;
-@property(nonatomic) long long int defaultContentLength;
+@property(nonatomic, assign) long long int defaultContentLength;
 @property(nonatomic, strong) NSData *data;
 @property(nonatomic, strong) dispatch_queue_t queue;
 
@@ -17,7 +17,6 @@
 @implementation CMProgressiveImageView {
 
 }
-
 
 - (instancetype)init {
     self = [super init];
@@ -69,21 +68,21 @@ didReceiveResponse:(NSURLResponse *)response
     NSMutableData *mutableData = [[NSMutableData alloc] initWithData:self.data];
     [mutableData appendData:data];
     self.data = mutableData;
-    
+    long long int dataLength = self.data.length;
     dispatch_sync(self.queue, ^{
         CCBufferedImageDecoder *decoder = [[CCBufferedImageDecoder alloc] initWithData:self.data];
         [decoder decompress];
 
         UIImage *image = [decoder toImage];
         if (!image) {
-            if (self.data.length == self.defaultContentLength) {
-                UIImage *image = [[UIImage alloc] initWithData:self.data];
-                if (image) {
-                    dispatch_async(dispatch_get_main_queue(), ^{
+            if (dataLength == self.defaultContentLength) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    UIImage *image = [[UIImage alloc] initWithData:self.data];
+                    if (image) {
                         self.image = image;
                         if (self.loadingHandler) { self.loadingHandler(); }
-                    });
-                }
+                    }
+                });
             }
             return;
             

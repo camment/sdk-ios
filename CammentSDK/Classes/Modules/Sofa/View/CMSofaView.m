@@ -105,7 +105,7 @@
         self.headerTextNode.textAlignment = NSTextAlignmentCenter;
         self.headerTextNode.adjustsFontSizeToFitWidth = YES;
         self.headerTextNode.minimumScaleFactor = 8.0f / 36.0f;
-        self.headerTextNode.font = [UIFont systemFontOfSize:36.0f];
+        self.headerTextNode.font = [UIFont nunitoMediumWithSize:36.0f];
         self.headerTextNode.numberOfLines = 0;
         self.headerTextNode.lineBreakMode = NSLineBreakByTruncatingTail;
         [self addSubview:self.headerTextNode];

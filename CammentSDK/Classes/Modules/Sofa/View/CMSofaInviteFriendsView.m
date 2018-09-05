@@ -13,7 +13,7 @@
     if (self) {
         self.clipsToBounds = YES;
         self.backgroundColor = [UIColor lightGrayColor];
-        self.alpha = .7f;
+        self.alpha = .8f;
 
         self.inviteFriendsImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"plus_icon"
                                                                                     inBundle:[NSBundle cammentSDKBundle]

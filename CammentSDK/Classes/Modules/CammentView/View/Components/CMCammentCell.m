@@ -13,8 +13,8 @@
 @interface CMCammentCell ()
 
 @property(nonatomic, strong) UILongPressGestureRecognizer *longPressGestureRecognizer;
-@property(nonatomic, strong) CMCammentDeliveryIndicator *deliveryIndicator;
 @property(nonatomic, strong) ASImageNode *notWatchedIndicator;
+
 @end
 
 @implementation CMCammentCell
@@ -24,9 +24,6 @@
     if (self) {
         _displayingContext = context;
         self.cammentNode = [[CMCammentNode alloc] initWithCamment:context.camment];
-        self.deliveryIndicator = [CMCammentDeliveryIndicator new];
-        self.deliveryIndicator.deliveryStatus = _displayingContext.camment.status.deliveryStatus;
-        self.deliveryIndicator.hidden = !context.shouldShowDeliveryStatus;
 
         self.notWatchedIndicator = [[ASImageNode alloc] init];
         self.notWatchedIndicator.contentMode = UIViewContentModeTopRight;
@@ -52,14 +49,6 @@
     self.longPressGestureRecognizer = longPressGestureRecognizer;
 }
 
-- (void)didEnterDisplayState {
-    [super didEnterDisplayState];
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.deliveryIndicator transitionLayoutWithAnimation:YES
-                                           shouldMeasureAsync:NO
-                                        measurementCompletion:nil];
-    });
-}
 
 - (void)handleLongPressAction:(UILongPressGestureRecognizer *)recognizer {
     if (recognizer.state != UIGestureRecognizerStateBegan) {
@@ -75,17 +64,11 @@
     self.cammentNode.style.flexGrow = 1.0f;
     self.notWatchedIndicator.style.flexGrow = 1.0f;
 
-    ASStackLayoutSpec *finalLayoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
-                                                                                 spacing:-1.0f
-                                                                          justifyContent:ASStackLayoutJustifyContentStart
-                                                                              alignItems:ASStackLayoutAlignItemsStart
-                                                                                children:@[_deliveryIndicator, [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_cammentNode
-                                                                                                                                                       overlay:_notWatchedIndicator]]];
-    finalLayoutSpec.style.flexGrow = .0f;
-    finalLayoutSpec.style.flexShrink = .0f;
+    ASOverlayLayoutSpec *finalLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_cammentNode
+                                                                                   overlay:_notWatchedIndicator];
 
-
-    ASAbsoluteLayoutSpec *spec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit children:@[finalLayoutSpec]];
+    ASAbsoluteLayoutSpec *spec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit
+                                                                           children:@[finalLayoutSpec]];
     spec.style.height = ASDimensionMake(_expanded ? 90.0f : 45.0f);
     spec.style.width = ASDimensionMake((_expanded ? 90.0f : 45.0f) + [self layoutGuidesOffsets].left);
 
@@ -111,7 +94,6 @@
                          self.frame = frame;
                          _cammentNode.frame = [context finalFrameForNode:self.cammentNode];
                          _cammentNode.videoPlayerNode.frame = _cammentNode.bounds;
-                         _deliveryIndicator.frame = [context finalFrameForNode:self.deliveryIndicator];
                          _notWatchedIndicator.alpha = !self.displayingContext.camment.status.isWatched;
                      }                completion:^(BOOL finished) {
                          [context completeTransition:finished];
@@ -120,15 +102,12 @@
 
 - (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context {
     _displayingContext = context;
-    self.deliveryIndicator.deliveryStatus = context.camment.status.deliveryStatus;
-    self.deliveryIndicator.hidden = !context.shouldShowDeliveryStatus;
     self.notWatchedIndicator.hidden = !context.shouldShowWatchedStatus;
-    [self.deliveryIndicator transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
     [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 - (UIEdgeInsets)layoutGuidesOffsets {
-    return UIEdgeInsetsMake(.0f, 11.0f, .0f, .0f);
+    return UIEdgeInsetsMake(.0f, .0f, .0f, .0f);
 }
 
 @end

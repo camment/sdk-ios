@@ -106,8 +106,7 @@
     return ^ASCellNode * {
         __block ASCellNode *node;
         [item matchCamment:^(CMCamment *camment) {
-            CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment
-                                                                                     shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:userCognitoUuid] shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:userCognitoUuid]];
+            CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:userCognitoUuid]];
             node = [[CMCammentCell alloc] initWithDisplayContext:context];
             [(CMCammentCell *) node setDelegate:self];
         }       botCamment:^(CMBotCamment *botCamment) {
@@ -366,9 +365,7 @@
             if (![node isKindOfClass:[CMCammentCell class]]) { continue; }
             CMCammentCell *cammentCell = (CMCammentCell *) node;
             if ([cammentCell.displayingContext.camment.uuid isEqualToString:camment.uuid]) {
-                CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment
-                                                                                         shouldShowDeliveryStatus:[camment.userCognitoIdentityId isEqualToString:__weakSelf.userCognitoUuid]
-                                                                                          shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:__weakSelf.userCognitoUuid]];
+                CMCammentCellDisplayingContext *context = [[CMCammentCellDisplayingContext alloc] initWithCamment:camment shouldShowWatchedStatus:![camment.userCognitoIdentityId isEqualToString:__weakSelf.userCognitoUuid]];
                 [cammentCell updateWithDisplayingContext:context];
             }
         }

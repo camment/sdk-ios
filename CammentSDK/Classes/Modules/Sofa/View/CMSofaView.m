@@ -8,6 +8,7 @@
 #import <AsyncDisplayKit/ASTextNode.h>
 #import <Bolts/Bolts.h>
 #import <CammentSDK/CMAPISofa.h>
+#import <pop/POPAnimation.h>
 #import "CMSofaView.h"
 #import "CMCammentNode.h"
 #import "CMCamment.h"
@@ -21,6 +22,7 @@
 #import "CMSofaInvitationInteractor.h"
 #import "CMErrorWireframe.h"
 #import "CMProgressiveImageView.h"
+#import "CMOneThirdScaleAnimation.h"
 
 
 @implementation CMSofaView
@@ -50,6 +52,9 @@
             } completion:^(BOOL finished) {}];
         }];
         self.brandLogoImage.alpha = .0f;
+        UITapGestureRecognizer *tapOnLogoGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnBrandLogo)];
+        self.brandLogoImage.userInteractionEnabled = YES;
+        [self.brandLogoImage addGestureRecognizer:tapOnLogoGestureRecognizer];
         [self addSubview:self.brandLogoImage];
         
         self.backgroundImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"sofa_bg"
@@ -142,6 +147,13 @@
     }
 
     return self;
+}
+
+- (void)handleTapOnBrandLogo {
+    NSString *targetURL = self.sofaModel.targetUrl;
+    if (!targetURL) { return; }
+
+    [[CMOpenURLHelper new] openURLString:targetURL];
 }
 
 - (void)inviteFriends {
@@ -256,6 +268,7 @@
 }
 
 - (void)cammentDidStop {
+    [self.influencerCammentNode.videoPlayerNode pop_addAnimation:[CMOneThirdScaleAnimation scaleDownAnimation] forKey:@"pop_scale_down"];
     [UIView animateWithDuration:.3f
                      animations:^{
                          self.dimView.alpha = .0f;
@@ -266,8 +279,18 @@
     if ([self.influencerCammentNode isPlaying]) {
         [self.influencerCammentNode stopCamment];
         [self cammentDidStop];
+        [self.influencerCammentNode.videoPlayerNode pop_addAnimation:[CMOneThirdScaleAnimation scaleDownAnimation]
+                                                              forKey:@"pop_scale_down"];
+        [UIView animateWithDuration:.3f
+                         animations:^{
+                             self.dimView.alpha = .6f;
+                         }];
     } else {
         [self.influencerCammentNode playCamment];
+
+        CMOneThirdScaleAnimation *scaleUpAnimation = [CMOneThirdScaleAnimation scaleUpAnimation];
+        [self.influencerCammentNode.videoPlayerNode pop_addAnimation:scaleUpAnimation
+                                                              forKey:@"pop_scale_up"];
         [UIView animateWithDuration:.3f
                          animations:^{
                              self.dimView.alpha = .6f;

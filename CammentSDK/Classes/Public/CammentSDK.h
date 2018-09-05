@@ -8,6 +8,8 @@
 #import <CammentSDK/CMCammentOverlayController.h>
 #import <CammentSDK/CMIdentityProvider.h>
 
+@class CMAppConfig;
+
 
 extern NSString *const CMNewTimestampAvailableVideoPlayerNotification;
 extern NSString *const CMNewTimestampKey;
@@ -70,6 +72,8 @@ extern NSString *const CMVideoIsPlayingKey;
  *                          Needs to perform authentication for a Camment user
  */
 - (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider;
+
+- (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider appConfig:(CMAppConfig *)appConfig;
 
 /**
  * Asks CMIdentityProvider to pass user credentials to CammentSDK.

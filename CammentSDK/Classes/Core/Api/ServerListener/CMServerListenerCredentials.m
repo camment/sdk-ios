@@ -10,19 +10,15 @@ const NSString * kCMServerCredetialsDefaultCertificateId = @"defaultIotCertifica
 
 @implementation CMServerListenerCredentials
 
-+ (CMServerListenerCredentials *)defaultCredentials {
-    return [CMServerListenerCredentials new];
-}
-
-- (instancetype)init {
+- (instancetype)initWithAppConfig:(CMAppConfig *)appConfig {
     NSString *defaultSertificateId = [NSString stringWithFormat:@"%@-new_%@",
                                           kCMServerCredetialsDefaultCertificateId,
-                                          [CMAppConfig instance].sdkEnvironment
+                                          appConfig.sdkEnvironment
                                       ];
     
     return [self initWithClientId:[NSUUID new].UUIDString
-                          keyFile:[CMAppConfig instance].iotCertFile
-                       passPhrase:[CMAppConfig instance].iotCertPassPhrase
+                          keyFile:appConfig.iotCertFile
+                       passPhrase:appConfig.iotCertPassPhrase
                     certificateId:defaultSertificateId];
 }
 

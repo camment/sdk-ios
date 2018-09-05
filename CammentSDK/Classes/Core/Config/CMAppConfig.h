@@ -23,7 +23,7 @@ extern NSString* const CMCognitoName;
 
 @property(nonatomic, copy) NSString *iotCertPassPhrase;
 
-+ (CMAppConfig *)instance;
 
+- (instancetype)init:(NSString *)sdkEnvironment;
 
 @end

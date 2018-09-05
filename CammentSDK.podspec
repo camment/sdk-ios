@@ -16,10 +16,15 @@ s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag =>
 
 s.ios.deployment_target = '9'
 
-s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
-s.resources = 'CammentSDK/Assets/**/*'
-s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
-s.public_header_files = 'CammentSDK/Classes/**/*.{h}'
+s.default_subspec = 'Core'
+
+s.subspec 'Core' do |core|
+    core.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
+    core.resources = 'CammentSDK/Assets/**/*'
+    core.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}', 'CammentSDK/vendor/libjpeg-turbo/include/*'
+    core.public_header_files = 'CammentSDK/Classes/**/*.{h}'
+    core.vendored_libraries   = 'CammentSDK/vendor/libjpeg-turbo/lib/libturbojpeg.a'
+end
 
 s.library = 'sqlite3', 'z'
 s.frameworks = [

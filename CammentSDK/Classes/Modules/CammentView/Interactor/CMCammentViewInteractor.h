@@ -26,6 +26,5 @@ typedef NS_ENUM(NSInteger, CMCammentViewInteractorErrorType) {
 
 @property(nonatomic) int maxUploadRetries;
 
-- (instancetype)initWithAPIClient:(CMAPIDevcammentClient *)APIClient cammentUploader:(CMCammentUploader *)cammentUploader;
-
+- (instancetype)initWithCammentUploader:(CMCammentUploader *)cammentUploader;
 @end

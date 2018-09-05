@@ -26,7 +26,14 @@ static CMUserSessionController *_instance = nil;
     return _instance;
 }
 
-+ (CMUserSessionController *)registerInstanceWithUser:(CMUser *)user tokens:(NSDictionary<NSString *, id> *)tokens cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject appConfig:(CMAppConfig *)appConfig {
++ (CMUserSessionController *)registerInstanceWithUser:(CMUser *)user
+                                               tokens:(NSDictionary<NSString *, id> *)tokens
+                           cognitoCredentialsProvider:(AWSCognitoCredentialsProvider *)cognitoCredentialsProvider
+                           authentificationInteractor:(id <CMAuthInteractorInput>)authentificationInteractor
+                      cognitoFacebookIdentityProvider:(CMCognitoFacebookAuthProvider *)cognitoFacebookIdentityProvider
+                              authChangedEventSubject:(RACSubject<CMAuthStatusChangedEventContext *> *)authChangedEventSubject
+                                            appConfig:(CMAppConfig *)appConfig
+{
     @synchronized (self) {
         if (_instance == nil) {
             _instance = [[self alloc] initWithUser:user tokens:tokens cognitoCredentialsProvider:cognitoCredentialsProvider authentificationInteractor:authentificationInteractor cognitoFacebookIdentityProvider:cognitoFacebookIdentityProvider authChangedEventSubject:authChangedEventSubject appConfig:appConfig];
@@ -64,7 +71,7 @@ static CMUserSessionController *_instance = nil;
 - (AWSTask *)updateUserProfileInfo {
     AWSServiceConfiguration *configuration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionEUCentral1
                                                                          credentialsProvider:_cognitoCredentialsProvider];
-    [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:@"UserSessionUpdater"];
+    [CMAPIDevcammentClient registerClientWithConfiguration:configuration forKey:@"UserSessionUpdater" appConfig:_appConfig];
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient clientForKey:@"UserSessionUpdater"];
     [client setAPIKey:_appConfig.apiKey];
     AWSTask *getUserInfo = [client userinfoGet];

@@ -26,7 +26,7 @@
 #import "CMVideoSyncInteractor.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMUserCellViewModel.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMAPIDevcammentClient.h"
 #import <AWSCore/AWSCore.h>
 
 @interface CMGroupInfoPresenter () <CMGroupInfoUserCellDelegate>
@@ -118,11 +118,6 @@
 
 - (void)groupInfoDidHandleRefreshAction:(UIRefreshControl *)refreshControl {
     [self fetchUsersInActiveGroup];
-}
-
-- (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
-    NSURL *infoURL = [[NSURL alloc] initWithString:@"http://camment.tv"];
-    [[CMOpenURLHelper new] openURL:infoURL];
 }
 
 - (void)handleDidTapInviteFriendsButton {
@@ -418,7 +413,7 @@
 
 
 -(void)didSelectGroup:(CMUsersGroup *)group {
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     CMAPIShowUuid *showUuid = [CMAPIShowUuid new];
     showUuid.showUuid = [CMStore instance].currentShowMetadata.uuid;
     [[client usergroupsGroupUuidUsersPost:group.uuid body:showUuid] continueWithBlock:^id _Nullable(AWSTask * _Nonnull t) {

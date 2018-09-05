@@ -24,25 +24,14 @@ static const NSUInteger ddLogLevel = DDLogLevelError | (1 << 10);
 #endif
 
 #ifdef POD_CONFIGURATION_BETA
-    #define INTERNALSDK
+    #define USE_INTERNAL_FEATURES
     #define INTERNALBUILD
-    static const NSString *CMSDKEnvironment = @"beta";
 #endif
 
 #ifdef POD_CONFIGURATION_DEBUG
-    #define INTERNALSDK
-    #define INTERNALBUILD
-    static const NSString *CMSDKEnvironment = @"debug";
-#endif
-
-#ifdef POD_CONFIGURATION_RELEASE
-    static const NSString *CMSDKEnvironment = @"production";
-#endif
-
-#ifdef INTERNALSDK
     #define USE_INTERNAL_FEATURES
+    #define INTERNALBUILD
 #endif
-
 
 @class CammentSDK;
 

@@ -45,5 +45,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>NSCameraUsageDescription</key>
+    <string>Camera is used to create camment chat and have discussions with short videos on your device</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Microphone is used to create camment chat and have discussions with short videos on your device</string>
 </dict>
 </plist>

@@ -29,9 +29,10 @@
 #import "CMAPIPublicGroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
-#import "CMAPICammentList.h"
+#import "CMAPISofa.h"
 #import "CMAPIUsergroup.h"
 #import "CMAPIUsergroupInRequest.h"
+#import "CMAPICammentList.h"
 #import "CMAPICammentInRequest.h"
 #import "CMAPIShowUuid.h"
 #import "CMAPIIotInRequest.h"
@@ -84,53 +85,22 @@ static NSString *const AWSInfoClientKey = @"CMAPIDevcammentClient";
 static AWSSynchronizedMutableDictionary *_serviceClients = nil;
 
 + (instancetype)defaultClient {
-    AWSServiceConfiguration *serviceConfiguration = nil;
-    AWSServiceInfo *serviceInfo = [[AWSInfo defaultAWSInfo] defaultServiceInfo:AWSInfoClientKey];
-    if (serviceInfo) {
-        serviceConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:serviceInfo.region
-                                                           credentialsProvider:serviceInfo.cognitoCredentialsProvider];
-    } else if ([AWSServiceManager defaultServiceManager].defaultServiceConfiguration) {
-        serviceConfiguration = AWSServiceManager.defaultServiceManager.defaultServiceConfiguration;
-    } else {
-        serviceConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:AWSRegionUnknown
-                                                           credentialsProvider:nil];
-    }
-
-    static CMAPIDevcammentClient *_defaultClient = nil;
-    static dispatch_once_t onceToken;
-    dispatch_once(&onceToken, ^{
-        _defaultClient = [[CMAPIDevcammentClient alloc] initWithConfiguration:serviceConfiguration];
-    });
-
-    return _defaultClient;
+    return [CMAPIDevcammentClient clientForKey:CMAPIClientName];
 }
 
-+ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key {
++ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key appConfig:(CMAppConfig *)appConfig {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _serviceClients = [AWSSynchronizedMutableDictionary new];
     });
-    [_serviceClients setObject:[[CMAPIDevcammentClient alloc] initWithConfiguration:configuration]
+    [_serviceClients setObject:[[CMAPIDevcammentClient alloc] initWithConfiguration:configuration appConfig:appConfig]
                         forKey:key];
 }
 
 + (instancetype)clientForKey:(NSString *)key {
     @synchronized(self) {
         CMAPIDevcammentClient *serviceClient = [_serviceClients objectForKey:key];
-        if (serviceClient) {
-            return serviceClient;
-        }
-
-        AWSServiceInfo *serviceInfo = [[AWSInfo defaultAWSInfo] serviceInfo:AWSInfoClientKey
-                                                                     forKey:key];
-        if (serviceInfo) {
-            AWSServiceConfiguration *serviceConfiguration = [[AWSServiceConfiguration alloc] initWithRegion:serviceInfo.region
-                                                                                        credentialsProvider:serviceInfo.cognitoCredentialsProvider];
-            [CMAPIDevcammentClient registerClientWithConfiguration:serviceConfiguration
-                                                    forKey:key];
-        }
-
-        return [_serviceClients objectForKey:key];
+        return serviceClient;
     }
 }
 
@@ -145,11 +115,11 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     return nil;
 }
 
-- (instancetype)initWithConfiguration:(AWSServiceConfiguration *)configuration {
+- (instancetype)initWithConfiguration:(AWSServiceConfiguration *)configuration appConfig:(CMAppConfig *)config {
     if (self = [super init]) {
         _configuration = [configuration copy];
 
-        NSString *URLString = [CMAppConfig instance].apiHost;
+        NSString *URLString = config.apiHost;
         if ([URLString hasSuffix:@"/"]) {
             URLString = [URLString substringToIndex:[URLString length] - 1];
         }
@@ -182,6 +152,28 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     
     return [self invokeHTTPRequest:@"GET"
                          URLString:@"/ads"
+                    pathParameters:pathParameters
+                   queryParameters:queryParameters
+                  headerParameters:headerParameters
+                              body:nil
+                     responseClass:nil];
+}
+
+- (AWSTask *)adsAdUuidGet:(NSString *)adUuid {
+    NSDictionary *headerParameters = @{
+                                       @"Content-Type": @"application/json",
+                                       @"Accept": @"application/json",
+                                       
+                                       };
+    NSDictionary *queryParameters = @{
+                                      
+                                      };
+    NSDictionary *pathParameters = @{
+                                     @"adUuid": adUuid
+                                     };
+    
+    return [self invokeHTTPRequest:@"GET"
+                         URLString:@"/ads/{adUuid}"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
@@ -248,50 +240,6 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
     
     return [self invokeHTTPRequest:@"POST"
                          URLString:@"/camments/{cammentUuid}"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:nil];
-}
-
-- (AWSTask *)cammentsCammentUuidPinPut:(NSString *)cammentUuid {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"cammentUuid": cammentUuid
-                                     };
-    
-    return [self invokeHTTPRequest:@"PUT"
-                         URLString:@"/camments/{cammentUuid}/pin"
-                    pathParameters:pathParameters
-                   queryParameters:queryParameters
-                  headerParameters:headerParameters
-                              body:nil
-                     responseClass:nil];
-}
-
-- (AWSTask *)cammentsCammentUuidPinDelete:(NSString *)cammentUuid {
-    NSDictionary *headerParameters = @{
-                                       @"Content-Type": @"application/json",
-                                       @"Accept": @"application/json",
-                                       
-                                       };
-    NSDictionary *queryParameters = @{
-                                      
-                                      };
-    NSDictionary *pathParameters = @{
-                                     @"cammentUuid": cammentUuid
-                                     };
-    
-    return [self invokeHTTPRequest:@"DELETE"
-                         URLString:@"/camments/{cammentUuid}/pin"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
@@ -498,7 +446,7 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                      responseClass:[CMAPIShow class]];
 }
 
-- (AWSTask *)showsUuidCammentsGet:(NSString *)uuid {
+- (AWSTask *)sofaShowUuidGet:(NSString *)showUuid {
     NSDictionary *headerParameters = @{
                                        @"Content-Type": @"application/json",
                                        @"Accept": @"application/json",
@@ -508,16 +456,16 @@ static AWSSynchronizedMutableDictionary *_serviceClients = nil;
                                       
                                       };
     NSDictionary *pathParameters = @{
-                                     @"uuid": uuid
+                                     @"showUuid": showUuid
                                      };
     
     return [self invokeHTTPRequest:@"GET"
-                         URLString:@"/shows/{uuid}/camments"
+                         URLString:@"/sofa/{showUuid}"
                     pathParameters:pathParameters
                    queryParameters:queryParameters
                   headerParameters:headerParameters
                               body:nil
-                     responseClass:[CMAPICammentList class]];
+                     responseClass:[CMAPISofa class]];
 }
 
 - (AWSTask *)usergroupsPost:(CMAPIUsergroupInRequest *)body {

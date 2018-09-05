@@ -19,6 +19,7 @@
 @class CMServerMessageController;
 @class CMInvitation;
 @class CMShowMetadata;
+@class CMAppConfig;
 
 @interface CMSDKService : NSObject
 
@@ -39,7 +40,7 @@
 @property (nonatomic, weak) id<CMCammentSDKDelegate> _Nullable sdkDelegate;
 @property (nonatomic, weak) id<CMCammentSDKUIDelegate> _Nullable sdkUIDelegate;
 
-- (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider;
+- (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider appConfig:(CMAppConfig *)appConfig;
 
 - (void)wakeUpUserSession;
 

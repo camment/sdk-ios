@@ -90,3 +90,5 @@
 "group.created_at" = "Created: %@";
 "alert.logout.title" = "Do you want to logout?";
 
+"sofaview.tap_to_enable_camera" = "Tap Camera icon to enable camera";
+"sofaview.button.continue_to_show" = "Continue to show";

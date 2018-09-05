@@ -45,7 +45,6 @@
 "We found a link in your clipboard" = "Encontramos un enlace en tu portapapeles";
 "Would you like to open it and join the group? It will redirect you to your web browser first." = "¿Te gustaría abrirlo y unirte al grupo? Se abrirá tu navegador web.";
 "Invite friends to chat with short videos in top of your stream." = "Invita a tus amigos a chatear contigo vía video comentarios que aparecera´n en la parte superior de tu transmisión.";
-"Learn more" = "Aprende más";
 "Invite friends" = "Invitar amigos";
 "People joined to your Camment chat" = "Otras personas se unieron a tu Grupo de Camment";
 "Logout" = "Cerrar sesión";
@@ -98,3 +97,6 @@
 
 "group.created_at" = "Created: %@";
 "alert.logout.title" = "Do you want to logout?";
+
+"sofaview.tap_to_enable_camera" = "Tap Camera icon to enable camera";
+"sofaview.button.continue_to_show" = "Continue to show";

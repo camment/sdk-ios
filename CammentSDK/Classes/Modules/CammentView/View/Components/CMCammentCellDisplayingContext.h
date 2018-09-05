@@ -11,9 +11,8 @@
 @interface CMCammentCellDisplayingContext : NSObject
 
 @property CMCamment *camment;
-@property BOOL shouldShowDeliveryStatus;
 @property BOOL shouldShowWatchedStatus;
 
-- (instancetype)initWithCamment:(CMCamment *)camment shouldShowDeliveryStatus:(BOOL)shouldShowDeliveryStatus shouldShowWatchedStatus:(BOOL)shouldShowWatchedStatus;
+- (instancetype)initWithCamment:(CMCamment *)camment shouldShowWatchedStatus:(BOOL)shouldShowWatchedStatus;
 
 @end

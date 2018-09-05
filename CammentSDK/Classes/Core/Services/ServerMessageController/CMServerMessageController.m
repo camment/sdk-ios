@@ -17,7 +17,6 @@
 #import "CMAnalytics.h"
 #import "CMUsersGroupBuilder.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMUserContants.h"
 #import "NSArray+RacSequence.h"
 #import "CMUserBuilder.h"
@@ -202,7 +201,7 @@
 - (void)confirmCammentMessageDelivery:(NSString *)uuid {
     if (!uuid) {return;}
 
-    [[[CMAPIDevcammentClient defaultAPIClient] cammentsCammentUuidPost:uuid]
+    [[[CMAPIDevcammentClient defaultClient] cammentsCammentUuidPost:uuid]
             continueWithBlock:^id(AWSTask<id> *t) {
                 if (t.error) {
                     DDLogError(@"Couldn't confirm camment delivery, error :%@", t.error);

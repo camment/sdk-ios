@@ -21,7 +21,6 @@
 #import "CMAppConfig.h"
 #import "CMInvitationBuilder.h"
 #import "CMConnectionReachability.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMAuthInteractor.h"
 
 #import "CMGroupManagementInteractorInput.h"
@@ -44,7 +43,6 @@
 #import "NSArray+RacSequence.h"
 
 @interface CMSDKService () <CMGroupManagementInteractorOutput>
-
 @end
 
 @implementation CMSDKService
@@ -61,7 +59,7 @@
         self.fileLogger.logFileManager.maximumNumberOfLogFiles = 3;
         [DDLog addLogger:self.fileLogger];
 
-#ifdef INTERNALSDK
+#ifdef USE_INTERNAL_FEATURES
         [[CMStore instance] setupTweaks];
 #endif
 
@@ -124,11 +122,11 @@
     self.notificationPresenter.output = _sdkUIDelegate;
 }
 
-- (void)configureWithApiKey:(NSString *_Nonnull)apiKey
-           identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider {
-    [CMAppConfig instance].apiKey = apiKey;
+- (void)configureWithApiKey:(NSString *_Nonnull)apiKey identityProvider:(id <CMIdentityProvider> _Nonnull)identityProvider appConfig:(CMAppConfig *)appConfig {
+    [CMStore instance].appConfig = appConfig;
+    [CMStore instance].appConfig.apiKey = apiKey;
 
-    self.awsServicesFactory = [[CMAWSServicesFactory alloc] initWithAppConfig:[CMAppConfig instance]];
+    self.awsServicesFactory = [[CMAWSServicesFactory alloc] initWithAppConfig:[CMStore instance].appConfig];
 
     self.userSessionController = [CMUserSessionController registerInstanceWithUser:nil
                                                                             tokens:nil
@@ -136,7 +134,7 @@
                                                         authentificationInteractor:[[CMAuthInteractor alloc] initWithIdentityProvider:identityProvider]
                                                    cognitoFacebookIdentityProvider:self.awsServicesFactory.cognitoFacebookIdentityProvider
                                                            authChangedEventSubject:[CMStore instance].authentificationStatusSubject
-                                                                         appConfig:[CMAppConfig instance]];
+                                                                         appConfig:[CMStore instance].appConfig];
 
     if ([GVUserDefaults standardUserDefaults].isFirstSDKLaunch) {
         [self.userSessionController endSession];
@@ -147,7 +145,7 @@
         [self.awsServicesFactory configureAWSServices:self.awsServicesFactory.cognitoCredentialsProvider];
         [self configureIoTListenerWithNewIdentity:self.awsServicesFactory.cognitoCredentialsProvider.identityId];
         [CMStore instance].awsServicesConfigured = YES;
-        DDLogDeveloperInfo(@"all services are up and running");
+        DDLogDeveloperInfo(@"%@", @"all services are up and running");
         [self checkIfDeferredDeepLinkExists];
     }];
 }
@@ -156,10 +154,16 @@
     [[self.userSessionController refreshSession:NO]
             continueWithBlock:^id(AWSTask<CMAuthStatusChangedEventContext *> *task) {
                 if (task.error || task.result.state == CMCammentUserNotAuthentificated) {
-                    DDLogError(@"Error on signing in at configureWithApiKey:identityProvider: method %@", task.error);
+                    DDLogError(@"Error on signing in at configureWithApiKey:identityProvider:appConfig: method %@", task.error);
+                    DDLogDeveloperInfo(@"%@", @"Error while waking up user session. It might happen when app environment has changed");
+                    DDLogDeveloperInfo(@"%@", @"Cleaning up session and retrying...");
+                    [self.userSessionController endSession];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [self wakeUpUserSession];
+                    });
                     return nil;
                 } else {
-                    DDLogDeveloperInfo(@"user session is ready, continue with SDK configuration");
+                    DDLogDeveloperInfo(@"%@", @"user session is ready, continue with SDK configuration");
                     [self.onSDKHasBeenConfiguredQueue setSuspended:NO];
                 }
 
@@ -215,7 +219,7 @@
 
         return [dataset synchronize];
     }] continueWithBlock:^id(AWSTask<id> *t) {
-        return [[CMAPIDevcammentClient defaultAPIClient] meUuidPut];
+        return [[CMAPIDevcammentClient defaultClient] meUuidPut];
     }] continueWithBlock:^id _Nullable(AWSTask *_Nonnull t) {
         if (t.error) {
             DDLogError(@"%@", t);
@@ -269,7 +273,7 @@
           groupManagementInteractor:[[CMGroupManagementInteractor alloc] initWithOutput:nil
                                                                                   store:[CMStore instance]]];
 
-        CMServerListenerCredentials *credentials = [CMServerListenerCredentials defaultCredentials];
+        CMServerListenerCredentials *credentials = [[CMServerListenerCredentials alloc] initWithAppConfig:[CMStore instance].appConfig];
         self.serverListener = [[CMServerListener alloc] initWithCredentials:credentials
                                                           messageController:self.serverMessageController
                                                                 dataManager:self.awsServicesFactory.IoTDataManager];
@@ -285,7 +289,7 @@
                                                                   }];
 }
 
-- (void)presentChatInvitation:(CMInvitation *)invitation onJoin:(void (^)())onJoin {
+- (void)presentChatInvitation:(CMInvitation *)invitation onJoin:(void (^)(void))onJoin {
 
     __weak typeof(self) __weakSelf = self;
     [self.notificationPresenter presentInvitationToChat:invitation
@@ -334,7 +338,7 @@
 }
 
 - (AWSTask *)acceptInvitation:(CMInvitation *)invitation {
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     CMAPIShowUuid *showUuid = [CMAPIShowUuid new];
     showUuid.showUuid = invitation.showUuid;
     return [client usergroupsGroupUuidUsersPost:invitation.userGroupUuid body:showUuid];
@@ -373,7 +377,7 @@
 
 #ifdef DEBUG
     [AWSDDLog sharedInstance].logLevel = AWSLogLevelDebug;
-    [DDLog addLogger:[AWSDDTTYLogger sharedInstance]];
+    [AWSDDLog addLogger:[AWSDDTTYLogger sharedInstance]];
 #endif
 
     [[CMAnalytics instance] configureMixpanelAnalytics];
@@ -397,7 +401,7 @@
 
     NSString *systemVersion = [[[UIDevice currentDevice] systemVersion] stringByReplacingOccurrencesOfString:@"." withString:@"_"];
     NSString *deeplinkHash = [NSString stringWithFormat:@"iOS|%@", systemVersion];
-    [[[CMAPIDevcammentClient defaultAPIClient] deferredDeeplinkGet:deeplinkHash
+    [[[CMAPIDevcammentClient defaultClient] deferredDeeplinkGet:deeplinkHash
                                                                 os:@"ios"]
             continueWithBlock:^id(AWSTask<id> *task) {
                 if ([task.result isKindOfClass:[CMAPIDeeplink class]]) {
@@ -459,7 +463,7 @@
         __weak typeof(self) weakSelf = self;
 
         NSString *groupUuid = invitation.userGroupUuid;
-        AWSTask *task = [[CMAPIDevcammentClient defaultAPIClient] usergroupsGroupUuidGet:groupUuid];
+        AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidGet:groupUuid];
 
         if (task) {
             [task continueWithBlock:^id(AWSTask<id> *t) {

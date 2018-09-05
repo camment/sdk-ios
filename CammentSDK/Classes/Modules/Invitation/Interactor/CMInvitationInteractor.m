@@ -14,7 +14,6 @@
 #import "RACSequence.h"
 #import "CMUser.h"
 #import "CMUsersGroupBuilder.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "CMStore.h"
 #import "CMShowMetadata.h"
 
@@ -24,7 +23,7 @@
 @implementation CMInvitationInteractor
 
 - (AWSTask<CMUsersGroup *> *)createEmptyGroup {
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
     usergroupInRequest.showId = [CMStore instance].currentShowMetadata.uuid;
 
@@ -122,7 +121,7 @@
 }
 
 - (void)getDeeplink:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     
     AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
 

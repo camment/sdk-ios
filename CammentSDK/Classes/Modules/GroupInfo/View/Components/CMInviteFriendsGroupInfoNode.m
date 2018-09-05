@@ -11,7 +11,6 @@
 @interface CMInviteFriendsGroupInfoNode ()
 
 @property(nonatomic, strong) ASTextNode *infoTextNode;
-@property(nonatomic, strong) ASButtonNode *learnMoreButtonNode;
 @property(nonatomic, strong) CMInviteFriendsButton *inviteFriendsButtonNode;
 @property(nonatomic, strong) CMContinueTutorialButton *continueTutorialButton;
 
@@ -35,18 +34,6 @@
                                                                                    NSForegroundColorAttributeName: [UIColor blackColor],
                                                                                    NSParagraphStyleAttributeName: mutableParagraphStyle
                                                                            }];
-
-        self.learnMoreButtonNode = [ASButtonNode new];
-        self.learnMoreButtonNode.style.height = ASDimensionMake(30.0f);
-        [self.learnMoreButtonNode setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"Learn more")
-                                                                                     attributes:@{
-                                                                                             NSFontAttributeName: [UIFont nunitoMediumWithSize:10],
-                                                                                             NSForegroundColorAttributeName: UIColorFromRGB(0x4A90E2),
-                                                                                     }]
-                                            forState:UIControlStateNormal];
-        [self.learnMoreButtonNode addTarget:self
-                                     action:@selector(tapLearnMoreButton)
-                           forControlEvents:ASControlNodeEventTouchUpInside];
 
         self.inviteFriendsButtonNode = [CMInviteFriendsButton new];
         [self.inviteFriendsButtonNode addTarget:self
@@ -76,12 +63,6 @@
     }
 }
 
-- (void)tapLearnMoreButton {
-    if (self.delegate && [self.delegate respondsToSelector:@selector(inviteFriendsGroupInfoNodeDidTapLearnMoreButton:)]) {
-        [self.delegate inviteFriendsGroupInfoNodeDidTapLearnMoreButton:self];
-    }
-}
-
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
 
     ASInsetLayoutSpec *infoTextLayoutSpec = [ASInsetLayoutSpec
@@ -99,7 +80,6 @@
     NSMutableArray *children = [NSMutableArray new];
     [children addObjectsFromArray:@[
             infoTextLayoutSpec,
-            _learnMoreButtonNode, 
             inviteFriendsButtonLayoutSpec
     ]];
     

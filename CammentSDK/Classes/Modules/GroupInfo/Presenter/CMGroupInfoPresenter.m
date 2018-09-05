@@ -120,11 +120,6 @@
     [self fetchUsersInActiveGroup];
 }
 
-- (void)inviteFriendsGroupInfoNodeDidTapLearnMoreButton:(CMInviteFriendsGroupInfoNode *)node {
-    NSURL *infoURL = [[NSURL alloc] initWithString:@"http://camment.tv"];
-    [[CMOpenURLHelper new] openURL:infoURL];
-}
-
 - (void)handleDidTapInviteFriendsButton {
     [[[CMStore instance] inviteFriendsActionSubject] sendNext:@YES];
 }

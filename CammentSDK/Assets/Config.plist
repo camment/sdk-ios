@@ -11,41 +11,11 @@
 		<key>awsS3BucketName</key>
 		<string>camment-prod-camments</string>
 		<key>apiHost</key>
-		<string>https://k0ujcx8gu4.execute-api.eu-central-1.amazonaws.com/prod</string>
+		<string>https://api.camment.tv</string>
 		<key>iotCertFile</key>
 		<string>awsiot-identity-production</string>
 		<key>iotCertPassPhrase</key>
 		<string>{4?Z9p.8#cGpDK7H</string>
-	</dict>
-	<key>beta</key>
-	<dict>
-		<key>iotHost</key>
-		<string>https://a33ob3cdhetxbp.iot.eu-central-1.amazonaws.com</string>
-		<key>awsCognitoPoolId</key>
-		<string>eu-central-1:aa96090c-0423-46d1-a584-20086c0e134d</string>
-		<key>awsS3BucketName</key>
-		<string>camment-dev-camments</string>
-		<key>apiHost</key>
-		<string>https://61a4mjm5gl.execute-api.eu-central-1.amazonaws.com/dev</string>
-		<key>iotCertFile</key>
-		<string>awsiot-identity-debug</string>
-		<key>iotCertPassPhrase</key>
-		<string>?ko8z7re$X=X=22e</string>
-	</dict>
-	<key>debug</key>
-	<dict>
-		<key>iotHost</key>
-		<string>https://a33ob3cdhetxbp.iot.eu-central-1.amazonaws.com</string>
-		<key>awsCognitoPoolId</key>
-		<string>eu-central-1:aa96090c-0423-46d1-a584-20086c0e134d</string>
-		<key>awsS3BucketName</key>
-		<string>camment-dev-camments</string>
-		<key>apiHost</key>
-		<string>https://61a4mjm5gl.execute-api.eu-central-1.amazonaws.com/dev</string>
-		<key>iotCertFile</key>
-		<string>awsiot-identity-debug</string>
-		<key>iotCertPassPhrase</key>
-		<string>?ko8z7re$X=X=22e</string>
 	</dict>
 </dict>
 </plist>

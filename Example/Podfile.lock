@@ -48,6 +48,33 @@ PODS:
     - AWSS3 (~> 2.6)
     - Bolts
     - CammentAds
+    - CammentSDK/Core (= 3.0.3)
+    - CocoaLumberjack (~> 3.4)
+    - DateTools (~> 2.0)
+    - FBSDKCoreKit (~> 4.29)
+    - FBSDKLoginKit (~> 4.29)
+    - FLAnimatedImage (~> 1.0)
+    - GVUserDefaults (~> 1.0)
+    - MBProgressHUD (~> 1.1)
+    - Mixpanel (~> 3.2)
+    - pop (~> 1.0)
+    - ReactiveObjC (~> 3.1)
+    - TBStateMachine (~> 6.7)
+    - TBStateMachine/DebugSupport
+    - Texture (~> 2.7)
+    - TLIndexPathTools (~> 0.4)
+    - Tweaks (~> 2.2)
+    - YapDatabase (= 3.1.1)
+  - CammentSDK/Core (3.0.3):
+    - AMPopTip (~> 1.5)
+    - AWSAPIGateway (~> 2.6)
+    - AWSCognito (~> 2.6)
+    - AWSCognitoIdentityProvider (~> 2.6)
+    - AWSIoT (~> 2.6)
+    - AWSMobileAnalytics (~> 2.6)
+    - AWSS3 (~> 2.6)
+    - Bolts
+    - CammentAds
     - CocoaLumberjack (~> 3.4)
     - DateTools (~> 2.0)
     - FBSDKCoreKit (~> 4.29)
@@ -200,7 +227,7 @@ SPEC CHECKSUMS:
   AWSS3: 4d857a223704bd956e91a659aec17ba1896ee0a9
   Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
   CammentAds: d76a98c1f4853f5e1718c12cb754b69e48e509ea
-  CammentSDK: 5426079bde1ac139a34fa82e0052cb040f09bc95
+  CammentSDK: 31a757fc5ad0fcb1f294cb5c650603395b33ae64
   CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
   DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
   Expecta: 3b6bd90a64b9a1dcb0b70aa0e10a7f8f631667d5

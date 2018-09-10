@@ -27,7 +27,7 @@
                              didFinishLaunchingWithOptions:launchOptions];
     
     // Configure Camment SDK
-    NSString *apiKey = @"IAse4AG63z2n11pV4wnqy2xTNGPKG5zH97sZ9z8v";//@"YOUR_API_KEY";
+    NSString *apiKey = @"YOUR_API_KEY";
     
     self.facebookIdentityProvider = [CMFacebookIdentityProvider new];
     

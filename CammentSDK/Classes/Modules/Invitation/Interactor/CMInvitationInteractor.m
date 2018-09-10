@@ -22,10 +22,10 @@
 
 @implementation CMInvitationInteractor
 
-- (AWSTask<CMUsersGroup *> *)createEmptyGroup {
+- (AWSTask<CMUsersGroup *> *)createEmptyGroup:(NSString *)showUUID {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
-    usergroupInRequest.showId = [CMStore instance].currentShowMetadata.uuid;
+    usergroupInRequest.showId = showUUID;
 
     if (!usergroupInRequest.showId) {
         NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
@@ -56,74 +56,10 @@
     }];
 }
 
-- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid usingDeeplink:(BOOL)shouldUseDeeplink {
-
-    NSArray *usersFbIds = [users.rac_sequence map:^id(CMUser *value) {
-        return value.fbUserId;
-    }].array ?: @[];
-
-    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
-    if (group) {
-        DDLogVerbose(@"Inviting to the current group %@", group);
-    }
-
-    [[groupTask continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[CMUsersGroup class]]) {
-            CMUsersGroup *usersGroup = t.result;
-
-//            CMAPIUserFacebookIdListInRequest *userFacebookIdListInRequest = [CMAPIUserFacebookIdListInRequest new];
-//            userFacebookIdListInRequest.showUuid = showUuid;
-//            userFacebookIdListInRequest.userFacebookIdList = usersFbIds;
-
-            AWSTask *invitationTask = nil;
-
-//            if (shouldUseDeeplink) {
-//
-//                invitationTask = [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid
-//                                                                          body:userFacebookIdListInRequest]
-//                        continueWithBlock:^id(AWSTask<CMAPIDeeplink *> *deepLinkResult) {
-//                            CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
-//                            CMUsersGroup *updatedUsersGroup = usersGroup;
-//                            if ([deepLinkResult.result isKindOfClass:[CMAPIDeeplink class]]) {
-//                                updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.result.url] build];
-//                            }
-//                            return [AWSTask taskWithResult:updatedUsersGroup];
-//                        }];
-//            } else {
-//                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid
-//                                                                       body:userFacebookIdListInRequest]
-//                        continueWithBlock:^id(AWSTask<id> *task) {
-//                            return [AWSTask taskWithResult:usersGroup];
-//                        }];
-//            }
-
-            return invitationTask;
-        } else {
-            DDLogError(@"%@", t.error);
-            return [AWSTask taskWithError:t.error];
-        }
-    }] continueWithBlock:^id(AWSTask<id> *t) {
-        if (!t.error && [t.result isKindOfClass:[CMUsersGroup class]]) {
-            DDLogVerbose(@"Invited users %@", users);
-            CMUsersGroup *usersGroup = t.result;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didInviteUsersToTheGroup:usersGroup usingDeeplink:shouldUseDeeplink];
-            });
-        } else {
-            DDLogError(@"%@", t.error);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didFailToInviteUsersWithError:t.error];
-            });
-        }
-
-        return nil;
-    }];
-}
-
 - (void)getDeeplink:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
     CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
     
-    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
+    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup:showUuid];
 
     [groupTask continueWithBlock:^id(AWSTask<id> *t) {
         if (t.error || ![t.result isKindOfClass:[CMUsersGroup class]]) {

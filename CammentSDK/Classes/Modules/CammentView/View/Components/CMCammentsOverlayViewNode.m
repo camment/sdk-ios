@@ -129,7 +129,7 @@
                     _showCammentRecorderNode ? 20.0f : .0f,
                     20.0f,
                     _showCammentRecorderNode ? 4.0f : .0f,
-                    INFINITY)
+                    .0f)
                                 child:_cammentRecorderNode];
 
     ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
@@ -152,7 +152,11 @@
     self.backgroundNode.style.height = ASDimensionMake(constrainedSize.max.height);
 
     ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
-    ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
+    ASLayoutSpec *camentBlockLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(self.overlayInsets.top,
+                                                                                                        !self.showCammentsBlock ? self.overlayInsets.left: ceilf(self.overlayInsets.left * (1 - (self.leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth)),
+                                                                                                        .0f,
+                                                                                                        .0f)
+                                                                                 child:[self cammentBlockLayoutSpecThatFits:constrainedSize]];
 
     _leftSidebarNode.style.width = ASDimensionMake(self.layoutConfig.leftSidebarWidth);
     camentBlockLayoutSpec.style.width = ASDimensionMake(self.cammentBlockWidth);
@@ -229,10 +233,10 @@
         case CMCammentOverlayLayoutPositionTopRight:
             layoutSpec = [ASInsetLayoutSpec
                     insetLayoutSpecWithInsets:UIEdgeInsetsMake(
-                            self.cammentButtonScreenSideVerticalInset,
+                            self.cammentButtonScreenSideVerticalInset + self.overlayInsets.top,
                             INFINITY,
                             INFINITY,
-                            20.0f)
+                            20.0f + self.overlayInsets.right)
                                         child:_cammentButton];
             break;
         case CMCammentOverlayLayoutPositionBottomRight:
@@ -240,8 +244,8 @@
                     insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                             INFINITY,
                             INFINITY,
-                            self.cammentButtonScreenSideVerticalInset,
-                            20.0f)
+                            self.cammentButtonScreenSideVerticalInset + self.overlayInsets.bottom,
+                            20.0f + self.overlayInsets.right)
                                         child:_cammentButton];
             break;
     }
@@ -255,10 +259,10 @@
         case CMCammentOverlayLayoutPositionBottomRight:
             layoutSpec = [ASInsetLayoutSpec
                     insetLayoutSpecWithInsets:UIEdgeInsetsMake(
-                            20.0f,
+                            20.0f + self.overlayInsets.top,
                             INFINITY,
                             INFINITY,
-                            _showSkipTutorialButton ? 20.0f : -400.0f)
+                            _showSkipTutorialButton ? 20.0f + self.overlayInsets.right : -400.0f)
                                         child:_skipTutorialButton];
             break;
         case CMCammentOverlayLayoutPositionTopRight:
@@ -266,8 +270,8 @@
                     insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                             INFINITY,
                             INFINITY,
-                            20.0f,
-                            _showSkipTutorialButton ? 20.0f : -400.0f)
+                            20.0f + + self.overlayInsets.bottom,
+                            _showSkipTutorialButton ? 20.0f + self.overlayInsets.right : -400.0f)
                                         child:_skipTutorialButton];
             break;
     }
@@ -441,7 +445,7 @@
             return NO;
         }
     }
-    
+
     for (UIView *view in [CMStore instance].avoidTouchesInViews) {
         CGRect frame = view.bounds;
         CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:view];
@@ -497,6 +501,20 @@
 
     [self pop_addAnimation:springAnimation forKey:@"jumps"];
 
+}
+
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    if (orientation == UIInterfaceOrientationUnknown) { return; }
+    if (UIEdgeInsetsEqualToEdgeInsets(self.safeAreaInsets, UIEdgeInsetsZero)) { return; }
+
+    self.overlayInsets = UIEdgeInsetsMake(
+            self.safeAreaInsets.top,
+            orientation == UIInterfaceOrientationLandscapeRight ? self.safeAreaInsets.left : .0f,
+            self.safeAreaInsets.bottom,
+            orientation == UIInterfaceOrientationLandscapeLeft? self.safeAreaInsets.right : .0f);
+    [self transitionLayoutWithAnimation:YES
+                     shouldMeasureAsync:NO
+                  measurementCompletion:^{}];
 }
 
 @end

@@ -37,7 +37,7 @@
 
         self.clipsToBounds = YES;
         self.backgroundColor = [UIColor clearColor];
-        self.cameraPreviewNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
+        self.cameraPreviewNode.borderColor = [UIColor whiteColor].CGColor;
         self.cameraPreviewNode.borderWidth = 2.0f;
         self.cameraPreviewNode.cornerRadius = 4.0f;
 

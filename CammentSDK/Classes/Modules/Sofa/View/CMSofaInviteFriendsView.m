@@ -45,10 +45,10 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    self.inviteFriendsImageView.frame = CGRectInset(self.bounds, 20, 20);
+    CGFloat scaleFactor = (65.0f / self.bounds.size.width);
+    self.inviteFriendsImageView.frame = CGRectInset(self.bounds, 18 / scaleFactor, 18 / scaleFactor);
     self.activityIndicator.frame = self.inviteFriendsImageView.frame;
 }
-
 
 - (void)handleTap {
     if (self.onInviteAction) {

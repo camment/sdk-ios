@@ -45,9 +45,13 @@
 
 @property(nonatomic, weak) id<CMCammentsOverlayViewNodeDelegate> delegate;
 
+@property(nonatomic) UIEdgeInsets overlayInsets;
+
 - (instancetype)initWithLayoutConfig:(CMCammentOverlayLayoutConfig *)layoutConfig NS_DESIGNATED_INITIALIZER;
 
 - (void)updateLeftSideBarMenuLeftInset;
 
 - (void)playSidebarJumpingAnimation;
+
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation;
 @end

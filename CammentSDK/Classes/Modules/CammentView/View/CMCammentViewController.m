@@ -62,6 +62,7 @@
     [super viewDidAppear:animated];
     [self.presenter checkIfNeedForOnboarding];
     [self updateCameraOrientation];
+    [self updateOverlayNodeOrientation];
 }
 
 - (void)askForSetupPermissions {
@@ -129,12 +130,15 @@
     CMOnboardingAlertType alertType = _currentOnboardingAlert;
 
     [self hideOnboardingAlert:[self currentOnboardingAlert]];
-    [coordinator animateAlongsideTransition:nil
-                                 completion:^(id <UIViewControllerTransitionCoordinatorContext> context)
-                                 {
-                                     [self updateCameraOrientation];
-                                     [self showOnboardingAlert:alertType];
-                                 }];
+    [coordinator animateAlongsideTransition:^(id <UIViewControllerTransitionCoordinatorContext> context)
+    {
+        [self updateOverlayNodeOrientation];
+    }  completion:^(id <UIViewControllerTransitionCoordinatorContext> context)
+    {
+        [self updateOverlayNodeOrientation];
+        [self updateCameraOrientation];
+        [self showOnboardingAlert:alertType];
+    }];
 }
 
 - (void)updateCameraOrientation {
@@ -157,6 +161,11 @@
     };
 }
 
+- (void)updateOverlayNodeOrientation {
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    [self.node updateInterfaceOrientation:orientation];
+}
+
 - (void)setupBindings {
     __weak typeof(self) __weakSelf = self;
     [[[[RACObserve([CMStore instance], cammentRecordingState) distinctUntilChanged] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *state) {
@@ -164,8 +173,8 @@
         if (![_self.presenter isCameraSessionConfigured]) { return; }
         _self.node.showCammentRecorderNode = state.integerValue == CMCammentRecordingStateRecording;
         [_self.node transitionLayoutWithAnimation:YES
-                              shouldMeasureAsync:NO
-                           measurementCompletion:nil];
+                               shouldMeasureAsync:NO
+                            measurementCompletion:nil];
     }];
 }
 
@@ -211,7 +220,7 @@
 
 - (void)showOnboardingAlert:(CMOnboardingAlertType)type {
     if (self.node.showLeftSidebarNode) { return; }
-    
+
     self.currentOnboardingAlert = type;
 
     UIView *view = nil;
@@ -235,7 +244,7 @@
             text = CMLocalized(@"help.tap_and_hold_to_record");
             maxWidth = 150.0f;
             switch (self.node.layoutConfig.cammentButtonLayoutPosition) {
-                    
+
                 case CMCammentOverlayLayoutPositionTopRight:
                     direction = AMPopTipDirectionDown;
                     break;
@@ -243,7 +252,7 @@
                     direction = AMPopTipDirectionUp;
                     break;
             }
-            
+
             break;
         case CMOnboardingAlertSwipeLeftToHideCammentsTooltip: {
             frame = self.node.cammentsBlockNode.bounds;
@@ -394,9 +403,9 @@
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"setup.maybe_later")
                                                         style:UIAlertActionStyleCancel
                                                       handler:^(UIAlertAction *action) {
-                                                          
+
                                                       }]];
-    
+
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"error.open_settings")
                                                         style:UIAlertActionStyleDefault
                                                       handler:^(UIAlertAction *action) {

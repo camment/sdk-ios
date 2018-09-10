@@ -33,7 +33,11 @@
 		953305012119B93500D37595 /* CMTestAppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 953304F62119B93500D37595 /* CMTestAppConfig.m */; };
 		953305022119B93500D37595 /* CMAppServiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 953304F72119B93500D37595 /* CMAppServiceTests.m */; };
 		953305032119B93500D37595 /* CMAppServiceInvitationFlowTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 953304F82119B93500D37595 /* CMAppServiceInvitationFlowTests.m */; };
+		955177F021469AEC00A6739E /* Nunito-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 955177EE21469AEB00A6739E /* Nunito-Medium.ttf */; };
+		955177F121469AEC00A6739E /* Nunito-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 955177EF21469AEC00A6739E /* Nunito-Light.ttf */; };
 		95A992D5211B120900C12E71 /* CMCammentDAOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB329E9BFFEE4256FCE08 /* CMCammentDAOTests.m */; };
+		95A992D7211B13BA00C12E71 /* test-camment.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95A992D6211B13B900C12E71 /* test-camment.mp4 */; };
+		95A992D8211B1AEB00C12E71 /* test-camment.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95A992D6211B13B900C12E71 /* test-camment.mp4 */; };
 		D517D99B40C0D32A823CEEF2 /* Pods_CammentSDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B9C88CB28910041EEC6955 /* Pods_CammentSDK_Example.framework */; };
 		F61B25406BF30B08A833B2A6 /* Pods_CammentSDK_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 627CAD771FA004A93AAD30F7 /* Pods_CammentSDK_Tests.framework */; };
 /* End PBXBuildFile section */
@@ -94,6 +98,9 @@
 		953304F62119B93500D37595 /* CMTestAppConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMTestAppConfig.m; sourceTree = "<group>"; };
 		953304F72119B93500D37595 /* CMAppServiceTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAppServiceTests.m; sourceTree = "<group>"; };
 		953304F82119B93500D37595 /* CMAppServiceInvitationFlowTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAppServiceInvitationFlowTests.m; sourceTree = "<group>"; };
+		955177EE21469AEB00A6739E /* Nunito-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Medium.ttf"; path = "../../Fonts/Nunito-Medium.ttf"; sourceTree = "<group>"; };
+		955177EF21469AEC00A6739E /* Nunito-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Light.ttf"; path = "../../Fonts/Nunito-Light.ttf"; sourceTree = "<group>"; };
+		95A992D6211B13B900C12E71 /* test-camment.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "test-camment.mp4"; sourceTree = "<group>"; };
 		AA770F01B5A933242D0C1EDF /* CammentSDK.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = CammentSDK.podspec; path = ../CammentSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
@@ -126,6 +133,7 @@
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
+				95A992D6211B13B900C12E71 /* test-camment.mp4 */,
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* Example for CammentSDK */,
 				6003F5B5195388D20070C39A /* Tests */,
@@ -160,6 +168,8 @@
 		6003F593195388D20070C39A /* Example for CammentSDK */ = {
 			isa = PBXGroup;
 			children = (
+				955177EF21469AEC00A6739E /* Nunito-Light.ttf */,
+				955177EE21469AEB00A6739E /* Nunito-Medium.ttf */,
 				6003F59C195388D20070C39A /* CMAppDelegate.h */,
 				6003F59D195388D20070C39A /* CMAppDelegate.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
@@ -343,8 +353,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
+				955177F121469AEC00A6739E /* Nunito-Light.ttf in Resources */,
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
+				955177F021469AEC00A6739E /* Nunito-Medium.ttf in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				95A992D8211B1AEB00C12E71 /* test-camment.mp4 in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -354,6 +367,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
+				95A992D7211B13BA00C12E71 /* test-camment.mp4 in Resources */,
 				6FFAB1CB0D83B55197D28898 /* CMCammentDAOTests.m in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -702,6 +716,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CammentSDK/CammentSDK-Prefix.pch";
 				INFOPLIST_FILE = "CammentSDK/CammentSDK-Info.plist";
@@ -719,6 +734,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 8L5UM9D7Z5;
+				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CammentSDK/CammentSDK-Prefix.pch";
 				INFOPLIST_FILE = "CammentSDK/CammentSDK-Info.plist";

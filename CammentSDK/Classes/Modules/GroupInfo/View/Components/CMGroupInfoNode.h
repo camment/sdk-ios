@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMInviteFriendsGroupInfoNode.h"
+#import "CMDisplayNode.h"
 
 @class CMUsersGroup;
 
@@ -21,7 +22,7 @@
 
 @end
 
-@interface CMGroupInfoNode: ASDisplayNode
+@interface CMGroupInfoNode: CMDisplayNode
 
 @property (nonatomic, weak) id<CMGroupInfoNodeDelegate>delegate;
 

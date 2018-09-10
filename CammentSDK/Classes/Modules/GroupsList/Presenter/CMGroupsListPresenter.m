@@ -53,23 +53,29 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
         self.dataModel = [[TLIndexPathDataModel alloc] initWithItems:@[]];
 
+        RACSignal *configuredSignal = [[RACObserve([CMStore instance], awsServicesConfigured)
+                                        takeUntil:self.rac_willDeallocSignal] filter:^BOOL(NSNumber *  _Nullable value)
+                                       {
+                                           return value.boolValue;
+                                       }];
+        
         RACSignal *groupOrAuthStateChanged = [RACSignal combineLatest:@[
-                [[[CMStore instance].authentificationStatusSubject
-                        map:^id(CMAuthStatusChangedEventContext *authStatusChangedEventContext) {
-                    return @(authStatusChangedEventContext.state);
-                }] distinctUntilChanged],
-                [[RACObserve([CMStore instance], activeGroup)
-                        map:^NSString *(CMUsersGroup *  _Nullable activeGroup) {
-                            return activeGroup.uuid;
-                        }] distinctUntilChanged],
-                [[RACObserve([CMStore instance], currentShowMetadata) map:^id(CMShowMetadata * metadata) {
-                    return metadata.uuid;
-                }] distinctUntilChanged]
-        ]];
+                                                                        [[[CMStore instance].authentificationStatusSubject
+                                                                          map:^id(CMAuthStatusChangedEventContext *authStatusChangedEventContext) {
+                                                                              return @(authStatusChangedEventContext.state);
+                                                                          }] distinctUntilChanged],
+                                                                        [[RACObserve([CMStore instance], activeGroup)
+                                                                          map:^NSString *(CMUsersGroup *  _Nullable activeGroup) {
+                                                                              return activeGroup.uuid;
+                                                                          }] distinctUntilChanged],
+                                                                        [[RACObserve([CMStore instance], currentShowMetadata) map:^id(CMShowMetadata * metadata) {
+            return metadata.uuid;
+        }] distinctUntilChanged], configuredSignal]];
+        
         @weakify(self);
         [[[[groupOrAuthStateChanged
                 takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] filter:^BOOL(RACTuple *tuple) {
-            return tuple.third != nil;
+            return tuple.third != nil && tuple.fourth != false;
         }] subscribeNext:^(RACTuple *tuple) {
             @strongify(self);
 
@@ -77,7 +83,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
             self.showProfileInfo = authState.integerValue == CMCammentUserAuthentificatedAsKnownUser;
 
             [self reloadData];
-            [self reloadGroups];
+            [self reloadGroupList];
         }];
     }
 
@@ -85,7 +91,7 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)groupListDidHandleRefreshAction:(UIRefreshControl *)refreshControl {
-    [self reloadGroups];
+    [self reloadGroupList];
 }
 
 -(void)dealloc{
@@ -93,10 +99,10 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 }
 
 - (void)setupView {
-    [self reloadGroups];
+    [self reloadGroupList];
 }
 
-- (void)reloadGroups {
+- (void)reloadGroupList {
     [CMStore instance].isFetchingGroupList = YES;
     [self.interactor fetchUserGroupsForShow:[CMStore instance].currentShowMetadata.uuid];
 }
@@ -177,6 +183,9 @@ typedef NS_ENUM(NSInteger, CMGroupInfoSection) {
 
 }
 
+- (void)groupInfoDidHandleRefreshAction:(UIRefreshControl *)refreshControl {
+    //
+}
 
 - (void)updateDataModel:(TLIndexPathDataModel *)dataModel {
     TLIndexPathDataModel *oldDataModel = self.dataModel;

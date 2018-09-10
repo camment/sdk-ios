@@ -4,9 +4,9 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMDisplayNode.h"
 
-
-@interface CMContainerNode<__covariant MasterNodeType : ASDisplayNode *, __covariant DetailsNodeType : ASDisplayNode *> : ASDisplayNode
+@interface CMContainerNode<__covariant MasterNodeType : CMDisplayNode *, __covariant DetailsNodeType : CMDisplayNode *> : CMDisplayNode
 
 @property (nonatomic, assign) BOOL showDetails;
 @property (nonatomic, weak) MasterNodeType masterNode;
@@ -14,7 +14,8 @@
 
 - (instancetype)initWithMasterNode:(MasterNodeType *)masterNode;
 
-+ (instancetype)nodeWithMasterNode:(ASDisplayNode *)masterNode;
++ (instancetype)nodeWithMasterNode:(CMDisplayNode *)masterNode;
 
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation;
 
 @end

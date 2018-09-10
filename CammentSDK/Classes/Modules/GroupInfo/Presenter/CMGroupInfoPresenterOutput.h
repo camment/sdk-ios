@@ -12,7 +12,7 @@
 
 - (void)presentViewController:(UIViewController *)viewController;
 
-- (void)presentConfirmationDialogToLeaveTheGroup:(void (^)())onConfirmed;
+- (void)presentConfirmationDialogToLeaveTheGroup:(void (^)(void))onConfirmed;
 
 - (void)openGroupDetails:(CMUsersGroup *)group;
 

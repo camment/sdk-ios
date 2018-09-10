@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
 #import "CMInviteFriendsGroupInfoNode.h"
+#import "CMDisplayNode.h"
 
 @class CMCreateGroupButton;
 
@@ -21,7 +22,7 @@
 @end
 
 
-@interface CMGroupsListNode: ASDisplayNode
+@interface CMGroupsListNode: CMDisplayNode
 
 @property (nonatomic, strong) ASCollectionNode *collectionNode;
 @property (nonatomic, strong) CMCreateGroupButton *createNewGroupButton;

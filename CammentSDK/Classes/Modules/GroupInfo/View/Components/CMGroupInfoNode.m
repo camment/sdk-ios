@@ -33,10 +33,10 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
+        self.backgroundColor = [UIColor whiteColor];
         self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
                                                              layoutFacilitator:nil];
         self.inviteFriendsButton = [CMInviteFriendsButton new];
-        self.inviteFriendsButton.style.height = ASDimensionMake(44.0f);
         [self.inviteFriendsButton addTarget:self
                                      action:@selector(handleInviteButtonPress) forControlEvents:ASControlNodeEventTouchUpInside];
 
@@ -57,7 +57,6 @@
         [self.headerBackButton addTarget:self
                                   action:@selector(handlebackButtonPress)
                         forControlEvents:ASControlNodeEventTouchUpInside];
-        self.headerNode.style.height = ASDimensionMake(44.0f);
 
         self.headerTextNode = [ASTextNode new];
 
@@ -107,17 +106,25 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+    self.headerNode.style.height = ASDimensionMake(44.0f + self.calculatedSafeAreaInsets.top);
+    self.inviteFriendsButton.style.height = ASDimensionMake(44.0 + self.safeAreaInsets.bottom);
+    self.inviteFriendsButton.contentEdgeInsets = UIEdgeInsetsMake(.0f, .0f , self.safeAreaInsets.bottom, .0f);
+    ASInsetLayoutSpec *stackLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 20.0f, .0f, 20.0f)
+                                                                                child:[ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY child:_headerTextNode]];
+    ASOverlayLayoutSpec *headerLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_headerNode
+                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(self.calculatedSafeAreaInsets.top, 8, .0f, 24)
+                                                                                                                                    child:[ASOverlayLayoutSpec overlayLayoutSpecWithChild:stackLayoutSpec
 
-    ASInsetLayoutSpec *stackLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 20.0f, .0f, 20.0f) child:[ASCenterLayoutSpec centerLayoutSpecWithCenteringOptions:ASCenterLayoutSpecCenteringXY sizingOptions:ASCenterLayoutSpecSizingOptionMinimumXY child:_headerTextNode]];
-    ASOverlayLayoutSpec *overlayLayoutSpec = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_headerNode
-                                                                                     overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, 8, .0f, 24) child:[ASOverlayLayoutSpec overlayLayoutSpecWithChild:stackLayoutSpec
-                                                                                                                                                                                                                          overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, INFINITY, INFINITY) child:_headerBackButton]]]];
+                                                                                                                                                                                                                          overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, INFINITY, INFINITY)
+                                                                                                                                                                                                                                                                         child:_headerBackButton]]]];
 
     ASStackLayoutSpec *layoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                             spacing:.0f
                                                                      justifyContent:ASStackLayoutJustifyContentStart
                                                                          alignItems:ASStackLayoutAlignItemsStretch
-                                                                           children: @[overlayLayoutSpec, _collectionNode, _inviteFriendsButton]];
+                                                                           children: @[headerLayoutSpec,
+                                                                                       _collectionNode,
+                                                                                       _inviteFriendsButton]];
     _collectionNode.style.flexGrow = 1;
     _headerTextNode.style.flexGrow = 1;
     layoutSpec.style.flexGrow = 1;
@@ -149,5 +156,43 @@
     [self.refreshControl endRefreshing];
 }
 
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    
+    if (orientation == UIInterfaceOrientationUnknown) { return; }
+    if (UIEdgeInsetsEqualToEdgeInsets(self.safeAreaInsets, UIEdgeInsetsZero)) { return; }
+    
+    self.calculatedSafeAreaInsets = UIEdgeInsetsMake(
+                                                     self.safeAreaInsets.top,
+                                                     orientation == UIInterfaceOrientationLandscapeRight ? self.safeAreaInsets.left : .0f,
+                                                     self.safeAreaInsets.bottom,
+                                                     orientation == UIInterfaceOrientationLandscapeLeft? self.safeAreaInsets.right : .0f);
+    
+    [self.headerNode setNeedsLayout];
+    [self.inviteFriendsButton setNeedsLayout];
+    [self transitionLayoutWithAnimation:YES
+                     shouldMeasureAsync:NO
+                  measurementCompletion:nil];
+}
+
+- (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
+    if (![context isAnimated]) {
+        [super animateLayoutTransition:context];
+        return;
+    }
+    
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+                          delay:self.defaultLayoutTransitionDelay
+                        options:self.defaultLayoutTransitionOptions | UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                         self.headerNode.frame = [context finalFrameForNode:self.headerNode];
+                         self.collectionNode.frame = [context finalFrameForNode:self.collectionNode];
+                         self.inviteFriendsButton.frame = [context finalFrameForNode:self.inviteFriendsButton];
+                         self.headerTextNode.frame = [context finalFrameForNode:self.headerTextNode];
+                         self.headerBackButton.frame = [context finalFrameForNode:self.headerBackButton];
+                     }
+                     completion:^(BOOL finished) {
+                         [context completeTransition:YES];
+                     }];
+}
 
 @end

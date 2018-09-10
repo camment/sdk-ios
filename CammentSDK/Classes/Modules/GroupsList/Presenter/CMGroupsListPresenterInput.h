@@ -14,5 +14,6 @@
 @protocol CMGroupsListPresenterInput <NSObject>
 
 - (void)setupView;
+- (void)reloadGroupList;
 
 @end

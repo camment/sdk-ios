@@ -10,10 +10,11 @@
 
 }
 
-- (instancetype)initWithMasterNode:(ASDisplayNode *)masterNode {
+- (instancetype)initWithMasterNode:(CMDisplayNode *)masterNode {
     self = [super init];
     if (self) {
-        self.masterNode = (ASDisplayNode *) masterNode;
+        self.backgroundColor = [UIColor whiteColor];
+        self.masterNode = (CMDisplayNode *) masterNode;
         self.clipsToBounds = YES;
         self.automaticallyManagesSubnodes = YES;
     }
@@ -21,7 +22,7 @@
     return self;
 }
 
-+ (instancetype)nodeWithMasterNode:(ASDisplayNode *)masterNode {
++ (instancetype)nodeWithMasterNode:(CMDisplayNode *)masterNode {
     return [[self alloc] initWithMasterNode:masterNode];
 }
 
@@ -64,6 +65,12 @@
                      completion:^(BOOL finished) {
                         [context completeTransition:finished];
                      }];
+}
+
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    [super updateInterfaceOrientation:orientation];
+    [self.masterNode updateInterfaceOrientation:orientation];
+    [self.detailsNode updateInterfaceOrientation:orientation];
 }
 
 @end

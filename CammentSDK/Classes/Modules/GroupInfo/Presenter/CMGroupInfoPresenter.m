@@ -50,18 +50,16 @@
                 [RACObserve([CMStore instance], activeGroup) distinctUntilChanged],
                 RACObserve([CMStore instance], activeGroupUsers)
         ]];
-        @weakify(self);
+        
         __weak typeof(self) __weakSelf = self;
         [[[groupOrAuthStateChanged
-                takeUntil:self.rac_willDeallocSignal] deliverOn:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]
+                takeUntil:self.rac_willDeallocSignal] deliverOn:[RACScheduler mainThreadScheduler]]
                 subscribeNext:^(RACTuple *tuple) {
                     typeof(__weakSelf) __strongSelf = __weakSelf;
                     CMUsersGroup *group = tuple.first;
                     __strongSelf.groupHost = group.hostCognitoUserId;
                     __strongSelf.haveUserDeletionPermissions = group && [group.ownerCognitoUserId isEqualToString:[CMStore instance].authentificationStatusSubject.first.user.cognitoUserId];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        [__weakSelf reloadData];
-                    });
+                     [__strongSelf reloadData];
                 }];
     }
 

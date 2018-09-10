@@ -144,10 +144,12 @@
         CMUserBuilder *builder = [CMUserBuilder userFromExistingUser:user];
         NSString *status = user.onlineStatus;
         if ([user.cognitoUserId isEqualToString:message.hostId]) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSString *toastMessageTemplate = CMLocalized(@"status.new_group_host");
-                [self.notificationPresenter showToastMessage:[NSString stringWithFormat:toastMessageTemplate, user.username]];
-            });
+            
+//            syncing is experimental and not available yet
+//            dispatch_async(dispatch_get_main_queue(), ^{
+//                NSString *toastMessageTemplate = CMLocalized(@"status.new_group_host");
+//                [self.notificationPresenter showToastMessage:[NSString stringWithFormat:toastMessageTemplate, user.username]];
+//            });
 
             status = CMUserOnlineStatus.Broadcasting;
         } else if ([user.onlineStatus isEqualToString:CMUserOnlineStatus.Broadcasting]) {
@@ -242,6 +244,9 @@
 
     NSTimeInterval timeInterval = message.timestamp;
 
+    if (![CMStore instance].overlayDelegate
+        || ![[CMStore instance].overlayDelegate respondsToSelector:@selector(cammentOverlayDidRequestPlayerState:)]) { return; }
+    
     [[CMStore instance].overlayDelegate cammentOverlayDidRequestPlayerState:^(BOOL isPlaying, NSTimeInterval playerTimeInterval) {
 
         BOOL shoudSync = (ABS(playerTimeInterval - timeInterval) > 60)
@@ -263,11 +268,11 @@
                 return [value.cognitoUserId isEqualToString:hostUuid];
             }].array ?: @[]).firstObject;
 
-
-            [_notificationPresenter showToastMessage:host.username ?
-                [NSString stringWithFormat:CMLocalized(@"sync.you_synched_with_user"), host.username] :
-                    CMLocalized(@"sync.you_synched_with_host")
-            ];
+//            syncing is experimental and not available yet
+//            [self.notificationPresenter showToastMessage:host.username ?
+//                [NSString stringWithFormat:CMLocalized(@"sync.you_synched_with_user"), host.username] :
+//                    CMLocalized(@"sync.you_synched_with_host")
+//            ];
         });
     }];
 }

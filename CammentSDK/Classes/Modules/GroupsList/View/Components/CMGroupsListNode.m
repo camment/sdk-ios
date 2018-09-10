@@ -27,10 +27,9 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-
         self.collectionNode = [[ASCollectionNode alloc] initWithLayoutDelegate:[CMGroupInfoCollectionViewDelegate new]
                                                              layoutFacilitator:nil];
-
+        self.collectionNode.insetsLayoutMarginsFromSafeArea = NO;
         self.createNewGroupButton = [CMCreateGroupButton new];
         self.createNewGroupButton.style.minHeight = ASDimensionMake(44.0f);
         [self.createNewGroupButton addTarget:self
@@ -84,6 +83,8 @@
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+    self.createNewGroupButton.style.height = ASDimensionMake(44.0f + self.calculatedSafeAreaInsets.bottom);
+    self.createNewGroupButton.contentEdgeInsets = UIEdgeInsetsMake(.0f, .0f, self.calculatedSafeAreaInsets.bottom, .0f);
     ASStackLayoutSpec *layoutSpec = [ASStackLayoutSpec stackLayoutSpecWithDirection:ASStackLayoutDirectionVertical
                                                                             spacing:.0f
                                                                      justifyContent:ASStackLayoutJustifyContentStart
@@ -117,6 +118,46 @@
 
 - (void)endRefreshing {
     [self.refreshControl endRefreshing];
+}
+
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    
+    if (orientation == UIInterfaceOrientationUnknown) { return; }
+    if (UIEdgeInsetsEqualToEdgeInsets(self.safeAreaInsets, UIEdgeInsetsZero)) { return; }
+    
+    self.calculatedSafeAreaInsets = UIEdgeInsetsMake(
+                                                     self.safeAreaInsets.top,
+                                                     orientation == UIInterfaceOrientationLandscapeRight ? self.safeAreaInsets.left : .0f,
+                                                     self.safeAreaInsets.bottom,
+                                                     orientation == UIInterfaceOrientationLandscapeLeft? self.safeAreaInsets.right : .0f);
+    
+    [self.createNewGroupButton setNeedsLayout];
+    [self transitionLayoutWithAnimation:YES
+                     shouldMeasureAsync:NO
+                  measurementCompletion:nil];
+}
+
+- (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
+    if (![context isAnimated]) {
+        [super animateLayoutTransition:context];
+        return;
+    }
+    
+    CGRect finalFrameForCreateGroupNode = [context finalFrameForNode:self.createNewGroupButton];
+    if (!_showCreateGroupButton) {
+        finalFrameForCreateGroupNode = CGRectZero;
+    }
+    
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+                          delay:self.defaultLayoutTransitionDelay
+                        options:self.defaultLayoutTransitionOptions | UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                         self.createNewGroupButton.frame = finalFrameForCreateGroupNode;
+                         self.collectionNode.frame = [context finalFrameForNode:self.collectionNode];
+                     }
+                     completion:^(BOOL finished) {
+                         [context completeTransition:YES];
+                     }];
 }
 
 @end

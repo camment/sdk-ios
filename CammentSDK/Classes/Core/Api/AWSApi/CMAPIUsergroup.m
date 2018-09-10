@@ -20,10 +20,18 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
+             @"showId": @"showId",
              @"userCognitoIdentityId": @"userCognitoIdentityId",
+             @"hostId": @"hostId",
+             @"isPublic": @"isPublic",
              @"uuid": @"uuid",
+             @"users": @"users",
              @"timestamp": @"timestamp"
              };
+}
+
++ (NSValueTransformer *)usersJSONTransformer {
+	return [NSValueTransformer awsmtl_JSONArrayTransformerWithModelClass:[CMAPIUserinfo class]];
 }
 
 @end

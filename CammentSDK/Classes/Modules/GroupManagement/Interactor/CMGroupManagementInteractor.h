@@ -10,8 +10,14 @@
 #import "CMGroupManagementInteractorInput.h"
 #import "CMGroupManagementInteractorOutput.h"
 
+@class CMStore;
+
 @interface CMGroupManagementInteractor : NSObject<CMGroupManagementInteractorInput>
 
 @property (nonatomic, weak) id<CMGroupManagementInteractorOutput> output;
+
+- (instancetype)initWithOutput:(id <CMGroupManagementInteractorOutput>)output store:(CMStore *)store;
+
++ (instancetype)interactorWithOutput:(id <CMGroupManagementInteractorOutput>)output store:(CMStore *)store;
 
 @end

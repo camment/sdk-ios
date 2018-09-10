@@ -13,9 +13,7 @@
 
 + (NSBundle *)cammentSDKBundle {
     NSBundle *bundle = [NSBundle bundleForClass:[CammentSDK class]];
-    NSURL *bundleURL = [[bundle resourceURL] URLByAppendingPathComponent:@"CammentSDK.bundle"];
-    NSBundle *resourceBundle = [NSBundle bundleWithURL:bundleURL];
-    return resourceBundle;
+    return bundle;
 }
 
 @end

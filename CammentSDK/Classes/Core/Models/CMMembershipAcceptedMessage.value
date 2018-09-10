@@ -1,5 +1,7 @@
 %type name="CMUsersGroup"
+%type name="CMShow"
 
 CMMembershipAcceptedMessage includes(RMBuilder) {
   CMUsersGroup *group
+  CMShow *show
 }

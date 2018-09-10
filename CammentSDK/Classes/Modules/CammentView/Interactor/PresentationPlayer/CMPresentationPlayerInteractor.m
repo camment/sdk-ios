@@ -15,7 +15,9 @@
 - (void)update:(CMPresentationState *)state {
     for (id<CMPresentationInstructionInterface> instruction in _instructions) {
         if ([instruction shouldBeTriggeredForState:state]) {
-            [instruction runWithOutput:self.instructionOutput];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [instruction runWithOutput:self.instructionOutput];
+            });
         }
     }
 }

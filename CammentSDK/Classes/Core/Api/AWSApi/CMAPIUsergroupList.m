@@ -25,7 +25,7 @@
 }
 
 + (NSValueTransformer *)itemsJSONTransformer {
-	return [NSValueTransformer awsmtl_JSONArrayTransformerWithModelClass:[CMAPIUsergroupListItem class]];
+	return [NSValueTransformer awsmtl_JSONArrayTransformerWithModelClass:[CMAPIUsergroup class]];
 }
 
 @end

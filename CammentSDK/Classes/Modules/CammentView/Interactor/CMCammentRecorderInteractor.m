@@ -4,6 +4,7 @@
 //
 
 #import "SCRecorder.h"
+#import "SCRecordSessionSegment.h"
 #import <ReactiveObjC/ReactiveObjC.h>
 #import "CMCammentRecorderInteractor.h"
 #import "CMCammentRecorderInteractorOutput.h"
@@ -12,8 +13,10 @@
 
 
 @interface CMCammentRecorderInteractor () <SCRecorderDelegate>
-@property(nonatomic, weak) SCImageView *previewView;
-@property(nonatomic, strong) SCRecorder *recorder;
+
+@property (nonatomic, strong) SCRecorder *recorder;
+@property (nonatomic, assign) BOOL permissionsDenied;
+
 @end
 
 @implementation CMCammentRecorderInteractor
@@ -23,20 +26,14 @@
 
     if (self) {
         self.recorder = [SCRecorder recorder];
-        __weak typeof(self) weakSelf = self;
-        [[[RACObserve([CMStore instance], cammentRecordingState) deliverOnMainThread]
-          takeUntil:self.rac_willDeallocSignal]
-         subscribeNext:^(NSNumber *state) {
-            BOOL showPreview = state.integerValue == CMCammentRecordingStateRecording;
-            [weakSelf.recorder setSCImageView:showPreview ? weakSelf.previewView : nil];
-        }];
     }
 
     return self;
 }
 
 - (void)dealloc {
-    
+    self.recorder.SCImageView = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)configureCamera {
@@ -66,7 +63,7 @@
 }
 
 - (void)connectPreviewViewToRecorder:(SCImageView *)view {
-    self.previewView = view;
+    self.recorder.SCImageView = view;
     self.recorder.mirrorOnFrontCamera = YES;
 
     if (![self.recorder startRunning]) {
@@ -76,8 +73,24 @@
     self.recorder.session = [SCRecordSession recordSession];
 }
 
+- (void)checkCameraAndMicrophonePermissions {
+
+    AVAuthorizationStatus cameraPermissions = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];
+    AVAuthorizationStatus microphonePermissions = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
+
+    BOOL cameraDenied = cameraPermissions == AVAuthorizationStatusDenied || cameraPermissions == AVAuthorizationStatusRestricted;
+    BOOL microphoneDenied = microphonePermissions == AVAuthorizationStatusDenied || microphonePermissions == AVAuthorizationStatusRestricted;
+
+    self.permissionsDenied = cameraDenied || microphoneDenied;
+
+    if (self.permissionsDenied) {
+        [self.output recorderNoticedDeniedCameraOrMicrophonePermission];
+    }
+}
+
 - (void)startRecording {
-    if (self.recorder.isRecording) {return;}
+    [self checkCameraAndMicrophonePermissions];
+    if (self.recorder.isRecording || self.permissionsDenied) { return; }
     [self.recorder.session removeAllSegments];
     [self.recorder record];
 }
@@ -104,7 +117,9 @@
 
     AVAsset *asset = session.assetRepresentingSegments;
     SCAssetExportSession *assetExportSession = [[SCAssetExportSession alloc] initWithAsset:asset];
-    assetExportSession.outputUrl = _recorder.session.outputUrl;
+    NSURL *url = [SCRecordSessionSegment segmentURLForFilename:[NSString stringWithFormat:@"%@.%@", assetKey, @"mp4"]
+                                                  andDirectory:SCRecordSessionTemporaryDirectory];
+    assetExportSession.outputUrl = url;
     assetExportSession.outputFileType = AVFileTypeMPEG4;
 
     assetExportSession.videoConfiguration.preset = SCPresetMediumQuality;
@@ -112,11 +127,16 @@
     __weak typeof(self) weakSelf = self;
     [assetExportSession exportAsynchronouslyWithCompletionHandler: ^{
         if (assetExportSession.error == nil) {
-            [weakSelf.output recorderDidFinishExportingToURL:_recorder.session.outputUrl uuid:assetKey];
+            [weakSelf.output recorderDidFinishExportingToURL:url uuid:assetKey];
         } else {
             // Something bad happened
         }
     }];
 }
+
+- (void)recorder:(SCRecorder *__nonnull)recorder didInitializeVideoInSession:(SCRecordSession *__nonnull)session error:(NSError *__nullable)error {
+
+}
+
 
 @end

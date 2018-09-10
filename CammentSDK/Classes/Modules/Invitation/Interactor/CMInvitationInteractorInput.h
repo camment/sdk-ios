@@ -14,8 +14,6 @@
 
 @protocol CMInvitationInteractorInput <NSObject>
 
-- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid usingDeeplink:(BOOL)shouldUseDeeplink;
-
 - (void)getDeeplink:(CMUsersGroup *)group showUuid:(NSString *)showUuid;
 
 @end

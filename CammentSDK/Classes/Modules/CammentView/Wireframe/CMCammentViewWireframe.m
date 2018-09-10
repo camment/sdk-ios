@@ -13,33 +13,70 @@
 #import "CMCammentsLoaderInteractor.h"
 #import "CMShowMetadata.h"
 #import "CMGroupsListWireframe.h"
+#import "CMGroupInfoWireframe.h"
+#import "CMAuthInteractor.h"
+#import "CMIdentityProvider.h"
+#import "CMInvitationInteractor.h"
+#import "CMCammentUploader.h"
+#import "CMAppConfig.h"
 
+@interface CMCammentViewWireframe ()
+@property(nonatomic, strong) CMAppConfig *appConfig;
+@end
 
 @implementation CMCammentViewWireframe
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata {
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `(instancetype)initWithShowMetadata:(CMShowMetadata *)metadata \n"
+                                           "                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig \n"
+                                           "                    identityProvider:(id <CMIdentityProvider>)identityProvider` instead."
+                                 userInfo:nil];
+    return nil;
+}
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata 
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig
+               userSessionController:(CMUserSessionController *)userSessionController 
+               serverMessagesSubject:(RACSubject *)serverMessagesSubject 
+                           appConfig:(CMAppConfig *)appConfig {
     self = [super init];
+
     if (self) {
         self.metadata = metadata;
+        self.overlayLayoutConfig = overlayLayoutConfig;
+        self.userSessionController = userSessionController;
+        self.serverMessagesSubject = serverMessagesSubject;
+        self.appConfig = appConfig;
     }
 
     return self;
 }
 
 - (CMCammentViewController *)controller {
-    CMCammentViewController *view = [CMCammentViewController new];
-    CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata];
-    CMCammentViewInteractor *interactor = [CMCammentViewInteractor new];
+    CMCammentViewController *view = [[CMCammentViewController alloc] initWithOverlayLayoutConfig:_overlayLayoutConfig];
+    
+    CMInvitationInteractor *invitationInteractor = [[CMInvitationInteractor alloc] init];
+    CMCammentsBlockPresenter *cammentsBlockPresenter = [[CMCammentsBlockPresenter alloc] init];
+    CMCammentViewPresenter *presenter = [[CMCammentViewPresenter alloc] initWithShowMetadata:_metadata
+                                                                       userSessionController:_userSessionController
+                                                                        invitationInteractor:invitationInteractor
+                                                                      cammentsBlockPresenter:cammentsBlockPresenter];
+    invitationInteractor.output = presenter;
+    cammentsBlockPresenter.output = presenter;
+
+    CMCammentUploader *uploader = [[CMCammentUploader alloc] initWithBucketName:self.appConfig.awsS3BucketName];
+    CMCammentViewInteractor *interactor = [[CMCammentViewInteractor alloc] initWithCammentUploader:uploader];
 
     view.presenter = presenter;
-    view.groupListWireframe = [CMGroupsListWireframe new];
+    view.sidebarWireframe = [CMGroupInfoWireframe new];
     presenter.interactor = interactor;
     presenter.output = view;
     presenter.wireframe = self;
     interactor.output = presenter;
 
     CMCammentRecorderInteractor *recorderInteractor = [CMCammentRecorderInteractor new];
-    CMCammentsLoaderInteractor *cammentsLoaderInteractor = [CMCammentsLoaderInteractor new];
+    CMCammentsLoaderInteractor *cammentsLoaderInteractor = [[CMCammentsLoaderInteractor alloc] initWithNewMessageSubject:self.serverMessagesSubject];
     presenter.recorderInteractor = recorderInteractor;
     presenter.loaderInteractor = cammentsLoaderInteractor;
     recorderInteractor.output = presenter;

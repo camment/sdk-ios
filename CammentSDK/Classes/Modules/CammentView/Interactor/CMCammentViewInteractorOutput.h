@@ -14,4 +14,5 @@
 
 - (void)interactorFailedToUploadCamment:(CMCamment *)camment error:(NSError *)error;
 
+- (void)interactorDidDeleteCamment:(CMCamment *)camment;
 @end

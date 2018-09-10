@@ -29,8 +29,8 @@
     return self;
 }
 
-- (ASDisplayNode *)contentNode {
-    return _htmlThumbnailNode;
+- (ASLayoutSpec *)contentNode {
+    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsZero child:_htmlThumbnailNode];
 }
 
 @end

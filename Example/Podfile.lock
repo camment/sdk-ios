@@ -1,0 +1,228 @@
+PODS:
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
+  - AMPopTip (1.5.3)
+  - AWSAPIGateway (2.6.26):
+    - AWSCore (= 2.6.26)
+  - AWSCognito (2.6.26):
+    - AWSCore (= 2.6.26)
+  - AWSCognitoIdentityProvider (2.6.26):
+    - AWSCognitoIdentityProviderASF (= 1.0.1)
+    - AWSCore (= 2.6.26)
+  - AWSCognitoIdentityProviderASF (1.0.1)
+  - AWSCore (2.6.26)
+  - AWSIoT (2.6.26):
+    - AWSCore (= 2.6.26)
+  - AWSMobileAnalytics (2.6.26):
+    - AWSCore (= 2.6.26)
+  - AWSS3 (2.6.26):
+    - AWSCore (= 2.6.26)
+  - Bolts (1.9.0):
+    - Bolts/AppLinks (= 1.9.0)
+    - Bolts/Tasks (= 1.9.0)
+  - Bolts/AppLinks (1.9.0):
+    - Bolts/Tasks
+  - Bolts/Tasks (1.9.0)
+  - CammentAds (1.0.4):
+    - AFNetworking (~> 3)
+  - CammentSDK (3.0.3):
+    - AMPopTip (~> 1.5)
+    - AWSAPIGateway (~> 2.6)
+    - AWSCognito (~> 2.6)
+    - AWSCognitoIdentityProvider (~> 2.6)
+    - AWSIoT (~> 2.6)
+    - AWSMobileAnalytics (~> 2.6)
+    - AWSS3 (~> 2.6)
+    - Bolts
+    - CammentAds
+    - CocoaLumberjack (~> 3.4)
+    - DateTools (~> 2.0)
+    - FBSDKCoreKit (~> 4.29)
+    - FBSDKLoginKit (~> 4.29)
+    - FLAnimatedImage (~> 1.0)
+    - GVUserDefaults (~> 1.0)
+    - MBProgressHUD (~> 1.1)
+    - Mixpanel (~> 3.2)
+    - pop (~> 1.0)
+    - ReactiveObjC (~> 3.1)
+    - TBStateMachine (~> 6.7)
+    - TBStateMachine/DebugSupport
+    - Texture (~> 2.7)
+    - TLIndexPathTools (~> 0.4)
+    - Tweaks (~> 2.2)
+    - YapDatabase (= 3.1.1)
+  - CocoaLumberjack (3.4.2):
+    - CocoaLumberjack/Default (= 3.4.2)
+    - CocoaLumberjack/Extensions (= 3.4.2)
+  - CocoaLumberjack/Default (3.4.2)
+  - CocoaLumberjack/Extensions (3.4.2):
+    - CocoaLumberjack/Default
+  - DateTools (2.0.0)
+  - Expecta (1.0.6)
+  - FBSDKCoreKit (4.35.0):
+    - Bolts (~> 1.7)
+  - FBSDKLoginKit (4.35.0):
+    - FBSDKCoreKit
+  - FLAnimatedImage (1.0.12)
+  - GVUserDefaults (1.0.2)
+  - MBProgressHUD (1.1.0)
+  - Mixpanel (3.3.3)
+  - OCMock (3.4.2)
+  - PINCache (3.0.1-beta.6):
+    - PINCache/Arc-exception-safe (= 3.0.1-beta.6)
+    - PINCache/Core (= 3.0.1-beta.6)
+  - PINCache/Arc-exception-safe (3.0.1-beta.6):
+    - PINCache/Core
+  - PINCache/Core (3.0.1-beta.6):
+    - PINOperation (~> 1.1.0)
+  - PINOperation (1.1.1)
+  - PINRemoteImage/Core (3.0.0-beta.13):
+    - PINOperation
+  - PINRemoteImage/iOS (3.0.0-beta.13):
+    - PINRemoteImage/Core
+  - PINRemoteImage/PINCache (3.0.0-beta.13):
+    - PINCache (= 3.0.1-beta.6)
+    - PINRemoteImage/Core
+  - pop (1.0.10)
+  - ReactiveObjC (3.1.0)
+  - Specta (1.0.7)
+  - TBStateMachine (6.10.0):
+    - TBStateMachine/Core (= 6.10.0)
+  - TBStateMachine/Core (6.10.0)
+  - TBStateMachine/DebugSupport (6.10.0):
+    - TBStateMachine/Core
+  - Texture (2.7):
+    - Texture/PINRemoteImage (= 2.7)
+  - Texture/Core (2.7)
+  - Texture/PINRemoteImage (2.7):
+    - PINRemoteImage/iOS (= 3.0.0-beta.13)
+    - PINRemoteImage/PINCache
+    - Texture/Core
+  - TLIndexPathTools (0.4.4)
+  - Tweaks (2.2.0)
+  - YapDatabase (3.1.1):
+    - YapDatabase/Standard (= 3.1.1)
+  - YapDatabase/Standard (3.1.1):
+    - YapDatabase/Standard/Core (= 3.1.1)
+    - YapDatabase/Standard/Extensions (= 3.1.1)
+  - YapDatabase/Standard/Core (3.1.1):
+    - CocoaLumberjack
+  - YapDatabase/Standard/Extensions (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/ActionManager (= 3.1.1)
+    - YapDatabase/Standard/Extensions/AutoView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudCore (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CloudKit (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionPool (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ConnectionProxy (= 3.1.1)
+    - YapDatabase/Standard/Extensions/CrossProcessNotification (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FilteredView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/FullTextSearch (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Hooks (= 3.1.1)
+    - YapDatabase/Standard/Extensions/ManualView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/Relationships (= 3.1.1)
+    - YapDatabase/Standard/Extensions/RTreeIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SearchResultsView (= 3.1.1)
+    - YapDatabase/Standard/Extensions/SecondaryIndex (= 3.1.1)
+    - YapDatabase/Standard/Extensions/View (= 3.1.1)
+  - YapDatabase/Standard/Extensions/ActionManager (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/AutoView
+  - YapDatabase/Standard/Extensions/AutoView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/CloudCore (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/CloudKit (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionPool (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ConnectionProxy (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/CrossProcessNotification (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/FilteredView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/FullTextSearch (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/Hooks (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/ManualView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/View
+  - YapDatabase/Standard/Extensions/Relationships (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/RTreeIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/SearchResultsView (3.1.1):
+    - YapDatabase/Standard/Core
+    - YapDatabase/Standard/Extensions/AutoView
+    - YapDatabase/Standard/Extensions/FullTextSearch
+  - YapDatabase/Standard/Extensions/SecondaryIndex (3.1.1):
+    - YapDatabase/Standard/Core
+  - YapDatabase/Standard/Extensions/View (3.1.1):
+    - YapDatabase/Standard/Core
+
+DEPENDENCIES:
+  - CammentSDK (from `../`)
+  - Expecta
+  - OCMock
+  - Specta
+
+EXTERNAL SOURCES:
+  CammentSDK:
+    :path: ../
+
+SPEC CHECKSUMS:
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  AMPopTip: 32101701b68b811999b8ce39a778f452a9956aa1
+  AWSAPIGateway: 9bc35b88f5c517aed74748fa606d2300bb55704f
+  AWSCognito: a478efa37e614803ba4554a29ca1be69d70e0e43
+  AWSCognitoIdentityProvider: 5be311431518b6630de040fbf62e1b4f2a71694b
+  AWSCognitoIdentityProviderASF: f94f1a502e72ef3d0a1de93e10bf7a79c8698118
+  AWSCore: 0177bb7e5616d967277b398e7a05ed7a228e6158
+  AWSIoT: b462fd315cf74de70e064cf3c41b2cf6ee8e3499
+  AWSMobileAnalytics: 0cb50765773e3f72a91fe7e05c3f85278884dbb6
+  AWSS3: 4d857a223704bd956e91a659aec17ba1896ee0a9
+  Bolts: ac6567323eac61e203f6a9763667d0f711be34c8
+  CammentAds: d76a98c1f4853f5e1718c12cb754b69e48e509ea
+  CammentSDK: 5426079bde1ac139a34fa82e0052cb040f09bc95
+  CocoaLumberjack: db7cc9e464771f12054c22ff6947c5a58d43a0fd
+  DateTools: 933ac9c490f21f92127cf690ccd8c397e0126caf
+  Expecta: 3b6bd90a64b9a1dcb0b70aa0e10a7f8f631667d5
+  FBSDKCoreKit: 1a5b2e3ceb5ca827a53c54aa5f4a3480efff80d2
+  FBSDKLoginKit: 00a3d65d1226852f9d76dcddff01981e5e6d9c38
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  GVUserDefaults: 52d48cf8ba578b40a1a76312b196dfc9134ba36a
+  MBProgressHUD: e7baa36a220447d8aeb12769bf0585582f3866d9
+  Mixpanel: 3c3925c27f7a321d5978319a72f53f8f0885afc5
+  OCMock: ebe9ee1dca7fbed0ff9193ac0b3e2d8862ea56f6
+  PINCache: d195fdba255283f7e9900a55e3cced377f431f9b
+  PINOperation: a6219e6fc9db9c269eb7a7b871ac193bcf400aac
+  PINRemoteImage: d6d51c5d2adda55f1ce30c96e850b6c4ebd2856a
+  pop: 82ca6b068ce9278fd350fd9dd09482a0ce9492e6
+  ReactiveObjC: 2a38ea15335de4119d8b17caf1db1484f61db902
+  Specta: 3e1bd89c3517421982dc4d1c992503e48bd5fe66
+  TBStateMachine: 6d90c711c401d4700154b918292f5913618a9b2f
+  Texture: 9d7e38965cf22ccd7cd9c249dd78b3f14e70ab6c
+  TLIndexPathTools: 956bf0686bcd5e7dc8e2c408d28e7a312ec268a1
+  Tweaks: 0c41be06d41b82a11f515c27711b65d343aa4af6
+  YapDatabase: b418a4baa6906e8028748938f9159807fd039af4
+
+PODFILE CHECKSUM: 578355f5254cf8b105e44c585997a9a74a031dc6
+
+COCOAPODS: 1.4.0

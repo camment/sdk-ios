@@ -8,7 +8,12 @@
 
 #import <AsyncDisplayKit/ASCollectionNode.h>
 #import "CMCammentsInStreamPlayerWireframe.h"
+#import "TransitionDelegate.h"
 
+
+@interface CMCammentsInStreamPlayerWireframe ()
+@property(nonatomic, strong) TransitionDelegate *transitionDelegate;
+@end
 
 @implementation CMCammentsInStreamPlayerWireframe
 
@@ -23,7 +28,7 @@
 
 
 - (void)presentInWindow:(UIWindow *)window; {
-    CMCammentsInStreamPlayerViewController *view = [CMCammentsInStreamPlayerViewController new];
+    CMCammentsInStreamPlayerViewController *view = [[CMCammentsInStreamPlayerViewController alloc] initWithShow:_show];
     CMCammentsInStreamPlayerPresenter *presenter = [[CMCammentsInStreamPlayerPresenter alloc] initWithShow:_show];
 
     view.presenter = presenter;
@@ -38,7 +43,7 @@
 
 - (void)presentInViewController:(UIViewController *)viewController {
     self.parentViewController = viewController;
-    CMCammentsInStreamPlayerViewController *view = [CMCammentsInStreamPlayerViewController new];
+    CMCammentsInStreamPlayerViewController *view = [[CMCammentsInStreamPlayerViewController alloc] initWithShow:_show];
     CMCammentsInStreamPlayerPresenter *presenter = [[CMCammentsInStreamPlayerPresenter alloc] initWithShow:_show];
 
     view.presenter = presenter;
@@ -48,12 +53,14 @@
     self.view = view;
     self.presenter = presenter;
 
+    self.transitionDelegate = [TransitionDelegate new];
+    view.transitioningDelegate = self.transitionDelegate;
     [viewController presentViewController:view animated:YES completion:nil];
 }
 
 - (void)pushInNavigationController:(UINavigationController *)navigationController {
     self.parentNavigationController = navigationController;
-    CMCammentsInStreamPlayerViewController *view = [CMCammentsInStreamPlayerViewController new];
+    CMCammentsInStreamPlayerViewController *view = [[CMCammentsInStreamPlayerViewController alloc] initWithShow:_show];
     CMCammentsInStreamPlayerPresenter *presenter = [[CMCammentsInStreamPlayerPresenter alloc] initWithShow:_show];
 
     view.presenter = presenter;

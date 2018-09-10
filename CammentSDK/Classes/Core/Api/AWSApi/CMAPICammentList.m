@@ -20,6 +20,7 @@
 
 + (NSDictionary *)JSONKeyPathsByPropertyKey {
     return @{
+             @"lastKey": @"lastKey",
              @"items": @"items"
              };
 }

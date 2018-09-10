@@ -5,9 +5,13 @@
 
 #import <Foundation/Foundation.h>
 
+@class AWSS3TransferManager;
+@class RACSignal;
 
 @interface CMCammentUploader : NSObject
-+ (CMCammentUploader *)instance;
+
+- (instancetype)initWithBucketName:(NSString *)bucketName;
 
 - (RACSignal *)uploadVideoAsset:(NSURL *)url uuid:(NSString *)uuid;
+
 @end

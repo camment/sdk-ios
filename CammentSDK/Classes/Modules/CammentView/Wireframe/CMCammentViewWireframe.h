@@ -14,6 +14,8 @@
 #import "CMCammentViewController.h"
 
 @class CMShowMetadata;
+@protocol CMIdentityProvider;
+@class CMAppConfig;
 
 @interface CMCammentViewWireframe : NSObject
 
@@ -26,7 +28,13 @@
 
 @property(nonatomic, strong) CMShowMetadata *metadata;
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata;
+@property(nonatomic, strong) CMCammentOverlayLayoutConfig *overlayLayoutConfig;
+
+@property(nonatomic, strong) CMUserSessionController *userSessionController;
+
+@property(nonatomic, strong) RACSubject *serverMessagesSubject;
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata overlayLayoutConfig:(CMCammentOverlayLayoutConfig *)overlayLayoutConfig userSessionController:(CMUserSessionController *)userSessionController serverMessagesSubject:(RACSubject *)serverMessagesSubject appConfig:(CMAppConfig *)appConfig;
 
 - (CMCammentViewController *)controller;
 

@@ -7,8 +7,9 @@
 
 @implementation CMUserJoinedMessageBuilder
 {
-  NSString *_userGroupUuid;
+  CMUsersGroup *_usersGroup;
   CMUser *_joinedUser;
+  CMShow *_show;
 }
 
 + (instancetype)userJoinedMessage
@@ -18,25 +19,32 @@
 
 + (instancetype)userJoinedMessageFromExistingUserJoinedMessage:(CMUserJoinedMessage *)existingUserJoinedMessage
 {
-  return [[[CMUserJoinedMessageBuilder userJoinedMessage]
-           withUserGroupUuid:existingUserJoinedMessage.userGroupUuid]
-          withJoinedUser:existingUserJoinedMessage.joinedUser];
+  return [[[[CMUserJoinedMessageBuilder userJoinedMessage]
+            withUsersGroup:existingUserJoinedMessage.usersGroup]
+           withJoinedUser:existingUserJoinedMessage.joinedUser]
+          withShow:existingUserJoinedMessage.show];
 }
 
 - (CMUserJoinedMessage *)build
 {
-  return [[CMUserJoinedMessage alloc] initWithUserGroupUuid:_userGroupUuid joinedUser:_joinedUser];
+  return [[CMUserJoinedMessage alloc] initWithUsersGroup:_usersGroup joinedUser:_joinedUser show:_show];
 }
 
-- (instancetype)withUserGroupUuid:(NSString *)userGroupUuid
+- (instancetype)withUsersGroup:(CMUsersGroup *)usersGroup
 {
-  _userGroupUuid = [userGroupUuid copy];
+  _usersGroup = [usersGroup copy];
   return self;
 }
 
 - (instancetype)withJoinedUser:(CMUser *)joinedUser
 {
   _joinedUser = [joinedUser copy];
+  return self;
+}
+
+- (instancetype)withShow:(CMShow *)show
+{
+  _show = [show copy];
   return self;
 }
 

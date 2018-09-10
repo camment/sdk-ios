@@ -1,0 +1,4 @@
+CMNewGroupHostMessage includes(RMBuilder) {
+  NSString *groupUuid
+  NSString *hostId
+}

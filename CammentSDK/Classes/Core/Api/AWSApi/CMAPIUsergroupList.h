@@ -16,7 +16,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AWSCore/AWSCore.h>
-#import "CMAPIUsergroupListItem.h"
+#import "CMAPIUsergroup.h"
 
  
 /**

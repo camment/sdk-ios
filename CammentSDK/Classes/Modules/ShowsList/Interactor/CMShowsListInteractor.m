@@ -8,8 +8,7 @@
 
 #import "CMShowsListInteractor.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
-#import "ReactiveObjC.h"
+#import <ReactiveObjC/ReactiveObjC.h>
 #import "CMStore.h"
 
 @implementation CMShowsListInteractor
@@ -24,7 +23,7 @@
     }
 #endif
 
-    [[[CMAPIDevcammentClient defaultAPIClient] showsGet:passcode ?: @""] continueWithBlock:^id(AWSTask<id> *task) {
+    [[[CMAPIDevcammentClient defaultClient] showsGet:passcode ?: @""] continueWithBlock:^id(AWSTask<id> *task) {
         if (task.error) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output showListFetchingFailed:task.error];

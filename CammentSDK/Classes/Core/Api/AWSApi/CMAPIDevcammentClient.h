@@ -17,22 +17,28 @@
 #import <Foundation/Foundation.h>
 #import <AWSAPIGateway/AWSAPIGateway.h>
 
-#import "CMAPIError.h"
+#import "CMAPICamment.h"
+#import "CMAPICustomError.h"
 #import "CMAPIDeeplink.h"
-#import "CMAPIPasscodeInRequest.h"
+#import "CMAPIGroupUuidInRequest.h"
 #import "CMAPIFacebookFriendList.h"
 #import "CMAPIUsergroupList.h"
+#import "CMAPIPublicGroupList.h"
 #import "CMAPIShowList.h"
 #import "CMAPIShow.h"
+#import "CMAPISofa.h"
+#import "CMAPIUsergroup.h"
+#import "CMAPIUsergroupInRequest.h"
 #import "CMAPICammentList.h"
 #import "CMAPICammentInRequest.h"
-#import "CMAPICamment.h"
-#import "CMAPIUsergroup.h"
 #import "CMAPIShowUuid.h"
-#import "CMAPIAcceptInvitationRequest.h"
+#import "CMAPIIotInRequest.h"
 #import "CMAPIUserinfoList.h"
+#import "CMAPIUpdateUserStateInGroupRequest.h"
 #import "CMAPIUserinfo.h"
-#import "CMAPIUserinfoInRequest.h"
+#import "CMAPIOpenIdToken.h"
+
+@class CMAppConfig;
 
 
 NS_ASSUME_NONNULL_BEGIN
@@ -128,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param configuration A service configuration object.
  @param key           A string to identify the service client.
  */
-+ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key;
++ (void)registerClientWithConfiguration:(AWSServiceConfiguration *)configuration forKey:(NSString *)key appConfig:(CMAppConfig *)appConfig;
 
 /**
  Retrieves the service client associated with the key. You need to call `+ registerClientWithConfiguration:forKey:` before invoking this method or alternatively, set the configuration in your application's `info.plist` file. If `+ registerClientWithConfiguration:forKey:` has not been called in advance or if a configuration is not present in the `info.plist` file of the app, this method returns `nil`.
@@ -186,6 +192,49 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ 
+ return type: 
+ */
+- (AWSTask *)adsGet;
+
+/**
+ 
+ 
+ @param adUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)adsAdUuidGet:( NSString *)adUuid;
+
+/**
+ 
+ 
+ 
+ return type: 
+ */
+- (AWSTask *)adsAdUuidConfirmPost;
+
+/**
+ 
+ 
+ @param cammentUuid 
+ 
+ return type: CMAPICamment *
+ */
+- (AWSTask *)cammentsCammentUuidGet:( NSString *)cammentUuid;
+
+/**
+ 
+ 
+ @param cammentUuid 
+ 
+ return type: 
+ */
+- (AWSTask *)cammentsCammentUuidPost:( NSString *)cammentUuid;
+
+/**
+ 
+ 
  @param deeplinkHash 
  @param os 
  
@@ -200,7 +249,15 @@ NS_ASSUME_NONNULL_BEGIN
  
  return type: 
  */
-- (AWSTask *)demoValidatePasscodePost:( CMAPIPasscodeInRequest *)body;
+- (AWSTask *)meActiveGroupPost:( CMAPIGroupUuidInRequest *)body;
+
+/**
+ 
+ 
+ 
+ return type: 
+ */
+- (AWSTask *)meActiveGroupDelete;
 
 /**
  
@@ -214,10 +271,27 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
+ @param showId 
  
  return type: CMAPIUsergroupList *
  */
-- (AWSTask *)meGroupsGet;
+- (AWSTask *)meGroupsGet:(nullable NSString *)showId;
+
+/**
+ 
+ 
+ 
+ return type: 
+ */
+- (AWSTask *)meUuidPut;
+
+/**
+ 
+ 
+ 
+ return type: CMAPIPublicGroupList *
+ */
+- (AWSTask *)publicgroupsGet;
 
 /**
  
@@ -240,46 +314,42 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param uuid 
+ @param showUuid 
  
- return type: CMAPICammentList *
+ return type: CMAPISofa *
  */
-- (AWSTask *)showsUuidCammentsGet:( NSString *)uuid;
+- (AWSTask *)sofaShowUuidGet:( NSString *)showUuid;
 
 /**
  
  
- @param uuid 
  @param body 
- 
- return type: CMAPICamment *
- */
-- (AWSTask *)showsUuidCammentsPost:( NSString *)uuid body:( CMAPICammentInRequest *)body;
-
-/**
- 
- 
  
  return type: CMAPIUsergroup *
  */
-- (AWSTask *)usergroupsPost;
-
-/**
- 
- 
- 
- return type: 
- */
-- (AWSTask *)usergroupsTestPost;
+- (AWSTask *)usergroupsPost:( CMAPIUsergroupInRequest *)body;
 
 /**
  
  
  @param groupUuid 
  
+ return type: CMAPIUsergroup *
+ */
+- (AWSTask *)usergroupsGroupUuidGet:( NSString *)groupUuid;
+
+/**
+ 
+ 
+ @param groupUuid 
+ @param timeTo 
+ @param limit 
+ @param timeFrom 
+ @param lastKey 
+ 
  return type: CMAPICammentList *
  */
-- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidCammentsGet:( NSString *)groupUuid timeTo:(nullable NSString *)timeTo limit:(nullable NSString *)limit timeFrom:(nullable NSString *)timeFrom lastKey:(nullable NSString *)lastKey;
 
 /**
  
@@ -287,7 +357,7 @@ NS_ASSUME_NONNULL_BEGIN
  @param groupUuid 
  @param body 
  
- return type: CMAPICamment *
+ return type: 
  */
 - (AWSTask *)usergroupsGroupUuidCammentsPost:( NSString *)groupUuid body:( CMAPICammentInRequest *)body;
 
@@ -319,7 +389,7 @@ NS_ASSUME_NONNULL_BEGIN
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidInvitationsPut:( NSString *)groupUuid body:( CMAPIAcceptInvitationRequest *)body;
+- (AWSTask *)usergroupsGroupUuidIotPost:( NSString *)groupUuid body:( CMAPIIotInRequest *)body;
 
 /**
  
@@ -334,20 +404,22 @@ NS_ASSUME_NONNULL_BEGIN
  
  
  @param groupUuid 
+ @param body 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidUsersPost:( NSString *)groupUuid body:( CMAPIShowUuid *)body;
 
 /**
  
  
  @param userId 
  @param groupUuid 
+ @param body 
  
  return type: 
  */
-- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:( NSString *)userId groupUuid:( NSString *)groupUuid;
+- (AWSTask *)usergroupsGroupUuidUsersUserIdPut:( NSString *)userId groupUuid:( NSString *)groupUuid body:( CMAPIUpdateUserStateInGroupRequest *)body;
 
 /**
  
@@ -370,11 +442,11 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  
  
- @param body 
+ @param fbAccessToken 
  
- return type: 
+ return type: CMAPIOpenIdToken *
  */
-- (AWSTask *)userinfoPost:( CMAPIUserinfoInRequest *)body;
+- (AWSTask *)usersGetOpenIdTokenGet:(nullable NSString *)fbAccessToken;
 
 @end
 

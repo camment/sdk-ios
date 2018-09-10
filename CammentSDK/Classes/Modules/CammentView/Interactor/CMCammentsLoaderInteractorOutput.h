@@ -15,11 +15,13 @@
 
 @protocol CMCammentsLoaderInteractorOutput <NSObject>
 
-- (void)didFetchCamments:(NSArray<CMCamment *> *)camments;
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore firstPage:(BOOL)isFirstPage;
 - (void)didReceiveNewCamment:(CMCamment *)camment;
 - (void)didReceiveNewBotCamment:(CMBotCamment *)ads;
 
-- (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message;
-
 - (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message;
+
+- (void)didReceiveDeliveryConfirmation:(NSString *)cammentUuid;
+
+- (void)didFailToLoadCamments:(NSError *)error;
 @end

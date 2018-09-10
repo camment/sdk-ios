@@ -7,10 +7,19 @@
 
 @interface CMServerMessage (TypeMatching)
 
-- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler;
 - (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler;
 - (void)matchUserJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler;
 - (void)matchCammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler;
-- (void)matchMembershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler;
 - (void)matchMembershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler;
+- (void)matchUserRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler;
+- (void)matchCammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler;
+- (void)matchAdBanner:(CMServerMessageAdMatchHandler)adMatchHandler;
+- (void)matchUserGroupStateChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStateChangedHadler;
+- (void)matchPlayerStateEvent:(CMServerMessagePlayerStateMatchHandler)playerStateHandler;
+
+- (void)matchNeededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler;
+
+- (void)matchNewGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostHandler;
+
+- (void)matchOnlineStatusChanged:(CMServerMessageOnlineStatusChangedMatchHandler)onlineStatusChangedHandler;
 @end

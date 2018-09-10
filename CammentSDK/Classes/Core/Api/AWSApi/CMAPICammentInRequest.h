@@ -23,6 +23,18 @@
  */
 @interface CMAPICammentInRequest : AWSModel
 
+@property (nonatomic, strong, nullable) NSNumber *pinned;
+
+
+@property (nonatomic, strong, nullable) NSString *countryCode;
+
+
+@property (nonatomic, strong, nullable) NSNumber *startsAt;
+
+
+@property (nonatomic, strong, nullable) NSNumber *showAt;
+
+
 @property (nonatomic, strong, nullable) NSString *uuid;
 
 

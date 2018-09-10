@@ -45,11 +45,11 @@
     NSArray *users = [self.listPresenter.items.rac_sequence filter:^BOOL(CMUser *user) {
         return [self.listPresenter.selectedUsersId containsObject:user.fbUserId];
     }].array;
-    CMUser *currentUser = [CMStore instance].currentUser;
-    if (currentUser) {
-        users = [users arrayByAddingObject:currentUser];
-    }
-    [self.interactor addUsers:users group:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid usingDeeplink:YES];
+//    CMUser *currentUser = [CMStore instance].currentUser;
+//    if (currentUser) {
+//        users = [users arrayByAddingObject:currentUser];
+//    }
+//    [self.interactor addUsers:users group:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid usingDeeplink:YES];
 }
 
 - (void)didInviteUsersToTheGroup:(CMUsersGroup *)group usingDeeplink:(BOOL)usedDeeplink {

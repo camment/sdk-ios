@@ -1,7 +1,7 @@
 #import <Foundation/Foundation.h>
 
 @class CMCamment;
-@class AVAsset;
+@class CMCammentStatus;
 
 @interface CMCammentBuilder : NSObject
 
@@ -25,13 +25,19 @@
 
 - (instancetype)withUserCognitoIdentityId:(NSString *)userCognitoIdentityId;
 
-- (instancetype)withLocalAsset:(AVAsset *)localAsset;
+- (instancetype)withShowAt:(NSNumber *)showAt;
 
 - (instancetype)withIsMadeByBot:(BOOL)isMadeByBot;
 
 - (instancetype)withBotUuid:(NSString *)botUuid;
 
 - (instancetype)withBotAction:(NSString *)botAction;
+
+- (instancetype)withIsDeleted:(BOOL)isDeleted;
+
+- (instancetype)withShouldBeDeleted:(BOOL)shouldBeDeleted;
+
+- (instancetype)withStatus:(CMCammentStatus *)status;
 
 @end
 

@@ -1,7 +1,0 @@
-%type name="CMUser"
-%type name="CMUsersGroup"
-
-CMMembershipRequestMessage includes(RMBuilder) {
-  CMUser* joiningUser
-  CMUsersGroup *group
-}

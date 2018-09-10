@@ -24,6 +24,9 @@
  */
 @interface CMAPICammentList : AWSModel
 
+@property (nonatomic, strong, nullable) NSString *lastKey;
+
+
 @property (nonatomic, strong, nullable) NSArray *items;
 
 

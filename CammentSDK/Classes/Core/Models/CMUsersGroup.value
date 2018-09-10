@@ -1,6 +1,12 @@
+%type name="CMUser"
+
 CMUsersGroup includes(RMBuilder)  {
   NSString *uuid
+  NSString *showUuid
   NSString *ownerCognitoUserId
+  NSString *hostCognitoUserId
   NSString *timestamp
   NSString *invitationLink
+  NSArray<CMUser *> *users
+  BOOL isPublic
 }

@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+@class CMGroupsListInteractor;
+
 @protocol CMGroupsListInteractorOutput <NSObject>
 
-- (void)didFetchUserGroups:(NSArray *)groups;
-- (void)didFailToFetchUserGroups:(NSError *)error;
+- (void)groupListInteractor:(id <CMGroupsListInteractorInput>)interactor didFetchUserGroups:(NSArray *)group;
+- (void)groupListInteractor:(id <CMGroupsListInteractorInput>)interactor didFailToFetchUserGroups:(NSError *)error;
 
 @end

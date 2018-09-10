@@ -14,6 +14,7 @@
 #import "CMCammentsInStreamPlayerViewController.h"
 
 @class CMShow;
+@class TransitionDelegate;
 
 @interface CMCammentsInStreamPlayerWireframe : NSObject
 

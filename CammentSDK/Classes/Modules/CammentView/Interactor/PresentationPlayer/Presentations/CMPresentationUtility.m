@@ -14,6 +14,9 @@
 #import "CMBettingPresentationBuilder.h"
 #import "CMAdsDemoBot.h"
 #import "CMBotAction.h"
+#import "CMVideoAdPresentationBuilder.h"
+#import "CMTontonPresentationBuilder.h"
+#import "CMImageAdPresentationBuilder.h"
 
 NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
@@ -26,7 +29,10 @@ NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
             [CMNetflixPresentationBuilder new],
             [CMSBPresentationBuilder new],
             [CMEmailSubscriptionPresentationBuilder new],
-            [CMBettingPresentationBuilder new]
+            [CMBettingPresentationBuilder new],
+            [CMVideoAdPresentationBuilder new],
+            [CMTontonPresentationBuilder new],
+            [CMImageAdPresentationBuilder new],
     ];
 }
 
@@ -74,6 +80,11 @@ NSString *const kCMPresentationBuilderUtilityAnyShowUUID = @"any";
 
 - (CMDisplayCammentPresentationAction *)displayCammentActionWithLocalGif:(NSString *)filename url:(NSString *)url {
     CMCammentsBlockItem *blockItem = [self blockItemAdsWithLocalGif:filename url:url];
+    return [[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem];
+}
+
+- (CMDisplayCammentPresentationAction *)displayBotActionWithLocalGif:(NSString *)filename action:(CMBotAction *)action {
+    CMCammentsBlockItem *blockItem = [self blockItemBotAction:filename action:action];
     return [[CMDisplayCammentPresentationAction alloc] initWithItem:blockItem];
 }
 

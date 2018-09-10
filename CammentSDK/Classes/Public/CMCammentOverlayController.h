@@ -7,7 +7,11 @@
 #import <UIKit/UIKit.h>
 #import "CMShowMetadata.h"
 
+@class CMCammentOverlayLayoutConfig;
+
 @protocol CMCammentOverlayControllerDelegate<NSObject>
+
+- (void)cammentOverlayDidRequestPlayerState:(void (^)(BOOL isPlaying, NSTimeInterval timestamp))playerStateBlock;
 
 @optional
 
@@ -22,8 +26,12 @@
 @interface CMCammentOverlayController : NSObject
 
 @property (nonatomic, weak) id<CMCammentOverlayControllerDelegate> _Nullable overlayDelegate;
+@property (nonatomic, strong) NSArray<UIView *>  * _Nullable avoidTouchesInViews;
 
 - (instancetype _Nonnull)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata;
+
+- (instancetype _Nonnull)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *_Nonnull)overlayLayoutConfig;
 
 - (void)addToParentViewController:(UIViewController * _Nonnull)viewController;
 - (void)removeFromParentViewController;

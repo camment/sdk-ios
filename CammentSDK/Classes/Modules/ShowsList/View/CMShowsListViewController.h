@@ -13,9 +13,12 @@
 #import "CMShowsListPresenterInput.h"
 #import "CMShowsListPresenterOutput.h"
 #import "CMShowsListNode.h"
+#import "CammentSDK.h"
 
-@interface CMShowsListViewController: ASViewController<CMShowsListNode *><CMShowsListPresenterOutput>
+@interface CMShowsListViewController: ASViewController<CMShowsListNode *><CMShowsListPresenterOutput, CMCammentSDKUIDelegate>
 
 @property (nonatomic, strong) id<CMShowsListPresenterInput> presenter;
 
+@property(nonatomic, strong) UIImage *selectedShowPlaceHolder;
+@property(nonatomic) CGRect selectedCellFrame;
 @end

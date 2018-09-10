@@ -7,6 +7,6 @@
 
 @interface NSArray (RacSequence)
 
-- (NSArray *)map:(id _Nullable (^)(id _Nullable value))block;
+- (NSArray *_Nullable)map:(id _Nullable (^_Nullable)(id _Nullable value))block;
 
 @end

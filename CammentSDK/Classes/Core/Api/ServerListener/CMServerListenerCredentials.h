@@ -7,6 +7,8 @@
 
 extern const NSString * kCMServerCredetialsDefaultCertificateId;
 
+@class CMAppConfig;
+
 @interface CMServerListenerCredentials : NSObject
 
 @property (nonatomic, copy) NSString *clientId;
@@ -14,12 +16,11 @@ extern const NSString * kCMServerCredetialsDefaultCertificateId;
 @property (nonatomic, copy) NSString *passPhrase;
 @property (nonatomic, copy) NSString *certificateId;
 
+- (instancetype)initWithAppConfig:(CMAppConfig *)appConfig;
+
 - (instancetype)initWithClientId:(NSString *)clientId
                          keyFile:(NSString *)p12KeyFile
                       passPhrase:(NSString *)passPhrase
                    certificateId:(NSString *)certificateId NS_DESIGNATED_INITIALIZER;
-
-+ (CMServerListenerCredentials *)defaultCredentials;
-
 
 @end

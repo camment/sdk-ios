@@ -4,11 +4,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "GVUserDefaults.h"
+#import <GVUserDefaults/GVUserDefaults.h>
 
 @interface GVUserDefaults (CammentSDKConfig)
 
 @property (nonatomic) BOOL isOnboardingFinished;
+@property (nonatomic) BOOL isOnboardingSkipped;
+@property (nonatomic) BOOL isFirstSDKLaunch;
 @property (nonatomic) BOOL isInstallationDeeplinkChecked;
 @property (nonatomic) NSString *broadcasterPasscode;
 

@@ -35,12 +35,19 @@
     [super viewDidLoad];
 
     self.webView = [[UIWebView alloc] init];
-    NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"bettingform" ofType:@"html"];
-    NSString *html = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:NULL];
-    html = [html stringByReplacingOccurrencesOfString:@"${subject}" withString:self.subject];
-    [self.webView loadHTMLString:html baseURL:nil];
+//    NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"bettingform" ofType:@"html"];
+//    NSString *html = [NSString stringWithContentsOfFile:htmlPath encoding:NSUTF8StringEncoding error:NULL];
+//    html = [html stringByReplacingOccurrencesOfString:@"${subject}" withString:self.subject];
+//    [self.webView loadHTMLString:html baseURL:nil];
+    NSString* htmlPath = [[NSBundle cammentSDKBundle] pathForResource:@"index" ofType:@"html"];
+    [self.webView loadRequest:[NSURLRequest requestWithURL:[[NSURL alloc] initFileURLWithPath:htmlPath isDirectory:NO]]];
     self.webView.delegate = self;
     [self.view addSubview:_webView];
+}
+
+-(void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.navigationController setNavigationBarHidden:YES];
 }
 
 - (void)viewWillLayoutSubviews {
@@ -63,6 +70,11 @@
     NSString *url = request.URL.absoluteString;
 
     if ([url hasPrefix:@"action://cancel"]) {
+        [self dismissViewControllerAnimated:YES completion:^{}];
+        return NO;
+    }
+
+    if ([url hasPrefix:@"action://redeem"]) {
         [self dismissViewControllerAnimated:YES completion:^{}];
         return NO;
     }

@@ -16,6 +16,6 @@
 
 @interface CMGroupsListViewController : ASViewController<CMGroupsListNode *><CMGroupsListPresenterOutput>
 
-@property (nonatomic, strong) id<CMGroupsListPresenterInput> presenter;
+@property (nonatomic, strong) id<CMGroupsListPresenterInput, CMGroupListNodeDelegate > presenter;
 
 @end

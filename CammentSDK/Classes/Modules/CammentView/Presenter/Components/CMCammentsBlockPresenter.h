@@ -8,6 +8,7 @@
 #import "CMCammentsBlockNode.h"
 #import "CMCamment.h"
 #import "CMCammentsBlockItem.h"
+#import "CMCammentsBlockPresenterInput.h"
 
 @class CMCammentCell;
 
@@ -15,18 +16,18 @@
 
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell;
 - (void)runBotCammentAction:(CMBotAction *)action;
+
+- (BOOL)loaderCanLoadMoreCamments;
+
+- (void)fetchNextPageOfCamments:(ASBatchContext *)context;
 @end
 
-@interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate>
+@interface CMCammentsBlockPresenter: NSObject<CMCammentsBlockDelegate, CMCammentsBlockPresenterInput>
 
-@property (nonatomic, strong) NSArray<CMCammentsBlockItem *> *items;
+@property (strong) NSArray<CMCammentsBlockItem *> *items;
+@property (strong) NSArray<NSString *> *cammentIdsInQueue;
+@property (strong) NSArray<CMCamment *> *deletedCamments;
+
 @property (nonatomic, weak) ASCollectionNode *collectionNode;
 @property (nonatomic, weak) id<CMCammentsBlockPresenterOutput> output;
-
-- (void)playCamment:(NSString *)cammentId;
-
-- (void)insertNewItem:(CMCammentsBlockItem *)item completion:(void (^)())completion;
-
-- (void)deleteItem:(CMCammentsBlockItem *)blockItem;
-- (void)reloadItems:(NSArray<CMCammentsBlockItem *> *)newItems animated:(BOOL)animated;
 @end

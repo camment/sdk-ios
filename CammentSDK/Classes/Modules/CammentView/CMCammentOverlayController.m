@@ -12,6 +12,9 @@
 #import "CMCammentViewWireframe.h"
 #import "CMShow.h"
 #import "CMStore.h"
+#import "CMCammentOverlayLayoutConfig.h"
+#import "CMUserSessionController.h"
+#import "CMVideoSyncInteractor.h"
 
 @interface CMCammentOverlayController ()
 @property(nonatomic, strong) CMCammentViewController *cammentViewController;
@@ -22,12 +25,22 @@
 @implementation CMCammentOverlayController
 
 - (instancetype)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata {
+    return [self initWithShowMetadata:metadata
+                  overlayLayoutConfig:[CMCammentOverlayLayoutConfig defaultLayoutConfig]];
+}
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *_Nonnull)metadata
+                 overlayLayoutConfig:(CMCammentOverlayLayoutConfig *_Nonnull)overlayLayoutConfig {
     self = [super init];
     if (self) {
         CMStore *store = [CMStore instance];
         store.currentShowMetadata = metadata;
 
-        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShowMetadata:metadata];
+        CMCammentViewWireframe *viewWireframe = [[CMCammentViewWireframe alloc] initWithShowMetadata:metadata
+                                                                                 overlayLayoutConfig:overlayLayoutConfig
+                                                                               userSessionController:[CMUserSessionController instance]
+                                                                               serverMessagesSubject:store.serverMessagesSubject
+                                                                                           appConfig:store.appConfig];
         self.cammentViewController = [viewWireframe controller];
         self.wireframe = viewWireframe;
 
@@ -60,12 +73,21 @@
                 }
             }
         }];
+
+        [[[store.requestPlayerStateFromHostAppSignal takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(id x) {
+            @strongify(self);
+            if (self.overlayDelegate && [self.overlayDelegate respondsToSelector:@selector(cammentOverlayDidRequestPlayerState:)]) {
+                [self.overlayDelegate cammentOverlayDidRequestPlayerState:^(BOOL isPlaying, NSTimeInterval timestamp) {
+                    store.lastTimestampUploaded = nil;
+                    [[CMVideoSyncInteractor new] updateVideoStreamStateIsPlaying:isPlaying
+                                                                            show:metadata
+                                                                       timestamp:timestamp];
+                }];
+            }
+        }];
+
     }
     return self;
-}
-
-- (void)dealloc {
-    
 }
 
 - (void)addToParentViewController:(UIViewController *)viewController {
@@ -94,5 +116,17 @@
     [CMStore instance].currentShowMetadata = metadata;
 }
 
+- (void)setAvoidTouchesInViews:(NSArray<UIView *> *)avoidTouchesInViews {
+    [CMStore instance].avoidTouchesInViews = avoidTouchesInViews;
+}
+
+- (NSArray<UIView *> *)avoidTouchesInViews {
+    return [CMStore instance].avoidTouchesInViews;
+}
+
+- (void)setOverlayDelegate:(id <CMCammentOverlayControllerDelegate>)overlayDelegate {
+    _overlayDelegate = overlayDelegate;
+    [CMStore instance].overlayDelegate = overlayDelegate;
+}
 
 @end

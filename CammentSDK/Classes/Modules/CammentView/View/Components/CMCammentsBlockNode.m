@@ -5,10 +5,11 @@
 
 #import "CMCammentsBlockNode.h"
 #import "CMLeftAlignedLayout.h"
+#import "CMLeftAlignedLayoutDelegate.h"
+#import "CMCollectionNode.h"
 
 
 @interface CMCammentsBlockNode ()
-@property(nonatomic, strong) UICollectionViewFlowLayout* flowLayout;
 @end
 
 @implementation CMCammentsBlockNode
@@ -18,13 +19,8 @@
 
     if (self) {
         self.backgroundColor = [UIColor clearColor];
-        self.flowLayout = [CMLeftAlignedLayout new];
-        self.collectionNode = [[ASCollectionNode alloc] initWithCollectionViewLayout: self.flowLayout];
+        self.collectionNode = [[CMCollectionNode alloc] initWithLayoutDelegate:[CMLeftAlignedLayoutDelegate new] layoutFacilitator:nil];
         self.collectionNode.backgroundColor = [UIColor clearColor];
-        self.flowLayout.minimumInteritemSpacing = 400.f;
-        self.flowLayout.minimumLineSpacing = 10.f;
-        self.flowLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
-        self.collectionNode.collectionViewLayout = self.flowLayout;
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -35,7 +31,7 @@
     [super didLoad];
     [self.collectionNode.view setShowsVerticalScrollIndicator: NO];
     [self.collectionNode.view setAlwaysBounceVertical: YES];
-    [self.collectionNode.view setContentInset:UIEdgeInsetsMake(10.0f, 20.0f, .0f, .0f)];
+    [self.collectionNode.view setContentInset:UIEdgeInsetsMake(10.0f, 0.0f, .0f, .0f)];
 }
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
@@ -48,5 +44,10 @@
     self.collectionNode.delegate = delegate;
 }
 
+- (BOOL)pointInside:(CGPoint)point withEvent:(nullable UIEvent *)event {
+    return [self.collectionNode pointInside:[self convertPoint:point
+                                                        toNode:self.collectionNode]
+                                  withEvent:event];
+}
 
 @end

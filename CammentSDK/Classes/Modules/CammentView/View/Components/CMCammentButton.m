@@ -9,7 +9,7 @@
 #import "CMHalfOpacityAnimation.h"
 
 @interface CMCammentButton () <UIGestureRecognizerDelegate>
-@property(nonatomic, strong) ASImageNode *cammentIcon;
+@property(nonatomic, strong) ASDisplayNode *cammentIcon;
 @property(nonatomic, strong) UILongPressGestureRecognizer *gestureRecognizer;
 @end
 
@@ -22,13 +22,20 @@
         self.style.width = ASDimensionMake(65.0f);
         self.style.height = ASDimensionMake(65.0f);
 
-        self.cammentIcon = [ASImageNode new];
-        self.cammentIcon.image = [UIImage imageNamed:@"cammentButton"
-                                            inBundle:[NSBundle cammentSDKBundle]
-                       compatibleWithTraitCollection:nil];
-        self.cammentIcon.contentMode = UIViewContentModeScaleAspectFit;
-        self.cammentIcon.backgroundColor = [UIColor clearColor];
-
+        self.cammentIcon = [[ASDisplayNode alloc] initWithViewBlock:^UIView * _Nonnull{
+            return [UIImageView new];
+        } didLoadBlock:^(__kindof ASDisplayNode * _Nonnull node) {
+            UIImageView *imageView = (UIImageView *)node.view;
+            imageView.image = [UIImage imageNamed:@"cammentButton"
+                                         inBundle:[NSBundle cammentSDKBundle]
+                           compatibleWithTraitCollection:nil];
+            imageView.contentMode = UIViewContentModeScaleAspectFit;
+            imageView.backgroundColor = [UIColor clearColor];
+        }];
+        
+        self.cammentIcon.style.width = ASDimensionMake(65.0f);
+        self.cammentIcon.style.height = ASDimensionMake(65.0f);
+        
         self.gestureRecognizer = [UILongPressGestureRecognizer new];
         self.gestureRecognizer.delegate = self;
         self.gestureRecognizer.minimumPressDuration = 0.f;
@@ -47,23 +54,27 @@
     self.cammentIcon.layer.shadowRadius = 2.0f;
     self.cammentIcon.layer.shadowOpacity = 1.0f;
     self.cammentIcon.layer.shadowOffset = CGSizeMake(.0f, .0f);
-    self.view.alpha = 0.5;
+    self.cammentIcon.alpha = 0.5;
 }
 
 - (void)handleLongPress:(UITapGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateEnded
             || sender.state == UIGestureRecognizerStateFailed
             || sender.state == UIGestureRecognizerStateCancelled) {
+        [self.cammentIcon pop_removeAllAnimations];
+        [self pop_removeAllAnimations];
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleDownAnimation] forKey:@"scale"];
-        [self pop_addAnimation:[CMHalfOpacityAnimation opacityDownAnimation] forKey:@"opacity"];
+        [self.cammentIcon pop_addAnimation:[CMHalfOpacityAnimation opacityDownAnimation] forKey:@"opacity"];
         if (sender.state == UIGestureRecognizerStateEnded) {
             [self.delegate didReleaseCammentButton];
         } else {
             [self.delegate didCancelCammentButton];
         }
     } else if (sender.state == UIGestureRecognizerStateBegan) {
+        [self.cammentIcon pop_removeAllAnimations];
+        [self pop_removeAllAnimations];
         [self pop_addAnimation:[CMOneThirdScaleAnimation scaleUpAnimation] forKey:@"scale"];
-        [self pop_addAnimation:[CMHalfOpacityAnimation opacityUpAnimation] forKey:@"opacity"];
+        [self.cammentIcon pop_addAnimation:[CMHalfOpacityAnimation opacityUpAnimation] forKey:@"opacity"];
         [self.delegate didPressCammentButton];
     }
 }
@@ -80,5 +91,6 @@
     [self.gestureRecognizer setEnabled:NO];
     [self.gestureRecognizer setEnabled:YES];
 }
+
 
 @end

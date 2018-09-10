@@ -70,6 +70,7 @@ static char* SCRecorderPhotoOptionsContext = "PhotoOptionsContext";
 
         [[NSNotificationCenter defaultCenter] addObserver:self  selector:@selector(_subjectAreaDidChange) name:AVCaptureDeviceSubjectAreaDidChangeNotification  object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionInterrupted:) name:AVAudioSessionInterruptionNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(videoSessionInterrupted:) name:AVCaptureSessionInterruptionEndedNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidEnterBackground:) name:UIApplicationDidEnterBackgroundNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(sessionRuntimeError:) name:AVCaptureSessionRuntimeErrorNotification object:self];
@@ -1110,6 +1111,10 @@ static char* SCRecorderPhotoOptionsContext = "PhotoOptionsContext";
             [self reconfigureVideoInput:NO audioInput:self.audioConfiguration.enabled];
         }
     }
+}
+
+- (void)videoSessionInterrupted:(NSNotification *)aNotification {
+
 }
 
 - (void)lockFocus {

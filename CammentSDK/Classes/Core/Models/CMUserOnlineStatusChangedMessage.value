@@ -1,0 +1,4 @@
+CMUserOnlineStatusChangedMessage {
+  NSString *userId
+  NSString *status
+}

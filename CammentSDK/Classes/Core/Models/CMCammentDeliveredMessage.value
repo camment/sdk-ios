@@ -1,0 +1,3 @@
+CMCammentDeliveredMessage includes(RMBuilder) {
+  NSString* cammentUuid
+}

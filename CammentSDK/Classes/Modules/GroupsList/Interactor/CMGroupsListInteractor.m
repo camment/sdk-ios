@@ -8,18 +8,26 @@
 
 #import "CMGroupsListInteractor.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
 #import "NSArray+RACSequenceAdditions.h"
 #import "RACSequence.h"
 #import "CMUsersGroupBuilder.h"
+#import "CMUserBuilder.h"
+#import "CMUserContants.h"
+#import "NSArray+RacSequence.h"
 
 @implementation CMGroupsListInteractor
 
-- (void)fetchUserGroups {
-    AWSTask * task = [[CMAPIDevcammentClient defaultAPIClient] meGroupsGet];
+- (void)fetchUserGroupsForShow:(NSString *)uuid {
+
+    if (!uuid) {
+        DDLogError(@"Show UUID can not be empty");
+        return;
+    }
+
+    AWSTask * task = [[CMAPIDevcammentClient defaultClient] meGroupsGet:uuid];
     if (!task) {
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.output didFailToFetchUserGroups:nil];
+            [self.output groupListInteractor:self didFailToFetchUserGroups:nil];
         });
         return;
     }
@@ -27,20 +35,33 @@
     [task continueWithBlock:^id(AWSTask<CMAPIUsergroupList *> *t) {
         if (t.error || ![t.result isKindOfClass:[CMAPIUsergroupList class]]) {
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didFailToFetchUserGroups:t.error];
+                [self.output groupListInteractor:self didFailToFetchUserGroups:t.error];
             });
             return nil;
         }
 
-        NSArray<CMAPIUsergroupListItem *> *apiGroups = t.result.items;
-        NSArray *groups = [[apiGroups rac_sequence] map:^id(CMAPIUsergroupListItem *data) {
-            return [[[[CMUsersGroupBuilder new]
-                    withUuid:data.groupUuid]
-                      withTimestamp:data.timestamp] build];
+        NSArray<CMAPIUsergroup *> *apiGroups = t.result.items;
+        NSArray *groups = [[apiGroups rac_sequence] map:^id(CMAPIUsergroup *data) {
+            return [[[[[[[[[CMUsersGroupBuilder new]
+                    withUuid:data.uuid]
+                    withShowUuid:data.showId] withHostCognitoUserId:data.hostId]
+                    withOwnerCognitoUserId:data.userCognitoIdentityId]
+                    withUsers:[data.users map:^id(CMAPIUserinfo *userinfo) {
+                        return [[[[[[[CMUserBuilder user]
+                                withCognitoUserId:userinfo.userCognitoIdentityId]
+                                withUsername:userinfo.name]
+                                withUserPhoto:userinfo.picture]
+                                withBlockStatus:userinfo.state]
+                                withOnlineStatus:userinfo.isOnline.boolValue ? CMUserOnlineStatus.Online : CMUserOnlineStatus.Offline]
+                                build];
+                    }]]
+                    withTimestamp:data.timestamp]
+                    withIsPublic:data.isPublic.boolValue]
+                    build];
         }].array;
 
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.output didFetchUserGroups:groups];
+            [self.output groupListInteractor:self didFetchUserGroups:groups];
         });
         return nil;
     }];

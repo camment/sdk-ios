@@ -13,7 +13,7 @@
 #import "CMGroupCellNode.h"
 
 
-@interface CMGroupsListViewController () <ASTableDelegate, ASTableDataSource>
+@interface CMGroupsListViewController ()
 @end
 
 @implementation CMGroupsListViewController
@@ -28,46 +28,18 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    [self.node.refreshControl addTarget:self
-                                 action:@selector(reload)
-                       forControlEvents:UIControlEventValueChanged];
-
-    self.node.tableNode.delegate = self;
-    self.node.tableNode.dataSource = self;
-
+    self.node.delegate = self.presenter;
     [self.presenter setupView];
 }
 
-- (void)reload {
-    [self.presenter reloadGroups];
+- (void)hideCreateGroupButton {
+    if (!self.node.showCreateGroupButton) { return; }
+    self.node.showCreateGroupButton = NO;
 }
 
-- (void)reloadData {
-    [self.node.tableNode reloadData];
+- (void)showCreateGroupButton {
+    if (self.node.showCreateGroupButton) { return; }
+    self.node.showCreateGroupButton = YES;
 }
-
-- (void)endRefreshing {
-    [self.node.refreshControl endRefreshing];
-}
-
-- (void)tableNode:(ASTableNode *)tableNode didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [self.presenter openGroupAtIndex:indexPath.row];
-}
-
-- (NSInteger)numberOfSectionsInTableNode:(ASTableNode *)tableNode {
-    return 1;
-}
-
-- (NSInteger)tableNode:(ASTableNode *)tableNode numberOfRowsInSection:(NSInteger)section {
-    return [self.presenter groupsCount];
-}
-
-- (ASCellNodeBlock)tableNode:(ASTableNode *)tableNode nodeBlockForRowAtIndexPath:(NSIndexPath *)indexPath {
-    CMUsersGroup *group = [self.presenter groupAtIndex:indexPath.row];
-    return ^ASCellNode * {
-        return [[CMGroupCellNode alloc] initWithGroup:group];
-    };
-}
-
 
 @end

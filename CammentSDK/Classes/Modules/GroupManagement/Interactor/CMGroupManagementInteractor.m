@@ -10,24 +10,80 @@
 #import "CMUser.h"
 #import "CMUsersGroup.h"
 #import "CMAPIDevcammentClient.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMShow.h"
+#import "CMStore.h"
+#import "CMUsersGroupBuilder.h"
+#import "CMAnalytics.h"
+#import "CMAuthStatusChangedEventContext.h"
+
+@interface CMGroupManagementInteractor()
+
+@property (nonatomic, strong) CMStore *store;
+
+@end
 
 @implementation CMGroupManagementInteractor
 
-- (void)replyWithJoiningPermissionForUser:(CMUser *)user
-                                    group:(CMUsersGroup *)group
-                          isAllowedToJoin:(BOOL)isAllowedToJoin
-{
-    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultAPIClient];
-    if (isAllowedToJoin) {
-        [[client usergroupsGroupUuidUsersUserIdPut:user.userId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
-            return nil;
-        }];
+- (instancetype)initWithOutput:(id <CMGroupManagementInteractorOutput>)output store:(CMStore *)store {
+    self = [super init];
+    if (self) {
+        self.output = output;
+        self.store = store;
+    }
+
+    return self;
+}
+
++ (instancetype)interactorWithOutput:(id <CMGroupManagementInteractorOutput>)output store:(CMStore *)store {
+    return [[self alloc] initWithOutput:output store:store];
+}
+
+
+- (void)joinUserToGroup:(CMUsersGroup *)group {
+    DDLogInfo(@"Join group id %@", group);
+
+    self.store.shoudForceSynced = YES;
+    if (![group.uuid isEqualToString:self.store.activeGroup.uuid]) {
+        [self.store setActiveGroup:group];
+        [[self.store reloadActiveGroupSubject] sendNext:@YES];
+        [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventJoinGroup];
     } else {
-        [[client usergroupsGroupUuidUsersUserIdDelete:user.userId groupUuid:group.uuid] continueWithBlock:^id(AWSTask<id> *t) {
-            return nil;
-        }];
+        [self.store.userHasJoinedSignal sendNext:@YES];
     }
 }
+
+- (void)removeUser:(NSString *)userUuid fromGroup:(NSString *)groupUuid {
+    if ([groupUuid isEqualToString:self.store.activeGroup.uuid]) {
+        CMAuthStatusChangedEventContext *context = [self.store.authentificationStatusSubject first];
+        if ([context.user.cognitoUserId isEqualToString:userUuid]) {
+            [self.store cleanUpCurrentChatGroup];
+            [[self.store reloadActiveGroupSubject] sendNext:@YES];
+            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventRemovedFromGroup];
+        } else {
+            self.store.activeGroupUsers = [self.store.activeGroupUsers.rac_sequence filter:^BOOL(CMUser *value) {
+                return ![value.cognitoUserId isEqualToString:userUuid];
+            }].array;
+        }
+    }
+}
+
+- (AWSTask *)blockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid {
+    CMAPIUpdateUserStateInGroupRequest *body = [CMAPIUpdateUserStateInGroupRequest new];
+    body.state = @"blocked";
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidUsersUserIdPut:userUuid
+                                                                                      groupUuid:groupUuid
+                                                                                           body:body];
+    return task;
+}
+
+- (AWSTask *)unblockUser:(NSString *)userUuid inGroup:(NSString *)groupUuid {
+    CMAPIUpdateUserStateInGroupRequest *body = [CMAPIUpdateUserStateInGroupRequest new];
+    body.state = @"active";
+    AWSTask *task = [[CMAPIDevcammentClient defaultClient] usergroupsGroupUuidUsersUserIdPut:userUuid
+                                                                                      groupUuid:groupUuid
+                                                                                           body:body];
+    return task;
+}
+
 
 @end

@@ -21,11 +21,14 @@
 #import "FBTweakCollection.h"
 #import "FBTweakStore.h"
 #import "ReactiveObjC.h"
+#import "CMErrorWireframe.h"
+#import "CMUserSessionController.h"
 
 @interface CMShowsListPresenter () <CMShowsListCollectionPresenterOutput, FBTweakObserver, CMCammentSDKDelegate>
 
 @property(nonatomic, strong) CMShowsListCollectionPresenter *showsListCollectionPresenter;
 
+@property(nonatomic, strong) CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe;
 @end
 
 @implementation CMShowsListPresenter
@@ -49,7 +52,7 @@
 }
 
 - (void)networkDidBecomeAvailable {
-    if ([CMStore instance].isSignedIn) {
+    if ([CMUserSessionController instance].userAuthentificationState) {
         [self.output setLoadingIndicator];
         [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     }
@@ -59,20 +62,25 @@
     [self.output setCurrentBroadcasterPasscode:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
     [self.output setLoadingIndicator];
     [self.output setCammentsBlockNodeDelegate:self.showsListCollectionPresenter];
-    
-    NSArray *updateShowsListSignals = @[
-                                        RACObserve([CMStore instance], isSignedIn),
-                                        RACObserve([CMStore instance], isConnected),
-                                        RACObserve([CMStore instance], isOfflineMode)
-                                        ];
-    [[[RACSignal combineLatest:updateShowsListSignals] deliverOnMainThread] subscribeNext:^(RACTuple *tuple) {
-        NSNumber *isSignedIn = tuple.first;
-        NSNumber *isOfflineMode = tuple.third;
-        
-        if (isSignedIn.boolValue || isOfflineMode.boolValue) {
-            [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
-        }
-    }];
+
+    NSArray *signals = @[
+            RACObserve([CMStore instance], isOfflineMode),
+            [CMStore instance].authentificationStatusSubject,
+            RACObserve([CMStore instance], awsServicesConfigured),
+    ];
+
+    @weakify(self);
+    [[[[RACSignal combineLatest:signals]
+            takeUntil:self.rac_willDeallocSignal] deliverOnMainThread]
+            subscribeNext:^(RACTuple *_Nullable tuple) {
+                @strongify(self);
+                BOOL isOffline = [tuple.first boolValue];
+                CMAuthStatusChangedEventContext *context = tuple.second;
+                NSNumber *awsServicesConfigured = tuple.third;
+                if (isOffline || (context.state != CMCammentUserNotAuthentificated && [awsServicesConfigured boolValue])) {
+                    [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
+                }
+            }];
 }
 
 - (void)updateShows:(NSString *)passcode {
@@ -83,39 +91,21 @@
     [self.interactor fetchShowList:passcode];
 }
 
+- (void)viewWantsRefreshShowList {
+    [self.interactor fetchShowList:[[GVUserDefaults standardUserDefaults] broadcasterPasscode]];
+}
+
 - (void)showListDidFetched:(CMAPIShowList *)list {
     NSArray *shows = [list.items.rac_sequence map:^CMShow *(CMAPIShow *value) {
-        return [[CMShow alloc] initWithUuid:value.uuid url:value.url thumbnail:value.thumbnail showType:[CMShowType videoWithShow:value]];
+        return [[CMShow alloc] initWithUuid:value.uuid
+                                        url:value.url
+                                  thumbnail:value.thumbnail
+                                   showType:[CMShowType videoWithShow:value]
+                                   startsAt:value.startAt];
     }].array ?: @[];
 
-#ifdef USE_INTERNAL_FEATURES
-    NSString *demoWebShowUrl;
-
-    if ([CMStore instance].isOfflineMode) {
-        demoWebShowUrl = [NSURL fileURLWithPath:[[NSBundle cammentSDKBundle]
-                pathForResource:@"page"
-                         ofType:@"htm"
-                    inDirectory:@"www"]].absoluteString;
-    } else {
-        FBTweakCollection *collection = [[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"]
-                tweakCollectionWithName:@"Web settings"];
-
-        NSString *tweakName = @"Web page url";
-        FBTweak *webShowTweak = [collection tweakWithIdentifier:tweakName];
-
-        demoWebShowUrl = webShowTweak.currentValue;
-    }
-
-    shows = [shows arrayByAddingObjectsFromArray:@[
-            [[CMShow alloc] initWithUuid:[[NSUUID new] UUIDString]
-                                     url:demoWebShowUrl
-                               thumbnail:nil
-                                showType:[CMShowType htmlWithWebURL:demoWebShowUrl]]
-    ]];
-#endif
-
+    self.showsListCollectionPresenter.showNoShowsNode = shows.count == 0;
     self.showsListCollectionPresenter.shows = shows;
-    [self.showsListCollectionPresenter.collectionNode reloadData];
     [self.output hideLoadingIndicator];
 }
 
@@ -135,41 +125,75 @@
                 [[CMShow alloc] initWithUuid:[(CMAPIShow *) shows.firstObject uuid]
                                          url:tweak.currentValue
                                    thumbnail:nil
-                                    showType:[CMShowType htmlWithWebURL:tweak.currentValue]]
+                                    showType:[CMShowType htmlWithWebURL:tweak.currentValue]
+                                    startsAt:nil]
         ]];
         [self.showsListCollectionPresenter.collectionNode reloadData];
     }
 }
 
 - (void)showListFetchingFailed:(NSError *)error {
-    //if (error.code = )
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
     DDLogError(@"Show list fetch error %@", error);
+    [self.output hideLoadingIndicator];
 }
 
-- (void)didSelectShow:(CMShow *)show {
-    CMCammentsInStreamPlayerWireframe *cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
-    [cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
+- (void)didSelectShow:(CMShow *)show rect:(CGRect)rect image:(UIImage *)image {
+    self.wireframe.view.selectedCellFrame = rect;
+    self.wireframe.view.selectedShowPlaceHolder = image;
+    [self openShowIfNeeded:show];
 }
 
-- (void)didAcceptInvitationToShow:(CMShowMetadata *)metadata {
-    if (!metadata || !metadata.uuid || metadata.uuid.length == 0) { return; }
+- (void)showTweaksView {
+    [self.output showTweaks];
+}
+
+- (void)showPasscodeView {
+    [self.output showPasscodeAlert];
+}
+
+- (void)openShowIfNeeded:(CMShow *)show {
+    if ([self.cammentsInStreamPlayerWireframe.show.uuid isEqualToString:show.uuid] && self.cammentsInStreamPlayerWireframe.view) { return; }
+
+    if (self.cammentsInStreamPlayerWireframe.view) {
+        [self.cammentsInStreamPlayerWireframe.view dismissViewControllerAnimated:YES completion:^{
+            self.cammentsInStreamPlayerWireframe = nil;
+            [self openShowIfNeeded:show];
+            return;
+        }];
+    }
+
+    self.cammentsInStreamPlayerWireframe = [[CMCammentsInStreamPlayerWireframe alloc] initWithShow:show];
+    [_cammentsInStreamPlayerWireframe presentInViewController:_wireframe.view];
+}
+
+- (void)openShowIfNeededWithMetadata:(CMShowMetadata *_Nonnull)metadata {
+    if (!metadata || metadata.uuid.length == 0) {return;}
 
     NSArray<CMShow *> *shows = [self.showsListCollectionPresenter.shows.rac_sequence filter:^BOOL(CMShow *value) {
         return [value.uuid isEqualToString:metadata.uuid];
     }].array ?: @[];
     CMShow *show = shows.firstObject;
-    if (show) {
-        UIViewController *viewController = (id) self.output;
-        UIViewController *presentingViewController = viewController;
-        if (presentingViewController.presentingViewController) {
-            [presentingViewController dismissViewControllerAnimated:YES
-                                                         completion:^{
-                                                             [self didSelectShow:show];
-                                                         }];
-        } else {
-            [self didSelectShow:show];
-        }
+
+    if (!show) {
+        show = [[CMShow alloc] initWithUuid:metadata.uuid
+                                        url:nil
+                                  thumbnail:nil
+                                   showType:nil
+                                   startsAt:nil];
     }
+
+    [self openShowIfNeeded:show];
 }
+
+- (void)didOpenInvitationToShow:(CMShowMetadata *_Nonnull)metadata {
+    [self openShowIfNeededWithMetadata:metadata];
+}
+
+- (void)didJoinToShow:(CMShowMetadata *)metadata {
+    [self openShowIfNeededWithMetadata:metadata];
+}
+
 
 @end

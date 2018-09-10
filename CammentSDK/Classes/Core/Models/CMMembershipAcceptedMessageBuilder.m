@@ -8,6 +8,7 @@
 @implementation CMMembershipAcceptedMessageBuilder
 {
   CMUsersGroup *_group;
+  CMShow *_show;
 }
 
 + (instancetype)membershipAcceptedMessage
@@ -17,18 +18,25 @@
 
 + (instancetype)membershipAcceptedMessageFromExistingMembershipAcceptedMessage:(CMMembershipAcceptedMessage *)existingMembershipAcceptedMessage
 {
-  return [[CMMembershipAcceptedMessageBuilder membershipAcceptedMessage]
-          withGroup:existingMembershipAcceptedMessage.group];
+  return [[[CMMembershipAcceptedMessageBuilder membershipAcceptedMessage]
+           withGroup:existingMembershipAcceptedMessage.group]
+          withShow:existingMembershipAcceptedMessage.show];
 }
 
 - (CMMembershipAcceptedMessage *)build
 {
-  return [[CMMembershipAcceptedMessage alloc] initWithGroup:_group];
+  return [[CMMembershipAcceptedMessage alloc] initWithGroup:_group show:_show];
 }
 
 - (instancetype)withGroup:(CMUsersGroup *)group
 {
   _group = [group copy];
+  return self;
+}
+
+- (instancetype)withShow:(CMShow *)show
+{
+  _show = [show copy];
   return self;
 }
 

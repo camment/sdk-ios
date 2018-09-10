@@ -10,8 +10,21 @@ typedef NS_ENUM(NSUInteger, CMContentType) {
     CMContentTypeHTML,
 };
 
+@protocol CMVideoContentNodeDelegate <NSObject>
+
+@optional
+- (void)playerDidUpdateCurrentTimeInterval:(NSTimeInterval)timeInterval;
+- (void)playerDidPlay:(NSTimeInterval)timeInterval;
+- (void)playerDidPause:(NSTimeInterval)timeInterval;
+
+@end
+
 @protocol CMContentViewerNode <NSObject>
 
-- (void)openContentAtUrl:(NSURL *)url;
+@property (nonatomic, weak) id<CMVideoContentNodeDelegate> videoNodeDelegate;
 
+- (void)openContentAtUrl:(NSURL *)url;
+- (void)setCurrentTimeInterval:(NSTimeInterval)timeInterval;
+
+- (void)setIsPlaying:(BOOL)playing;
 @end

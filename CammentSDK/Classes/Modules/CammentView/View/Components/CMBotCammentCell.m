@@ -8,6 +8,7 @@
 #import "CMBotCammentNode.h"
 #import "UIColorMacros.h"
 #import "CMAdsDemoBot.h"
+#import "ASDimension.h"
 
 
 @interface CMBotCammentCell ()
@@ -59,23 +60,37 @@
 
 - (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
     self.botCammentNode.style.preferredSize = CGSizeMake(45.0f, 45.0f);
-    self.botCammentNode.style.layoutPosition = CGPointMake(.0f, .0f);
+    self.botCammentNode.style.layoutPosition = CGPointMake(15.0f, 12.0f);
     
     self.closeButtonNode.style.preferredSize = CGSizeMake(30, 30);
-    self.closeButtonNode.style.layoutPosition = CGPointMake(-15.0f, -12.0f);
+    self.closeButtonNode.style.layoutPosition = CGPointMake(.0f, .0f);
     
     self.adsTextNode.style.width = ASDimensionMake(30.0f);
     self.adsTextNode.style.height = ASDimensionMake(30.0f);
-    self.adsTextNode.style.layoutPosition = CGPointMake(45.0f, 0.0f);
+    self.adsTextNode.style.layoutPosition = CGPointMake(
+            self.botCammentNode.style.layoutPosition.x + self.botCammentNode.style.preferredSize.width,
+            self.botCammentNode.style.layoutPosition.y);
     
-    ASAbsoluteLayoutSpec *absoluteLayoutSpec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit children:@[_botCammentNode, _closeButtonNode, _adsTextNode]];
-    return [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(.0f, .0f, .0f, -40.0f) child:absoluteLayoutSpec];
+    ASAbsoluteLayoutSpec *absoluteLayoutSpec = [ASAbsoluteLayoutSpec absoluteLayoutSpecWithSizing:ASAbsoluteLayoutSpecSizingSizeToFit
+                                                                                         children:@[
+                                                                                                 _botCammentNode,
+                                                                                                 _closeButtonNode,
+                                                                                                 _adsTextNode]];
+    absoluteLayoutSpec.style.preferredSize = CGSizeMake(
+            self.adsTextNode.style.width.value + self.adsTextNode.style.layoutPosition.x,
+            self.botCammentNode.style.height.value + self.botCammentNode.style.layoutPosition.y);
+
+    return absoluteLayoutSpec;
 }
 
 - (void)didTapOnCloseButton {
     if (self.delegate && [self.delegate respondsToSelector:@selector(botCammentCellDidTapOnCloseButton:)]) {
         [self.delegate botCammentCellDidTapOnCloseButton:self];
     }
+}
+
+- (UIEdgeInsets)layoutGuidesOffsets {
+    return UIEdgeInsetsMake(12.0f, 15.0f, .0f, .0f);
 }
 
 @end

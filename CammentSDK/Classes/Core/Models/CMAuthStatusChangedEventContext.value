@@ -1,0 +1,6 @@
+%type name="CMCammentUserAuthentificationState"
+
+CMAuthStatusChangedEventContext {
+    CMCammentUserAuthentificationState(NSInteger) state
+    CMUser *user
+}

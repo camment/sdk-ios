@@ -26,10 +26,16 @@
 @property (nonatomic, strong, nullable) NSString *thumbnail;
 
 
+@property (nonatomic, strong, nullable) NSString *countryCode;
+
+
 @property (nonatomic, strong, nullable) NSString *uuid;
 
 
 @property (nonatomic, strong, nullable) NSString *url;
+
+
+@property (nonatomic, strong, nullable) NSNumber *startAt;
 
 
 @end

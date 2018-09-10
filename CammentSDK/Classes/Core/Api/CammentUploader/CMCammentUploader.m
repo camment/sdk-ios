@@ -14,30 +14,23 @@
 @interface CMCammentUploader ()
 
 @property(nonatomic, copy) NSString *bucketName;
-@property(nonatomic, strong) AWSS3TransferManager *transferManager;
 
 @end
 
 @implementation CMCammentUploader
 
-+ (CMCammentUploader *)instance {
-    static CMCammentUploader *_instance = nil;
-
-    @synchronized (self) {
-        if (_instance == nil) {
-            _instance = [[self alloc] init];
-        }
-    }
-
-    return _instance;
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `+ initWithBucketName:aws3TransferManager` instead."
+                                 userInfo:nil];
+    return nil;
 }
 
-- (instancetype)init {
+- (instancetype)initWithBucketName:(NSString *)bucketName {
     self = [super init];
 
     if (self) {
-        self.bucketName = [CMAppConfig instance].awsS3BucketName;
-        self.transferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
+        self.bucketName = bucketName;
     }
 
     return self;
@@ -53,18 +46,19 @@
         uploadRequest.body = url;
         uploadRequest.contentType = @"video/mp4";
         uploadRequest.ACL = AWSS3ObjectCannedACLPublicRead;
-        uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
         uploadRequest.storageClass = AWSS3StorageClassStandardIa;
+        uploadRequest.contentLength = @([NSData dataWithContentsOfURL:url].length);
         uploadRequest.uploadProgress = ^(int64_t bytesSent, int64_t totalBytesSent, int64_t totalBytesExpectedToSend) {
             [subscriber sendNext:@(1.0f / totalBytesExpectedToSend * bytesSent)];
         };
-        
-        [[self.transferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
+
+        AWSS3TransferManager *awss3TransferManager = [AWSS3TransferManager S3TransferManagerForKey:CMS3TransferManagerName];
+        [[awss3TransferManager upload:uploadRequest] continueWithBlock:^id(AWSTask<id> *task) {
             if (task.error) {
                 if ([task.error.domain isEqualToString:AWSS3TransferManagerErrorDomain]) {
                     switch ((AWSS3TransferManagerErrorType)task.error.code) {
                         case AWSS3TransferManagerErrorCancelled: break;
-                        case AWSS3TransferManagerErrorPaused: break;
+                        case AWSS3TransferManagerErrorPaused:break;
                         case AWSS3TransferManagerErrorUnknown:break;
                         case AWSS3TransferManagerErrorCompleted:break;
                         case AWSS3TransferManagerErrorInternalInConsistency:break;
@@ -74,7 +68,6 @@
                 }
 
                 DDLogError(@"Uploading camment failed with error %@", task.error);
-
                 [subscriber sendError:task.error];
             }
 

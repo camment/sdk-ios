@@ -22,10 +22,10 @@
     self = [super init];
     if (self) {
         self.cameraPreviewNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
-            SCFilterImageView *view = [SCFilterImageView new];
+            SCImageView *view = [SCImageView new];
             view.contextType = SCContextTypeEAGL;
-            view.scaleAndResizeCIImageAutomatically = YES;
             view.contentMode = UIViewContentModeScaleAspectFill;
+            [view setClearsContextBeforeDrawing:YES];
             [view loadContextIfNeeded];
             return view;
         } didLoadBlock:^(__kindof ASDisplayNode *node) {
@@ -37,9 +37,10 @@
 
         self.clipsToBounds = YES;
         self.backgroundColor = [UIColor clearColor];
-        self.cameraPreviewNode.borderColor = UIColorFromRGB(0x3B3B3B).CGColor;
+        self.cameraPreviewNode.borderColor = [UIColor whiteColor].CGColor;
         self.cameraPreviewNode.borderWidth = 2.0f;
         self.cameraPreviewNode.cornerRadius = 4.0f;
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -86,12 +87,12 @@
     return layout;
 }
 
-- (SCFilterImageView *)scImageView {
+- (SCImageView *)scImageView {
     if ([NSThread currentThread] != [NSThread mainThread]) {
         NSLog(@"Coudn't operate with UIKit layer in background thread");
         return nil;
     }
-    return (SCFilterImageView *) _cameraPreviewNode.view;
+    return (SCImageView *) _cameraPreviewNode.view;
 }
 
 

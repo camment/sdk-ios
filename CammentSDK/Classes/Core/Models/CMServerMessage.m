@@ -10,23 +10,43 @@
 #import "CMServerMessage.h"
 
 typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
-  _CMServerMessageSubtypesinvitation,
   _CMServerMessageSubtypescamment,
   _CMServerMessageSubtypesuserJoined,
   _CMServerMessageSubtypescammentDeleted,
-  _CMServerMessageSubtypesmembershipRequest,
-  _CMServerMessageSubtypesmembershipAccepted
+  _CMServerMessageSubtypesmembershipAccepted,
+  _CMServerMessageSubtypesuserRemoved,
+  _CMServerMessageSubtypescammentDelivered,
+  _CMServerMessageSubtypesad,
+  _CMServerMessageSubtypesuserGroupStatusChanged,
+  _CMServerMessageSubtypesplayerState,
+  _CMServerMessageSubtypesneededPlayerState,
+  _CMServerMessageSubtypesnewGroupHost,
+  _CMServerMessageSubtypesonlineStatusChanged
 };
 
 @implementation CMServerMessage
 {
   _CMServerMessageSubtypes _subtype;
-  CMInvitation *_invitation_invitation;
   CMCamment *_camment_camment;
   CMUserJoinedMessage *_userJoined_userJoinedMessage;
   CMCammentDeletedMessage *_cammentDeleted_cammentDeletedMessage;
-  CMMembershipRequestMessage *_membershipRequest_membershipRequestMessage;
   CMMembershipAcceptedMessage *_membershipAccepted_membershipAcceptedMessage;
+  CMUserRemovedMessage *_userRemoved_userRemovedMessage;
+  CMCammentDeliveredMessage *_cammentDelivered_cammentDelivered;
+  CMAdBanner *_ad_adBanner;
+  CMUserGroupStatusChangedMessage *_userGroupStatusChanged_userGroupStatusChangedMessage;
+  CMNewPlayerStateMessage *_playerState_message;
+  CMNeededPlayerStateMessage *_neededPlayerState_message;
+  CMNewGroupHostMessage *_newGroupHost_message;
+  CMUserOnlineStatusChangedMessage *_onlineStatusChanged_message;
+}
+
++ (instancetype)adWithAdBanner:(CMAdBanner *)adBanner
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesad;
+  object->_ad_adBanner = adBanner;
+  return object;
 }
 
 + (instancetype)cammentDeletedWithCammentDeletedMessage:(CMCammentDeletedMessage *)cammentDeletedMessage
@@ -34,6 +54,14 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   CMServerMessage *object = [[CMServerMessage alloc] init];
   object->_subtype = _CMServerMessageSubtypescammentDeleted;
   object->_cammentDeleted_cammentDeletedMessage = cammentDeletedMessage;
+  return object;
+}
+
++ (instancetype)cammentDeliveredWithCammentDelivered:(CMCammentDeliveredMessage *)cammentDelivered
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypescammentDelivered;
+  object->_cammentDelivered_cammentDelivered = cammentDelivered;
   return object;
 }
 
@@ -45,14 +73,6 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   return object;
 }
 
-+ (instancetype)invitationWithInvitation:(CMInvitation *)invitation
-{
-  CMServerMessage *object = [[CMServerMessage alloc] init];
-  object->_subtype = _CMServerMessageSubtypesinvitation;
-  object->_invitation_invitation = invitation;
-  return object;
-}
-
 + (instancetype)membershipAcceptedWithMembershipAcceptedMessage:(CMMembershipAcceptedMessage *)membershipAcceptedMessage
 {
   CMServerMessage *object = [[CMServerMessage alloc] init];
@@ -61,11 +81,43 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   return object;
 }
 
-+ (instancetype)membershipRequestWithMembershipRequestMessage:(CMMembershipRequestMessage *)membershipRequestMessage
++ (instancetype)neededPlayerStateWithMessage:(CMNeededPlayerStateMessage *)message
 {
   CMServerMessage *object = [[CMServerMessage alloc] init];
-  object->_subtype = _CMServerMessageSubtypesmembershipRequest;
-  object->_membershipRequest_membershipRequestMessage = membershipRequestMessage;
+  object->_subtype = _CMServerMessageSubtypesneededPlayerState;
+  object->_neededPlayerState_message = message;
+  return object;
+}
+
++ (instancetype)newGroupHostWithMessage:(CMNewGroupHostMessage *)message
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesnewGroupHost;
+  object->_newGroupHost_message = message;
+  return object;
+}
+
++ (instancetype)onlineStatusChangedWithMessage:(CMUserOnlineStatusChangedMessage *)message
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesonlineStatusChanged;
+  object->_onlineStatusChanged_message = message;
+  return object;
+}
+
++ (instancetype)playerStateWithMessage:(CMNewPlayerStateMessage *)message
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesplayerState;
+  object->_playerState_message = message;
+  return object;
+}
+
++ (instancetype)userGroupStatusChangedWithUserGroupStatusChangedMessage:(CMUserGroupStatusChangedMessage *)userGroupStatusChangedMessage
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesuserGroupStatusChanged;
+  object->_userGroupStatusChanged_userGroupStatusChangedMessage = userGroupStatusChangedMessage;
   return object;
 }
 
@@ -77,6 +129,14 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   return object;
 }
 
++ (instancetype)userRemovedWithUserRemovedMessage:(CMUserRemovedMessage *)userRemovedMessage
+{
+  CMServerMessage *object = [[CMServerMessage alloc] init];
+  object->_subtype = _CMServerMessageSubtypesuserRemoved;
+  object->_userRemoved_userRemovedMessage = userRemovedMessage;
+  return object;
+}
+
 - (id)copyWithZone:(NSZone *)zone
 {
   return self;
@@ -85,10 +145,6 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
 - (NSString *)description
 {
   switch (_subtype) {
-    case _CMServerMessageSubtypesinvitation: {
-      return [NSString stringWithFormat:@"%@ - invitation \n\t invitation: %@; \n", [super description], _invitation_invitation];
-      break;
-    }
     case _CMServerMessageSubtypescamment: {
       return [NSString stringWithFormat:@"%@ - camment \n\t camment: %@; \n", [super description], _camment_camment];
       break;
@@ -101,12 +157,40 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
       return [NSString stringWithFormat:@"%@ - cammentDeleted \n\t cammentDeletedMessage: %@; \n", [super description], _cammentDeleted_cammentDeletedMessage];
       break;
     }
-    case _CMServerMessageSubtypesmembershipRequest: {
-      return [NSString stringWithFormat:@"%@ - membershipRequest \n\t membershipRequestMessage: %@; \n", [super description], _membershipRequest_membershipRequestMessage];
-      break;
-    }
     case _CMServerMessageSubtypesmembershipAccepted: {
       return [NSString stringWithFormat:@"%@ - membershipAccepted \n\t membershipAcceptedMessage: %@; \n", [super description], _membershipAccepted_membershipAcceptedMessage];
+      break;
+    }
+    case _CMServerMessageSubtypesuserRemoved: {
+      return [NSString stringWithFormat:@"%@ - userRemoved \n\t userRemovedMessage: %@; \n", [super description], _userRemoved_userRemovedMessage];
+      break;
+    }
+    case _CMServerMessageSubtypescammentDelivered: {
+      return [NSString stringWithFormat:@"%@ - cammentDelivered \n\t cammentDelivered: %@; \n", [super description], _cammentDelivered_cammentDelivered];
+      break;
+    }
+    case _CMServerMessageSubtypesad: {
+      return [NSString stringWithFormat:@"%@ - ad \n\t adBanner: %@; \n", [super description], _ad_adBanner];
+      break;
+    }
+    case _CMServerMessageSubtypesuserGroupStatusChanged: {
+      return [NSString stringWithFormat:@"%@ - userGroupStatusChanged \n\t userGroupStatusChangedMessage: %@; \n", [super description], _userGroupStatusChanged_userGroupStatusChangedMessage];
+      break;
+    }
+    case _CMServerMessageSubtypesplayerState: {
+      return [NSString stringWithFormat:@"%@ - playerState \n\t message: %@; \n", [super description], _playerState_message];
+      break;
+    }
+    case _CMServerMessageSubtypesneededPlayerState: {
+      return [NSString stringWithFormat:@"%@ - neededPlayerState \n\t message: %@; \n", [super description], _neededPlayerState_message];
+      break;
+    }
+    case _CMServerMessageSubtypesnewGroupHost: {
+      return [NSString stringWithFormat:@"%@ - newGroupHost \n\t message: %@; \n", [super description], _newGroupHost_message];
+      break;
+    }
+    case _CMServerMessageSubtypesonlineStatusChanged: {
+      return [NSString stringWithFormat:@"%@ - onlineStatusChanged \n\t message: %@; \n", [super description], _onlineStatusChanged_message];
       break;
     }
   }
@@ -114,9 +198,9 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
 
 - (NSUInteger)hash
 {
-  NSUInteger subhashes[] = {_subtype, [_invitation_invitation hash], [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash], [_membershipRequest_membershipRequestMessage hash], [_membershipAccepted_membershipAcceptedMessage hash]};
+  NSUInteger subhashes[] = {_subtype, [_camment_camment hash], [_userJoined_userJoinedMessage hash], [_cammentDeleted_cammentDeletedMessage hash], [_membershipAccepted_membershipAcceptedMessage hash], [_userRemoved_userRemovedMessage hash], [_cammentDelivered_cammentDelivered hash], [_ad_adBanner hash], [_userGroupStatusChanged_userGroupStatusChangedMessage hash], [_playerState_message hash], [_neededPlayerState_message hash], [_newGroupHost_message hash], [_onlineStatusChanged_message hash]};
   NSUInteger result = subhashes[0];
-  for (int ii = 1; ii < 7; ++ii) {
+  for (int ii = 1; ii < 13; ++ii) {
     unsigned long long base = (((unsigned long long)result) << 32 | subhashes[ii]);
     base = (~base) + (base << 18);
     base ^= (base >> 31);
@@ -138,21 +222,23 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
   }
   return
     _subtype == object->_subtype &&
-    (_invitation_invitation == object->_invitation_invitation ? YES : [_invitation_invitation isEqual:object->_invitation_invitation]) &&
-    (_camment_camment == object->_camment_camment ? YES : [_camment_camment isEqual:object->_camment_camment]) &&
+    (_onlineStatusChanged_message == object->_onlineStatusChanged_message ? YES : [_onlineStatusChanged_message isEqual:object->_onlineStatusChanged_message]) &&
     (_userJoined_userJoinedMessage == object->_userJoined_userJoinedMessage ? YES : [_userJoined_userJoinedMessage isEqual:object->_userJoined_userJoinedMessage]) &&
     (_cammentDeleted_cammentDeletedMessage == object->_cammentDeleted_cammentDeletedMessage ? YES : [_cammentDeleted_cammentDeletedMessage isEqual:object->_cammentDeleted_cammentDeletedMessage]) &&
-    (_membershipRequest_membershipRequestMessage == object->_membershipRequest_membershipRequestMessage ? YES : [_membershipRequest_membershipRequestMessage isEqual:object->_membershipRequest_membershipRequestMessage]) &&
-    (_membershipAccepted_membershipAcceptedMessage == object->_membershipAccepted_membershipAcceptedMessage ? YES : [_membershipAccepted_membershipAcceptedMessage isEqual:object->_membershipAccepted_membershipAcceptedMessage]);
+    (_membershipAccepted_membershipAcceptedMessage == object->_membershipAccepted_membershipAcceptedMessage ? YES : [_membershipAccepted_membershipAcceptedMessage isEqual:object->_membershipAccepted_membershipAcceptedMessage]) &&
+    (_userRemoved_userRemovedMessage == object->_userRemoved_userRemovedMessage ? YES : [_userRemoved_userRemovedMessage isEqual:object->_userRemoved_userRemovedMessage]) &&
+    (_camment_camment == object->_camment_camment ? YES : [_camment_camment isEqual:object->_camment_camment]) &&
+    (_ad_adBanner == object->_ad_adBanner ? YES : [_ad_adBanner isEqual:object->_ad_adBanner]) &&
+    (_userGroupStatusChanged_userGroupStatusChangedMessage == object->_userGroupStatusChanged_userGroupStatusChangedMessage ? YES : [_userGroupStatusChanged_userGroupStatusChangedMessage isEqual:object->_userGroupStatusChanged_userGroupStatusChangedMessage]) &&
+    (_playerState_message == object->_playerState_message ? YES : [_playerState_message isEqual:object->_playerState_message]) &&
+    (_neededPlayerState_message == object->_neededPlayerState_message ? YES : [_neededPlayerState_message isEqual:object->_neededPlayerState_message]) &&
+    (_newGroupHost_message == object->_newGroupHost_message ? YES : [_newGroupHost_message isEqual:object->_newGroupHost_message]) &&
+    (_cammentDelivered_cammentDelivered == object->_cammentDelivered_cammentDelivered ? YES : [_cammentDelivered_cammentDelivered isEqual:object->_cammentDelivered_cammentDelivered]);
 }
 
-- (void)matchInvitation:(CMServerMessageInvitationMatchHandler)invitationMatchHandler camment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipRequest:(CMServerMessageMembershipRequestMatchHandler)membershipRequestMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler
+- (void)matchCamment:(CMServerMessageCammentMatchHandler)cammentMatchHandler userJoined:(CMServerMessageUserJoinedMatchHandler)userJoinedMatchHandler cammentDeleted:(CMServerMessageCammentDeletedMatchHandler)cammentDeletedMatchHandler membershipAccepted:(CMServerMessageMembershipAcceptedMatchHandler)membershipAcceptedMatchHandler userRemoved:(CMServerMessageUserRemovedMatchHandler)userRemovedMatchHandler cammentDelivered:(CMServerMessageCammentDeliveredMatchHandler)cammentDeliveredMatchHandler ad:(CMServerMessageAdMatchHandler)adMatchHandler userGroupStatusChanged:(CMServerMessageUserGroupStatusChangedMatchHandler)userGroupStatusChangedMatchHandler playerState:(CMServerMessagePlayerStateMatchHandler)playerStateMatchHandler neededPlayerState:(CMServerMessageNeededPlayerStateMatchHandler)neededPlayerStateMatchHandler newGroupHost:(CMServerMessageNewGroupHostMatchHandler)newGroupHostMatchHandler onlineStatusChanged:(CMServerMessageOnlineStatusChangedMatchHandler)onlineStatusChangedMatchHandler
 {
   switch (_subtype) {
-    case _CMServerMessageSubtypesinvitation: {
-      invitationMatchHandler(_invitation_invitation);
-      break;
-    }
     case _CMServerMessageSubtypescamment: {
       cammentMatchHandler(_camment_camment);
       break;
@@ -165,12 +251,40 @@ typedef NS_ENUM(NSUInteger, _CMServerMessageSubtypes) {
       cammentDeletedMatchHandler(_cammentDeleted_cammentDeletedMessage);
       break;
     }
-    case _CMServerMessageSubtypesmembershipRequest: {
-      membershipRequestMatchHandler(_membershipRequest_membershipRequestMessage);
-      break;
-    }
     case _CMServerMessageSubtypesmembershipAccepted: {
       membershipAcceptedMatchHandler(_membershipAccepted_membershipAcceptedMessage);
+      break;
+    }
+    case _CMServerMessageSubtypesuserRemoved: {
+      userRemovedMatchHandler(_userRemoved_userRemovedMessage);
+      break;
+    }
+    case _CMServerMessageSubtypescammentDelivered: {
+      cammentDeliveredMatchHandler(_cammentDelivered_cammentDelivered);
+      break;
+    }
+    case _CMServerMessageSubtypesad: {
+      adMatchHandler(_ad_adBanner);
+      break;
+    }
+    case _CMServerMessageSubtypesuserGroupStatusChanged: {
+      userGroupStatusChangedMatchHandler(_userGroupStatusChanged_userGroupStatusChangedMessage);
+      break;
+    }
+    case _CMServerMessageSubtypesplayerState: {
+      playerStateMatchHandler(_playerState_message);
+      break;
+    }
+    case _CMServerMessageSubtypesneededPlayerState: {
+      neededPlayerStateMatchHandler(_neededPlayerState_message);
+      break;
+    }
+    case _CMServerMessageSubtypesnewGroupHost: {
+      newGroupHostMatchHandler(_newGroupHost_message);
+      break;
+    }
+    case _CMServerMessageSubtypesonlineStatusChanged: {
+      onlineStatusChangedMatchHandler(_onlineStatusChanged_message);
       break;
     }
   }

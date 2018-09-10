@@ -12,6 +12,11 @@
 @interface CMCammentNode: ASDisplayNode
 
 @property(nonatomic, copy) CMCamment *camment;
+@property(nonatomic, strong) ASVideoNode *videoPlayerNode;
+@property(nonatomic, strong) ASImageNode *playIconImageNode;
+@property(nonatomic, copy) dispatch_block_t onStoppedPlaying;
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithCamment:(CMCamment *)camment;
 - (void)playCamment;

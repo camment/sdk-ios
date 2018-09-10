@@ -6,10 +6,30 @@
 #import <AWSCore/AWSCore.h>
 #import <AWSMobileAnalytics/AWSMobileAnalytics.h>
 #import "CMAnalytics.h"
+#import "Mixpanel.h"
+#import "MixpanelPrivate.h"
 
+NSString *kAnalyticsEventAppStart = @"App Start";
+NSString *kAnalyticsEventShowsScreenList = @"Shows List Screen";
+NSString *kAnalyticsEventShowScreen = @"Show Screen";
+NSString *kAnalyticsEventInvite = @"Invite to Group";
+NSString *kAnalyticsEventOpenDeeplink = @"Open Deeplink";
+NSString *kAnalyticsEventJoinGroup = @"Join Group";
+NSString *kAnalyticsEventCreateGroup = @"Create Group";
+NSString *kAnalyticsEventRemovedFromGroup = @"Removed From Group";
+NSString *kAnalyticsEventAcceptJoinRequest = @"Accept Join Request";
+NSString *kAnalyticsEventDeclineJoinRequest = @"Decline Join Request";
+NSString *kAnalyticsEventFbSignin = @"FB SignIn";
+NSString *kAnalyticsEventCammentRecord = @"Record Camment";
+NSString *kAnalyticsEventCammentPlay = @"Play Camment";
+NSString *kAnalyticsEventCammentDelete = @"Delete Camment";
+NSString *kAnalyticsEventOnboardingStart = @"Onboarding Start";
+NSString *kAnalyticsEventOnboardingEnd = @"Onboarding End";
+NSString *kAnalyticsEventOnboardingSkip = @"Onboarding Skip";
 
 @interface CMAnalytics ()
 @property(nonatomic, strong) AWSMobileAnalytics *analytics;
+@property(nonatomic, strong) Mixpanel *mixpanel;
 @end
 
 @implementation CMAnalytics
@@ -39,5 +59,19 @@
             mobileAnalyticsForAppId: @"ea4151c5b77046bfb7213de5d02f514f" 
                       configuration: analyticsConfiguration];
 }
+
+- (void)configureMixpanelAnalytics {
+    self.mixpanel = [Mixpanel sharedInstanceWithToken:@"6231cfc8ae03c78928c045c7cb9853b3"];
+}
+
+- (void)setMixpanelID:(NSString *)id {
+    [self.mixpanel createAlias:id forDistinctID:self.mixpanel.distinctId];
+    [self.mixpanel identify:id];
+}
+
+- (void)trackMixpanelEvent:(NSString *)event {
+    [self.mixpanel track:event];
+}
+
 
 @end

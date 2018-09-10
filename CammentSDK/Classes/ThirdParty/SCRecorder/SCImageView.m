@@ -121,7 +121,7 @@
             case SCContextTypeCoreGraphics:
                 break;
             case SCContextTypeEAGL:
-                _GLKView = [[GLKView alloc] initWithFrame:self.bounds context:context.EAGLContext];
+                _GLKView = [[GLKView alloc] initWithFrame:CGRectMake(0, 0, 90, 90) context:context.EAGLContext];
                 _GLKView.contentScaleFactor = self.contentScaleFactor;
                 _GLKView.delegate = self;
                 [self insertSubview:_GLKView atIndex:0];
@@ -246,6 +246,14 @@
 }
 
 - (void)setImageBySampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    if (self.GLKView.window == nil
+        || self.GLKView.bounds.size.height == 0
+        || self.GLKView.bounds.size.width == 0
+        || self.bounds.size.height == 0
+        || self.bounds.size.width == 0)
+    {
+        return;
+    }
     _sampleBufferHolder.sampleBuffer = sampleBuffer;
     
     [self setNeedsDisplay];

@@ -5,11 +5,13 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMAlignableCell.h"
 
 
 @class CMCammentNode;
 @class CMCamment;
 @class CMCammentCell;
+@class CMCammentCellDisplayingContext;
 
 @protocol CMCammentCellDelegate<NSObject>
 
@@ -17,13 +19,15 @@
 
 @end
 
-@interface CMCammentCell : ASCellNode
+@interface CMCammentCell : ASCellNode<CMAlignableCell>
 
 @property (nonatomic, strong) CMCammentNode *cammentNode;
 @property (nonatomic, assign) BOOL expanded;
 @property (nonatomic, weak) id<CMCammentCellDelegate> delegate;
 
-@property(nonatomic, strong, readonly) CMCamment *camment;
+@property(nonatomic, strong, readonly) CMCammentCellDisplayingContext *displayingContext;
 
-- (instancetype)initWithCamment:(CMCamment *)camment;
+- (instancetype)initWithDisplayContext:(CMCammentCellDisplayingContext *)context;
+
+- (void)updateWithDisplayingContext:(CMCammentCellDisplayingContext *)context;
 @end

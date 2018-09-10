@@ -12,6 +12,8 @@
 #import "CMStore.h"
 #import "FBTweakViewController.h"
 #import "FBTweakStore.h"
+#import "CammentSDK.h"
+#import "CMAnalytics.h"
 
 @interface CMShowsListViewController () <ASCollectionDelegate, FBTweakViewControllerDelegate>
 
@@ -30,7 +32,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
 #ifdef INTERNALBUILD
     UIBarButtonItem *tweaksButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit
                                                                             target:self
@@ -44,27 +45,27 @@
                                                                             action:@selector(showPasscodeAlert)];
     self.navigationItem.rightBarButtonItem = passCodeButton;
     
-    [[[RACSignal combineLatest:@[
-                                 RACObserve([CMStore instance], isConnected),
-                                 RACObserve([CMStore instance], isOfflineMode)
-                                 ]] deliverOnMainThread] subscribeNext:^(RACTuple *tuple)
+    [[RACObserve([CMStore instance], isOfflineMode) deliverOnMainThread] subscribeNext:^(NSNumber *isOffline)
     {
-        NSNumber *isConnected = tuple.first;
-        NSNumber *isOffline = tuple.second;
-        
         if ([isOffline boolValue]) {
             self.title = @"Offline";
-        } else if (![isConnected boolValue]) {
-            self.title = @"...Connecting";
         } else {
             self.title = @"Online";
         }
     }];
+    [self.node.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    [self.navigationController setNavigationBarHidden:YES animated:NO];
     [self.presenter setupView];
+}
+
+- (void)refresh {
+    [self.presenter viewWantsRefreshShowList];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [CammentSDK instance].sdkUIDelegate = self;
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventShowsScreenList];
 }
 
 - (void)setCurrentBroadcasterPasscode:(NSString *)passcode {
@@ -75,24 +76,17 @@
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     [hud setMode:MBProgressHUDModeIndeterminate];
     [hud setAnimationType:MBProgressHUDAnimationFade];
+    [self.node.refreshControl beginRefreshing];
 }
 
 - (void)hideLoadingIndicator {
     [MBProgressHUD hideHUDForView:self.view animated:NO];
+    [self.node.refreshControl endRefreshing];
 }
-
 
 - (void)setCammentsBlockNodeDelegate:(id <CMShowsListNodeDelegate>)delegate {
     [self.node setShowsListDelegate:delegate];
-    [delegate setItemCollectionDisplayNode:self.node];
-}
-
-- (BOOL)shouldAutorotate {
-    return NO;
-}
-
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
+    [delegate setItemCollectionDisplayNode:self.node.listNode];
 }
 
 - (void)showTweaks {
@@ -123,8 +117,19 @@
     [self presentViewController:alertViewController animated:YES completion:nil];
 }
 
+
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return UIStatusBarStyleDefault;
+}
+
+- (void)cammentSDKWantsPresentViewController:(UIViewController *_Nonnull)viewController {
+    if (self.presentedViewController) {
+        [self.presentedViewController dismissViewControllerAnimated:YES completion:^{
+            [self presentViewController:viewController animated:YES completion:^{}];
+        }];
+    } else {
+        [self presentViewController:viewController animated:YES completion:^{}];
+    }
 }
 
 @end

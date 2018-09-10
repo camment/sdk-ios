@@ -10,16 +10,26 @@
 #import "CMShowsListNode.h"
 
 @interface CMShowsListNode ()
+
+@property(nonatomic, strong) ASDisplayNode *statusBarNode;
+
 @end
 
 @implementation CMShowsListNode
 
 - (instancetype)init {
-    UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
-    layout.minimumLineSpacing = 4.0f;
-    layout.minimumInteritemSpacing = 4.0f;
-    self = [super initWithCollectionViewLayout:layout];
+
+    self = [super init];
+
     if (self) {
+        UICollectionViewFlowLayout *layout = [UICollectionViewFlowLayout new];
+        layout.minimumLineSpacing = 30.0f;
+        layout.minimumInteritemSpacing = 30.0f;
+        self.listNode = [[ASCollectionNode alloc] initWithCollectionViewLayout:layout];
+
+        self.statusBarNode = [ASDisplayNode new];
+        self.statusBarNode.backgroundColor = [[UIColor whiteColor] colorWithAlphaComponent:1];
+
         self.backgroundColor = [UIColor whiteColor];
         self.automaticallyManagesSubnodes = YES;
     }
@@ -29,13 +39,26 @@
 
 - (void)didLoad {
     [super didLoad];
-    self.view.alwaysBounceVertical = YES;
+    self.listNode.view.alwaysBounceVertical = YES;
+
+    self.refreshControl = [[UIRefreshControl alloc] init];
+    [self.listNode.view addSubview:self.refreshControl];
 }
 
 - (void)setShowsListDelegate:(id <CMShowsListNodeDelegate>)delegate {
-    self.delegate = delegate;
-    self.dataSource = delegate;
+    self.listNode.delegate = delegate;
+    self.listNode.dataSource = delegate;
 }
 
+- (ASLayoutSpec *)layoutSpecThatFits:(ASSizeRange)constrainedSize {
+    CGSize statusBarSize = [UIApplication sharedApplication].statusBarFrame.size;
+    CGFloat statusBarHeight = statusBarSize.height;
+
+    _statusBarNode.style.height = ASDimensionMake(statusBarHeight);
+    return [ASOverlayLayoutSpec overlayLayoutSpecWithChild:_listNode
+                                                   overlay:[ASInsetLayoutSpec
+                                                           insetLayoutSpecWithInsets:UIEdgeInsetsMake(0, 0, INFINITY, 0)
+                                                                               child:_statusBarNode]];
+}
 
 @end

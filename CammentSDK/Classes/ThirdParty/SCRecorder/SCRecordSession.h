@@ -128,7 +128,7 @@ extern NSString *__nonnull const SCRecordSessionDocumentDirectory;
  within this block will ensure that you are the only one who has
  access to any modification on this SCRecordSession.
  */
-- (void)dispatchSyncOnSessionQueue:(void(^__nonnull)())block;
+- (void)dispatchSyncOnSessionQueue:(void(^__nonnull)(void))block;
 
 //////////////////////
 /////// SEGMENTS
@@ -175,7 +175,7 @@ extern NSString *__nonnull const SCRecordSessionDocumentDirectory;
  If you don't want a segment to be automatically added when calling this method,
  you should remove the SCRecordSession from the SCRecorder
  */
-- (void)cancelSession:(void(^ __nullable)())completionHandler;
+- (void)cancelSession:(void(^ __nullable)(void))completionHandler;
 
 /**
  Merge the recorded record segments using the given AVAssetExportSessionPreset.

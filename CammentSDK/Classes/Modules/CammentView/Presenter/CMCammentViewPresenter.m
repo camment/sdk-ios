@@ -7,87 +7,100 @@
 //
 
 #import <ReactiveObjC/ReactiveObjC.h>
-#import "FBSDKAccessToken.h"
-#import <DateTools/DateTools.h>
 #import "CMCammentViewPresenter.h"
 #import "CMCammentViewWireframe.h"
 #import "CMInvitationWireframe.h"
 #import "CMPresentationInstructionOutput.h"
 #import "CMPresentationPlayerInteractor.h"
-#import "CMCammentsBlockPresenter.h"
 #import "CMShow.h"
 #import "CMStore.h"
-#import "CMCammentRecorderInteractorInput.h"
 #import "CMPresentationState.h"
-#import "CMCammentsLoaderInteractorInput.h"
 #import "FBTweakStore.h"
 #import "FBTweakCategory.h"
 #import "FBTweakCollection.h"
-#import "FBTweak.h"
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
 #import "CMCammentUploader.h"
-#import "CMAPICammentInRequest.h"
-#import "CMAPIDevcammentClient.h"
-#import "CMAuthInteractor.h"
 #import "CammentSDK.h"
 #import "CMCammentBuilder.h"
-#import "CMShowMetadata.h"
 #import "CMUserJoinedMessage.h"
 #import "CMCammentDeletedMessage.h"
-#import "RACSignal+SignalHelpers.h"
 #import "CMCammentCell.h"
 #import "CMBotRegistry.h"
+#import "CMAnalytics.h"
+#import "CMErrorWireframe.h"
+#import "CMCammentsBlockPresenterInput.h"
+#import "CMUserSessionController.h"
+#import "CMCammentCellDisplayingContext.h"
+#import "CMAdsDemoBot.h"
+#import "NSArray+RacSequence.h"
+#import "CMVideoSyncInteractor.h"
+#import "CMPresentationPlayerBot.h"
+#import "CMTimestampPresentationInstruction.h"
+#import <TBStateMachine/TBSMStateMachine.h>
+#import <TBStateMachine/TBSMDebugger.h>
 
-@interface CMCammentViewPresenter () <CMPresentationInstructionOutput, CMAuthInteractorOutput, CMCammentsBlockPresenterOutput, CMInvitationInteractorOutput>
+@interface CMCammentViewPresenter () <CMPresentationInstructionOutput>
 
 @property(nonatomic, strong) CMPresentationPlayerInteractor *presentationPlayerInteractor;
-@property(nonatomic, strong) CMAuthInteractor *authInteractor;
-@property(nonatomic, strong) CMInvitationInteractor *invitationInteractor;
-@property(nonatomic, strong) CMCammentsBlockPresenter *cammentsBlockNodePresenter;
-@property(nonatomic, strong) CMShowMetadata *show;
-@property(nonatomic, strong) CMUsersGroup *usersGroup;
+@property(nonatomic, strong) id <CMInvitationInteractorInput> invitationInteractor;
+@property(nonatomic, strong) id <CMCammentsBlockPresenterInput> cammentsBlockNodePresenter;
 @property(nonatomic, weak) RACDisposable *willStartRecordSignal;
-
-@property(nonatomic, assign) BOOL isOnboardingRunning;
-@property(nonatomic, assign) CMOnboardingAlertMaskType completedOnboardingSteps;
-@property(nonatomic, assign) CMOnboardingAlertType currentOnboardingStep;
 
 @property(nonatomic) BOOL isCameraSessionConfigured;
 @property(nonatomic) BOOL onboardingWasStarted;
 
 @property(nonatomic) CMBotRegistry *botRegistry;
+@property(nonatomic, strong) TBSMStateMachine *onboardingStateMachine;
+@property(nonatomic) BOOL canLoadMoreCamments;
+@property(nonatomic, strong) ASBatchContext *cammentBatchContext;
 @end
 
 @implementation CMCammentViewPresenter
 
-- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata {
+- (instancetype)init {
+    @throw [NSException exceptionWithName:NSInternalInconsistencyException
+                                   reason:@"`- init` is not a valid initializer. Use `- initWithShowMetadata:(CMShowMetadata *)metadata\n"
+                                           "                      authInteractor:(id <CMAuthInteractorInput>)authInteractor\n"
+                                           "                invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor\n"
+                                           "              cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter` instead."
+                                 userInfo:nil];
+    return nil;
+}
+
+- (void)dealloc {
+    [[CammentSDK instance] leaveCurrentChatGroup];
+}
+
+- (instancetype)initWithShowMetadata:(CMShowMetadata *)metadata
+               userSessionController:(CMUserSessionController *)userSessionController
+                invitationInteractor:(id <CMInvitationInteractorInput>)invitationInteractor
+              cammentsBlockPresenter:(id <CMCammentsBlockPresenterInput>)cammentsBlockPresenter {
     self = [super init];
 
     if (self) {
-        self.show = metadata;
-        self.cammentsBlockNodePresenter = [CMCammentsBlockPresenter new];
-        self.cammentsBlockNodePresenter.output = self;
+        self.cammentsBlockNodePresenter = cammentsBlockPresenter;
         self.presentationPlayerInteractor = [CMPresentationPlayerInteractor new];
-
-        self.authInteractor = [CMAuthInteractor new];
-        self.authInteractor.output = self;
-
-        self.invitationInteractor = [CMInvitationInteractor new];
-        self.invitationInteractor.output = self;
+        self.userSessionController = userSessionController;
+        self.invitationInteractor = invitationInteractor;
 
         self.presentationPlayerInteractor.instructionOutput = self;
-        self.usersGroup = [CMStore instance].activeGroup;
-        self.completedOnboardingSteps = CMOnboardingAlertMaskNone;
-        self.currentOnboardingStep = CMOnboardingAlertNone;
 
         self.botRegistry = [CMBotRegistry new];
+        [self.botRegistry addBot:[CMAdsDemoBot new]];
+        [self.botRegistry addBot:[CMPresentationPlayerBot new]];
         [self.botRegistry updateBotsOutputInterface:self];
 
+        [self setupOnboardingStateMachine];
+        
+        __weak typeof(self) weakSelf = self;
         @weakify(self);
-        [[[RACObserve([CMStore instance], activeGroup) takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(CMUsersGroup *group) {
+        [[[[[CMStore instance] fetchUpdatesSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
             @strongify(self);
-            self.usersGroup = group;
+            if (shouldReload.boolValue) {
+                [self updateCammentsAfterConnectionHasRestored];
+                [[CMVideoSyncInteractor new] requestNewShowTimestampIfNeeded:[CMStore instance].activeGroup.uuid];
+            }
         }];
 
         [[[[[CMStore instance] reloadActiveGroupSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
@@ -97,34 +110,49 @@
             }
         }];
 
+        [[[[[CMStore instance] inviteFriendsActionSubject] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+            @strongify(self);
+            [self inviteFriendsAction];
+        }];
+
+        [[[[[CMStore instance] startTutorial] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *shouldReload) {
+            @strongify(self);
+            [self sendOnboardingEvent:CMOnboardingEvent.Started];
+        }];
+
         [[[RACObserve([CMStore instance], playingCammentId)
                 takeUntil:self.rac_willDeallocSignal]
                 deliverOnMainThread]
-        subscribeNext:^(NSString *nextId) {
-            @strongify(self);
-            [self playCamment:nextId];
-            if (self.isOnboardingRunning) {
-                if ([nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
-                    [self completeActionForOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
-                } else {
-                    [self.output hideOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
-                }
+                subscribeNext:^(NSString *nextId) {
+                    @strongify(self);
+                    [self playCamment:nextId];
+                    if (![nextId isEqualToString:kCMStoreCammentIdIfNotPlaying]) {
+                        [self sendOnboardingEvent:CMOnboardingEvent.CammentPlayed];
+                    }
 
-                if (self.currentOnboardingStep == CMOnboardingAlertSwipeLeftToHideCammentsTooltip) {
-                    [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
-                }
-            }
-        }];
+                }];
 
-        __weak typeof(self) weakSelf = self;
-        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:weakSelf.rac_willDeallocSignal] filter:^BOOL(NSNumber *state) {
-            return state.integerValue != CMCammentRecordingStateNotRecording;
-        }] flattenMap:^RACSignal *(NSNumber *state) {
+        [[[[RACObserve([CMStore instance], cammentRecordingState) takeUntil:self.rac_willDeallocSignal]
+                filter:^BOOL(NSNumber *state) {
+                    switch ((CMCammentRecordingState) state.integerValue) {
+                        case CMCammentRecordingStateNotRecording:
+                            break;
+                        case CMCammentRecordingStateRecording:
+                            break;
+                        case CMCammentRecordingStateFinished:
+                            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentRecord];
+                            break;
+                        case CMCammentRecordingStateCancelled:
+                            break;
+                    }
+                    return state.integerValue != CMCammentRecordingStateNotRecording;
+                }] flattenMap:^RACSignal *(NSNumber *state) {
 
             if (!weakSelf) {return [RACSignal empty];}
             CMCammentRecordingState cammentRecordingState = (CMCammentRecordingState) state.integerValue;
 
             if (cammentRecordingState == CMCammentRecordingStateFinished) {
+                [weakSelf.willStartRecordSignal dispose];
                 [weakSelf.recorderInteractor stopRecording];
                 return [RACSignal empty];
             }
@@ -145,7 +173,7 @@
                 [weakSelf.output askForSetupPermissions];
                 return;
             }
-            
+
             [[CMStore instance] setPlayingCammentId:kCMStoreCammentIdIfNotPlaying];
             weakSelf.willStartRecordSignal = [[[[RACSignal createSignal:^RACDisposable *(id <RACSubscriber> subscriber) {
                 [subscriber sendCompleted];
@@ -155,20 +183,187 @@
             }];
         }];
 
-        [[[RACSignal combineLatest:@[
-                RACObserve(self.cammentsBlockNodePresenter, items),
-                RACObserve([CMStore instance], currentShowTimeInterval)
-        ]] takeUntil:self.rac_willDeallocSignal] subscribeNext:^(RACTuple *tuple) {
+        [[[[[CMStore instance] cleanUpSignal] takeUntil:self.rac_willDeallocSignal] deliverOnMainThread] subscribeNext:^(NSNumber *cleanUp) {
             @strongify(self);
-            if (!self) {return;}
-            CMPresentationState *state = [CMPresentationState new];
-            state.items = tuple.first;
-            state.timestamp = [tuple.second unsignedIntegerValue];
-            [self.presentationPlayerInteractor update:state];
+            [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
         }];
+
+        [[[RACObserve([CMStore instance], showTimestamp) takeUntil:self.rac_willDeallocSignal] sample:[RACSignal interval:60 onScheduler:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]]
+                subscribeNext:^(NSNumber *timestamp) {
+                    @strongify(self);
+                    NSInteger timeFrom = timestamp.integerValue;
+                    [self fetchCammentsFrom:@(timeFrom).stringValue to:@(timeFrom + 60).stringValue];
+                }];
+
+        [[[RACObserve([CMStore instance], showTimestamp) takeUntil:self.rac_willDeallocSignal] sample:[RACSignal interval:1 onScheduler:[RACScheduler schedulerWithPriority:RACSchedulerPriorityBackground]]]
+                subscribeNext:^(NSNumber *timestamp) {
+                    @strongify(self);
+                    CMPresentationState *state = [CMPresentationState new];
+                    state.items = self.cammentsBlockNodePresenter.items;
+                    state.timestamp = [timestamp unsignedIntegerValue];
+                    [self.presentationPlayerInteractor update:state];
+                }];
+
+        [self.rac_willDeallocSignal subscribeCompleted:^{
+            [CMStore instance].lastTimestampUploaded = nil;
+            [CMStore instance].showTimestamp = 0;
+        }];
+
     }
 
     return self;
+}
+
+- (void)fetchCammentsFrom:(NSString *)from to:(NSString *)to {
+    [self.loaderInteractor fetchCammentsFrom:from to:to groupUuid:[CMStore instance].activeGroup.uuid];
+}
+
+- (void)setupOnboardingStateMachine {
+
+    TBSMState *wouldYouLikeToChatAlert = [TBSMState stateWithName:CMOnboardingState.WouldYouLikeToChatAlert];
+    TBSMState *tapAndHoldToRecordCamment = [TBSMState stateWithName:CMOnboardingState.TapAndHoldToRecordCamment];
+    TBSMState *swipeLeftToHideCamments = [TBSMState stateWithName:CMOnboardingState.SwipeLeftToHideCamments];
+    TBSMState *swipeRightToShowCamments = [TBSMState stateWithName:CMOnboardingState.SwipeRightToShowCamments];
+    TBSMState *pullRightToInviteFriends = [TBSMState stateWithName:CMOnboardingState.PullRightToInviteFriends];
+    TBSMState *tapAndHoldToDeleteCamment = [TBSMState stateWithName:CMOnboardingState.TapAndHoldToDeleteCamment];
+    TBSMState *tapToPlayCamment = [TBSMState stateWithName:CMOnboardingState.TapToPlayCamment];
+    TBSMState *postponedReminder = [TBSMState stateWithName:CMOnboardingState.PostponedReminder];
+    TBSMState *skippedReminder = [TBSMState stateWithName:CMOnboardingState.SkippedReminder];
+    TBSMState *onboardingFinished = [TBSMState stateWithName:CMOnboardingState.Finished];
+
+    [@[
+            tapAndHoldToRecordCamment,
+            swipeLeftToHideCamments,
+            swipeRightToShowCamments,
+            pullRightToInviteFriends,
+            tapAndHoldToDeleteCamment,
+            tapToPlayCamment,
+    ] map:^TBSMState *(TBSMState *state) {
+
+        [state addHandlerForEvent:CMOnboardingEvent.OnboardingSkipped
+                           target:skippedReminder];
+
+        return state;
+    }];
+
+    __weak typeof(self) __weakSelf = self;
+    [skippedReminder setEnterBlock:^(id data) {
+        typeof(__weakSelf) _self = __weakSelf;
+        [[CMStore instance] setIsOnboardingSkipped:YES];
+        [_self.output updateContinueTutorialButtonState];
+        [_self.output hideSkipTutorialButton:NO];
+        [_self.output showOnboardingAlert:CMOnboardingAlertSkippedOnboardingReminder];
+    }];
+
+    [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.OnboardingPostponed
+                                         target:postponedReminder
+                                           kind:TBSMTransitionExternal
+                                         action:^(id data) {
+                                             [__weakSelf.output showOnboardingAlert:CMOnboardingAlertPostponedOnboardingReminder];
+                                         }];
+
+    [postponedReminder addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
+    [skippedReminder addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
+    [wouldYouLikeToChatAlert addHandlerForEvent:CMOnboardingEvent.Started target:tapAndHoldToRecordCamment];
+
+    [tapAndHoldToRecordCamment setEnterBlock:^(id data) {
+        typeof(__weakSelf) _self = __weakSelf;
+        [[CMStore instance] setIsOnboardingSkipped:NO];
+        [_self.output setDisableHiddingCammentBlock:YES];
+        [_self.output updateContinueTutorialButtonState];
+        [_self.output closeSidebarIfOpened:^{
+            typeof(__weakSelf) _self = __weakSelf;
+            [_self.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+            [_self.output showSkipTutorialButton];
+        }];
+    }];
+
+    [tapAndHoldToRecordCamment setExitBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
+    }];
+
+    [tapAndHoldToRecordCamment addHandlerForEvent:CMOnboardingEvent.CammentRecorded
+                                         target:tapToPlayCamment
+                                           kind:TBSMTransitionExternal
+                                         action:^(id data) {
+                                             [__weakSelf.output showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
+                                         }];
+
+    [tapToPlayCamment addHandlerForEvent:CMOnboardingEvent.CammentPlayed
+                                           target:swipeLeftToHideCamments
+                                             kind:TBSMTransitionExternal
+                                           action:^(id data) {
+                                               [__weakSelf.output showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
+                                           }];
+    [tapToPlayCamment setEnterBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:YES];
+    }];
+
+    [tapToPlayCamment setExitBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
+    }];
+
+    [swipeLeftToHideCamments addHandlerForEvent:CMOnboardingEvent.CammentBlockSwipedLeft
+                                  target:swipeRightToShowCamments
+                                    kind:TBSMTransitionExternal
+                                  action:^(id data) {
+                                      [__weakSelf.output showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
+                                  }];
+
+    [swipeRightToShowCamments addHandlerForEvent:CMOnboardingEvent.CammentBlockSwipedRight
+                                         target:tapAndHoldToDeleteCamment
+                                           kind:TBSMTransitionExternal
+                                         action:^(id data) {
+                                             [__weakSelf.output showOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
+                                         }];
+
+    [tapAndHoldToDeleteCamment addHandlerForEvent:CMOnboardingEvent.CammentDeleted
+                                  target:pullRightToInviteFriends
+                                    kind:TBSMTransitionExternal
+                                  action:^(id data) {
+                                      [__weakSelf.output showOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+                                  }];
+
+    [tapAndHoldToDeleteCamment setEnterBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:YES];
+    }];
+
+    [tapAndHoldToDeleteCamment setExitBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
+    }];
+
+    [pullRightToInviteFriends addHandlerForEvent:CMOnboardingEvent.GroupInfoSidebarOpened
+                                           target:onboardingFinished
+                                             kind:TBSMTransitionExternal
+                                           action:^(id data) {
+                                               [__weakSelf.output hideOnboardingAlert:CMOnboardingAlertPullRightToInviteFriendsTooltip];
+                                               [__weakSelf.output hideSkipTutorialButton: YES];
+                                               [CMStore instance].isOnboardingFinished = YES;
+                                           }];
+
+    [pullRightToInviteFriends setEnterBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:YES];
+    }];
+
+    [pullRightToInviteFriends setExitBlock:^(id data) {
+        [__weakSelf.output setDisableHiddingCammentBlock:NO];
+    }];
+
+    self.onboardingStateMachine = [TBSMStateMachine stateMachineWithName:@"Onboarding"];
+    self.onboardingStateMachine.states = @[
+            wouldYouLikeToChatAlert,
+            tapAndHoldToRecordCamment,
+            swipeLeftToHideCamments,
+            swipeRightToShowCamments,
+            pullRightToInviteFriends,
+            tapAndHoldToDeleteCamment,
+            tapToPlayCamment,
+            postponedReminder,
+            skippedReminder,
+            onboardingFinished
+    ];
+    self.onboardingStateMachine.initialState = wouldYouLikeToChatAlert;
+    [self.onboardingStateMachine setUp:nil];
 }
 
 - (void)setupView {
@@ -176,12 +371,11 @@
     [self updateChatWithActiveGroup];
 }
 
-- (CMOnboardingAlertType)currentOnboardingStep {
-    return _currentOnboardingStep;
-}
-
 - (void)checkIfNeedForOnboarding {
-    if (![CMStore instance].isOnboardingFinished && !self.onboardingWasStarted) {
+    if (![CMStore instance].isOnboardingFinished
+            && !self.onboardingWasStarted
+            && ![CMStore instance].isOnboardingSkipped
+            && [CMStore instance].activeGroup == nil) {
         [self.output askForSetupPermissions];
     } else if (!self.isCameraSessionConfigured) {
         [self setupCameraSession];
@@ -201,14 +395,45 @@
 }
 
 - (void)runOnboarding {
-    _isOnboardingRunning = YES;
-    [self showOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
+    [self sendOnboardingEvent:CMOnboardingEvent.Started];
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingStart];
+}
+
+- (void)updateCammentsAfterConnectionHasRestored {
+    [self.loaderInteractor resetPaginationKey];
+    [self.loaderInteractor loadNextPageOfCamments:[CMStore instance].activeGroup.uuid];
+
+    NSArray *cammentsToUpload = [[self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *item) {
+        __block BOOL shouldUpload = NO;
+        [item matchCamment:^(CMCamment *camment) {
+            shouldUpload = camment.status.deliveryStatus == CMCammentDeliveryStatusNotSent;
+        } botCamment:^(CMBotCamment *botCamment) {
+
+        }];
+        return shouldUpload;
+    }] map:^id(CMCammentsBlockItem *item) {
+        __block  CMCamment *resultCamment = nil;
+        [item matchCamment:^(CMCamment *camment) {
+                    resultCamment = camment;
+                }
+                botCamment:^(CMBotCamment *botCamment) {
+
+                }];
+        return resultCamment;
+    }].array;
+
+    for (CMCamment *item in cammentsToUpload) {
+        [self.interactor uploadCamment:item];
+    }
 }
 
 - (void)updateChatWithActiveGroup {
     [self.cammentsBlockNodePresenter reloadItems:@[] animated:YES];
-    [self.loaderInteractor fetchCachedCamments:self.usersGroup.uuid];
+    [self.loaderInteractor resetPaginationKey];
     [self setupPresentationInstruction];
+
+    NSInteger timeFrom = (NSInteger) [CMStore instance].showTimestamp;
+    [self fetchCammentsFrom:@(timeFrom).stringValue to:@(timeFrom + 60).stringValue];
 }
 
 - (void)updateCameraOrientation:(AVCaptureVideoOrientation)orientation {
@@ -220,7 +445,7 @@
 }
 
 - (void)setupPresentationInstruction {
-#ifdef INTERNALSDK
+#ifdef USE_INTERNAL_FEATURES
     NSString *scenario = [[[[[FBTweakStore sharedInstance] tweakCategoryWithName:@"Predefined stuff"] tweakCollectionWithName:@"Demo"] tweakWithIdentifier:@"Scenario"] currentValue] ?: @"None";
 
     id <CMPresentationBuilder> builder = nil;
@@ -243,14 +468,26 @@
         return nil;
     }] array];
 #endif
+    self.presentationPlayerInteractor.instructions = @[];
 }
 
 
-- (void)didFetchCamments:(NSArray<CMCamment *> *)camments {
-    NSArray<CMCamment *> *items = [camments.rac_sequence map:^id(CMCamment *value) {
-        return [CMCammentsBlockItem cammentWithCamment:value];
-    }].array;
-    [self.cammentsBlockNodePresenter reloadItems:items animated:YES];
+- (void)didFetchCamments:(NSArray<CMCamment *> *)camments canLoadMore:(BOOL)canLoadMore firstPage:(BOOL)isFirstPage {
+    self.canLoadMoreCamments = canLoadMore;
+
+    if (!self.presentationPlayerInteractor.instructions) {
+        self.presentationPlayerInteractor.instructions = @[];
+    }
+
+    self.presentationPlayerInteractor.instructions = [self.presentationPlayerInteractor.instructions arrayByAddingObjectsFromArray:[camments map:^id(CMCamment *item) {
+        return [[CMTimestampPresentationInstruction alloc] initWithTimestamp:item.showAt.doubleValue
+                                                                      action:[[CMDisplayCammentPresentationAction alloc]
+                                                                              initWithItem:[CMCammentsBlockItem cammentWithCamment:item]]];
+    }]];
+
+    if (self.cammentBatchContext) {
+        [self.cammentBatchContext completeBatchFetching:YES];
+    }
 }
 
 - (void)playCamment:(NSString *)cammentId {
@@ -261,28 +498,33 @@
     [_recorderInteractor connectPreviewViewToRecorder:view];
 }
 
+- (void)recorderNoticedDeniedCameraOrMicrophonePermission {
+    [CMStore instance].cammentRecordingState = CMCammentRecordingStateCancelled;
+    [self.output showAllowCameraPermissionsView];
+}
+
 - (void)recorderDidFinishAVAsset:(AVAsset *)asset uuid:(NSString *)uuid {
-    if (asset) {
-        if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
-        NSString *groupUUID = [self.usersGroup uuid];
-        CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
-        CMCamment *camment = [[[[[[cammentBuilder withUuid:uuid]
-                withShowUuid:self.show.uuid]
-                withUserGroupUuid:groupUUID]
-                withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
-                withLocalAsset:asset] build];
-        @weakify(self);
-        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
-                                            completion:^{
-                                                @strongify(self);
-                                                if (!self) { return; }
-                                                if (self.isOnboardingRunning) {
-                                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                                        [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToRecordTooltip];
-                                                    });
-                                                }
-                                            }];
-    }
+//    if (asset) {
+//        if (CMTimeGetSeconds(asset.duration) < 0.5) {return;}
+//        NSString *groupUUID = [[CMStore instance].activeGroup uuid];
+//        CMCammentBuilder *cammentBuilder = [CMCammentBuilder new];
+//        CMCamment *camment = [[[[[[[[cammentBuilder withUuid:uuid]
+//                withShowUuid:[CMStore instance].currentShowMetadata.uuid]
+//                withUserGroupUuid:groupUUID]
+//                withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
+//                withLocalAsset:asset]
+//                withShowAt:@([CMStore instance].showTimestamp)]
+//                withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
+//                                                                 isWatched:YES]]
+//                build];
+//        @weakify(self);
+//        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment]
+//                                            completion:^{
+//                                                @strongify(self);
+//                                                if (!self) { return; }
+//                                                [self sendOnboardingEvent:CMOnboardingEvent.CammentRecorded];
+//                                            }];
+//    }
 }
 
 - (void)recorderDidFinishExportingToURL:(NSURL *)url uuid:(NSString *)uuid {
@@ -290,204 +532,186 @@
     if ([CMStore instance].isOfflineMode) {
         return;
     }
-    
+
     AVAsset *asset = [AVAsset assetWithURL:url];
     if (!asset || (CMTimeGetSeconds(asset.duration) < 0.5)) {return;}
 
-    CMCamment *cammentToUpload = [[[[[[[CMCammentBuilder new] withUuid:uuid]
+    CMCamment *cammentToUpload = [[[[[[[[[CMCammentBuilder new] withUuid:uuid]
             withLocalURL:url.absoluteString]
-            withShowUuid:self.show.uuid]
-            withUserGroupUuid:self.usersGroup ? self.usersGroup.uuid : nil]
-            withUserCognitoIdentityId:[CMStore instance].cognitoUserId]
+            withShowUuid:[CMStore instance].currentShowMetadata.uuid]
+            withUserGroupUuid:[CMStore instance].activeGroup ? [CMStore instance].activeGroup.uuid : nil]
+            withUserCognitoIdentityId:self.userSessionController.user.cognitoUserId]
+            withShowAt:@([CMStore instance].showTimestamp)]
+            withStatus:[[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusNotSent
+                                                             isWatched:YES]]
             build];
+    @weakify(self);
+    [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:cammentToUpload]
+                                        completion:^{
+                                            @strongify(self);
+                                            if (!self) { return; }
+                                            [self sendOnboardingEvent:CMOnboardingEvent.CammentRecorded];
+                                        }];
     [self.interactor uploadCamment:cammentToUpload];
 }
 
 - (void)interactorDidUploadCamment:(CMCamment *)uploadedCamment {
-    NSMutableArray<CMCammentsBlockItem *> *mutableCamments = (NSMutableArray *) [self.cammentsBlockNodePresenter.items mutableCopy];
-    NSInteger index = [self.cammentsBlockNodePresenter.items indexOfObjectPassingTest:^BOOL(CMCammentsBlockItem *obj, NSUInteger idx, BOOL *_Nonnull stop) {
-        __block BOOL result = NO;
-
-        [obj matchCamment:^(CMCamment *camment) {
-            result = [camment.uuid isEqualToString:uploadedCamment.uuid];
-        }             botCamment:^(CMBotCamment *ads) {
-        }];
-
-        return result;
-    }];
-
-    if (index != NSNotFound) {
-        CMCammentsBlockItem *cammentsBlockItem = mutableCamments[(NSUInteger) index];
-        [cammentsBlockItem matchCamment:^(CMCamment *camment) {
-            mutableCamments[(NSUInteger) index] = [CMCammentsBlockItem cammentWithCamment:uploadedCamment];
-        }                           botCamment:^(CMBotCamment *ads) {
-        }];
-    }
-    self.cammentsBlockNodePresenter.items = mutableCamments.copy;
+    [self.cammentsBlockNodePresenter updateCammentData:uploadedCamment];
 }
 
 - (void)interactorFailedToUploadCamment:(CMCamment *)camment error:(NSError *)error {
     DDLogError(@"Failed to upload camment %@ with error %@", camment, error);
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
+- (void)checkIfCammentShouldBeDeleted:(CMCamment *)camment {
+    NSArray *deletedCamments = [self.cammentsBlockNodePresenter.deletedCamments.rac_sequence
+            filter:^BOOL(CMCamment *deletedCamment) {
+                return [deletedCamment.uuid isEqualToString:camment.uuid]
+                        && !deletedCamment.isDeleted;
+            }].array ?: @[];
+
+    for (CMCamment *cammentToDelete in deletedCamments) {
+        DDLogVerbose(@"Run postponed camment deletion on uuid %@", cammentToDelete.uuid);
+        [self.interactor deleteCament:cammentToDelete];
+    }
+}
+
+- (void)interactorDidDeleteCamment:(CMCamment *)camment {
+    self.cammentsBlockNodePresenter.deletedCamments = [self.cammentsBlockNodePresenter.deletedCamments.rac_sequence map:^id(CMCamment *value) {
+        if ([value.uuid isEqualToString:camment.uuid]) {
+            DDLogVerbose(@"Camment has been deleted %@", value.uuid);
+            CMCammentBuilder *builder = [[CMCammentBuilder cammentFromExistingCamment:value] withIsDeleted:YES];
+            return [builder build];
+        }
+        return value;
+    }].array;
+}
+
+- (BOOL)isCammentMarkedAsDeleted:(CMCamment *)camment {
+    NSArray *deletedCamments = [self.cammentsBlockNodePresenter.deletedCamments.rac_sequence
+            filter:^BOOL(CMCamment *deletedCamment) {
+                return [deletedCamment.uuid isEqualToString:camment.uuid];
+            }].array ?: @[];
+    return deletedCamments.count > 0;
+}
 
 - (void)didReceiveNewCamment:(CMCamment *)camment {
+
+    if ([self isCammentMarkedAsDeleted:camment]) {
+        DDLogVerbose(@"Camment has been marked as deleted %@", camment.uuid);
+        [self checkIfCammentShouldBeDeleted:camment];
+        return;
+    }
 
     NSArray *filteredItemsArray = [self.cammentsBlockNodePresenter.items.rac_sequence filter:^BOOL(CMCammentsBlockItem *value) {
         __block BOOL result = NO;
 
         [value matchCamment:^(CMCamment *mathedCamment) {
             result = [camment.uuid isEqualToString:mathedCamment.uuid];
-        }               botCamment:^(CMBotCamment *ads) {
+        }        botCamment:^(CMBotCamment *ads) {
         }];
 
         return result;
     }].array ?: @[];
 
-    BOOL isNewItem = filteredItemsArray.count == 0;
+    BOOL isNewItem = filteredItemsArray.count == 0 && ![self.cammentsBlockNodePresenter.cammentIdsInQueue containsObject:camment.uuid];
 
-    if (
-            ([camment.userGroupUuid isEqualToString:[self.usersGroup uuid]]
-                    || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID])
-                    &&
-                    isNewItem
-            ) {
-        [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment] completion:^{
-        }];
+    if ([camment.userGroupUuid isEqualToString:[[CMStore instance].activeGroup uuid]]
+            || [camment.showUuid isEqualToString:kCMPresentationBuilderUtilityAnyShowUUID]) {
+        if (isNewItem) {
+            [self.cammentsBlockNodePresenter insertNewItem:[CMCammentsBlockItem cammentWithCamment:camment] completion:^{
+            }];
+        } else {
+            [self.cammentsBlockNodePresenter updateCammentData:camment];
+        }
     }
 }
 
 - (void)didReceiveNewBotCamment:(CMBotCamment *)botCamment {
     [self.cammentsBlockNodePresenter
             insertNewItem:[CMCammentsBlockItem botCammentWithBotCamment:botCamment]
-               completion:^{}];
+               completion:^{
+               }];
 }
 
+- (void)didReceiveDeliveryConfirmation:(NSString *)cammentUuid {
+    __block CMCamment *cammentToUpdate = nil;
+    for (CMCammentsBlockItem *item in self.cammentsBlockNodePresenter.items) {
+        [item matchCamment:^(CMCamment *camment) {
+                    if ([camment.uuid isEqualToString:cammentUuid]) {
+                        cammentToUpdate = camment;
+                    }
+                }
+                botCamment:^(CMBotCamment *botCamment) {
+                }];
+        if (cammentToUpdate) {break;}
+    }
+
+    if (!cammentToUpdate) {return;}
+
+    CMCammentStatus *status = [[CMCammentStatus alloc] initWithDeliveryStatus:CMCammentDeliveryStatusDelivered
+                                                                    isWatched:cammentToUpdate.status.isWatched];
+    cammentToUpdate = [[[CMCammentBuilder cammentFromExistingCamment:cammentToUpdate]
+            withStatus:status]
+            build];
+    [self.cammentsBlockNodePresenter updateCammentData:cammentToUpdate];
+}
+
+
 - (void)inviteFriendsAction {
-    [self completeActionForOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
-    FBSDKAccessToken *token = [FBSDKAccessToken currentAccessToken];
-    [CMStore instance].isFBConnected = token != nil && [token.expirationDate laterDate:[NSDate date]];
-    if ([CMStore instance].isFBConnected) {
+    [self sendOnboardingEvent:CMOnboardingEvent.GroupInfoSidebarOpened];
+
+    if (self.userSessionController.userAuthentificationState == CMCammentUserAuthentificatedAsKnownUser) {
         [self getInvitationDeeplink];
     } else {
         [self.output showLoadingHUD];
-        [_authInteractor signInWithFacebookProvider:(id) self.output];
+        [[self.userSessionController refreshSession:YES]
+                continueWithExecutor:[AWSExecutor mainThreadExecutor]
+                           withBlock:^id(AWSTask<CMAuthStatusChangedEventContext *> *task) {
+                               if (task.error || task.result.state != CMCammentUserAuthentificatedAsKnownUser) {
+                                   [self.output hideLoadingHUD];
+                               } else {
+                                   [self inviteFriendsAction];
+                                   [self.output hideLoadingHUD];
+                               }
+                               return nil;
+                           }];
     }
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventInvite];
 }
 
 - (void)getInvitationDeeplink {
     [self.output showLoadingHUD];
-    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:self.show.uuid];
+    [self.invitationInteractor getDeeplink:[CMStore instance].activeGroup showUuid:[CMStore instance].currentShowMetadata.uuid];
 }
 
-- (void)authInteractorDidSignedIn {
-    CMCammentFacebookIdentity *fbIdentity = [CMCammentFacebookIdentity identityWithFBSDKAccessToken:[FBSDKAccessToken currentAccessToken]];
-    [[CammentSDK instance] connectUserWithIdentity:fbIdentity
-                                           success:^{
-                                               dispatch_async(dispatch_get_main_queue(), ^{
-                                                   [self.output hideLoadingHUD];
-                                                   [self inviteFriendsAction];
-                                               });
-                                           }
-                                             error:^(NSError *error) {
-                                                 dispatch_async(dispatch_get_main_queue(), ^{
-                                                     [self.output hideLoadingHUD];
-                                                 });
-                                                 NSLog(@"Error %@", error);
-                                             }];
-}
-
-- (void)authInteractorFailedToSignIn:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self.output hideLoadingHUD];
-    });
-    NSLog(@"Error %@", error);
-}
-
-- (void)showOnboardingAlert:(CMOnboardingAlertType)type {
-
-    CMOnboardingAlertMaskType maskType = (CMOnboardingAlertMaskType) (1 << type);
-    BOOL shouldDisplayAlert = YES;
-
-    switch (type) {
-        case CMOnboardingAlertNone:
-            break;
-        case CMOnboardingAlertWouldYouLikeToChatAlert:
-            break;
-        case CMOnboardingAlertWhatIsCammentTooltip:
-            break;
-        case CMOnboardingAlertTapAndHoldToRecordTooltip:
-            break;
-        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
-            shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertTapToPlayMaskCamment);
-            break;
-        case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
-            shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertSwipeLeftToHideCammentsMaskTooltip);
-            break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
-            break;
-        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
-            break;
-        case CMOnboardingAlertTapToPlayCamment:
-            shouldDisplayAlert = (self.completedOnboardingSteps & CMOnboardingAlertTapAndHoldToRecordMaskTooltip);
-            break;
-    }
-
-    if (!(self.completedOnboardingSteps & maskType) && shouldDisplayAlert) {
-        self.currentOnboardingStep = type;
-        [self.output showOnboardingAlert:type];
-    }
-}
-
-- (void)completeActionForOnboardingAlert:(CMOnboardingAlertType)type {
-    if (_currentOnboardingStep != type) {
-        return;
-    }
-
-    self.completedOnboardingSteps = self.completedOnboardingSteps | (1 << type);
-    [self.output hideOnboardingAlert:type];
-
-    switch (type) {
-        case CMOnboardingAlertNone:
-            break;
-        case CMOnboardingAlertWouldYouLikeToChatAlert:
-            break;
-        case CMOnboardingAlertWhatIsCammentTooltip:
-            break;
-        case CMOnboardingAlertTapAndHoldToRecordTooltip:
-            [self showOnboardingAlert:CMOnboardingAlertTapToPlayCamment];
-            break;
-        case CMOnboardingAlertSwipeLeftToHideCammentsTooltip:
-            [self showOnboardingAlert:CMOnboardingAlertSwipeRightToShowCammentsTooltip];
-            break;
-        case CMOnboardingAlertSwipeRightToShowCammentsTooltip:
-            [self showOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
-            break;
-        case CMOnboardingAlertSwipeDownToInviteFriendsTooltip:
-            [CMStore instance].isOnboardingFinished = YES;
-            break;
-        case CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip:
-            [CMStore instance].isOnboardingFinished = YES;
-            [self showOnboardingAlert:CMOnboardingAlertSwipeDownToInviteFriendsTooltip];
-            break;
-        case CMOnboardingAlertTapToPlayCamment:
-            [self showOnboardingAlert:CMOnboardingAlertSwipeLeftToHideCammentsTooltip];
-            break;
-    }
-}
-
-- (void)cancelActionForOnboardingAlert:(CMOnboardingAlertType)type {
-    if (_currentOnboardingStep != type) {
-        return;
-    }
+- (void)sendOnboardingEvent:(NSString *)event {
+    [self.onboardingStateMachine scheduleEvent:[TBSMEvent eventWithName:event
+                                                                   data:nil]];
 }
 
 - (void)presentCammentOptionsDialog:(CMCammentCell *)cammentCell {
 
+    if ([CMStore instance].cammentRecordingState == CMCammentRecordingStateRecording) {
+        return;
+    }
+
+    if ([self.onboardingStateMachine.currentState.name isEqualToString:CMOnboardingState.TapToPlayCamment]) {
+        return;
+    }
+
+    if (!([CMStore instance].isOnboardingFinished || [CMStore instance].isOnboardingSkipped)
+        && self.onboardingWasStarted
+        && ![self.onboardingStateMachine.currentState.name isEqualToString:CMOnboardingState.TapAndHoldToDeleteCamment]) {
+        return;
+    }
+    
     CMCammentActionsMask actions = CMCammentActionsMaskNone;
-    if ([cammentCell.camment.userCognitoIdentityId isEqualToString:[CMStore instance].cognitoUserId]
-        || [CMStore instance].cognitoUserId == nil && cammentCell.camment.userCognitoIdentityId == nil ) {
-        [self completeActionForOnboardingAlert:CMOnboardingAlertTapAndHoldToDeleteCammentsTooltip];
+    if (([cammentCell.displayingContext.camment.userCognitoIdentityId isEqualToString:self.userSessionController.user.cognitoUserId])
+            || (self.userSessionController.user.cognitoUserId == nil && cammentCell.displayingContext.camment.userCognitoIdentityId == nil))
+    {
         actions = actions | CMCammentActionsMaskDelete;
     }
     [self.output presentCammentOptionsView:cammentCell actions:actions];
@@ -495,15 +719,14 @@
 
 - (void)deleteCammentAction:(CMCamment *)camment {
     CMCammentsBlockItem *cammentsBlockItem = [CMCammentsBlockItem cammentWithCamment:camment];
+    if ([[CMStore instance].playingCammentId isEqualToString:camment.uuid]) {
+        [CMStore instance].playingCammentId = kCMStoreCammentIdIfNotPlaying;
+    }
+
     [self.cammentsBlockNodePresenter deleteItem:cammentsBlockItem];
     [self.interactor deleteCament:camment];
-}
-
-- (void)didReceiveUserJoinedMessage:(CMUserJoinedMessage *)message {
-    if ([message.userGroupUuid isEqualToString:[CMStore instance].activeGroup.uuid] &&
-            ![message.joinedUser.cognitoUserId isEqualToString:[CMStore instance].cognitoUserId]) {
-        [self.output presentUserJoinedMessage:message];
-    }
+    [self sendOnboardingEvent:CMOnboardingEvent.CammentDeleted];
+    [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentDelete];
 }
 
 - (void)didReceiveCammentDeletedMessage:(CMCammentDeletedMessage *)message {
@@ -520,25 +743,20 @@
     if (usedDeeplink) {
         [self showShareDeeplinkDialog:group.invitationLink];
     }
+
+    [[CMStore instance] setActiveGroup:group];
 }
 
 - (void)didFailToInviteUsersWithError:(NSError *)error {
-
+    [self.output hideLoadingHUD];
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
 - (void)didFailToGetInvitationLink:(NSError *)error {
     [self.output hideLoadingHUD];
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:CMLocalized(@"Ooops")]
-                                                                             message:CMLocalized(@"Couldn't get the invitation link. Check your internet connection and try again.")
-                                                                      preferredStyle:UIAlertControllerStyleAlert];
-
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-
-    }]];
-
-    [self.wireframe.parentViewController presentViewController:alertController
-                                                      animated:YES
-                                                    completion:nil];
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
 }
 
 
@@ -552,12 +770,14 @@
                                                                              message:CMLocalized(@"Invite users by sharing the invitation link via channel of your choice")
                                                                       preferredStyle:UIAlertControllerStyleAlert];
     [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction *action) {
-        NSString *textToShare = @"Hey, join our private chat!";
+        NSString *textToShare = [CMStore instance].currentShowMetadata.invitationText;
         NSURL *url = [NSURL URLWithString:link];
 
-        NSArray *objectsToShare = @[textToShare, url];
+        NSString *shareString = [NSString stringWithFormat:@"%@ %@", textToShare, url.absoluteString];
+        NSArray *objectsToShare = @[shareString];
 
-        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare applicationActivities:nil];
+        UIActivityViewController *activityVC = [[UIActivityViewController alloc] initWithActivityItems:objectsToShare
+                                                                                 applicationActivities:nil];
 
         activityVC.popoverPresentationController.sourceView = self.wireframe.parentViewController.view;
         [self.wireframe.parentViewController presentViewController:activityVC
@@ -565,13 +785,37 @@
                                                         completion:nil];
     }]];
 
-    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel") style:UIAlertActionStyleCancel handler:^(UIAlertAction *action) {
-
-    }]];
+    [alertController addAction:[UIAlertAction actionWithTitle:CMLocalized(@"cancel")
+                                                        style:UIAlertActionStyleCancel
+                                                      handler:^(UIAlertAction *action) {
+                                                      }]];
 
     [self.wireframe.parentViewController presentViewController:alertController
                                                       animated:YES
                                                     completion:nil];
+}
+
+- (void)presentationInstruction:(id <CMPresentationInstructionInterface>)instruction
+                   playVideoAds:(CMVideoAd *)videoAd
+           playStartingFromRect:(CGRect)rect {
+    [self.output playAdVideo:videoAd startingFromRect:rect];
+}
+
+- (void)didFailToLoadCamments:(NSError *)error {
+    if (self.cammentBatchContext) {
+        [self.cammentBatchContext completeBatchFetching:YES];
+    }
+
+    [[CMErrorWireframe new] presentErrorViewWithError:error
+                                     inViewController:(id) self.output];
+}
+
+- (BOOL)loaderCanLoadMoreCamments {
+    return NO;//self.canLoadMoreCamments;
+}
+
+- (void)fetchNextPageOfCamments:(ASBatchContext *)context {
+    self.cammentBatchContext = context;
 }
 
 @end

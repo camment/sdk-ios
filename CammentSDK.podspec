@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'CammentSDK'
-s.version          = '1.0.0'
+s.version          = '3.0.3'
 s.summary          = 'iOS SDK for camment.tv'
 s.platform = :ios
 
@@ -12,19 +12,20 @@ DESC
 s.homepage         = 'https://github.com/camment/sdk-ios.git'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Alexander Fedosov' => 'alex@camment.tv' }
-s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '1.0.0' }
+s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.3' }
 
-s.ios.deployment_target = '8.1'
+s.ios.deployment_target = '9'
 
-s.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
+s.default_subspec = 'Core'
 
-s.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}'
+s.subspec 'Core' do |core|
+    core.prefix_header_file = 'CammentSDK/Classes/Prefix.h'
+    core.resources = 'CammentSDK/Assets/**/*'
+    core.source_files = 'CammentSDK/Classes/**/*.{h,m,mm,cpp}', 'CammentSDK/vendor/libjpeg-turbo/include/*'
+    core.public_header_files = 'CammentSDK/Classes/**/*.{h}'
+    core.vendored_libraries   = 'CammentSDK/vendor/libjpeg-turbo/lib/libturbojpeg.a'
+end
 
-s.resource_bundles = {
-'CammentSDK' => ['CammentSDK/Assets/**/*']
-}
-
-s.public_header_files = 'CammentSDK/Classes/Public/**/*', 'CammentSDK/Classes/Internal/**/*'
 s.library = 'sqlite3', 'z'
 s.frameworks = [
   'Foundation',
@@ -40,27 +41,34 @@ s.frameworks = [
   'MessageUI',
   'AssetsLibrary',
   'CoreImage',
-  'CoreGraphics'
+  'CoreGraphics',
+  'CoreText'
 ]
 
-s.dependency  'AMPopTip', '1.5'
-s.dependency  'Texture', '2.3.4'
-s.dependency  'FLAnimatedImage'
-s.dependency  'AWSCognito'
-s.dependency  'AWSCognitoIdentityProvider'
-s.dependency  'AWSIoT'
-s.dependency  'AWSMobileAnalytics'
-s.dependency  'AWSS3'
-s.dependency  'AWSAPIGateway'
-s.dependency  'FBSDKCoreKit'
-s.dependency  'FBSDKLoginKit'
-s.dependency  'FBSDKMessengerShareKit'
-s.dependency  'ReactiveObjC'
-s.dependency  'pop'
-s.dependency  'MBProgressHUD'
-s.dependency  'Tweaks'
-s.dependency  'DateTools'
-s.dependency  'CocoaLumberjack'
-s.dependency  'GVUserDefaults'
-s.dependency  'TLIndexPathTools'
+s.dependency  'AMPopTip', '~> 1.5'
+s.dependency  'Texture', '~> 2.7'
+s.dependency  'FLAnimatedImage', '~> 1.0'
+s.dependency  'AWSCognito', '~> 2.6'
+s.dependency  'AWSCognitoIdentityProvider', '~> 2.6'
+s.dependency  'AWSIoT', '~> 2.6'
+s.dependency  'AWSMobileAnalytics', '~> 2.6'
+s.dependency  'AWSS3', '~> 2.6'
+s.dependency  'AWSAPIGateway', '~> 2.6'
+s.dependency  'ReactiveObjC', '~> 3.1'
+s.dependency  'pop', '~> 1.0'
+s.dependency  'MBProgressHUD', '~> 1.1'
+s.dependency  'Tweaks', '~> 2.2'
+s.dependency  'DateTools', '~> 2.0'
+s.dependency  'CocoaLumberjack', '~> 3.4'
+s.dependency  'GVUserDefaults', '~> 1.0'
+s.dependency  'TLIndexPathTools', '~> 0.4'
+s.dependency  'Mixpanel', '~> 3.2'
+s.dependency  'TBStateMachine', '~> 6.7'
+s.dependency  'TBStateMachine/DebugSupport'
+s.dependency  'FBSDKCoreKit', '~> 4.29'
+s.dependency  'FBSDKLoginKit', '~> 4.29'
+s.dependency  'YapDatabase', '3.1.1'
+s.dependency  'Bolts'
+s.dependency  'CammentAds'
+
 end

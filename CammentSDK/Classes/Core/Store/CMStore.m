@@ -11,12 +11,23 @@
 #import "FBTweakCollection.h"
 #import "CMPresentationBuilder.h"
 #import "CMPresentationUtility.h"
-
+#import "CMAnalytics.h"
+#import "CMGroupInfoInteractor.h"
+#import "CMUserBuilder.h"
+#import "CMAuthStatusChangedEventContext.h"
+#import "CMGroupsListInteractor.h"
+#import "CMUsersGroupBuilder.h"
+#import "NSArray+RacSequence.h"
+#import "CMCammentOverlayController.h"
+#import "CMAppConfig.h"
 
 NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
-@interface CMStore ()
+@interface CMStore () <CMGroupInfoInteractorOutput>
 @property(nonatomic, strong) FBTweak *offlineTweak;
+
+@property(nonatomic, strong) CMGroupInfoInteractor *groupInfoInteractor;
+
 @end
 
 @implementation CMStore
@@ -26,24 +37,98 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
 
     @synchronized (self) {
         if (_instance == nil) {
-            _instance = [[self alloc] init];
-            _instance.playingCammentId = kCMStoreCammentIdIfNotPlaying;
-            _instance.cammentRecordingState = CMCammentRecordingStateNotRecording;
-            _instance.isConnected = NO;
-            _instance.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
-            _instance.reloadActiveGroupSubject = [RACSubject new];
-
-            // 28 September 2017, 21:00
-            _instance.scheduledDate = [NSDate dateWithTimeIntervalSince1970:1506621600];
-            _instance.scheduledShowsPasscode = @"test";
-
-            [RACObserve(_instance, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
-                [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
-            }];
+            _instance = [CMStore new];
         }
     }
 
     return _instance;
+}
+
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+
+        self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
+        self.cammentRecordingState = CMCammentRecordingStateNotRecording;
+        self.isOnboardingFinished = [GVUserDefaults standardUserDefaults].isOnboardingFinished;
+        self.isOnboardingSkipped = [GVUserDefaults standardUserDefaults].isOnboardingSkipped;
+        self.reloadActiveGroupSubject = [RACSubject new];
+        self.inviteFriendsActionSubject = [RACSubject new];
+        self.startTutorial = [RACSubject new];
+        self.userHasJoinedSignal = [RACSubject new];
+        self.cleanUpSignal = [RACSubject new];
+        self.authentificationStatusSubject = [RACReplaySubject replaySubjectWithCapacity:1];
+        self.serverMessagesSubject = [RACSubject new];
+        self.fetchUpdatesSubject = [RACSubject new];
+        self.requestPlayerStateFromHostAppSignal = [RACSubject new];
+
+        self.groupInfoInteractor = [CMGroupInfoInteractor new];
+        self.groupInfoInteractor.output = self;
+
+        self.isOfflineMode = NO;
+        self.awsServicesConfigured = NO;
+
+        self.avoidTouchesInViews = @[];
+        @weakify(self)
+        [RACObserve(self, isOnboardingFinished) subscribeNext:^(NSNumber *value) {
+            if (value.boolValue && ![GVUserDefaults standardUserDefaults].isOnboardingFinished) {
+                [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingEnd];
+            }
+            [GVUserDefaults standardUserDefaults].isOnboardingFinished = value.boolValue;
+            [GVUserDefaults standardUserDefaults].isOnboardingSkipped = NO;
+        }];
+
+        [RACObserve(self, isOnboardingSkipped) subscribeNext:^(NSNumber *value) {
+            [GVUserDefaults standardUserDefaults].isOnboardingSkipped = value.boolValue;
+            if (value.boolValue) {
+                [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventOnboardingSkip];
+            }
+        }];
+
+        [RACObserve(self, playingCammentId) subscribeNext:^(NSString *id) {
+            if ([id isEqualToString:kCMStoreCammentIdIfNotPlaying]) { return; }
+            [[CMAnalytics instance] trackMixpanelEvent:kAnalyticsEventCammentPlay];
+        }];
+
+        RACSignal *activeGroupUpdateSignal = [[[RACObserve(self, activeGroup)
+                combinePreviousWithStart:self.activeGroup
+                                  reduce:^id(CMUsersGroup *previous, CMUsersGroup *current) {
+                                      return @([previous.uuid isEqualToString:current.uuid]);
+                                  }]
+                ignore:@(YES)]
+                map:^id(id value) {
+                    return self.activeGroup;
+                }];
+
+        NSArray *updateGroupsSignals = @[
+                activeGroupUpdateSignal,
+                self.userHasJoinedSignal,
+                self.authentificationStatusSubject,
+                RACObserve(self, awsServicesConfigured),
+        ];
+
+        [[RACSignal combineLatest:updateGroupsSignals] subscribeNext:^(RACTuple *tuple) {
+            CMUsersGroup *group = tuple.first;
+            CMAuthStatusChangedEventContext *statusChangedEventContext = tuple.third;
+            NSNumber *sdkConfigured = tuple.fourth;
+
+            if (statusChangedEventContext.state == CMCammentUserNotAuthentificated || !sdkConfigured.boolValue) {
+                return;
+            }
+
+            if (group && group.uuid) {
+                self.isFetchingGroupUsers = YES;
+                [self.groupInfoInteractor fetchUsersInGroup:group.uuid];
+                [self.groupInfoInteractor setActiveGroup:group.uuid];
+            } else {
+                [self.groupInfoInteractor unsetActiveGroup];
+            }
+        }];
+        
+        [self.userHasJoinedSignal sendNext:@YES];
+    }
+
+    return self;
 }
 
 - (void)setupTweaks {
@@ -122,7 +207,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         appSettingsCollection = [[FBTweakCollection alloc] initWithName:@"General"];
         [settingsCategory addTweakCollection:appSettingsCollection];
     }
-    
+
     self.offlineTweak = [appSettingsCollection tweakWithIdentifier:@"Offline"];
     if (!self.offlineTweak) {
         self.offlineTweak = [[FBTweak alloc] initWithIdentifier:@"Offline"];
@@ -130,7 +215,7 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
         self.offlineTweak.name = @"Offline mode";
         [appSettingsCollection addTweak:self.offlineTweak];
     }
-    
+
     self.isOfflineMode = [self.offlineTweak.currentValue boolValue];
     [self.offlineTweak addObserver:self];
     DDLogInfo(@"Tweaks have been configured");
@@ -143,5 +228,65 @@ NSString *kCMStoreCammentIdIfNotPlaying = @"";
     }
 }
 
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFailToFetchUsersInGroup:(NSError *)group {
+    self.isFetchingGroupUsers = NO;
+}
+
+- (void)groupInfoInteractor:(id <CMGroupInfoInteractorInput>)interactor didFetchUsers:(NSArray<CMUser *> *)users inGroup:(NSString *)group {
+    if ([group isEqualToString:self.activeGroup.uuid]) {
+        self.activeGroupUsers = users;
+    }
+    self.isFetchingGroupUsers = NO;
+}
+
+- (void)cleanUp {
+    [self.cleanUpSignal sendNext:@YES];
+
+    self.playingCammentId = kCMStoreCammentIdIfNotPlaying;
+    self.cammentRecordingState = CMCammentRecordingStateNotRecording;
+
+    self.activeGroup = nil;
+    self.activeGroupUsers = @[];
+
+    self.isOnboardingFinished = YES;
+}
+
+- (void)updateUserDataOnIdentityChangeOldIdentity:(NSString *)oldIdentity newIdentity:(NSString *)newIdentity {
+    if ([[self.activeGroup ownerCognitoUserId] isEqualToString:oldIdentity]) {
+        [CMStore instance].activeGroup = [[[CMUsersGroupBuilder
+                usersGroupFromExistingUsersGroup:[CMStore instance].activeGroup]
+                withOwnerCognitoUserId:newIdentity]
+                build];
+    }
+
+    self.activeGroupUsers = [self.activeGroupUsers map:^CMUser *(CMUser *oldUser) {
+        if ([[oldUser cognitoUserId] isEqualToString:oldIdentity]) {
+            return [[[CMUserBuilder userFromExistingUser:oldUser]
+                    withCognitoUserId:newIdentity]
+                    build];
+        }
+
+        return oldUser;
+    }];
+
+    DDLogInfo(@"User data have been updated of uuid sync");
+}
+
+- (void)cleanUpCurrentChatGroup {
+    self.activeGroup = nil;
+    self.activeGroupUsers = @[];
+    [[self reloadActiveGroupSubject] sendNext:@YES];
+}
+
+- (void)refetchUsersInActiveGroup {
+    if (self.activeGroup && self.activeGroup.uuid) {
+        [self.groupInfoInteractor fetchUsersInGroup:self.activeGroup.uuid];
+    }
+}
+
+- (void)setAvoidTouchesInViews:(NSArray *)avoidTouchesInViews {
+    _avoidTouchesInViews = avoidTouchesInViews;
+    
+}
 
 @end

@@ -9,53 +9,77 @@
 #import "CMCammentsBlockNode.h"
 #import "CMCammentButton.h"
 #import "CMCammentRecorderPreviewNode.h"
-#import "POPSpringAnimation.h"
 #import "CMCammentOverlayLayoutConfig.h"
-#import "CMGroupsListNode.h"
-#import "ASDimension.h"
+#import "CMAdsVideoPlayerNode.h"
+#import "CMGroupInfoViewController.h"
+#import "UIColorMacros.h"
+#import "POPSpringAnimation.h"
+#import "CMTouchTransparentView.h"
+#import "CMStore.h"
 
-@interface CMCammentsOverlayViewNode ()
+@interface CMCammentsOverlayViewNode () <UIGestureRecognizerDelegate>
 
-@property (nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
-@property (nonatomic, assign) CGFloat groupsSidebarWidth;
-@property (nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
+@property(nonatomic, assign) CGFloat cammentButtonScreenSideVerticalInset;
+@property(nonatomic, assign) CGFloat leftSideBarMenuLeftInset;
+@property(nonatomic, assign) CGFloat cammentBlockWidth;
+@property(nonatomic, strong) UIPanGestureRecognizer *cammentPanDownGestureRecognizer;
+@property(nonatomic, strong) UIPanGestureRecognizer *sideBarPanGestureRecognizer;
 
-@property(nonatomic, strong) CMCammentOverlayLayoutConfig *layoutConfig;
+@property(nonatomic) CGFloat sideBarTransitionInitialValue;
 @end
 
 @implementation CMCammentsOverlayViewNode
 
-- (instancetype)init {
-    CMCammentOverlayLayoutConfig *layoutConfig = [CMCammentOverlayLayoutConfig new];
-    self.groupsSidebarWidth = 240.0f;
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionTopRight;
-        layoutConfig.cammentButtonLayoutVerticalInset = 20.0f;
-    } else {
-        layoutConfig.cammentButtonLayoutPosition = CMCammentOverlayLayoutPositionBottomRight;
-        layoutConfig.cammentButtonLayoutVerticalInset = 80.0f;
-    }
-    
-    return [self initWithLayoutConfig:layoutConfig];
-}
-
-
 - (instancetype)initWithLayoutConfig:(CMCammentOverlayLayoutConfig *)layoutConfig {
     self = [super init];
-    
+
     if (self) {
         self.layoutConfig = layoutConfig;
-        self.showCammentsBlock = YES;
+
         _cammentsBlockNode = [CMCammentsBlockNode new];
-        _groupsListNode = [ASDisplayNode new];
+        _backgroundNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
+            return [CMTouchTransparentView new];
+        } didLoadBlock:^(__kindof ASDisplayNode * _Nonnull node) {
+            UIView *view = node.view;
+            view.alpha = 0.8;
+            view.backgroundColor = [UIColor clearColor];
+        }];
+        _leftSidebarNode = [ASDisplayNode new];
         _cammentButton = [CMCammentButton new];
         _cammentRecorderNode = [CMCammentRecorderPreviewNode new];
-        _contentView = [UIView new];
+        _adsVideoPlayerNode = [CMAdsVideoPlayerNode new];
+        _skipTutorialButton = [ASButtonNode new];
+        [_skipTutorialButton setAttributedTitle:[[NSAttributedString alloc] initWithString:CMLocalized(@"onboarding.skip_tutorial")
+                                                                                attributes:@{
+                                                                                        NSFontAttributeName: [UIFont systemFontOfSize:[UIFont systemFontSize]],
+                                                                                        NSForegroundColorAttributeName: [UIColor whiteColor]
+                                                                                }] forState:UIControlStateNormal];
+        _skipTutorialButton.backgroundColor = UIColorFromRGB(0x9B9B9B);
+        _skipTutorialButton.contentEdgeInsets = UIEdgeInsetsMake(9.0f, 9.0f, 9.0f, 9.0f);
+        _skipTutorialButton.cornerRadius = 8.0f;
+        [_skipTutorialButton addTarget:self.delegate
+                                action:@selector(handleSkipTutorialAction)
+                      forControlEvents:ASControlNodeEventTouchUpInside];
+
         _contentNode = [[ASDisplayNode alloc] initWithViewBlock:^UIView * {
-            return _contentView;
+            return _contentView ?: [UIView new];
         }];
+        self.cammentBlockWidth = 150.0f;
         self.cammentButtonScreenSideVerticalInset = layoutConfig.cammentButtonLayoutVerticalInset;
         self.cammentPanDownGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleCammentButtonPanGesture:)];
+        self.sideBarPanGestureRecognizer = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleSideBarPanGesture:)];
+        self.sideBarPanGestureRecognizer.maximumNumberOfTouches = 1;
+        self.sideBarPanGestureRecognizer.delegate = self;
+
+        self.showCammentsBlock = YES;
+        self.showLeftSidebarNode = NO;
+        self.showSkipTutorialButton = NO;
+        [self updateLeftSideBarMenuLeftInset];
+
+        RAC(_skipTutorialButton, alpha) = [RACObserve(_cammentButton, alpha) map:^NSNumber *(NSNumber *value) {
+            return @(value.floatValue - 0.2f);
+        }];
+
         self.automaticallyManagesSubnodes = YES;
     }
 
@@ -73,17 +97,23 @@
         }];
     }
 
+    [self setNeedsLayout];
+    [self setNeedsDisplay];
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
-- (void)setGroupsListNode:(ASDisplayNode *)groupsListNode {
-    _groupsListNode = groupsListNode;
+- (void)setLeftSidebarNode:(ASDisplayNode *)leftSidebarNode {
+    _leftSidebarNode = leftSidebarNode;
+
+    [self setNeedsLayout];
+    [self setNeedsDisplay];
     [self transitionLayoutWithAnimation:NO shouldMeasureAsync:NO measurementCompletion:nil];
 }
 
 - (void)didLoad {
     [super didLoad];
     [self.cammentButton.view addGestureRecognizer:_cammentPanDownGestureRecognizer];
+    [self.view addGestureRecognizer:_sideBarPanGestureRecognizer];
 }
 
 - (ASLayoutSpec *)cammentBlockLayoutSpecThatFits:(ASSizeRange)constrainedSize {
@@ -91,15 +121,15 @@
 
     CGFloat cammentRecorderNodeWidth = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.width;
     CGFloat cammentRecorderNodeHeight = [_cammentRecorderNode layoutThatFits:ASSizeRangeMake(CGSizeMake(104, 90))].size.height;
+    _cammentRecorderNode.style.width = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeWidth : 5.0f);
+    _cammentRecorderNode.style.height = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeHeight : 5.0f);
 
-    _cammentRecorderNode.style.width = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeWidth : 1.0f);
-    _cammentRecorderNode.style.height = ASDimensionMake(_showCammentRecorderNode ? cammentRecorderNodeHeight : .0f);
     ASInsetLayoutSpec *cammentRecorderNodeInsetsLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                     _showCammentRecorderNode ? 20.0f : .0f,
                     20.0f,
                     _showCammentRecorderNode ? 4.0f : .0f,
-                    INFINITY)
+                    .0f)
                                 child:_cammentRecorderNode];
 
     ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
@@ -118,11 +148,18 @@
     self.contentNode.style.width = ASDimensionMake(constrainedSize.max.width);
     self.contentNode.style.height = ASDimensionMake(constrainedSize.max.height);
 
-    ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
-    ASLayoutSpec *camentBlockLayoutSpec = [self cammentBlockLayoutSpecThatFits:constrainedSize];
+    self.backgroundNode.style.width = ASDimensionMake(constrainedSize.max.width + self.layoutConfig.leftSidebarWidth);
+    self.backgroundNode.style.height = ASDimensionMake(constrainedSize.max.height);
 
-    _groupsListNode.style.width = ASDimensionMake(self.groupsSidebarWidth);
-    camentBlockLayoutSpec.style.width = ASDimensionMake(150.0f);
+    ASInsetLayoutSpec *cammentButtonLayout = [self cammentButtonLayoutSpec:self.layoutConfig];
+    ASLayoutSpec *camentBlockLayoutSpec = [ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(self.overlayInsets.top,
+                                                                                                        !self.showCammentsBlock ? self.overlayInsets.left: ceilf(self.overlayInsets.left * (1 - (self.leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth)),
+                                                                                                        .0f,
+                                                                                                        .0f)
+                                                                                 child:[self cammentBlockLayoutSpecThatFits:constrainedSize]];
+
+    _leftSidebarNode.style.width = ASDimensionMake(self.layoutConfig.leftSidebarWidth);
+    camentBlockLayoutSpec.style.width = ASDimensionMake(self.cammentBlockWidth);
 
     ASStackLayoutSpec *leftColumnStack = [ASStackLayoutSpec
             stackLayoutSpecWithDirection:ASStackLayoutDirectionHorizontal
@@ -130,29 +167,26 @@
                           justifyContent:ASStackLayoutJustifyContentStart
                               alignItems:ASStackLayoutAlignItemsStart
                                 children:@[
-                                        _groupsListNode,
+                                           _leftSidebarNode ?: [ASDisplayNode new],
                                         camentBlockLayoutSpec
                                 ]
     ];
 
-    leftColumnStack.style.width = ASDimensionMake(_groupsListNode.style.width.value + camentBlockLayoutSpec.style.width.value);
+    leftColumnStack.style.width = ASDimensionMake(_leftSidebarNode.style.width.value + camentBlockLayoutSpec.style.width.value);
     CGFloat leftLayoutInset = 0.0f;
-    CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value;
-    if (_showCammentsBlock) {
-        leftColumnStackOffset = -_groupsListNode.style.width.value;
-    }
-
-    if (_showGroupsListNode) {
-        leftColumnStackOffset = .0f;
-    }
+    CGFloat leftColumnStackOffset = -leftColumnStack.style.width.value + self.leftSideBarMenuLeftInset;
 
     ASInsetLayoutSpec *cammentsBlockLayout = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
                                 child:leftColumnStack];
 
+    ASInsetLayoutSpec *backgroundNodeLayout = [ASInsetLayoutSpec
+            insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftColumnStackOffset, 0.0f, INFINITY)
+                                child:_backgroundNode];
+
     _cammentsBlockNode.style.height = ASDimensionMake(
             [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
-    _groupsListNode.style.height = ASDimensionMake(
+    _leftSidebarNode.style.height = ASDimensionMake(
             [cammentsBlockLayout layoutThatFits:constrainedSize].size.height);
 
     ASStackLayoutSpec *stackLayoutSpec = [ASStackLayoutSpec
@@ -163,15 +197,31 @@
                                 children:@[cammentsBlockLayout]];
 
     stackLayoutSpec.style.height = self.contentNode.style.height;
-    ASInsetLayoutSpec *stackLayoutInsetSpec = [ASInsetLayoutSpec
+    ASLayoutSpec *stackLayoutInsetSpec = [ASInsetLayoutSpec
             insetLayoutSpecWithInsets:UIEdgeInsetsMake(0.0f, leftLayoutInset, .0f, INFINITY)
                                 child:stackLayoutSpec];
 
     ASOverlayLayoutSpec *cammentButtonOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:self.contentNode
                                                                                         overlay:cammentButtonLayout];
 
+    ASLayoutSpec *skipTutorialLayout = [self skipTutorialButtonLayoutSpec:self.layoutConfig];
+    cammentButtonOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentButtonOverlay
+                                                                   overlay:skipTutorialLayout];
+
     ASOverlayLayoutSpec *cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentButtonOverlay
                                                                                         overlay:stackLayoutInsetSpec];
+    if (self.showVideoAdsPlayerNode) {
+        cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
+                                                                       overlay:[ASInsetLayoutSpec insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.y + 5,
+                                                                                       self.videoAdsPlayerNodeAppearsFrame.origin.x + 80,
+                                                                                       INFINITY, INFINITY)
+                                                                                                                      child:_adsVideoPlayerNode]];
+    }
+
+    cammentsBlockOverlay = [ASOverlayLayoutSpec overlayLayoutSpecWithChild:cammentsBlockOverlay
+                                                                   overlay:backgroundNodeLayout];
+
     return cammentsBlockOverlay;
 }
 
@@ -180,113 +230,291 @@
 
     switch (layoutConfig.cammentButtonLayoutPosition) {
 
-        case CMCammentOverlayLayoutPositionTopLeft:
         case CMCammentOverlayLayoutPositionTopRight:
             layoutSpec = [ASInsetLayoutSpec
                     insetLayoutSpecWithInsets:UIEdgeInsetsMake(
-                            self.cammentButtonScreenSideVerticalInset,
+                            self.cammentButtonScreenSideVerticalInset + self.overlayInsets.top,
                             INFINITY,
                             INFINITY,
-                            _showGroupsListNode ?
-                                    - _groupsSidebarWidth + _cammentButton.style.width.value * 2
-                                    : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
+                            20.0f + self.overlayInsets.right)
                                         child:_cammentButton];
             break;
-        case CMCammentOverlayLayoutPositionBottomLeft:
         case CMCammentOverlayLayoutPositionBottomRight:
             layoutSpec = [ASInsetLayoutSpec
                     insetLayoutSpecWithInsets:UIEdgeInsetsMake(
                             INFINITY,
                             INFINITY,
-                            self.cammentButtonScreenSideVerticalInset,
-                            _showGroupsListNode ?
-                                    - _groupsSidebarWidth + _cammentButton.style.width.value * 2
-                                    : (_showCammentsBlock ? 20.0f : -_cammentButton.style.width.value * 2))
+                            self.cammentButtonScreenSideVerticalInset + self.overlayInsets.bottom,
+                            20.0f + self.overlayInsets.right)
                                         child:_cammentButton];
             break;
     }
     return layoutSpec;
 }
 
+- (ASLayoutSpec *)skipTutorialButtonLayoutSpec:(CMCammentOverlayLayoutConfig *)layoutConfig {
+    ASInsetLayoutSpec *layoutSpec = nil;
+    switch (layoutConfig.cammentButtonLayoutPosition) {
+
+        case CMCammentOverlayLayoutPositionBottomRight:
+            layoutSpec = [ASInsetLayoutSpec
+                    insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                            20.0f + self.overlayInsets.top,
+                            INFINITY,
+                            INFINITY,
+                            _showSkipTutorialButton ? 20.0f + self.overlayInsets.right : -400.0f)
+                                        child:_skipTutorialButton];
+            break;
+        case CMCammentOverlayLayoutPositionTopRight:
+            layoutSpec = [ASInsetLayoutSpec
+                    insetLayoutSpecWithInsets:UIEdgeInsetsMake(
+                            INFINITY,
+                            INFINITY,
+                            20.0f + + self.overlayInsets.bottom,
+                            _showSkipTutorialButton ? 20.0f + self.overlayInsets.right : -400.0f)
+                                        child:_skipTutorialButton];
+            break;
+    }
+    return [ASWrapperLayoutSpec wrapperWithLayoutElement:layoutSpec];
+}
+
 - (void)animateLayoutTransition:(nonnull id <ASContextTransitioning>)context {
-    UIView * snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
-    snapshot.frame = self.cammentRecorderNode.view.bounds;
+    if (![context isAnimated]) {
+        self.cammentRecorderNode.alpha = _showCammentRecorderNode ? 1.0f : 0.f;
+        self.leftSidebarNode.alpha = _showLeftSidebarNode ? 1.0f : 0.f;
+
+        if (!_showLeftSidebarNode) {
+            self.cammentButton.alpha = _leftSideBarMenuLeftInset / self.cammentBlockWidth;
+        } else {
+            self.cammentButton.alpha = .0f;
+        }
+
+        [super animateLayoutTransition:context];
+        return;
+    }
+
+    UIView *snapshot = [self.cammentRecorderNode.view snapshotViewAfterScreenUpdates:NO];
+    snapshot.frame = self.cammentRecorderNode.bounds;
+    snapshot.alpha = 1.0f;
     [self.cammentRecorderNode.view addSubview:snapshot];
 
     CGRect cammentBlockFinalFrame = [context finalFrameForNode:self.cammentsBlockNode];
     CGRect cammentBlockInitialFrame = [context initialFrameForNode:self.cammentsBlockNode];
 
-    self.cammentsBlockNode.view.frame = CGRectMake(
+    self.cammentsBlockNode.frame = CGRectMake(
             cammentBlockInitialFrame.origin.x,
             cammentBlockInitialFrame.origin.y,
             cammentBlockFinalFrame.size.width,
             MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
 
-    [UIView animateWithDuration:0.3 animations:^{
-        self.cammentsBlockNode.view.frame = CGRectMake(
-                cammentBlockFinalFrame.origin.x,
-                cammentBlockFinalFrame.origin.y,
-                cammentBlockFinalFrame.size.width,
-                MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
-        self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
-        self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
-        self.groupsListNode.frame = [context finalFrameForNode:self.groupsListNode];
-    } completion:^(BOOL finished) {
-        [snapshot removeFromSuperview];
-        self.cammentsBlockNode.frame = cammentBlockFinalFrame;
-        [context completeTransition:YES];
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
-            [self.delegate didCompleteLayoutTransition];
-        }
-    }];
+    if (_showLeftSidebarNode) {
+        self.leftSidebarNode.alpha = 1.0f;
+    }
+
+    [self.cammentsBlockNode.collectionNode waitUntilAllUpdatesAreProcessed];
+
+    [UIView animateWithDuration:self.defaultLayoutTransitionDuration
+                          delay:self.defaultLayoutTransitionDelay
+                        options:self.defaultLayoutTransitionOptions | UIViewAnimationOptionAllowAnimatedContent | UIViewAnimationOptionLayoutSubviews | UIViewAnimationOptionAllowUserInteraction
+                     animations:^{
+                         self.cammentsBlockNode.frame = CGRectMake(
+                                 cammentBlockFinalFrame.origin.x,
+                                 cammentBlockFinalFrame.origin.y,
+                                 cammentBlockFinalFrame.size.width,
+                                 MAX(cammentBlockFinalFrame.size.height, cammentBlockInitialFrame.size.height));
+                         self.cammentRecorderNode.frame = [context finalFrameForNode:self.cammentRecorderNode];
+                         self.cammentRecorderNode.alpha = self.showCammentRecorderNode ? 1.0f : 0.f;
+                         self.cammentButton.frame = [context finalFrameForNode:self.cammentButton];
+
+                         if (!self.showLeftSidebarNode) {
+                             self.cammentButton.alpha = self.leftSideBarMenuLeftInset / self.cammentBlockWidth;
+                         } else {
+                             self.cammentButton.alpha = .0f;
+                         }
+
+                         self.leftSidebarNode.alpha = self.showLeftSidebarNode;
+                         self.leftSidebarNode.frame = [context finalFrameForNode:self.leftSidebarNode];
+                         self.backgroundNode.frame = [context finalFrameForNode:self.backgroundNode];
+
+                         if (self.contentNode) {
+                             self.contentNode.frame = [context finalFrameForNode:self.contentNode];
+                         }
+
+                         if (self.showVideoAdsPlayerNode) {
+                             self.adsVideoPlayerNode.frame = [context finalFrameForNode:self.adsVideoPlayerNode];
+                         }
+
+                         self.skipTutorialButton.frame = [context finalFrameForNode:_skipTutorialButton];
+                     }
+                     completion:^(BOOL finished) {
+                         [snapshot removeFromSuperview];
+
+                         self.cammentsBlockNode.frame = CGRectMake(self.cammentsBlockNode.frame.origin.x,
+                                 self.cammentsBlockNode.frame.origin.y,
+                                 self.cammentsBlockNode.frame.size.width,
+                                 cammentBlockFinalFrame.size.height);
+                         if (!self.showLeftSidebarNode) {
+                             self.leftSidebarNode.alpha = .0f;
+                         }
+
+                         [context completeTransition:YES];
+                         if (self.delegate && [self.delegate respondsToSelector:@selector(didCompleteLayoutTransition)]) {
+                             [self.delegate didCompleteLayoutTransition];
+                         }
+                     }];
 }
 
-- (void)handleCammentButtonPanGesture:(UIPanGestureRecognizer *)sender{
-    if (sender.state == UIGestureRecognizerStateEnded
+- (void)handleCammentButtonPanGesture:(UIPanGestureRecognizer *)sender {
+
+}
+
+- (void)updateLeftSideBarMenuLeftInset {
+    _leftSideBarMenuLeftInset = .0f;
+
+    if (self.disableClosingCammentBlock) {
+        _showCammentsBlock = YES;
+    }
+
+    if (_showCammentsBlock) {
+        _leftSideBarMenuLeftInset = self.cammentBlockWidth;
+    }
+
+    if (_showLeftSidebarNode) {
+        _leftSideBarMenuLeftInset = self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth;
+    }
+}
+
+- (void)handleSideBarPanGesture:(UIPanGestureRecognizer *)sender {
+
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        [self updateLeftSideBarMenuLeftInset];
+        self.sideBarTransitionInitialValue = _leftSideBarMenuLeftInset;
+    } else if (sender.state == UIGestureRecognizerStateEnded
             || sender.state == UIGestureRecognizerStateFailed
             || sender.state == UIGestureRecognizerStateCancelled) {
 
-        _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset;
-        [self transitionLayoutWithAnimation:YES shouldMeasureAsync:YES measurementCompletion:nil];
+        [self updateLeftSideBarMenuLeftInset];
+        [self transitionLayoutWithAnimation:YES shouldMeasureAsync:NO measurementCompletion:nil];
+
     } else if (sender.state == UIGestureRecognizerStateChanged) {
-        CGPoint translation = [sender translationInView:self.cammentButton.view.superview];
+        CGPoint translation = [sender translationInView:self.leftSidebarNode.view.superview];
 
-        switch (self.layoutConfig.cammentButtonLayoutPosition) {
-
-            case CMCammentOverlayLayoutPositionTopLeft:
-            case CMCammentOverlayLayoutPositionTopRight:
-                if (translation.y > 0) {
-                    _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset + translation.y;
-                    [self setNeedsLayout];
-                }
-
-                if (translation.y > self.layoutConfig.cammentButtonLayoutVerticalInset) {
-                    [_cammentButton cancelLongPressGestureRecognizer];
-                }
-
-                // if pull down more then 1/3 of screen height
-                if (translation.y > self.bounds.size.height / 3) {
-                    [sender setEnabled:NO];
-                    [_cammentButton cancelLongPressGestureRecognizer];
-                    [_delegate handleShareAction];
-                    [sender setEnabled:YES];
-                }
-                break;
-            case CMCammentOverlayLayoutPositionBottomLeft:
-            case CMCammentOverlayLayoutPositionBottomRight:
-                if (translation.y < 0) {
-                    _cammentButtonScreenSideVerticalInset = self.layoutConfig.cammentButtonLayoutVerticalInset - translation.y;
-                    [self setNeedsLayout];
-                }
-
-                if (-translation.y > self.bounds.size.height / 3) {
-                    [sender setEnabled:NO];
-                    [_cammentButton cancelLongPressGestureRecognizer];
-                    [_delegate handleShareAction];
-                    [sender setEnabled:YES];
-                }
-                break;
+        if (self.disableClosingCammentBlock &&
+                self.sideBarTransitionInitialValue + translation.x < self.cammentBlockWidth / 2.0f) {
+            return;
         }
+
+        _leftSideBarMenuLeftInset = self.sideBarTransitionInitialValue + translation.x;
+
+        _showCammentsBlock = _leftSideBarMenuLeftInset > self.cammentBlockWidth / 2.0f;
+
+        if (_leftSideBarMenuLeftInset <= self.cammentBlockWidth) {
+            self.cammentButton.alpha = (CGFloat) (_leftSideBarMenuLeftInset / self.cammentBlockWidth - 0.5);
+        } else {
+            self.cammentButton.alpha = (CGFloat) (0.5 - (_leftSideBarMenuLeftInset - self.cammentBlockWidth) / self.layoutConfig.leftSidebarWidth);
+        }
+
+
+        BOOL showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth;
+        self.leftSidebarNode.alpha = showLeftSidebarNode ? 1.0f : 0.0f;
+
+        if (showLeftSidebarNode) {
+            [self.delegate handlePanToShowSidebarGesture];
+        }
+
+        _showLeftSidebarNode = _leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth / 2;
+
+        if (_leftSideBarMenuLeftInset > self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth) {
+            _leftSideBarMenuLeftInset = self.cammentBlockWidth + self.layoutConfig.leftSidebarWidth;
+        }
+
+        if (_leftSideBarMenuLeftInset < .0f) {
+            _leftSideBarMenuLeftInset = .0f;
+        }
+
+        [self setNeedsLayout];
     }
 }
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([self.sideBarPanGestureRecognizer isEqual:gestureRecognizer]) {
+        CGRect frame = self.cammentButton.view.frame;
+        CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:self.cammentButton.view.superview];
+        BOOL containsPoint = CGRectContainsPoint(frame, locationOfTouch);
+        if (containsPoint) {
+            return NO;
+        }
+    }
+
+    for (UIView *view in [CMStore instance].avoidTouchesInViews) {
+        CGRect frame = view.bounds;
+        CGPoint locationOfTouch = [gestureRecognizer locationOfTouch:0 inView:view];
+        BOOL containsPoint = CGRectContainsPoint(frame, locationOfTouch);
+        if (containsPoint) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+
+- (void)playSidebarJumpingAnimation {
+    self.showCammentsBlock = YES;
+    self.showLeftSidebarNode = NO;
+    [self updateLeftSideBarMenuLeftInset];
+    [self transitionLayoutWithAnimation:YES
+                     shouldMeasureAsync:NO
+                  measurementCompletion:^{
+                  }];
+
+    POPAnimatableProperty *prop = [POPAnimatableProperty propertyWithName:@"sidebar jumps" initializer:^(POPMutableAnimatableProperty *prop) {
+        // read value
+        prop.readBlock = ^(typeof(self) obj, CGFloat values[]) {
+            values[0] = obj.leftSideBarMenuLeftInset;
+        };
+        // write value
+        prop.writeBlock = ^(typeof(self) obj, const CGFloat values[]) {
+            obj.leftSideBarMenuLeftInset = values[0];
+            obj.leftSidebarNode.alpha = obj.leftSideBarMenuLeftInset > obj.cammentBlockWidth;
+            [obj setNeedsLayout];
+        };
+
+        prop.threshold = 0.01;
+    }];
+
+    POPSpringAnimation *springAnimation = [POPSpringAnimation new];
+    springAnimation.toValue = @(_leftSideBarMenuLeftInset + 65.0f);
+    springAnimation.autoreverses = YES;
+    springAnimation.repeatCount = 1;
+    springAnimation.springSpeed = 4;
+    springAnimation.springBounciness = 18;
+    springAnimation.dynamicsFriction = 10;
+    springAnimation.property = prop;
+    springAnimation.beginTime = (CACurrentMediaTime() + self.defaultLayoutTransitionDelay + self.defaultLayoutTransitionDuration);
+    [springAnimation setAnimationDidStartBlock:^(POPAnimation *anim) {
+        [self.sideBarPanGestureRecognizer setEnabled:NO];
+    }];
+
+    [springAnimation setCompletionBlock:^(POPAnimation *anim, BOOL finished) {
+        [self.sideBarPanGestureRecognizer setEnabled:YES];
+    }];
+
+    [self pop_addAnimation:springAnimation forKey:@"jumps"];
+
+}
+
+- (void)updateInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    if (orientation == UIInterfaceOrientationUnknown) { return; }
+    if (UIEdgeInsetsEqualToEdgeInsets(self.safeAreaInsets, UIEdgeInsetsZero)) { return; }
+
+    self.overlayInsets = UIEdgeInsetsMake(
+            self.safeAreaInsets.top,
+            orientation == UIInterfaceOrientationLandscapeRight ? self.safeAreaInsets.left : .0f,
+            self.safeAreaInsets.bottom,
+            orientation == UIInterfaceOrientationLandscapeLeft? self.safeAreaInsets.right : .0f);
+    [self transitionLayoutWithAnimation:YES
+                     shouldMeasureAsync:NO
+                  measurementCompletion:^{}];
+}
+
 @end

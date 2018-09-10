@@ -8,11 +8,26 @@
 
 #import <Foundation/Foundation.h>
 #import <AsyncDisplayKit/AsyncDisplayKit.h>
+#import "CMInviteFriendsGroupInfoNode.h"
+
+@class CMCreateGroupButton;
+
+@protocol CMGroupListNodeDelegate<CMInviteFriendsGroupInfoNodeDelegate, ASCollectionDelegate, ASCollectionDataSource, UICollectionViewDelegateFlowLayout>
+
+- (void)setItemCollectionDisplayNode:(ASCollectionNode *)node;
+- (void)groupInfoDidPressCreateGroupButton;
+- (void)groupListDidHandleRefreshAction:(UIRefreshControl *)refreshControl;
+
+@end
 
 
 @interface CMGroupsListNode: ASDisplayNode
 
-@property (nonatomic, strong) ASTableNode *tableNode;
-@property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (nonatomic, strong) ASCollectionNode *collectionNode;
+@property (nonatomic, strong) CMCreateGroupButton *createNewGroupButton;
+@property (nonatomic, assign) BOOL showCreateGroupButton;
+@property (nonatomic, weak) id<CMGroupListNodeDelegate>delegate;
+
+- (void)endRefreshing;
 
 @end

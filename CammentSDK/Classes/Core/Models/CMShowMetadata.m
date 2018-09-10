@@ -9,4 +9,9 @@
 @implementation CMShowMetadata {
 
 }
+
+- (NSString *)invitationText {
+    return _invitationText ?: CMLocalized(@"invitations.text");
+}
+
 @end

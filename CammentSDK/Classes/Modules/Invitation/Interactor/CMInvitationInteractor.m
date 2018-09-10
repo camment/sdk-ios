@@ -14,111 +14,52 @@
 #import "RACSequence.h"
 #import "CMUser.h"
 #import "CMUsersGroupBuilder.h"
-#import "CMAPIDevcammentClient+defaultApiClient.h"
+#import "CMStore.h"
+#import "CMShowMetadata.h"
 
 @interface CMInvitationInteractor ()
-@property(nonatomic, strong) CMAPIDevcammentClient *client;
 @end
 
 @implementation CMInvitationInteractor
 
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        self.client = [CMAPIDevcammentClient defaultAPIClient];
-    }
-    return self;
-}
+- (AWSTask<CMUsersGroup *> *)createEmptyGroup:(NSString *)showUUID {
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
+    CMAPIUsergroupInRequest *usergroupInRequest = [CMAPIUsergroupInRequest new];
+    usergroupInRequest.showId = showUUID;
 
-- (AWSTask<CMUsersGroup *> *)createEmptyGroup {
-    AWSTask * task = [self.client usergroupsPost];
-    if (!task) {
-        return [AWSTask taskWithError:nil];
+    if (!usergroupInRequest.showId) {
+        NSError *error = [NSError errorWithDomain:@"tv.camment.sdk"
+                                             code:0
+                                         userInfo:@{
+                                                    NSLocalizedFailureReasonErrorKey : @"Could not create group while show uuid is empty"
+                                                    }];
+        return [AWSTask taskWithError:error];
     }
     
-    return [task continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[CMAPIUsergroup class]]) {
-            CMAPIUsergroup *group = t.result;
-            CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
-                                                   ownerCognitoUserId:group.userCognitoIdentityId
-                                                            timestamp:group.timestamp
-                                                       invitationLink:nil];
-            DDLogVerbose(@"Created new group %@", result);
-            return [AWSTask taskWithResult:result];
-        } else {
+    return [[client usergroupsPost:usergroupInRequest] continueWithBlock:^id(AWSTask<id> *t) {
+        if (t.error) {
             DDLogError(@"%@", t.error);
             return [AWSTask taskWithError:t.error];
         }
-    }];
-}
-
-- (void)addUsers:(NSArray<CMUser *> *)users group:(CMUsersGroup *)group showUuid:(NSString *)showUuid usingDeeplink:(BOOL)shouldUseDeeplink {
-
-    NSArray *usersFbIds = [users.rac_sequence map:^id(CMUser *value) {
-        return value.fbUserId;
-    }].array ?: @[];
-
-    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
-    if (group) {
-        DDLogVerbose(@"Inviting to the current group %@", group);
-    }
-
-    [[groupTask continueWithBlock:^id(AWSTask<id> *t) {
-        if ([t.result isKindOfClass:[CMUsersGroup class]]) {
-            CMUsersGroup *usersGroup = t.result;
-
-//            CMAPIUserFacebookIdListInRequest *userFacebookIdListInRequest = [CMAPIUserFacebookIdListInRequest new];
-//            userFacebookIdListInRequest.showUuid = showUuid;
-//            userFacebookIdListInRequest.userFacebookIdList = usersFbIds;
-
-            AWSTask *invitationTask = nil;
-
-//            if (shouldUseDeeplink) {
-//
-//                invitationTask = [[self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid
-//                                                                          body:userFacebookIdListInRequest]
-//                        continueWithBlock:^id(AWSTask<CMAPIDeeplink *> *deepLinkResult) {
-//                            CMUsersGroupBuilder *usersGroupBuilder = [CMUsersGroupBuilder usersGroupFromExistingUsersGroup:usersGroup];
-//                            CMUsersGroup *updatedUsersGroup = usersGroup;
-//                            if ([deepLinkResult.result isKindOfClass:[CMAPIDeeplink class]]) {
-//                                updatedUsersGroup = [[usersGroupBuilder withInvitationLink:deepLinkResult.result.url] build];
-//                            }
-//                            return [AWSTask taskWithResult:updatedUsersGroup];
-//                        }];
-//            } else {
-//                invitationTask = [[self.client usergroupsGroupUuidUsersPost:usersGroup.uuid
-//                                                                       body:userFacebookIdListInRequest]
-//                        continueWithBlock:^id(AWSTask<id> *task) {
-//                            return [AWSTask taskWithResult:usersGroup];
-//                        }];
-//            }
-
-            return invitationTask;
-        } else {
-            DDLogError(@"%@", t.error);
-            return [AWSTask taskWithError:t.error];
-        }
-    }] continueWithBlock:^id(AWSTask<id> *t) {
-        if (!t.error && [t.result isKindOfClass:[CMUsersGroup class]]) {
-            DDLogVerbose(@"Invited users %@", users);
-            CMUsersGroup *usersGroup = t.result;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didInviteUsersToTheGroup:usersGroup usingDeeplink:shouldUseDeeplink];
-            });
-        } else {
-            DDLogError(@"%@", t.error);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.output didFailToInviteUsersWithError:t.error];
-            });
-        }
-
-        return nil;
+        
+        CMAPIUsergroup *group = t.result;
+        CMUsersGroup *result = [[CMUsersGroup alloc] initWithUuid:group.uuid
+                                                         showUuid:[CMStore instance].currentShowMetadata.uuid
+                                               ownerCognitoUserId:group.userCognitoIdentityId
+                                                hostCognitoUserId:group.userCognitoIdentityId
+                                                        timestamp:group.timestamp
+                                                   invitationLink:nil
+                                                            users:@[]
+                                                         isPublic:group.isPublic.boolValue];
+        
+        return [AWSTask taskWithResult:result];
     }];
 }
 
 - (void)getDeeplink:(CMUsersGroup *)group showUuid:(NSString *)showUuid {
-
-    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup];
+    CMAPIDevcammentClient *client = [CMAPIDevcammentClient defaultClient];
+    
+    AWSTask *groupTask = group != nil ? [AWSTask taskWithResult:group] : [self createEmptyGroup:showUuid];
 
     [groupTask continueWithBlock:^id(AWSTask<id> *t) {
         if (t.error || ![t.result isKindOfClass:[CMUsersGroup class]]) {
@@ -131,7 +72,7 @@
 
         CMAPIShowUuid *cmapiShowUuid = [CMAPIShowUuid new];
         cmapiShowUuid.showUuid = showUuid;
-        AWSTask *getDeeplinkTask = [self.client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid];
+        AWSTask *getDeeplinkTask = [client usergroupsGroupUuidDeeplinkPost:usersGroup.uuid body:cmapiShowUuid];
         if (!getDeeplinkTask) {
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.output didFailToGetInvitationLink:nil];

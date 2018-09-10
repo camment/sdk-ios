@@ -15,6 +15,7 @@
 
 @class CMShowsListWireframe;
 @class CMShowsListCollectionPresenter;
+@class CMCammentsInStreamPlayerWireframe;
 
 @interface CMShowsListPresenter : CMNetworkObservableObject<CMShowsListPresenterInput, CMShowsListInteractorOutput>
 

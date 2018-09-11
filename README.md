@@ -3,7 +3,7 @@
 To get started with the Camment Mobile SDK for iOS you can set up the SDK and build a new project, or you can integrate the SDK in an existing project
 To use the SDK, install the following on your development machine:
  - Xcode 7 or later
- - iOS 8.1 or later
+ - iOS 9.0 or later
  - Cocoapods
 
 ### Setup Facebook SDK
@@ -14,11 +14,11 @@ Skip this step if your ios app has Facebook SDK installed already, but if you do
 Open yout Podfile and add `pod 'CammentSDK'` there
 
 ```ruby
-platform :ios, '8.1'
+platform :ios, '9.0'
 
 target 'Your target' do
     use_frameworks!
-    pod 'CammentSDK'
+    pod 'CammentSDK', :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.3'
 end
 ```
 then run `pod install`

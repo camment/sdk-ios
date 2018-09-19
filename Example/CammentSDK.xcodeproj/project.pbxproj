@@ -36,8 +36,6 @@
 		955177F021469AEC00A6739E /* Nunito-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 955177EE21469AEB00A6739E /* Nunito-Medium.ttf */; };
 		955177F121469AEC00A6739E /* Nunito-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 955177EF21469AEC00A6739E /* Nunito-Light.ttf */; };
 		95A992D5211B120900C12E71 /* CMCammentDAOTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FFAB329E9BFFEE4256FCE08 /* CMCammentDAOTests.m */; };
-		95A992D7211B13BA00C12E71 /* test-camment.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95A992D6211B13B900C12E71 /* test-camment.mp4 */; };
-		95A992D8211B1AEB00C12E71 /* test-camment.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 95A992D6211B13B900C12E71 /* test-camment.mp4 */; };
 		D517D99B40C0D32A823CEEF2 /* Pods_CammentSDK_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08B9C88CB28910041EEC6955 /* Pods_CammentSDK_Example.framework */; };
 		F61B25406BF30B08A833B2A6 /* Pods_CammentSDK_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 627CAD771FA004A93AAD30F7 /* Pods_CammentSDK_Tests.framework */; };
 /* End PBXBuildFile section */
@@ -100,7 +98,6 @@
 		953304F82119B93500D37595 /* CMAppServiceInvitationFlowTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CMAppServiceInvitationFlowTests.m; sourceTree = "<group>"; };
 		955177EE21469AEB00A6739E /* Nunito-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Medium.ttf"; path = "../../Fonts/Nunito-Medium.ttf"; sourceTree = "<group>"; };
 		955177EF21469AEC00A6739E /* Nunito-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Nunito-Light.ttf"; path = "../../Fonts/Nunito-Light.ttf"; sourceTree = "<group>"; };
-		95A992D6211B13B900C12E71 /* test-camment.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "test-camment.mp4"; sourceTree = "<group>"; };
 		AA770F01B5A933242D0C1EDF /* CammentSDK.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = CammentSDK.podspec; path = ../CammentSDK.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 /* End PBXFileReference section */
 
@@ -133,7 +130,6 @@
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
-				95A992D6211B13B900C12E71 /* test-camment.mp4 */,
 				60FF7A9C1954A5C5007DD14C /* Podspec Metadata */,
 				6003F593195388D20070C39A /* Example for CammentSDK */,
 				6003F5B5195388D20070C39A /* Tests */,
@@ -278,7 +274,6 @@
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
 				820CF7DC69DFD88026F0C09A /* [CP] Embed Pods Frameworks */,
-				B97DB254514F72FC9FE07551 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -298,7 +293,6 @@
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
 				18A72522B7552715CE108B2F /* [CP] Embed Pods Frameworks */,
-				5F09557B83E37E2CB3C684EB /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -357,7 +351,6 @@
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
 				955177F021469AEC00A6739E /* Nunito-Medium.ttf in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
-				95A992D8211B1AEB00C12E71 /* test-camment.mp4 in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -367,7 +360,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */,
-				95A992D7211B13BA00C12E71 /* test-camment.mp4 in Resources */,
 				6FFAB1CB0D83B55197D28898 /* CMCammentDAOTests.m in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -381,7 +373,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CammentSDK_Tests/Pods-CammentSDK_Tests-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CammentSDK_Tests/Pods-CammentSDK_Tests-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Expecta/Expecta.framework",
 				"${BUILT_PRODUCTS_DIR}/OCMock/OCMock.framework",
 				"${BUILT_PRODUCTS_DIR}/Specta/Specta.framework",
@@ -394,22 +386,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CammentSDK_Tests/Pods-CammentSDK_Tests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		5F09557B83E37E2CB3C684EB /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CammentSDK_Tests/Pods-CammentSDK_Tests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CammentSDK_Tests/Pods-CammentSDK_Tests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		820CF7DC69DFD88026F0C09A /* [CP] Embed Pods Frameworks */ = {
@@ -418,7 +395,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-CammentSDK_Example/Pods-CammentSDK_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-CammentSDK_Example/Pods-CammentSDK_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
 				"${BUILT_PRODUCTS_DIR}/AMPopTip/AMPopTip.framework",
 				"${BUILT_PRODUCTS_DIR}/AWSAPIGateway/AWSAPIGateway.framework",
@@ -487,7 +464,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CammentSDK_Example/Pods-CammentSDK_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CammentSDK_Example/Pods-CammentSDK_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		9F7E7B7332D8327AF951DB1D /* [CP] Check Pods Manifest.lock */ = {
@@ -506,21 +483,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		B97DB254514F72FC9FE07551 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CammentSDK_Example/Pods-CammentSDK_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C3A9AB3668E07717B647D553 /* [CP] Check Pods Manifest.lock */ = {

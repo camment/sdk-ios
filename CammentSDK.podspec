@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
 s.name             = 'CammentSDK'
-s.version          = '3.0.3'
+s.version          = '3.0.4'
 s.summary          = 'iOS SDK for camment.tv'
 s.platform = :ios
 
@@ -12,7 +12,7 @@ DESC
 s.homepage         = 'https://github.com/camment/sdk-ios.git'
 s.license          = { :type => 'MIT', :file => 'LICENSE' }
 s.author           = { 'Alexander Fedosov' => 'alex@camment.tv' }
-s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.3' }
+s.source           = { :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.4' }
 
 s.ios.deployment_target = '9'
 

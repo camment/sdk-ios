@@ -18,7 +18,7 @@ platform :ios, '9.0'
 
 target 'Your target' do
     use_frameworks!
-    pod 'CammentSDK', :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.3'
+    pod 'CammentSDK', :git => 'https://github.com/camment/sdk-ios.git', :tag => '3.0.4'
 end
 ```
 then run `pod install`
